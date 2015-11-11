@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">DrmInfo</string>
+    <string name="action_settings">Settings</string>
+    <string name="text_not_supported">Not Supported</string>
+    <string name="text_supported">Supported</string>
+    <string name="text_playready_name">Microsoft Playready DRM</string>
+    <string name="text_widevine_name">Google Widevine DRM</string>
+</resources>
