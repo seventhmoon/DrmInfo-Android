@@ -3,6 +3,14 @@
     <string name="action_settings">Settings</string>
     <string name="text_not_supported">Not Supported</string>
     <string name="text_supported">Supported</string>
+    <string name="text_supported_with_security_level">Supported (%1$s)</string>
     <string name="text_playready_name">Microsoft Playready DRM</string>
     <string name="text_widevine_name">Google Widevine DRM</string>
+    <string name="text_sdk_level">SDK Level</string>
+    <string name="text_model">Model</string>
+    <string name="text_brand">Brand</string>
+    <string name="text_product">Product</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

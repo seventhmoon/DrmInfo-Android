@@ -15,3 +15,12 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-dontwarn android.support.v7.**
+-keep class android.support.v7.** { *; }
+-keep interface android.support.v7.** { *; }
+-keep public class com.google.android.gms.**
+-dontwarn com.google.android.gms.**
+-dontwarn android.support.**
+-dontwarn com.github.**
+-dontwarn com.squareup.picasso.**
+-dontwarn com.etsy.android.grid.**
