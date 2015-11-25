@@ -15,12 +15,29 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--dontwarn android.support.v7.**
+-keep class android.support.design.** { *; }
+-keep interface android.support.design.** { *; }
 -keep class android.support.v7.** { *; }
 -keep interface android.support.v7.** { *; }
+-keep class android.support.v4.** { *; }
+-keep interface android.support.v4.** { *; }
 -keep public class com.google.android.gms.**
+-dontwarn android.support.v7.**
 -dontwarn com.google.android.gms.**
 -dontwarn android.support.**
 -dontwarn com.github.**
 -dontwarn com.squareup.picasso.**
 -dontwarn com.etsy.android.grid.**
+
+# for GPS
+-keep class com.google.api.services.*.mode.*
+-keep class com.google.api.client.**
+-keepattributes Signature,RuntimeVisableAnnotations,AnnotationDefault
+
+# for Maps
+-keep class com.android.**
+-keep class com.google.android.**
+-keep class com.google.android.gms.**
+-keep class com.google.android.gms.location.**
+-keep class com.google.api.client.**
+-keep class com.google.maps.android.**
