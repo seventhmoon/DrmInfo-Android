@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_unit_id_native">ca-app-pub-9890667024752973/9494334110</string>
+    <dimen name="native_ad_min_height">80dp</dimen>
+</resources>

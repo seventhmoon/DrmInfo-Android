@@ -17,11 +17,12 @@
 #}
 -keep class android.support.design.** { *; }
 -keep interface android.support.design.** { *; }
--keep class android.support.v7.** { *; }
--keep interface android.support.v7.** { *; }
--keep class android.support.v4.** { *; }
--keep interface android.support.v4.** { *; }
+#-keep class android.support.v7.** { *; }
+#-keep interface android.support.v7.** { *; }
+#-keep class android.support.v4.** { *; }
+#-keep interface android.support.v4.** { *; }
 -keep public class com.google.android.gms.**
+-keep class !android.support.v7.internal.view.menu.**,android.support.** {*;}
 -dontwarn android.support.v7.**
 -dontwarn com.google.android.gms.**
 -dontwarn android.support.**

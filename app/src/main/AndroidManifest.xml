@@ -1,40 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.androidfung.drminfo"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.androidfung.drminfo" >
 
     <uses-feature
         android:name="android.hardware.touchscreen"
-        android:required="false"/>
+        android:required="false" />
     <uses-feature
         android:name="android.software.leanback"
-        android:required="false"/>
+        android:required="false" />
+
+    <!--<uses-permission android:name="com.android.vending.BILLING" />-->
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:name=".MainApplication"
         android:label="@string/app_name"
+        android:logo="@drawable/leanback_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <activity
-            android:name=".MainActivity"
+            android:name=".MobileActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".TvActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.LeanbackBase">
+            android:theme="@style/Theme.LeanbackBase" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
-
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
