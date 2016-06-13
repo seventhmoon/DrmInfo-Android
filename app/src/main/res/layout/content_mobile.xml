@@ -1,0 +1,90 @@
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <android.support.v7.widget.GridLayout
+        android:id="@+id/gridlayout_holder"
+        android:name="com.androidfung.drminfo.MobileActivityFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="16dp"
+        app:alignmentMode="alignMargins"
+        app:columnCount="@integer/col_count"
+        app:columnOrderPreserved="false"
+        app:orientation="horizontal"
+        app:rowOrderPreserved="false"
+        app:useDefaultMargins="true">
+
+
+        <fragment
+            android:name="com.androidfung.drminfo.InfoFragment"
+
+            android:layout_margin="4dp"
+            app:layout_columnWeight="1"
+            app:layout_row="0"
+            app:layout_rowWeight="1"
+            tools:layout="@layout/fragment_info"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <fragment
+            android:name="com.androidfung.drminfo.WinevineFragment"
+
+            android:layout_margin="4dp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            tools:layout="@layout/fragment_widevine"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <fragment
+            android:name="com.androidfung.drminfo.PlayreadyFragment"
+
+            android:layout_margin="4dp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            tools:layout="@layout/fragment_playready"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <fragment
+            android:name="com.androidfung.drminfo.MarlinFragment"
+
+            android:layout_margin="4dp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            tools:layout="@layout/fragment_marlin"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <fragment
+            android:name="com.androidfung.drminfo.VerimatrixFragment"
+
+            android:layout_margin="4dp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            tools:layout="@layout/fragment_verimatrix"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <fragment
+            android:name="com.androidfung.drminfo.AdFragment"
+
+            android:layout_margin="4dp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            tools:layout="@layout/fragment_ad"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+
+    </android.support.v7.widget.GridLayout>
+
+</android.support.v4.widget.NestedScrollView>
