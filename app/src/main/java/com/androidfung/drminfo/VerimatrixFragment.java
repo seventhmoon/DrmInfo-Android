@@ -20,19 +20,25 @@ import android.widget.TextView;
 public class VerimatrixFragment extends Fragment {
 
     private MediaDrm mVerimatrixMediaDrm;
+
     public VerimatrixFragment() {
         // Required empty public constructor
         mVerimatrixMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.VERIMATRIX);
     }
-
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // retain this fragment
+        setRetainInstance(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_verimatrix, container, false);
-        GridLayout gridLayoutVerimatrix = (GridLayout) rootView.findViewById(R.id.gridlayout_verimatrix);
-        TextView textViewSupportVerimatrix = (TextView) rootView.findViewById(R.id.textview_support_verimatirx);
+        final GridLayout gridLayoutVerimatrix = (GridLayout) rootView.findViewById(R.id.gridlayout_verimatrix);
+        final TextView textViewSupportVerimatrix = (TextView) rootView.findViewById(R.id.textview_support_verimatirx);
 
 
         if (mVerimatrixMediaDrm != null) {
@@ -51,14 +57,13 @@ public class VerimatrixFragment extends Fragment {
                     textViewValue.setLayoutParams(layoutParams);
 
 
-
                     textViewHeader.setText(headerIds[i]);
                     textViewValue.setText(mVerimatrixMediaDrm.getPropertyString(keys[i]));
 
-                    if (Build.VERSION.SDK_INT >= 23){
+                    if (Build.VERSION.SDK_INT >= 23) {
                         textViewHeader.setTextAppearance(android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
                         textViewValue.setTextAppearance(android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
-                    }else{
+                    } else {
                         textViewHeader.setTextAppearance(getContext(), android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
                         textViewValue.setTextAppearance(getContext(), android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
                     }
@@ -77,6 +82,8 @@ public class VerimatrixFragment extends Fragment {
         } else {
             textViewSupportVerimatrix.setText(R.string.text_not_supported);
         }
+
+
         return rootView;
     }
 

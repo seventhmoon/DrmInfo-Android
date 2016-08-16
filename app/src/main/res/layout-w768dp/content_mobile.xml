@@ -52,7 +52,7 @@
             tools:layout="@layout/fragment_info" />
 
         <fragment
-            android:name="com.androidfung.drminfo.WinevineFragment"
+            android:name="com.androidfung.drminfo.WidevineFragment"
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -68,7 +68,18 @@ public class TvActivity extends Activity {
         @SuppressWarnings("ResourceType")
         private List<GuidedAction> getPlayReadySubActions() {
             List<GuidedAction> subActions = new ArrayList<>();
-
+            try {
+                String version = mPlayreadyMediaDrm.getPropertyString(MediaDrm.PROPERTY_VERSION);
+                if (version != null) {
+                    subActions.add(new GuidedAction.Builder(getActivity())
+                            .infoOnly(true)
+                            .title(getString(R.string.text_version))
+                            .description(version)
+                            .build());
+                }
+            } catch (java.lang.IllegalStateException ex) {
+                Log.d(TAG, ex.toString());
+            }
 
             return subActions;
         }
@@ -177,21 +188,6 @@ public class TvActivity extends Activity {
         @Override
         public void onCreateActions(List<GuidedAction> actions, Bundle savedInstanceState) {
 
-//            mInterstitialAd = new InterstitialAd(getActivity());
-//            mInterstitialAd.setAdUnitId(getString(R.string.video_ad_unit_id));
-//
-//            mInterstitialAd.setAdListener(new AdListener() {
-//                @Override
-//                public void onAdClosed() {
-//                    requestNewInterstitial();
-//                    //                beginPlayingGame();
-//                    FragmentManager fm = getFragmentManager();
-//                    GuidedStepFragment.add(fm, new WidevineStepFragment());
-//                }
-//            });
-//
-//            requestNewInterstitial();
-
             mWidevineMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
             mPlayreadyMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PLAYREADY);
 
@@ -225,7 +221,7 @@ public class TvActivity extends Activity {
             if (mWidevineMediaDrm != null) {
 
                 actions.add(new GuidedAction.Builder(getActivity())
-                        .id(WIDEVINE)
+//                        .id(WIDEVINE)
                         .title(getString(R.string.text_widevine_name))
                         .description(getString(R.string.text_supported))
                         .subActions(getWidevineSubActions())
@@ -239,11 +235,21 @@ public class TvActivity extends Activity {
                         .build());
             }
 
-            actions.add(new GuidedAction.Builder(getActivity())
-                    .infoOnly(true)
-                    .title(getString(R.string.text_playready_name))
-                    .description(mPlayreadyMediaDrm != null ? getString(R.string.text_supported) : getString(R.string.text_not_supported))
-                    .build());
+            if (mPlayreadyMediaDrm != null) {
+
+                actions.add(new GuidedAction.Builder(getActivity())
+                        .title(getString(R.string.text_playready_name))
+                        .description(getString(R.string.text_supported))
+                        .subActions(getPlayReadySubActions())
+                        .build());
+
+            } else {
+                actions.add(new GuidedAction.Builder(getActivity())
+                        .infoOnly(true)
+                        .title(getString(R.string.text_playready_name))
+                        .description(getString(R.string.text_not_supported))
+                        .build());
+            }
 
             actions.add(new GuidedAction.Builder(getActivity())
                     .infoOnly(true)
@@ -267,15 +273,9 @@ public class TvActivity extends Activity {
 //            }
 //        }
 
-//        private void requestNewInterstitial() {
-//            AdRequest adRequest = new AdRequest.Builder()
-//                    //                .addTestDevice("SEE_YOUR_LOGCAT_TO_GET_YOUR_DEVICE_ID")
-//                    .build();
-//
-//            mInterstitialAd.loadAd(adRequest);
-//        }
     }
 
+    @Deprecated
     public static class WidevineStepFragment extends GuidedStepFragment {
         private MediaDrm mWidevineMediaDrm;
 

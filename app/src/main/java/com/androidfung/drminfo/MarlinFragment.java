@@ -20,20 +20,26 @@ import android.widget.TextView;
 public class MarlinFragment extends Fragment {
 
     private MediaDrm mMarlinMediaDrm;
+
     public MarlinFragment() {
         // Required empty public constructor
         mMarlinMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.MARLIN);
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // retain this fragment
+        setRetainInstance(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_marlin, container, false);
-        GridLayout gridLayoutMarlin = (GridLayout) rootView.findViewById(R.id.gridlayout_marlin);
-        TextView textViewSupportMarlin = (TextView) rootView.findViewById(R.id.textview_support_marlin);
-
+        final GridLayout gridLayoutMarlin = (GridLayout) rootView.findViewById(R.id.gridlayout_marlin);
+        final TextView textViewSupportMarlin = (TextView) rootView.findViewById(R.id.textview_support_marlin);
 
         if (mMarlinMediaDrm != null) {
             textViewSupportMarlin.setText(R.string.text_supported);
@@ -51,14 +57,13 @@ public class MarlinFragment extends Fragment {
                     textViewValue.setLayoutParams(layoutParams);
 
 
-
                     textViewHeader.setText(headerIds[i]);
                     textViewValue.setText(mMarlinMediaDrm.getPropertyString(keys[i]));
 
-                    if (Build.VERSION.SDK_INT >= 23){
+                    if (Build.VERSION.SDK_INT >= 23) {
                         textViewHeader.setTextAppearance(android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
                         textViewValue.setTextAppearance(android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
-                    }else{
+                    } else {
                         textViewHeader.setTextAppearance(getContext(), android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
                         textViewValue.setTextAppearance(getContext(), android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
                     }
@@ -77,6 +82,8 @@ public class MarlinFragment extends Fragment {
         } else {
             textViewSupportMarlin.setText(R.string.text_not_supported);
         }
+
+
         return rootView;
     }
 

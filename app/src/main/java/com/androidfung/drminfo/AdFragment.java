@@ -1,0 +1,85 @@
+package com.androidfung.drminfo;
+
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.NativeExpressAdView;
+
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class AdFragment extends Fragment {
+
+    NativeExpressAdView mAdView;
+
+    public AdFragment() {
+        // Required empty public constructor
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        final View rootView = inflater.inflate(R.layout.fragment_ad, container, false);
+
+        MobileAds.initialize(getContext(), getString(R.string.ad_unit_id_native));
+
+        mAdView = new NativeExpressAdView(getContext());
+
+        final AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)       // All emulators
+                .addTestDevice("EBB53DEFEC528CC2A37BE4470FAB47B5")
+                .addTestDevice("7336D37AD0AF5C7AC14EA15F457A0F58")
+                .build();
+        final ViewGroup adHolder = (ViewGroup) rootView.findViewById(R.id.ad_container_card);
+        if (adHolder != null) {
+            adHolder.post(new Runnable() {
+                @Override
+                public void run() {
+                    float scaleRatio = getResources().getDisplayMetrics().density;
+                    int width = (int) (adHolder.getMeasuredWidth() / scaleRatio);
+                    int height = (int) (adHolder.getMeasuredHeight() / scaleRatio);
+                    mAdView.setAdSize(new AdSize(width, height));
+                    mAdView.setAdUnitId(getString(R.string.ad_unit_id_native));
+//                    Log.d(TAG, "" + (int) (adHolder.getMeasuredWidth() / scaleRatio) + ", " + (int) (adHolder.getMeasuredHeight() / scaleRatio));
+                    mAdView.setAdListener(new AdListener() {
+                        @Override
+                        public void onAdLoaded() {
+                            // Save app state before going to the ad overlay.
+//                            View container = rootView.findViewById(R.id.ad_container_card);
+                            if (adHolder != null) {
+                                adHolder.setVisibility(View.VISIBLE);
+                            }
+
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(int errorCode) {
+//                            View container = rootView.findViewById(R.id.ad_container_card);
+                            if (adHolder != null) {
+                                adHolder.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+                    mAdView.loadAd(adRequest);
+                    adHolder.addView(mAdView);
+
+                }
+            });
+        }
+
+        return rootView;
+    }
+
+
+}

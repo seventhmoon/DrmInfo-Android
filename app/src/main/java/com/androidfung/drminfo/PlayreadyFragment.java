@@ -24,19 +24,26 @@ public class PlayreadyFragment extends Fragment {
 
     public PlayreadyFragment() {
         // Required empty public constructor
-        mPlayreadyMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PLAYREADY);
+
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // retain this fragment
+        setRetainInstance(true);
 
-
+        mPlayreadyMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PLAYREADY);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_playready, container, false);
-        GridLayout gridLayoutPlayready = (GridLayout) rootView.findViewById(R.id.gridlayout_playready);
-        TextView textViewSupportPlayready = (TextView) rootView.findViewById(R.id.textview_support_playready);
+        final GridLayout gridLayoutPlayready = (GridLayout) rootView.findViewById(R.id.gridlayout_playready);
+        final TextView textViewSupportPlayready = (TextView) rootView.findViewById(R.id.textview_support_playready);
+
 
         if (mPlayreadyMediaDrm != null) {
             textViewSupportPlayready.setText(R.string.text_supported);
@@ -53,15 +60,13 @@ public class PlayreadyFragment extends Fragment {
                     layoutParams.setGravity(Gravity.END);
                     textViewValue.setLayoutParams(layoutParams);
 
-
-
                     textViewHeader.setText(headerIds[i]);
                     textViewValue.setText(mPlayreadyMediaDrm.getPropertyString(keys[i]));
 
-                    if (Build.VERSION.SDK_INT >= 23){
+                    if (Build.VERSION.SDK_INT >= 23) {
                         textViewHeader.setTextAppearance(android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
                         textViewValue.setTextAppearance(android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
-                    }else{
+                    } else {
                         textViewHeader.setTextAppearance(getContext(), android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
                         textViewValue.setTextAppearance(getContext(), android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
                     }
@@ -80,6 +85,8 @@ public class PlayreadyFragment extends Fragment {
         } else {
             textViewSupportPlayready.setText(R.string.text_not_supported);
         }
+
+
         return rootView;
     }
 

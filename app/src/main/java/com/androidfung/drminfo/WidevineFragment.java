@@ -17,12 +17,20 @@ import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class WinevineFragment extends Fragment {
+public class WidevineFragment extends Fragment {
 
     private MediaDrm mWidevineMediaDrm;
 
-    public WinevineFragment() {
+    public WidevineFragment() {
         // Required empty public constructor
+//        mWidevineMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // retain this fragment
+        setRetainInstance(true);
         mWidevineMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
     }
 
@@ -31,9 +39,10 @@ public class WinevineFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_winevine, container, false);
-        TextView textViewSupportWidevine = (TextView) rootView.findViewById(R.id.textview_support_widevine);
-        GridLayout gridLayoutWidevine = (GridLayout) rootView.findViewById(R.id.gridlayout_widevine);
+        View rootView = inflater.inflate(R.layout.fragment_widevine, container, false);
+        final TextView textViewSupportWidevine = (TextView) rootView.findViewById(R.id.textview_support_widevine);
+        final GridLayout gridLayoutWidevine = (GridLayout) rootView.findViewById(R.id.gridlayout_widevine);
+
 
         if (mWidevineMediaDrm != null) {
 
@@ -78,6 +87,8 @@ public class WinevineFragment extends Fragment {
         } else {
             textViewSupportWidevine.setText(R.string.text_not_supported);
         }
+
+
         return rootView;
     }
 
