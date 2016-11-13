@@ -19,7 +19,11 @@ import android.widget.TextView;
  */
 public class WidevineFragment extends Fragment {
 
+    private static final int[] HEADER_IDS = {R.string.text_version, R.string.text_widevine_system_id, R.string.text_widevine_security_level, R.string.text_widevine_hdcp_level, R.string.text_widevine_max_hdcp_level, R.string.text_widevine_usage_reporting_support, R.string.text_widevine_maximum_number_of_sessions, R.string.text_widevine_number_of_open_sessions};
+    private static final String[] KEYS = {MediaDrm.PROPERTY_VERSION, "systemId", "securityLevel", "hdcpLevel", "maxHdcpLevel", "usageReportingSupport", "maxNumberOfSessions", "numberOfOpenSessions"};
+
     private MediaDrm mWidevineMediaDrm;
+
 
     public WidevineFragment() {
         // Required empty public constructor
@@ -49,10 +53,8 @@ public class WidevineFragment extends Fragment {
             textViewSupportWidevine.setText(R.string.text_supported);
 
 //            TextView[] textViews = {textViewWidevineVersion, textViewWidevineSystemId, textViewWidevineSecurityLevel, textViewWidevineHdcpLevel, textViewWidevineMaxHdcpLevel, textViewWidevineUsageReportingSupport, textViewWidevineMaxNumberOfSessions, textViewWidevineNumberOfOpenSessions};
-            int[] headerIds = {R.string.text_version, R.string.text_widevine_system_id, R.string.text_widevine_security_level, R.string.text_widevine_hdcp_level, R.string.text_widevine_max_hdcp_level, R.string.text_widevine_usage_reporting_support, R.string.text_widevine_maximum_number_of_sessions, R.string.text_widevine_number_of_open_sessions};
-            String[] keys = {MediaDrm.PROPERTY_VERSION, "systemId", "securityLevel", "hdcpLevel", "maxHdcpLevel", "usageReportingSupport", "maxNumberOfSessions", "numberOfOpenSessions"};
 
-            for (int i = 0; i < headerIds.length; i++) {
+            for (int i = 0; i < HEADER_IDS.length; i++) {
                 try {
                     AppCompatTextView textViewHeader = new AppCompatTextView(getContext());
                     AppCompatTextView textViewValue = new AppCompatTextView(getContext());
@@ -63,8 +65,8 @@ public class WidevineFragment extends Fragment {
                     textViewValue.setLayoutParams(layoutParams);
 
 
-                    textViewHeader.setText(headerIds[i]);
-                    textViewValue.setText(mWidevineMediaDrm.getPropertyString(keys[i]));
+                    textViewHeader.setText(HEADER_IDS[i]);
+                    textViewValue.setText(mWidevineMediaDrm.getPropertyString(KEYS[i]));
 
                     if (Build.VERSION.SDK_INT >= 23) {
                         textViewHeader.setTextAppearance(android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
@@ -80,7 +82,7 @@ public class WidevineFragment extends Fragment {
 
 
 //                    textViews[i].setText(mWidevineMediaDrm.getPropertyString(keys[i]));
-                } catch (IllegalStateException ex) {
+                } catch (RuntimeException ex) {
 //                    Log.d(TAG, ex.toString());
                 }
             }

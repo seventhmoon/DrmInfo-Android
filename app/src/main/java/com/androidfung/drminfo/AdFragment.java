@@ -42,39 +42,30 @@ public class AdFragment extends Fragment {
                 .addTestDevice("7336D37AD0AF5C7AC14EA15F457A0F58")
                 .build();
         final ViewGroup adHolder = (ViewGroup) rootView.findViewById(R.id.ad_container_card);
+
         if (adHolder != null) {
-            adHolder.post(new Runnable() {
-                @Override
-                public void run() {
-                    float scaleRatio = getResources().getDisplayMetrics().density;
-                    int width = (int) (adHolder.getMeasuredWidth() / scaleRatio);
-                    int height = (int) (adHolder.getMeasuredHeight() / scaleRatio);
-                    mAdView.setAdSize(new AdSize(width, height));
-                    mAdView.setAdUnitId(getString(R.string.ad_unit_id_native));
+            adHolder.post(() -> {
+                float scaleRatio = getResources().getDisplayMetrics().density;
+                int width = (int) (adHolder.getMeasuredWidth() / scaleRatio);
+                int height = (int) (adHolder.getMeasuredHeight() / scaleRatio);
+                mAdView.setAdSize(new AdSize(width, height));
+                mAdView.setAdUnitId(getString(R.string.ad_unit_id_native));
 //                    Log.d(TAG, "" + (int) (adHolder.getMeasuredWidth() / scaleRatio) + ", " + (int) (adHolder.getMeasuredHeight() / scaleRatio));
-                    mAdView.setAdListener(new AdListener() {
-                        @Override
-                        public void onAdLoaded() {
-                            // Save app state before going to the ad overlay.
-//                            View container = rootView.findViewById(R.id.ad_container_card);
-                            if (adHolder != null) {
-                                adHolder.setVisibility(View.VISIBLE);
-                            }
+                mAdView.setAdListener(new AdListener() {
+                    @Override
+                    public void onAdLoaded() {
+                        adHolder.setVisibility(View.VISIBLE);
+                    }
 
-                        }
+                    @Override
+                    public void onAdFailedToLoad(int errorCode) {
+                        adHolder.setVisibility(View.GONE);
+                    }
+                });
+                mAdView.loadAd(adRequest);
+                adHolder.addView(mAdView);
 
-                        @Override
-                        public void onAdFailedToLoad(int errorCode) {
-//                            View container = rootView.findViewById(R.id.ad_container_card);
-                            if (adHolder != null) {
-                                adHolder.setVisibility(View.GONE);
-                            }
-                        }
-                    });
-                    mAdView.loadAd(adRequest);
-                    adHolder.addView(mAdView);
 
-                }
             });
         }
 
