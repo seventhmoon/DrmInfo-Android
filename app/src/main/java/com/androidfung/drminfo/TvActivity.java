@@ -32,7 +32,7 @@ public class TvActivity extends Activity {
         }
 // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, new Bundle());
+//        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, new Bundle());
 //        // Get tracker.
 //        Tracker t = ((MainApplication) getApplication()).getTracker();
 //

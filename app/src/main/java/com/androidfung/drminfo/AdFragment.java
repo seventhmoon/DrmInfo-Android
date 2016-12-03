@@ -32,7 +32,7 @@ public class AdFragment extends Fragment {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_ad, container, false);
 
-        MobileAds.initialize(getContext(), getString(R.string.ad_unit_id_native));
+//        MobileAds.initialize(getContext(), getString(R.string.ad_unit_id_native));
 
         mAdView = new NativeExpressAdView(getContext());
 

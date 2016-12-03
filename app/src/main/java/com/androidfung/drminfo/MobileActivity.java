@@ -19,7 +19,7 @@ public class MobileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, new Bundle());
+//        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, new Bundle());
 
     }
 
