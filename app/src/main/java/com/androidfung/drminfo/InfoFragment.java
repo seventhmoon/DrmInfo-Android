@@ -12,11 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.androidfung.drminfo.safetynet.CompatibilityCheckResponse;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.safetynet.SafetyNet;
 import com.google.android.gms.safetynet.SafetyNetApi;
+import com.google.gson.GsonBuilder;
 
 import java.security.SecureRandom;
 
@@ -27,6 +29,7 @@ import java.security.SecureRandom;
 public class InfoFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks {
 
     private final String TAG = InfoFragment.class.getSimpleName();
+    private View mRootView;
     private GoogleApiClient mGoogleApiClient;
 
     public InfoFragment() {
@@ -36,6 +39,7 @@ public class InfoFragment extends Fragment implements GoogleApiClient.Connection
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         buildGoogleApiClient();
+
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -56,20 +60,22 @@ public class InfoFragment extends Fragment implements GoogleApiClient.Connection
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_info, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_info, container, false);
 
 
-        TextView textViewSdkLevel = (TextView) rootView.findViewById(R.id.textview_sdk_level);
-        TextView textViewModel = (TextView) rootView.findViewById(R.id.textview_model);
-        TextView textViewBrand = (TextView) rootView.findViewById(R.id.textview_brand);
-        TextView textViewProduct = (TextView) rootView.findViewById(R.id.textview_product);
+        TextView textViewSdkLevel = (TextView) mRootView.findViewById(R.id.textview_sdk_level);
+        TextView textViewModel = (TextView) mRootView.findViewById(R.id.textview_model);
+        TextView textViewBrand = (TextView) mRootView.findViewById(R.id.textview_brand);
+        TextView textViewProduct = (TextView) mRootView.findViewById(R.id.textview_product);
         textViewModel.setText(Build.MODEL);
         textViewSdkLevel.setText(String.valueOf(Build.VERSION.SDK_INT));
         textViewBrand.setText(Build.BRAND);
         textViewProduct.setText(Build.PRODUCT);
 
-
-        return rootView;
+        mRootView.post(() ->
+            mGoogleApiClient.connect()
+        );
+        return mRootView;
 
     }
 
@@ -83,9 +89,15 @@ public class InfoFragment extends Fragment implements GoogleApiClient.Connection
                         // Indicates communication with the service was successful.
                         // result.getJwsResult() contains the result data
 
-                        String jwsResult = result.getJwsResult();
-                        Log.d(TAG, jwsResult);
+                        try {
+                            String[] jwsResults = result.getJwsResult().split("\\.");
+                            String decodedPayload = new String(Base64.decode(jwsResults[1], Base64.DEFAULT));
+                            Log.d(TAG, decodedPayload);
+                            CompatibilityCheckResponse compatibilityCheckResponse = new GsonBuilder().create().fromJson(decodedPayload, CompatibilityCheckResponse.class);
+                            TextView textViewCtsProfileMatch = (TextView) mRootView.findViewById(R.id.textview_cts_profile_match);
+                            textViewCtsProfileMatch.setText(compatibilityCheckResponse.isCtsProfileMatch()?R.string.text_yes:R.string.text_no);
 
+                        }catch (Exception e){}
                     } else {
                         // An error occurred while communicating with the service
                         Log.d(TAG, result.toString());
