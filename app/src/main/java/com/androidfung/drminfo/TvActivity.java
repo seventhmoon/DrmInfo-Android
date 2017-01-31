@@ -190,7 +190,6 @@ public class TvActivity extends Activity {
 
             mWidevineMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
             mPlayreadyMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PLAYREADY);
-
             mMarlinMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.MARLIN);
             mVerimatrixMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.VERIMATRIX);
 
@@ -238,9 +237,10 @@ public class TvActivity extends Activity {
             if (mPlayreadyMediaDrm != null) {
 
                 actions.add(new GuidedAction.Builder(getActivity())
+                        .infoOnly(true)
                         .title(getString(R.string.text_playready_name))
                         .description(getString(R.string.text_supported))
-                        .subActions(getPlayReadySubActions())
+//                        .subActions(getPlayReadySubActions())
                         .build());
 
             } else {

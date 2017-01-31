@@ -24,6 +24,8 @@
             android:layout_height="wrap_content"
 
             android:text="@string/text_widevine_name"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
         <GridLayout
@@ -35,7 +37,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@string/text_widevine_name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 

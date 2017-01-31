@@ -32,15 +32,14 @@ public class AdFragment extends Fragment {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_ad, container, false);
 
-//        MobileAds.initialize(getContext(), getString(R.string.ad_unit_id_native));
-
-        mAdView = new NativeExpressAdView(getContext());
+        mAdView = new NativeExpressAdView(getActivity());
 
         final AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)       // All emulators
                 .addTestDevice("EBB53DEFEC528CC2A37BE4470FAB47B5")
                 .addTestDevice("7336D37AD0AF5C7AC14EA15F457A0F58")
                 .build();
+
         final ViewGroup adHolder = (ViewGroup) rootView.findViewById(R.id.ad_container_card);
 
         if (adHolder != null) {
@@ -49,8 +48,8 @@ public class AdFragment extends Fragment {
                 int width = (int) (adHolder.getMeasuredWidth() / scaleRatio);
                 int height = (int) (adHolder.getMeasuredHeight() / scaleRatio);
                 mAdView.setAdSize(new AdSize(width, height));
+
                 mAdView.setAdUnitId(getString(R.string.ad_unit_id_native));
-//                    Log.d(TAG, "" + (int) (adHolder.getMeasuredWidth() / scaleRatio) + ", " + (int) (adHolder.getMeasuredHeight() / scaleRatio));
                 mAdView.setAdListener(new AdListener() {
                     @Override
                     public void onAdLoaded() {
@@ -64,8 +63,6 @@ public class AdFragment extends Fragment {
                 });
                 mAdView.loadAd(adRequest);
                 adHolder.addView(mAdView);
-
-
             });
         }
 

@@ -77,7 +77,7 @@ public class PlayreadyFragment extends Fragment {
 
 
                     //                    textViews[i].setText(mWidevineMediaDrm.getPropertyString(keys[i]));
-                } catch (IllegalStateException ex) {
+                } catch (RuntimeException ex) {
 //                    Log.d(TAG, ex.toString());
                 }
             }

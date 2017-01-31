@@ -82,19 +82,7 @@
                 android:layout_gravity="end"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_cts_profile_match"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
-            <TextView
-                android:id="@+id/textview_cts_profile_match"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="@string/text_unknown"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
         </GridLayout>
 
     </LinearLayout>
