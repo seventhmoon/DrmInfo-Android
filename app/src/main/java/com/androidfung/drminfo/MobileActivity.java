@@ -3,9 +3,11 @@ package com.androidfung.drminfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class MobileActivity extends AppCompatActivity {
+
 
     private static final String TAG = MobileActivity.class.getSimpleName();
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -19,8 +21,5 @@ public class MobileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-//        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, new Bundle());
-
     }
-
 }

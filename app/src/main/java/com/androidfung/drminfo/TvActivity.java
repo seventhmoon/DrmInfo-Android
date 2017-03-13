@@ -19,7 +19,7 @@ import java.util.List;
 public class TvActivity extends Activity {
 
     private static final String TAG = TvActivity.class.getSimpleName();
-    private static final long WIDEVINE = 2l;
+    private static final long WIDEVINE = 2L;
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -55,6 +55,7 @@ public class TvActivity extends Activity {
             return super.onProvideTheme();
         }
 
+        @NonNull
         @Override
         public GuidanceStylist.Guidance onCreateGuidance(Bundle savedInstanceState) {
             String title = getString(R.string.app_name);
@@ -186,7 +187,7 @@ public class TvActivity extends Activity {
 
         @SuppressWarnings("ResourceType")
         @Override
-        public void onCreateActions(List<GuidedAction> actions, Bundle savedInstanceState) {
+        public void onCreateActions(@NonNull List<GuidedAction> actions, Bundle savedInstanceState) {
 
             mWidevineMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
             mPlayreadyMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PLAYREADY);
@@ -297,7 +298,7 @@ public class TvActivity extends Activity {
 
         @SuppressWarnings("ResourceType")
         @Override
-        public void onCreateActions(List<GuidedAction> actions, Bundle savedInstanceState) {
+        public void onCreateActions(@NonNull List<GuidedAction> actions, Bundle savedInstanceState) {
             mWidevineMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
 
             if (mWidevineMediaDrm != null) {

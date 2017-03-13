@@ -78,12 +78,8 @@ public class WidevineFragment extends Fragment {
 
                     gridLayoutWidevine.addView(textViewHeader);
                     gridLayoutWidevine.addView(textViewValue);
-//                    gridLayoutWidevine.addView(textViewValue, );
 
-
-//                    textViews[i].setText(mWidevineMediaDrm.getPropertyString(keys[i]));
-                } catch (RuntimeException ex) {
-//                    Log.d(TAG, ex.toString());
+                } catch (RuntimeException ignored) {
                 }
             }
         } else {

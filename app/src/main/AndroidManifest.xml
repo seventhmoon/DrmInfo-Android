@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.androidfung.drminfo" >
 
     <uses-feature
@@ -19,7 +20,9 @@
         android:logo="@drawable/leanback_launcher"
         android:banner="@drawable/leanback_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        tools:targetApi="lollipop"
+        android:fullBackupContent="@xml/backup_descriptor">
 
         <meta-data
             android:name="com.google.android.gms.version"
