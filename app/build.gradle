@@ -8,8 +8,8 @@ android {
         applicationId "com.androidfung.drminfo"
         minSdkVersion 18
         targetSdkVersion 25
-        versionCode 43
-        versionName "1.0.9.170303"
+        versionCode 42
+        versionName "1.0.9.170131"
         resConfigs "en"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
@@ -49,6 +49,7 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:10.2.0'
     compile 'com.google.firebase:firebase-database:10.2.0'
     compile 'com.google.android:flexbox:0.2.3'
+
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.google.code.gson:gson:2.8.0'
 }
