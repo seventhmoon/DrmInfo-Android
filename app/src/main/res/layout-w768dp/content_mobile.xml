@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-
+            app:layout_flexGrow="1"
             app:layout_columnWeight="1"
             app:layout_row="0"
             app:layout_rowWeight="1"
@@ -53,7 +53,7 @@
 
         <fragment
             android:name="com.androidfung.drminfo.WidevineFragment"
-
+            app:layout_flexGrow="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
@@ -63,7 +63,7 @@
 
         <fragment
             android:name="com.androidfung.drminfo.PlayreadyFragment"
-
+            app:layout_flexGrow="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
@@ -73,7 +73,7 @@
 
         <fragment
             android:name="com.androidfung.drminfo.MarlinFragment"
-
+            app:layout_flexGrow="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
@@ -83,7 +83,7 @@
 
         <fragment
             android:name="com.androidfung.drminfo.VerimatrixFragment"
-
+            app:layout_flexGrow="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
@@ -93,7 +93,7 @@
 
         <fragment
             android:name="com.androidfung.drminfo.AdFragment"
-
+            app:layout_flexGrow="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
