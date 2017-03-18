@@ -6,102 +6,95 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
     <LinearLayout
         android:id="@+id/gridlayout_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:descendantFocusability="blocksDescendants"
         android:orientation="vertical">
 
-
         <fragment
+            android:id="@+id/fragment_info"
             android:name="com.androidfung.drminfo.InfoFragment"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:layout_marginBottom="@dimen/card_vertical_margin"
             android:layout_marginEnd="@dimen/card_horizontal_margin"
             android:layout_marginStart="@dimen/card_horizontal_margin"
             android:layout_marginTop="@dimen/card_vertical_margin"
-            android:layout_marginBottom="@dimen/card_vertical_margin"
             app:layout_columnWeight="1"
             app:layout_row="0"
             app:layout_rowWeight="1"
             tools:layout="@layout/fragment_info" />
 
         <fragment
+            android:id="@+id/fragment_widevine"
             android:name="com.androidfung.drminfo.WidevineFragment"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/card_vertical_margin"
             android:layout_marginEnd="@dimen/card_horizontal_margin"
             android:layout_marginStart="@dimen/card_horizontal_margin"
             android:layout_marginTop="@dimen/card_vertical_margin"
-            android:layout_marginBottom="@dimen/card_vertical_margin"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
             tools:layout="@layout/fragment_widevine" />
 
         <fragment
+            android:id="@+id/fragment_playready"
             android:name="com.androidfung.drminfo.PlayreadyFragment"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/card_vertical_margin"
             android:layout_marginEnd="@dimen/card_horizontal_margin"
             android:layout_marginStart="@dimen/card_horizontal_margin"
             android:layout_marginTop="@dimen/card_vertical_margin"
-            android:layout_marginBottom="@dimen/card_vertical_margin"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
             tools:layout="@layout/fragment_playready" />
 
         <fragment
+            android:id="@+id/fragment_marlin"
             android:name="com.androidfung.drminfo.MarlinFragment"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/card_vertical_margin"
             android:layout_marginEnd="@dimen/card_horizontal_margin"
             android:layout_marginStart="@dimen/card_horizontal_margin"
             android:layout_marginTop="@dimen/card_vertical_margin"
-            android:layout_marginBottom="@dimen/card_vertical_margin"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
             tools:layout="@layout/fragment_marlin" />
 
         <fragment
+            android:id="@+id/fragment_verimatrix"
             android:name="com.androidfung.drminfo.VerimatrixFragment"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/card_vertical_margin"
             android:layout_marginEnd="@dimen/card_horizontal_margin"
             android:layout_marginStart="@dimen/card_horizontal_margin"
             android:layout_marginTop="@dimen/card_vertical_margin"
-            android:layout_marginBottom="@dimen/card_vertical_margin"
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
             tools:layout="@layout/fragment_verimatrix" />
 
         <fragment
+            android:id="@+id/fragment_ad"
             android:name="com.androidfung.drminfo.AdFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/card_vertical_margin"
             android:layout_marginEnd="@dimen/card_horizontal_margin"
             android:layout_marginStart="@dimen/card_horizontal_margin"
             android:layout_marginTop="@dimen/card_vertical_margin"
-            android:layout_marginBottom="@dimen/card_vertical_margin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
             app:layout_columnWeight="1"
             app:layout_rowWeight="1"
             tools:layout="@layout/fragment_ad" />
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="16dp" />
+            android:layout_height="8dp" />
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

@@ -8,6 +8,7 @@
 
     android:minHeight="@dimen/native_ad_min_height"
     android:minWidth="@dimen/box_min_width"
+    android:visibility="invisible"
      >
 
     </android.support.v7.widget.CardView>
