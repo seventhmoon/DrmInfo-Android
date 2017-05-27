@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "943085805352-adob09p3ngiqdk2eorotp3gfvjq5826o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.androidfung.drminfo",
+            "certificate_hash": "9f5c6325ae9825b198384c54bcab4764c7d2e640"
+          }
+        },
+        {
           "client_id": "943085805352-pdjrr1hp2dide03gbft1oe0530ab5jru.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

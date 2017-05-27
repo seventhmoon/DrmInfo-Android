@@ -53,6 +53,20 @@
             app:layout_rowWeight="1"
             tools:layout="@layout/fragment_playready" />
 
+
+        <fragment
+            android:id="@+id/fragment_clearkey"
+            android:name="com.androidfung.drminfo.ClearKeyFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/card_vertical_margin"
+            android:layout_marginEnd="@dimen/card_horizontal_margin"
+            android:layout_marginStart="@dimen/card_horizontal_margin"
+            android:layout_marginTop="@dimen/card_vertical_margin"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            tools:layout="@layout/fragment_clearkey" />
+
         <fragment
             android:id="@+id/fragment_marlin"
             android:name="com.androidfung.drminfo.MarlinFragment"
