@@ -49,6 +49,10 @@
 -keep class com.google.android.gms.location.ActivityRecognitionResult
 -keep class com.google.android.gms.** {*;}
 
+-keep class com.google.android.flexbox.FlexboxLayout
+-keep class com.google.android.flexbox.**
+-keep class com.google.android.flexbox.** {*;}
+
 #-keepclassmembers class * implements android.os.Parcelable {
 #    static ** CREATOR;
 #}

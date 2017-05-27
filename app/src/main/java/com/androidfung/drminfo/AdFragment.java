@@ -2,6 +2,7 @@ package com.androidfung.drminfo;
 
 
 import android.os.Bundle;
+import android.support.annotation.Keep;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.google.android.gms.ads.NativeExpressAdView;
 /**
  * A simple {@link Fragment} subclass.
  */
+@Keep
 public class AdFragment extends Fragment {
 
     NativeExpressAdView mAdView;

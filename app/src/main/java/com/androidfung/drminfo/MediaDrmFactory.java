@@ -3,6 +3,7 @@ package com.androidfung.drminfo;
 import android.media.MediaDrm;
 import android.media.UnsupportedSchemeException;
 import android.support.annotation.IntDef;
+import android.support.annotation.Keep;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -11,6 +12,7 @@ import java.util.UUID;
 /**
  * Created by fung on 11/13/2015.
  */
+@Keep
 public class MediaDrmFactory {
     public static final UUID WIDEVINE_UUID = new UUID(0xEDEF8BA979D64ACEL, 0xA3C827DCD51D21EDL);
     public static final UUID PLAYREADY_UUID = new UUID(0x9A04F07998404286L, 0xAB92E65BE0885F95L);

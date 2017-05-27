@@ -4,6 +4,7 @@ package com.androidfung.drminfo;
 import android.media.MediaDrm;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Keep;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.Gravity;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  */
+@Keep
 public class VerimatrixFragment extends Fragment {
 
     private MediaDrm mVerimatrixMediaDrm;
