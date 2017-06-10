@@ -3,11 +3,12 @@
 buildscript {
     repositories {
         maven { url 'https://maven.google.com' }
+//        maven { url 'https://dl.google.com/dl/android/maven2' }
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-alpha2'
+        classpath 'com.android.tools.build:gradle:3.0.0-alpha3'
         classpath ('com.google.firebase:firebase-plugins:1.1.0') {
             exclude group: 'com.google.guava', module: 'guava-jdk5'
         }
@@ -22,9 +23,9 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
         maven { url 'https://maven.google.com' }
-        mavenCentral()
+        jcenter()
+//        mavenCentral()
     }
 }
 
