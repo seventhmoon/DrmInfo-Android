@@ -3,6 +3,7 @@
 buildscript {
     repositories {
         maven { url 'https://maven.google.com' }
+//        maven { url 'https://dl.google.com/dl/android/maven2' }
         jcenter()
     }
 
@@ -19,9 +20,9 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
         maven { url 'https://maven.google.com' }
-        mavenCentral()
+        jcenter()
+//        mavenCentral()
     }
 }
 
