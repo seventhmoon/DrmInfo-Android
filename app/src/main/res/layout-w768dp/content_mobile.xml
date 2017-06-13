@@ -71,6 +71,18 @@
             app:layout_rowWeight="1"
             tools:layout="@layout/fragment_playready" />
 
+
+        <fragment
+            android:id="@+id/fragment_clearkey"
+            android:name="com.androidfung.drminfo.ClearKeyFragment"
+            app:layout_flexGrow="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            tools:layout="@layout/fragment_clearkey" />
+
         <fragment
             android:name="com.androidfung.drminfo.MarlinFragment"
             app:layout_flexGrow="1"

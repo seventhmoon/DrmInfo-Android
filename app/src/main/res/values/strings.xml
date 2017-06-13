@@ -5,6 +5,7 @@
     <string name="text_supported">Supported</string>
     <string name="text_supported_with_security_level">Supported (%1$s)</string>
     <string name="text_playready_name">Microsoft Playready DRM</string>
+    <string name="text_clearkey_name">CENC ClearKey</string>
     <string name="text_marlin_name">Marlin DRM</string>
     <string name="text_verimatrix_name">Verimatrix VCAS™</string>
     <string name="text_widevine_name">Google Widevine Modular DRM</string>

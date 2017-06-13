@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaDrm;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.v17.leanback.app.GuidedStepFragment;
 import android.support.v17.leanback.widget.GuidanceStylist;
@@ -15,7 +16,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Keep
 public class TvActivity extends Activity {
 
     private static final String TAG = TvActivity.class.getSimpleName();
@@ -47,7 +48,7 @@ public class TvActivity extends Activity {
 
 
     public static class InfoStepFragment extends GuidedStepFragment {
-        private MediaDrm mWidevineMediaDrm, mPlayreadyMediaDrm, mMarlinMediaDrm, mVerimatrixMediaDrm;
+        private MediaDrm mWidevineMediaDrm, mPlayreadyMediaDrm, mMarlinMediaDrm, mVerimatrixMediaDrm, mClearKeyMediaDrm;
 //        InterstitialAd mInterstitialAd;
 
         @Override
@@ -71,6 +72,25 @@ public class TvActivity extends Activity {
             List<GuidedAction> subActions = new ArrayList<>();
             try {
                 String version = mPlayreadyMediaDrm.getPropertyString(MediaDrm.PROPERTY_VERSION);
+                if (version != null) {
+                    subActions.add(new GuidedAction.Builder(getActivity())
+                            .infoOnly(true)
+                            .title(getString(R.string.text_version))
+                            .description(version)
+                            .build());
+                }
+            } catch (java.lang.IllegalStateException ex) {
+                Log.d(TAG, ex.toString());
+            }
+
+            return subActions;
+        }
+
+        @SuppressWarnings("ResourceType")
+        private List<GuidedAction> getClearKeySubActions() {
+            List<GuidedAction> subActions = new ArrayList<>();
+            try {
+                String version = mClearKeyMediaDrm.getPropertyString(MediaDrm.PROPERTY_VERSION);
                 if (version != null) {
                     subActions.add(new GuidedAction.Builder(getActivity())
                             .infoOnly(true)
@@ -193,6 +213,7 @@ public class TvActivity extends Activity {
             mPlayreadyMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PLAYREADY);
             mMarlinMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.MARLIN);
             mVerimatrixMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.VERIMATRIX);
+            mClearKeyMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.CLEARKEY);
 
             actions.add(new GuidedAction.Builder(getActivity())
                     .infoOnly(true)
@@ -248,6 +269,23 @@ public class TvActivity extends Activity {
                 actions.add(new GuidedAction.Builder(getActivity())
                         .infoOnly(true)
                         .title(getString(R.string.text_playready_name))
+                        .description(getString(R.string.text_not_supported))
+                        .build());
+            }
+
+            if (mClearKeyMediaDrm != null) {
+
+                actions.add(new GuidedAction.Builder(getActivity())
+                        .infoOnly(true)
+                        .title(getString(R.string.text_clearkey_name))
+                        .description(getString(R.string.text_supported))
+//                        .subActions(getPlayReadySubActions())
+                        .build());
+
+            } else {
+                actions.add(new GuidedAction.Builder(getActivity())
+                        .infoOnly(true)
+                        .title(getString(R.string.text_clearkey_name))
                         .description(getString(R.string.text_not_supported))
                         .build());
             }

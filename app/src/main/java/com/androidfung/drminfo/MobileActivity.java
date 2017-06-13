@@ -1,11 +1,12 @@
 package com.androidfung.drminfo;
 
 import android.os.Bundle;
+import android.support.annotation.Keep;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
-
+@Keep
 public class MobileActivity extends AppCompatActivity {
 
 
