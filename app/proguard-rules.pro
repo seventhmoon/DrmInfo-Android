@@ -53,6 +53,21 @@
 -keep class com.google.android.flexbox.**
 -keep class com.google.android.flexbox.** {*;}
 
-#-keepclassmembers class * implements android.os.Parcelable {
-#    static ** CREATOR;
-#}
+-keep class android.content.ServiceConnection
+-keep class android.content.ServiceConnection {*;}
+-keep class android.os.SystemProperties
+-keep class com.google.appengine.api.ThreadManager
+-keep class com.google.android.gms.tagmanager.TagManagerService
+-keep class sun.misc.Unsafe
+-keep class com.google.protobuf.ExtensionRegistry
+-keep class com.google.protobuf.Extension
+-keep class libcore.io.Memory
+-keep class org.robolectric.Robolectric
+#-keep class android.content.**
+#-keep class android.content.** {*;}
+-dontwarn android.content.ServiceConnection
+-dontwarn android.content.**
+
+-keepclassmembers class * implements android.os.Parcelable {
+    static ** CREATOR;
+}
