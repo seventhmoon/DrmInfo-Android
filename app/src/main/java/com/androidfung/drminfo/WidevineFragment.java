@@ -6,6 +6,7 @@ import android.media.MediaDrm;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Keep;
+import android.support.annotation.StringDef;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.Gravity;
@@ -17,12 +18,26 @@ import android.widget.TextView;
 
 import com.androidfung.drminfo.databinding.FragmentWidevineBinding;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
 @Keep
 public class WidevineFragment extends Fragment {
+
+
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({VERSION, SYSTEM_ID, SECURITY_LEVEL, HDCP_LEVEL, MAX_HDCP_LEVEL})
+    public @interface PropertyKey{}
+
+    public static final String VERSION = MediaDrm.PROPERTY_VERSION;
+    public static final String SYSTEM_ID = "systemId";
+    public static final String SECURITY_LEVEL = "securityLevel";
+    public static final String HDCP_LEVEL = "hdcpLevel";
+    public static final String MAX_HDCP_LEVEL = "maxHdcpLevel";
 
     private static final int[] HEADER_IDS = {R.string.text_version, R.string.text_widevine_system_id, R.string.text_widevine_security_level, R.string.text_widevine_hdcp_level, R.string.text_widevine_max_hdcp_level, R.string.text_widevine_usage_reporting_support, R.string.text_widevine_maximum_number_of_sessions, R.string.text_widevine_number_of_open_sessions};
     private static final String[] KEYS = {MediaDrm.PROPERTY_VERSION, "systemId", "securityLevel", "hdcpLevel", "maxHdcpLevel", "usageReportingSupport", "maxNumberOfSessions", "numberOfOpenSessions"};
