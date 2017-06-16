@@ -1,20 +1,16 @@
 package com.androidfung.drminfo;
 
+
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.media.MediaDrm;
 import android.os.Bundle;
 import android.support.annotation.Keep;
-import android.support.annotation.StringDef;
+
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-//import com.androidfung.drminfo.databinding.FragmentWidevineBinding;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 
 /**
@@ -24,7 +20,6 @@ import java.lang.annotation.RetentionPolicy;
 public class WidevineFragment extends Fragment {
 
     private MediaDrm mWidevineMediaDrm;
-
 
     public WidevineFragment() {
         // Required empty public constructor
@@ -45,6 +40,7 @@ public class WidevineFragment extends Fragment {
         // Inflate the layout for this fragment
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_widevine, container, false);
         View rootView = binding.getRoot();
+
         binding.setVariable(BR.mediaDrm, mWidevineMediaDrm);
 
         return rootView;
