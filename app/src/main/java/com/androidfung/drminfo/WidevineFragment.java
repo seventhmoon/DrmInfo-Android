@@ -1,6 +1,7 @@
 package com.androidfung.drminfo;
 
 
+import android.databinding.DataBindingUtil;
 import android.media.MediaDrm;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.TextView;
+
+import com.androidfung.drminfo.databinding.FragmentWidevineBinding;
 
 
 /**
@@ -45,7 +48,11 @@ public class WidevineFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_widevine, container, false);
+//        View rootView = inflater.inflate(R.layout.fragment_widevine, container, false);
+        FragmentWidevineBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_widevine, container, false);
+        View rootView = binding.getRoot();
+        binding.setWidevineMediaDrm(mWidevineMediaDrm);
+
         final TextView textViewSupportWidevine = (TextView) rootView.findViewById(R.id.textview_support_widevine);
         final GridLayout gridLayoutWidevine = (GridLayout) rootView.findViewById(R.id.gridlayout_widevine);
 
