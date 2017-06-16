@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_media_drm_description">Description</string>
+    <string name="text_media_drm_version">Version</string>
+
+    <string name="text_widevine_security_level">Security Level</string>
+    <string name="text_widevine_hdcp_level">HDCP Level</string>
+    <string name="text_widevine_max_hdcp_level">Max HDCP Level Supported</string>
+    <string name="text_widevine_number_of_open_sessions">Number of Open Sessions</string>
+    <string name="text_widevine_max_number_of_sessions">Maximum Number of Sessions</string>
+    <string name="text_widevine_system_id">System ID</string>
+    <string name="text_widevine_usage_reporting_support">Usage Reporting Support</string>
+
+    <!--<string name="key_widevine_version">version</string>-->
+    <string name="key_widevine_system_id">systemId</string>
+    <string name="key_widevine_security_level">securityLevel</string>
+    <string name="key_widevine_hdcp_level">hdcpLevel</string>
+    <string name="key_widevine_max_hdcp_level">maxHdcpLevel</string>
+    <string name="key_widevine_number_of_open_sessions">numberOfOpenSessions</string>
+    <string name="key_widevine_max_number_of_sessions">maxNumberOfSessions</string>
+    <string name="key_widevine_usage_reporting_support">usageReportingSupport</string>
+
+    <string name="key_media_drm_description">description</string>
+    <string name="key_media_drm_version">version</string>
+</resources>

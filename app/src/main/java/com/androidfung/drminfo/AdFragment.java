@@ -42,7 +42,7 @@ public class AdFragment extends Fragment {
                 .addTestDevice("7336D37AD0AF5C7AC14EA15F457A0F58")
                 .build();
 
-        final ViewGroup adHolder = (ViewGroup) rootView.findViewById(R.id.ad_container_card);
+        final ViewGroup adHolder = rootView.findViewById(R.id.ad_container_card);
 
         if (adHolder != null) {
             adHolder.post(() -> {

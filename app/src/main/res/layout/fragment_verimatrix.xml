@@ -1,6 +1,16 @@
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="mediaDrm"
+            type="android.media.MediaDrm" />
+    </data>
+<android.support.v7.widget.CardView
     android:id="@+id/card_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -41,12 +51,48 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <TextView
-                android:id="@+id/textview_support_verimatirx"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
+                android:text="@{mediaDrm != null ? @string/text_supported : @string/text_not_supported}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/text_media_drm_description"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text='@{mediaDrm.getPropertyString(@string/key_media_drm_description)}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/text_media_drm_version"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text='@{mediaDrm.getPropertyString(@string/key_media_drm_version)}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
         </GridLayout>
 
     </LinearLayout>
 </android.support.v7.widget.CardView>
+</layout>

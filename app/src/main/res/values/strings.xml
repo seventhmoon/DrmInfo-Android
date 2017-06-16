@@ -14,17 +14,11 @@
     <string name="text_brand">Brand</string>
     <string name="text_product">Product</string>
     <string name="text_version">Version</string>
-    <string name="text_widevine_security_level">Security Level</string>
-    <string name="text_widevine_hdcp_level">HDCP Level</string>
-    <string name="text_widevine_max_hdcp_level">Max HDCP Level Supported</string>
-    <string name="text_widevine_number_of_open_sessions">Number of Open Sessions</string>
-    <string name="text_widevine_maximum_number_of_sessions">Maximum Number of Sessions</string>
-    <string name="text_widevine_system_id">System ID</string>
-    <string name="text_widevine_usage_reporting_support">Usage Reporting Support</string>
+
     <string name="text_device_information">Device Information</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
-    <string name="text_drm_description">Description</string>
+    <!--<string name="text_media_drm_description">Description</string>-->
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
