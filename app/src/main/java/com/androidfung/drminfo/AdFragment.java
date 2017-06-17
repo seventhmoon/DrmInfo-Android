@@ -1,6 +1,5 @@
 package com.androidfung.drminfo;
 
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Keep;
@@ -12,10 +11,7 @@ import android.view.ViewGroup;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.NativeExpressAdView;
-
 
 /**
  * A simple {@link Fragment} subclass.
