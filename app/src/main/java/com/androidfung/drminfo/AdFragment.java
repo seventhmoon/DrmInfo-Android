@@ -23,10 +23,6 @@ import com.google.android.gms.ads.NativeExpressAdView;
 @Keep
 public class AdFragment extends Fragment {
 
-    private NativeExpressAdView mAdView;
-    private ViewGroup mAdHolder;
-    private AdRequest mAdRequest;
-
     public AdFragment() {
         // Required empty public constructor
     }
@@ -34,21 +30,17 @@ public class AdFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)       // All emulators
-                .build();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View rootView = inflater.inflate(R.layout.fragment_ad, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_ad, container, false);
 
-        mAdView = new NativeExpressAdView(getContext());
-        mAdHolder = rootView.findViewById(R.id.ad_container_card);
+        ViewGroup adHolder = rootView.findViewById(R.id.ad_container_card);
+        loadAd(adHolder);
 
-        loadAd(mAdHolder, mAdView, mAdRequest);
         return rootView;
     }
 
@@ -57,15 +49,19 @@ public class AdFragment extends Fragment {
         super.onAttach(context);
     }
 
-    private void loadAd(ViewGroup adHolder, NativeExpressAdView adView, AdRequest adRequest) {
+    private void loadAd(ViewGroup adHolder) {
         if (adHolder != null) {
             adHolder.post(() -> {
-                float scaleRatio = getResources().getDisplayMetrics().density;
+                AdRequest adRequest = new AdRequest.Builder()
+                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)       // All emulators
+                        .build();
+                float scaleRatio = adHolder.getResources().getDisplayMetrics().density;
                 int width = (int) (adHolder.getMeasuredWidth() / scaleRatio);
                 int height = (int) (adHolder.getMeasuredHeight() / scaleRatio);
-                adView.setAdSize(new AdSize(width, height));
 
-                adView.setAdUnitId(getString(R.string.ad_unit_id_native));
+                NativeExpressAdView adView = new NativeExpressAdView(getContext());
+                adView.setAdSize(new AdSize(width, height));
+                adView.setAdUnitId(adHolder.getResources().getString(R.string.ad_unit_id_native));
                 adView.setAdListener(new AdListener() {
                     @Override
                     public void onAdLoaded() {
@@ -77,6 +73,7 @@ public class AdFragment extends Fragment {
                         adHolder.setVisibility(View.GONE);
                     }
                 });
+
                 adView.loadAd(adRequest);
                 adHolder.addView(adView);
             });
