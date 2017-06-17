@@ -27,4 +27,5 @@
     <string name="text_unknown">Unknown</string>
     <string name="text_yes">Yes</string>
     <string name="text_no">No</string>
+    <string name="text_on_android_tv">on Android TV</string>
 </resources>
