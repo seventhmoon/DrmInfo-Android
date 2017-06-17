@@ -1,6 +1,7 @@
 package com.androidfung.drminfo;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.NativeExpressAdView;
 
@@ -21,12 +23,21 @@ import com.google.android.gms.ads.NativeExpressAdView;
 @Keep
 public class AdFragment extends Fragment {
 
-    NativeExpressAdView mAdView;
+    private NativeExpressAdView mAdView;
+    private ViewGroup mAdHolder;
+    private AdRequest mAdRequest;
 
     public AdFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mAdRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)       // All emulators
+                .build();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,25 +45,28 @@ public class AdFragment extends Fragment {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_ad, container, false);
 
-        mAdView = new NativeExpressAdView(getActivity());
+        mAdView = new NativeExpressAdView(getContext());
+        mAdHolder = rootView.findViewById(R.id.ad_container_card);
 
-        final AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)       // All emulators
-                .addTestDevice("EBB53DEFEC528CC2A37BE4470FAB47B5")
-                .addTestDevice("7336D37AD0AF5C7AC14EA15F457A0F58")
-                .build();
+        loadAd(mAdHolder, mAdView, mAdRequest);
+        return rootView;
+    }
 
-        final ViewGroup adHolder = rootView.findViewById(R.id.ad_container_card);
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
 
+    private void loadAd(ViewGroup adHolder, NativeExpressAdView adView, AdRequest adRequest) {
         if (adHolder != null) {
             adHolder.post(() -> {
                 float scaleRatio = getResources().getDisplayMetrics().density;
                 int width = (int) (adHolder.getMeasuredWidth() / scaleRatio);
                 int height = (int) (adHolder.getMeasuredHeight() / scaleRatio);
-                mAdView.setAdSize(new AdSize(width, height));
+                adView.setAdSize(new AdSize(width, height));
 
-                mAdView.setAdUnitId(getString(R.string.ad_unit_id_native));
-                mAdView.setAdListener(new AdListener() {
+                adView.setAdUnitId(getString(R.string.ad_unit_id_native));
+                adView.setAdListener(new AdListener() {
                     @Override
                     public void onAdLoaded() {
                         adHolder.setVisibility(View.VISIBLE);
@@ -63,12 +77,10 @@ public class AdFragment extends Fragment {
                         adHolder.setVisibility(View.GONE);
                     }
                 });
-                mAdView.loadAd(adRequest);
-                adHolder.addView(mAdView);
+                adView.loadAd(adRequest);
+                adHolder.addView(adView);
             });
         }
-
-        return rootView;
     }
 
 
