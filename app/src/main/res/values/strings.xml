@@ -9,6 +9,7 @@
     <string name="text_marlin_name">Marlin DRM</string>
     <string name="text_verimatrix_name">Verimatrix VCAS™</string>
     <string name="text_widevine_name">Google Widevine Modular DRM</string>
+    <string name="text_primetime_name">Adobe Primetime DRM</string>
     <string name="text_sdk_level">SDK Level</string>
     <string name="text_model">Model</string>
     <string name="text_brand">Brand</string>

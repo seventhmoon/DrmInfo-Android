@@ -38,7 +38,7 @@ public class TvActivity extends Activity {
 
 
     public static class InfoStepFragment extends GuidedStepFragment {
-        private MediaDrm mWidevineMediaDrm, mPlayreadyMediaDrm, mMarlinMediaDrm, mVerimatrixMediaDrm, mClearKeyMediaDrm;
+        private MediaDrm mWidevineMediaDrm, mPlayreadyMediaDrm, mMarlinMediaDrm, mVerimatrixMediaDrm, mClearKeyMediaDrm, mPrimetimeMediaDrm;
 
         @Override
         public int onProvideTheme() {
@@ -203,6 +203,7 @@ public class TvActivity extends Activity {
             mMarlinMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.MARLIN);
             mVerimatrixMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.VERIMATRIX);
             mClearKeyMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.CLEARKEY);
+            mPrimetimeMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PRIMETIME);
 
             actions.add(new GuidedAction.Builder(getActivity())
                     .infoOnly(true)
@@ -279,7 +280,11 @@ public class TvActivity extends Activity {
                         .build());
             }
 
-
+            actions.add(new GuidedAction.Builder(getActivity())
+                    .infoOnly(true)
+                    .title(getString(R.string.text_primetime_name))
+                    .description(mPrimetimeMediaDrm != null ? getString(R.string.text_supported) : getString(R.string.text_not_supported))
+                    .build());
 
             actions.add(new GuidedAction.Builder(getActivity())
                     .infoOnly(true)

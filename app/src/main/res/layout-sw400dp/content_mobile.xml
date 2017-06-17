@@ -15,10 +15,10 @@
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        app:justifyContent="center"
         app:alignContent="stretch"
         app:alignItems="stretch"
-        app:flexWrap="wrap">
+        app:flexWrap="wrap"
+        app:justifyContent="center">
 
 
         <!--<android.support.v7.widget.GridLayout-->
@@ -40,76 +40,94 @@
 
 
         <fragment
-            android:name="com.androidfung.drminfo.InfoFragment"
+            android:id="@+id/fragment_info"
 
+            android:name="com.androidfung.drminfo.InfoFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            app:layout_flexGrow="1"
             app:layout_columnWeight="1"
+            app:layout_flexGrow="0"
             app:layout_row="0"
             app:layout_rowWeight="1"
             tools:layout="@layout/fragment_info" />
 
         <fragment
-            android:name="com.androidfung.drminfo.WidevineFragment"
-            app:layout_flexGrow="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
-            tools:layout="@layout/fragment_widevine" />
-
-        <fragment
-            android:name="com.androidfung.drminfo.PlayreadyFragment"
-            app:layout_flexGrow="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:layout_columnWeight="1"
-            app:layout_rowWeight="1"
-            tools:layout="@layout/fragment_playready" />
-
-
-        <fragment
             android:id="@+id/fragment_clearkey"
             android:name="com.androidfung.drminfo.ClearKeyFragment"
-            app:layout_flexGrow="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             app:layout_columnWeight="1"
+            app:layout_flexGrow="0"
             app:layout_rowWeight="1"
             tools:layout="@layout/fragment_clearkey" />
 
         <fragment
-            android:name="com.androidfung.drminfo.MarlinFragment"
-            app:layout_flexGrow="1"
+            android:id="@+id/fragment_widevine"
+            android:name="com.androidfung.drminfo.WidevineFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             app:layout_columnWeight="1"
+            app:layout_flexGrow="0"
+            app:layout_rowWeight="1"
+            tools:layout="@layout/fragment_widevine" />
+
+        <fragment
+            android:id="@+id/fragment_playready"
+            android:name="com.androidfung.drminfo.PlayreadyFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            app:layout_columnWeight="1"
+            app:layout_flexGrow="0"
+            app:layout_rowWeight="1"
+            tools:layout="@layout/fragment_playready" />
+
+        <fragment
+            android:id="@+id/fragment_primetime"
+            android:name="com.androidfung.drminfo.PrimetimeFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            app:layout_columnWeight="1"
+            app:layout_flexGrow="0"
+            app:layout_rowWeight="1"
+            tools:layout="@layout/fragment_primetime" />
+
+        <fragment
+
+            android:id="@+id/fragment_marlin"
+            android:name="com.androidfung.drminfo.MarlinFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            app:layout_columnWeight="1"
+            app:layout_flexGrow="0"
             app:layout_rowWeight="1"
             tools:layout="@layout/fragment_marlin" />
 
         <fragment
+
+            android:id="@+id/fragment_verimatrix"
             android:name="com.androidfung.drminfo.VerimatrixFragment"
-            app:layout_flexGrow="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             app:layout_columnWeight="1"
+            app:layout_flexGrow="0"
             app:layout_rowWeight="1"
             tools:layout="@layout/fragment_verimatrix" />
 
         <fragment
+            android:id="@+id/fragment_ad"
             android:name="com.androidfung.drminfo.AdFragment"
-            app:layout_flexGrow="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             app:layout_columnWeight="1"
+            app:layout_flexGrow="0"
             app:layout_rowWeight="1"
             tools:layout="@layout/fragment_ad" />
 
