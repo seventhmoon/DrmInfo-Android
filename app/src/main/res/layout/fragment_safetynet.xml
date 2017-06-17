@@ -11,9 +11,6 @@
     android:layout_marginBottom="@dimen/card_vertical_margin"
     android:minHeight="@dimen/box_min_height"
     android:minWidth="@dimen/box_min_width"
-
-    app:layout_columnWeight="1"
-    app:layout_rowWeight="1"
     tools:context="com.androidfung.drminfo.InfoFragment">
 
     <LinearLayout
