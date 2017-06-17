@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v17.leanback.app.GuidedStepFragment;
 import android.support.v17.leanback.widget.GuidanceStylist;
 import android.support.v17.leanback.widget.GuidedAction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -49,9 +50,9 @@ public class TvActivity extends Activity {
         @Override
         public GuidanceStylist.Guidance onCreateGuidance(Bundle savedInstanceState) {
             String title = getString(R.string.app_name);
-            String description = null;
+            String description = getString(R.string.text_on_android_tv);
             String breadcrumb = null;
-            Drawable icon = null;
+            Drawable icon = ContextCompat.getDrawable(getActivity(), R.mipmap.ic_launcher);
 
             return new GuidanceStylist.Guidance(title, description, breadcrumb, icon);
         }
