@@ -19,7 +19,7 @@ import android.view.ViewGroup;
  * A simple {@link Fragment} subclass.
  */
 @Keep
-public class WidevineFragment extends Fragment {
+public class WidevineFragment extends MediaDrmFragment {
 
     private static final String TAG = WidevineFragment.class.getSimpleName();
 
@@ -47,13 +47,13 @@ public class WidevineFragment extends Fragment {
         // Inflate the layout for this fragment
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_widevine, container, false);
         View rootView = binding.getRoot();
-        binding.setVariable(BR.properties, mProperties);
-        binding.setVariable(BR.mediaDrm, mWidevineMediaDrm);
+        binding.setVariable(com.androidfung.drminfo.BR.properties, mProperties);
+        binding.setVariable(com.androidfung.drminfo.BR.mediaDrm, mWidevineMediaDrm);
 
         return rootView;
     }
 
-    private ObservableArrayMap<String, Object> getMediaDrmProperties(MediaDrm mediaDrm){
+    protected ObservableArrayMap<String, Object> getMediaDrmProperties(MediaDrm mediaDrm){
         int[] keyIds = {R.string.key_media_drm_description, R.string.key_media_drm_version,
         R.string.key_widevine_system_id, R.string.key_widevine_security_level, R.string.key_widevine_number_of_open_sessions,
         R.string.key_widevine_max_number_of_sessions, R.string.key_widevine_max_hdcp_level,

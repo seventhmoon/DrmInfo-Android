@@ -1,11 +1,13 @@
 package com.androidfung.drminfo;
 
 import android.databinding.DataBindingUtil;
+import android.databinding.ObservableArrayMap;
 import android.databinding.ViewDataBinding;
 import android.media.MediaDrm;
 import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +18,12 @@ import android.view.ViewGroup;
  * Activities that contain this fragment must implement the
  */
 @Keep
-public class PlayreadyFragment extends Fragment {
+public class PlayreadyFragment extends MediaDrmFragment {
+
+    private static final String TAG = PlayreadyFragment.class.getSimpleName();
 
     private MediaDrm mPlayreadyMediaDrm;
-
+    private ObservableArrayMap<String, Object> mProperties;
 
     public PlayreadyFragment() {
         // Required empty public constructor
@@ -33,6 +37,7 @@ public class PlayreadyFragment extends Fragment {
         setRetainInstance(true);
 
         mPlayreadyMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PLAYREADY);
+        mProperties = getMediaDrmProperties(mPlayreadyMediaDrm);
     }
 
     @Override
@@ -41,53 +46,8 @@ public class PlayreadyFragment extends Fragment {
         // Inflate the layout for this fragment
         ViewDataBinding  binding = DataBindingUtil.inflate(inflater, R.layout.fragment_playready, container, false);
         View rootView = binding.getRoot();
-        binding.setVariable(BR.mediaDrm, mPlayreadyMediaDrm);
-//        View rootView = inflater.inflate(R.layout.fragment_playready, container, false);
-//        final GridLayout gridLayoutPlayready = (GridLayout) rootView.findViewById(R.id.gridlayout_playready);
-//        final TextView textViewSupportPlayready = (TextView) rootView.findViewById(R.id.textview_support_playready);
-//
-//
-//        if (mPlayreadyMediaDrm != null) {
-//            textViewSupportPlayready.setText(R.string.text_supported);
-//            int[] headerIds = {R.string.text_media_drm_description, R.string.text_version};
-//            String[] keys = {MediaDrm.PROPERTY_DESCRIPTION, MediaDrm.PROPERTY_VERSION};
-//
-//            for (int i = 0; i < headerIds.length; i++) {
-//                try {
-//                    AppCompatTextView textViewHeader = new AppCompatTextView(getContext());
-//                    AppCompatTextView textViewValue = new AppCompatTextView(getContext());
-//                    //                    textViewValue.setGravity(Gravity.RIGHT);
-//
-//                    GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
-//                    layoutParams.setGravity(Gravity.END);
-//                    textViewValue.setLayoutParams(layoutParams);
-//
-//                    textViewHeader.setText(headerIds[i]);
-//                    textViewValue.setText(mPlayreadyMediaDrm.getPropertyString(keys[i]));
-//
-//                    if (Build.VERSION.SDK_INT >= 23) {
-//                        textViewHeader.setTextAppearance(android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
-//                        textViewValue.setTextAppearance(android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
-//                    } else {
-//                        textViewHeader.setTextAppearance(getContext(), android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
-//                        textViewValue.setTextAppearance(getContext(), android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Body2);
-//                    }
-//
-//                    gridLayoutPlayready.addView(textViewHeader);
-//                    gridLayoutPlayready.addView(textViewValue);
-//                    //                    gridLayoutWidevine.addView(textViewValue, );
-//
-//
-//                    //                    textViews[i].setText(mWidevineMediaDrm.getPropertyString(keys[i]));
-//                } catch (RuntimeException ex) {
-////                    Log.d(TAG, ex.toString());
-//                }
-//            }
-//
-//        } else {
-//            textViewSupportPlayready.setText(R.string.text_not_supported);
-//        }
-//
+        binding.setVariable(com.androidfung.drminfo.BR.mediaDrm, mPlayreadyMediaDrm);
+        binding.setVariable(com.androidfung.drminfo.BR.properties, mProperties);
 
         return rootView;
     }

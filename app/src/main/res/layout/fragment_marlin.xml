@@ -1,3 +1,4 @@
+<!--suppress AndroidDomInspection -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -5,6 +6,7 @@
     <data>
 
         <import type="android.view.View" />
+        <variable name="properties" type="android.databinding.ObservableMap&lt;String, Object&gt;"/>
 
         <variable
             name="mediaDrm"
@@ -55,7 +57,6 @@
                     android:text="@{mediaDrm != null ? @string/text_supported : @string/text_not_supported}"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -69,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:text='@{mediaDrm.getPropertyString(@string/key_media_drm_description)}'
+                    android:text='@{properties[@string/key_media_drm_description] ?? "-"}'
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                     android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
 
@@ -86,7 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:text='@{mediaDrm.getPropertyString(@string/key_media_drm_version)}'
+                    android:text='@{properties[@string/key_media_drm_version] ?? "-"}'
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                     android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
             </GridLayout>
