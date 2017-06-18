@@ -19,6 +19,9 @@ import com.google.android.gms.ads.NativeExpressAdView;
 @Keep
 public class AdFragment extends Fragment {
 
+    private ViewGroup mAdHolder;
+    private NativeExpressAdView mNativeExpressAdView;
+
     public AdFragment() {
         // Required empty public constructor
     }
@@ -34,8 +37,10 @@ public class AdFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_ad, container, false);
 
-        ViewGroup adHolder = rootView.findViewById(R.id.ad_container_card);
-        loadAd(adHolder);
+        mAdHolder = rootView.findViewById(R.id.ad_container_card);
+        mNativeExpressAdView = new NativeExpressAdView(getContext());
+
+        loadAd();
 
         return rootView;
     }
@@ -45,36 +50,58 @@ public class AdFragment extends Fragment {
         super.onAttach(context);
     }
 
-    private void loadAd(ViewGroup adHolder) {
-        if (adHolder != null) {
-            adHolder.post(() -> {
+    private void loadAd() {
+        if (mAdHolder != null) {
+            mAdHolder.post(() -> {
                 AdRequest adRequest = new AdRequest.Builder()
                         .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)       // All emulators
                         .build();
-                float scaleRatio = adHolder.getResources().getDisplayMetrics().density;
-                int width = (int) (adHolder.getMeasuredWidth() / scaleRatio);
-                int height = (int) (adHolder.getMeasuredHeight() / scaleRatio);
+                float scaleRatio = mAdHolder.getResources().getDisplayMetrics().density;
+                int width = (int) (mAdHolder.getMeasuredWidth() / scaleRatio);
+                int height = (int) (mAdHolder.getMeasuredHeight() / scaleRatio);
 
-                NativeExpressAdView adView = new NativeExpressAdView(getContext());
-                adView.setAdSize(new AdSize(width, height));
-                adView.setAdUnitId(adHolder.getResources().getString(R.string.ad_unit_id_native));
-                adView.setAdListener(new AdListener() {
+                mNativeExpressAdView.setAdSize(new AdSize(width, height));
+                mNativeExpressAdView.setAdUnitId(mAdHolder.getResources().getString(R.string.ad_unit_id_native));
+                mNativeExpressAdView.setAdListener(new AdListener() {
                     @Override
                     public void onAdLoaded() {
-                        adHolder.setVisibility(View.VISIBLE);
+                        mAdHolder.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onAdFailedToLoad(int errorCode) {
-                        adHolder.setVisibility(View.GONE);
+                        mAdHolder.setVisibility(View.GONE);
                     }
                 });
 
-                adView.loadAd(adRequest);
-                adHolder.addView(adView);
+                mNativeExpressAdView.loadAd(adRequest);
+                mAdHolder.addView(mNativeExpressAdView);
             });
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Resume the NativeExpressAdView.
+        mNativeExpressAdView.resume();
+    }
+
+    @Override
+    public void onPause() {
+        // Pause the NativeExpressAdView.
+        mNativeExpressAdView.pause();
+
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        // Destroy the NativeExpressAdView.
+        mNativeExpressAdView.destroy();
+
+        super.onDestroy();
+    }
 
 }
