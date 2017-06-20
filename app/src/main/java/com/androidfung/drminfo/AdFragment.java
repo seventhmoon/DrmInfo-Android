@@ -1,8 +1,10 @@
 package com.androidfung.drminfo;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Keep;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,10 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.NativeExpressAdView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,8 +46,21 @@ public class AdFragment extends Fragment {
         mAdHolder = rootView.findViewById(R.id.ad_container_card);
         mNativeExpressAdView = new NativeExpressAdView(getContext());
 
-        loadAd();
+        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(BuildConfig.DEBUG)
+                .build();
 
+        remoteConfig.setDefaults(R.xml.remote_config_defaults);
+        remoteConfig.setConfigSettings(configSettings);
+        remoteConfig.fetch();
+
+        boolean displayAd = BuildConfig.VERSION_CODE <= remoteConfig.getLong("current_approved_version");
+        if (displayAd) {
+           loadAd();
+        }else{
+            mAdHolder.setVisibility(View.GONE);
+        }
         return rootView;
     }
 
