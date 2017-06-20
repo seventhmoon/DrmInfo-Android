@@ -13,6 +13,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.NativeExpressAdView;
 
+import com.facebook.ads.*;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -53,29 +55,33 @@ public class AdFragment extends Fragment {
     private void loadAd() {
         if (mAdHolder != null) {
             mAdHolder.post(() -> {
-                AdRequest adRequest = new AdRequest.Builder()
-                        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)       // All emulators
-                        .build();
-                float scaleRatio = mAdHolder.getResources().getDisplayMetrics().density;
-                int width = (int) (mAdHolder.getMeasuredWidth() / scaleRatio);
-                int height = (int) (mAdHolder.getMeasuredHeight() / scaleRatio);
+                try {
+                    AdRequest adRequest = new AdRequest.Builder()
+                            .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)       // All emulators
+                            .build();
+                    float scaleRatio = mAdHolder.getResources().getDisplayMetrics().density;
+                    int width = (int) (mAdHolder.getMeasuredWidth() / scaleRatio);
+                    int height = (int) (mAdHolder.getMeasuredHeight() / scaleRatio);
 
-                mNativeExpressAdView.setAdSize(new AdSize(width, height));
-                mNativeExpressAdView.setAdUnitId(mAdHolder.getResources().getString(R.string.ad_unit_id_native));
-                mNativeExpressAdView.setAdListener(new AdListener() {
-                    @Override
-                    public void onAdLoaded() {
-                        mAdHolder.setVisibility(View.VISIBLE);
-                    }
+                    mNativeExpressAdView.setAdSize(new AdSize(width, height));
+                    mNativeExpressAdView.setAdUnitId(mAdHolder.getResources().getString(R.string.ad_unit_id_native));
+                    mNativeExpressAdView.setAdListener(new AdListener() {
+                        @Override
+                        public void onAdLoaded() {
+                            mAdHolder.setVisibility(View.VISIBLE);
+                        }
 
-                    @Override
-                    public void onAdFailedToLoad(int errorCode) {
-                        mAdHolder.setVisibility(View.GONE);
-                    }
-                });
+                        @Override
+                        public void onAdFailedToLoad(int errorCode) {
+                            mAdHolder.setVisibility(View.GONE);
+                        }
+                    });
 
-                mNativeExpressAdView.loadAd(adRequest);
-                mAdHolder.addView(mNativeExpressAdView);
+                    mNativeExpressAdView.loadAd(adRequest);
+                    mAdHolder.addView(mNativeExpressAdView);
+                }catch (NullPointerException e){
+                    e.printStackTrace();
+                }
             });
         }
     }
@@ -85,22 +91,26 @@ public class AdFragment extends Fragment {
         super.onResume();
 
         // Resume the NativeExpressAdView.
-        mNativeExpressAdView.resume();
+        if (mNativeExpressAdView != null) {
+            mNativeExpressAdView.resume();
+        }
     }
 
     @Override
     public void onPause() {
         // Pause the NativeExpressAdView.
-        mNativeExpressAdView.pause();
-
+        if (mNativeExpressAdView != null) {
+            mNativeExpressAdView.pause();
+        }
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
         // Destroy the NativeExpressAdView.
-        mNativeExpressAdView.destroy();
-
+        if (mNativeExpressAdView != null) {
+            mNativeExpressAdView.destroy();
+        }
         super.onDestroy();
     }
 
