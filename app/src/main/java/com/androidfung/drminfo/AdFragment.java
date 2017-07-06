@@ -1,10 +1,9 @@
 package com.androidfung.drminfo;
 
 import android.content.Context;
-import android.os.Build;
+
 import android.os.Bundle;
 import android.support.annotation.Keep;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +13,8 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.NativeExpressAdView;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-
-import com.facebook.ads.*;
 
 /**
  * A simple {@link Fragment} subclass.
