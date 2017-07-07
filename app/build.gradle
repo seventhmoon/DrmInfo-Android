@@ -62,6 +62,8 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.1'
     implementation 'com.google.code.gson:gson:2.8.1'
 //    implementation 'com.facebook.android:audience-network-sdk:4.+'
+    implementation 'com.facebook.android:audience-network-sdk:4.23.0'
+    implementation 'com.google.ads.mediation:facebook:4.23.0.0'
 
 
 }

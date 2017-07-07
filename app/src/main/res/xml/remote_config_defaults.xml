@@ -17,4 +17,9 @@
         <key>current_approved_version</key>
         <value>1</value>
     </enrty>
+    <enrty>
+        <key>ad_source</key>
+        <value>2</value>
+    </enrty>
+
 </defaultsMap>

@@ -5,6 +5,8 @@ import android.support.annotation.Keep;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.analytics.FirebaseAnalytics;
 @Keep
 public class MobileActivity extends AppCompatActivity {
@@ -12,6 +14,7 @@ public class MobileActivity extends AppCompatActivity {
 
     private static final String TAG = MobileActivity.class.getSimpleName();
     private FirebaseAnalytics mFirebaseAnalytics;
+    private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,5 +25,14 @@ public class MobileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)       // All emulators
+                .build();
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+//        mInterstitialAd.loadAd(adRequest);
+
     }
 }
