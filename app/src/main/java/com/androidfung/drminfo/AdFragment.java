@@ -65,15 +65,15 @@ public class AdFragment extends Fragment {
         remoteConfig.setConfigSettings(configSettings);
         remoteConfig.fetch().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(getContext(), "Fetch Succeeded",
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "Fetch Succeeded",
+//                        Toast.LENGTH_SHORT).show();
 
                 // After config data is successfully fetched, it must be activated before newly fetched
                 // values are returned.
                 remoteConfig.activateFetched();
-            } else {
-                Toast.makeText(this.getContext(), "Fetch Failed",
-                        Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(this.getContext(), "Fetch Failed",
+//                        Toast.LENGTH_SHORT).show();
             }
 //            displayWelcomeMessage();
         });
@@ -110,7 +110,9 @@ public class AdFragment extends Fragment {
     }
 
     private void loadFbAd(){
-       mAdView = new AdView(this.getContext(), "738564012981533_738845662953368", com.facebook.ads.AdSize.RECTANGLE_HEIGHT_250);
+
+        mAdView = new AdView(this.getContext(), "738564012981533_738845662953368", com.facebook.ads.AdSize.RECTANGLE_HEIGHT_250);
+//        mAdView = new AdView(this.getContext(), "738564012981533_738845662953368", new com.facebook.ads.AdSize(336, 280));
         mAdHolder.addView(mAdView);
         mAdView.setAdListener(new com.facebook.ads.AdListener() {
             @Override

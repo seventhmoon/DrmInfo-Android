@@ -6,7 +6,10 @@
     <data>
 
         <import type="android.view.View" />
-        <variable name="properties" type="android.databinding.ObservableMap&lt;String, Object&gt;"/>
+
+        <variable
+            name="properties"
+            type="android.databinding.ObservableMap&lt;String, Object&gt;" />
 
         <variable
             name="mediaDrm"
@@ -24,78 +27,73 @@
         android:layout_marginTop="@dimen/card_vertical_margin"
         android:minHeight="@dimen/box_min_height"
         android:minWidth="@dimen/box_min_width"
+        app:contentPadding="16dp"
         tools:context="com.androidfung.drminfo.PlayreadyFragment">
 
-        <LinearLayout
+
+        <GridLayout
+            android:id="@+id/gridlayout_playready"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="16dp"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:columnCount="2">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnSpan="2"
+                android:text="@string/text_playready_name"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
                 android:text="@string/text_playready_name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
-            <GridLayout
-                android:id="@+id/gridlayout_playready"
-                android:layout_width="match_parent"
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:columnCount="2">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:text="@string/text_playready_name"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                android:layout_gravity="end"
+                android:text="@{mediaDrm != null ? @string/text_supported : @string/text_not_supported}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="@{mediaDrm != null ? @string/text_supported : @string/text_not_supported}"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/text_media_drm_description"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text='@{properties[@string/key_media_drm_description] ?? "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="@string/text_media_drm_description"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/text_media_drm_version"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text='@{properties[@string/key_media_drm_description] ?? "-"}'
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text='@{properties[@string/key_media_drm_version] ?? "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
+        </GridLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="@string/text_media_drm_version"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text='@{properties[@string/key_media_drm_version] ?? "-"}'
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
-            </GridLayout>
-
-        </LinearLayout>
     </android.support.v7.widget.CardView>
 </layout>
