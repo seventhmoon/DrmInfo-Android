@@ -1,16 +1,13 @@
 package com.androidfung.drminfo;
 
 import android.content.Context;
-
 import android.os.Bundle;
 import android.support.annotation.Keep;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
@@ -19,8 +16,6 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.NativeExpressAdView;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -112,7 +107,6 @@ public class AdFragment extends Fragment {
     private void loadFbAd(){
 
         mAdView = new AdView(this.getContext(), "738564012981533_738845662953368", com.facebook.ads.AdSize.RECTANGLE_HEIGHT_250);
-//        mAdView = new AdView(this.getContext(), "738564012981533_738845662953368", new com.facebook.ads.AdSize(336, 280));
         mAdHolder.addView(mAdView);
         mAdView.setAdListener(new com.facebook.ads.AdListener() {
             @Override
