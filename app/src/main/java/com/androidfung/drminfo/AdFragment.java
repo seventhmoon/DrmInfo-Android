@@ -8,10 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.AdView;
+//
+//import com.facebook.ads.Ad;
+//import com.facebook.ads.AdError;
+//import com.facebook.ads.AdSettings;
+//import com.facebook.ads.AdView;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -30,7 +31,7 @@ public class AdFragment extends Fragment {
 
     private ViewGroup mAdHolder;
     private NativeExpressAdView mNativeExpressAdView;
-    private AdView mAdView;
+    private com.facebook.ads.AdView mAdView;
 
     public AdFragment() {
         // Required empty public constructor
@@ -98,39 +99,84 @@ public class AdFragment extends Fragment {
         if (adSource == 0L){
             mAdHolder.setVisibility(View.GONE);
         }else if (adSource == 1L) {
-            loadAdMobAd();
+            loadAdMobBannerAd();
         }else if (adSource == 2L){
             loadFbAd();
         }
     }
 
     private void loadFbAd(){
-
-        mAdView = new AdView(this.getContext(), "738564012981533_738845662953368", com.facebook.ads.AdSize.RECTANGLE_HEIGHT_250);
+        com.facebook.ads.AdSettings.addTestDevice("879de71766c2d73162ec561c4e2ec35d");
+        mAdView = new com.facebook.ads.AdView(this.getContext(), "738564012981533_738845662953368", com.facebook.ads.AdSize.RECTANGLE_HEIGHT_250);
         mAdHolder.addView(mAdView);
         mAdView.setAdListener(new com.facebook.ads.AdListener() {
             @Override
-            public void onError(Ad ad, AdError adError) {
+            public void onError(com.facebook.ads.Ad ad, com.facebook.ads.AdError adError) {
                 Log.e(TAG, adError.getErrorMessage());
                 mAdHolder.setVisibility(View.GONE);
             }
 
             @Override
-            public void onAdLoaded(Ad ad) {
+            public void onAdLoaded(com.facebook.ads.Ad ad) {
                 mAdHolder.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onAdClicked(Ad ad) {
+            public void onAdClicked(com.facebook.ads.Ad ad) {
 
             }
 
             @Override
-            public void onLoggingImpression(Ad ad) {
+            public void onLoggingImpression(com.facebook.ads.Ad ad) {
 
             }
         });
+
         mAdView.loadAd();
+//        mAdHolder.setVisibility(View.VISIBLE);
+    }
+
+    private void loadAdMobBannerAd(){
+        com.google.android.gms.ads.AdView adView = new com.google.android.gms.ads.AdView(this.getActivity());
+        adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
+        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+        adView.setAdListener(new AdListener(){
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Log.i("Ads", "onAdLoaded");
+                mAdHolder.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                Log.i("Ads", "onAdFailedToLoad");
+                mAdHolder.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+                Log.i("Ads", "onAdOpened");
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+                Log.i("Ads", "onAdLeftApplication");
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the user is about to return
+                // to the app after tapping on an ad.
+                Log.i("Ads", "onAdClosed");
+            }
+        });
+        mAdHolder.addView(adView);
+        adView.loadAd(new AdRequest.Builder().build());
 //        mAdHolder.setVisibility(View.VISIBLE);
     }
 
