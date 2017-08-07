@@ -99,8 +99,10 @@ public class AdFragment extends Fragment {
         if (adSource == 0L){
             mAdHolder.setVisibility(View.GONE);
         }else if (adSource == 1L) {
-            loadAdMobBannerAd();
+            loadAdMobNativeAd();
         }else if (adSource == 2L){
+            loadAdMobBannerAd();
+        }else {
             loadFbAd();
         }
     }
@@ -180,8 +182,9 @@ public class AdFragment extends Fragment {
 //        mAdHolder.setVisibility(View.VISIBLE);
     }
 
-    private void loadAdMobAd() {
+    private void loadAdMobNativeAd() {
         if (mAdHolder != null) {
+            mAdHolder.setVisibility(View.INVISIBLE);
             mAdHolder.post(() -> {
                 try {
                     AdRequest adRequest = new AdRequest.Builder()

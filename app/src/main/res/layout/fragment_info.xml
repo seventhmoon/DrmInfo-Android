@@ -78,7 +78,18 @@
                 android:layout_gravity="end"
                 android:text="@{Build.MODEL}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_build"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@{Build.DISPLAY}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
