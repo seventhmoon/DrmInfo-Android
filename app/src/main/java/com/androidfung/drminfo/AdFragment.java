@@ -77,9 +77,8 @@ public class AdFragment extends Fragment {
         long adSource = remoteConfig.getLong("ad_source");
         Log.d(TAG, "ad_source: " + String.valueOf(adSource));
         Log.d(TAG, "current_approved_version: " + String.valueOf(remoteConfig.getLong("current_approved_version")));
-        loadAd(adSource);
-
-
+//        loadAd(adSource);
+        loadAdMobNativeAd();
 //        boolean displayAd = BuildConfig.VERSION_CODE <= remoteConfig.getLong("current_approved_version");
 
 //        if (displayAd) {

@@ -5,7 +5,7 @@
     android:id="@+id/ad_container_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:contentPadding="8dp"
+
     android:minHeight="@dimen/native_ad_min_height"
     android:minWidth="@dimen/box_min_width"
     android:visibility="invisible">
