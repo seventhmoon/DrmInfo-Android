@@ -3,11 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="android.view.View" />
-
         <import type="android.os.Build" />
 
+        <variable name="map" type="android.databinding.ObservableMap&lt;String, Object&gt;"/>
     </data>
 
     <android.support.v7.widget.CardView
@@ -106,6 +105,19 @@
                 android:text="@{String.valueOf(Build.VERSION.SDK_INT)}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_webview_version"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@{map[`versionName`]}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
         </GridLayout>
 

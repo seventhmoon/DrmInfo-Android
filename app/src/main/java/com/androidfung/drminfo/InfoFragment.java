@@ -1,11 +1,15 @@
 package com.androidfung.drminfo;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.databinding.ObservableArrayMap;
 import android.databinding.ViewDataBinding;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +49,21 @@ public class InfoFragment extends Fragment{
 //        textViewBrand.setText(Build.BRAND);
 //        textViewProduct.setText(Build.PRODUCT);
 
+        ObservableArrayMap<String, Object> map = new ObservableArrayMap<>();
+        PackageManager pm = getContext().getPackageManager();
+        try {
+            PackageInfo pi = pm.getPackageInfo("com.google.android.webview", 0);
+//            if (pi != null){
+            map.put("versionCode", pi.versionCode);
+            map.put("versionName", pi.versionName);
+//            }
+//            Log.d(TAG, "version name: " + pi.versionName);
+//            Log.d(TAG, "version code: " + pi.versionCode);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "Android System WebView is not found");
+        }
+
+        binding.setVariable(com.androidfung.drminfo.BR.map, map);
         return rootView;
 
     }
