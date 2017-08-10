@@ -24,15 +24,15 @@
         tools:context="com.androidfung.drminfo.InfoFragment">
 
 
-        <GridLayout
+        <android.support.v7.widget.GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="2">
+            app:columnCount="2">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
+                app:layout_columnSpan="2"
                 android:text="@string/text_device_information"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
@@ -46,7 +46,7 @@
                 android:id="@+id/textview_brand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                app:layout_gravity="end"
                 android:text="@{Build.BRAND}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
@@ -60,7 +60,7 @@
                 android:id="@+id/textview_model"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                app:layout_gravity="end"
                 android:text="@{Build.MODEL}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
@@ -74,7 +74,7 @@
                 android:id="@+id/textview_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                app:layout_gravity="end"
                 android:text="@{Build.PRODUCT}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
@@ -87,8 +87,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                app:layout_gravity="end"
                 android:text="@{Build.DISPLAY}"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <TextView
@@ -101,7 +103,7 @@
                 android:id="@+id/textview_sdk_level"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                app:layout_gravity="end"
                 android:text="@{String.valueOf(Build.VERSION.SDK_INT)}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
@@ -115,11 +117,11 @@
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                app:layout_gravity="end"
                 android:text="@{map[`versionName`]}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
-        </GridLayout>
+        </android.support.v7.widget.GridLayout>
 
 
     </android.support.v7.widget.CardView>
