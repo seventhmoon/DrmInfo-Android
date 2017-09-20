@@ -31,7 +31,7 @@ public class AdFragment extends Fragment {
 
     private ViewGroup mAdHolder;
     private NativeExpressAdView mNativeExpressAdView;
-    private com.facebook.ads.AdView mAdView;
+//    private com.facebook.ads.AdView mAdView;
 
     public AdFragment() {
         // Required empty public constructor
@@ -99,43 +99,43 @@ public class AdFragment extends Fragment {
             mAdHolder.setVisibility(View.GONE);
         }else if (adSource == 1L) {
             loadAdMobNativeAd();
-        }else if (adSource == 2L){
-            loadAdMobBannerAd();
-        }else {
-            loadFbAd();
+//        }else if (adSource == 2L){
+//            loadAdMobBannerAd();
+//        }else {
+//            loadFbAd();
         }
     }
 
-    private void loadFbAd(){
-        com.facebook.ads.AdSettings.addTestDevice("879de71766c2d73162ec561c4e2ec35d");
-        mAdView = new com.facebook.ads.AdView(this.getContext(), "738564012981533_738845662953368", com.facebook.ads.AdSize.RECTANGLE_HEIGHT_250);
-        mAdHolder.addView(mAdView);
-        mAdView.setAdListener(new com.facebook.ads.AdListener() {
-            @Override
-            public void onError(com.facebook.ads.Ad ad, com.facebook.ads.AdError adError) {
-                Log.e(TAG, adError.getErrorMessage());
-                mAdHolder.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAdLoaded(com.facebook.ads.Ad ad) {
-                mAdHolder.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAdClicked(com.facebook.ads.Ad ad) {
-
-            }
-
-            @Override
-            public void onLoggingImpression(com.facebook.ads.Ad ad) {
-
-            }
-        });
-
-        mAdView.loadAd();
-//        mAdHolder.setVisibility(View.VISIBLE);
-    }
+//    private void loadFbAd(){
+//        com.facebook.ads.AdSettings.addTestDevice("879de71766c2d73162ec561c4e2ec35d");
+//        mAdView = new com.facebook.ads.AdView(this.getContext(), "738564012981533_738845662953368", com.facebook.ads.AdSize.RECTANGLE_HEIGHT_250);
+//        mAdHolder.addView(mAdView);
+//        mAdView.setAdListener(new com.facebook.ads.AdListener() {
+//            @Override
+//            public void onError(com.facebook.ads.Ad ad, com.facebook.ads.AdError adError) {
+//                Log.e(TAG, adError.getErrorMessage());
+//                mAdHolder.setVisibility(View.GONE);
+//            }
+//
+//            @Override
+//            public void onAdLoaded(com.facebook.ads.Ad ad) {
+//                mAdHolder.setVisibility(View.VISIBLE);
+//            }
+//
+//            @Override
+//            public void onAdClicked(com.facebook.ads.Ad ad) {
+//
+//            }
+//
+//            @Override
+//            public void onLoggingImpression(com.facebook.ads.Ad ad) {
+//
+//            }
+//        });
+//
+//        mAdView.loadAd();
+////        mAdHolder.setVisibility(View.VISIBLE);
+//    }
 
     private void loadAdMobBannerAd(){
         com.google.android.gms.ads.AdView adView = new com.google.android.gms.ads.AdView(this.getActivity());
@@ -241,9 +241,9 @@ public class AdFragment extends Fragment {
         if (mNativeExpressAdView != null) {
             mNativeExpressAdView.destroy();
         }
-        if (mAdView != null){
-            mAdView.destroy();
-        }
+//        if (mAdView != null){
+//            mAdView.destroy();
+//        }
         super.onDestroy();
     }
 
