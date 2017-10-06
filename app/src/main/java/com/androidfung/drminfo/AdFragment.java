@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.NativeExpressAdView;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -29,7 +30,8 @@ public class AdFragment extends Fragment {
 
     private static final String TAG = AdFragment.class.getSimpleName();
 
-    private ViewGroup mAdHolder;
+//    private ViewGroup mAdHolder;
+    private AdView mAdView;
     private NativeExpressAdView mNativeExpressAdView;
 //    private com.facebook.ads.AdView mAdView;
 
@@ -49,7 +51,8 @@ public class AdFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_ad, container, false);
 
 
-        mAdHolder = rootView.findViewById(R.id.ad_container_card);
+//        mAdHolder = rootView.findViewById(R.id.ad_container_card);
+        mAdView = rootView.findViewById(R.id.adView);
         mNativeExpressAdView = new NativeExpressAdView(getContext());
 
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
@@ -96,9 +99,10 @@ public class AdFragment extends Fragment {
 
     private void loadAd(long adSource){
         if (adSource == 0L){
-            mAdHolder.setVisibility(View.GONE);
+//            mAdHolder.setVisibility(View.GONE);
         }else if (adSource == 1L) {
-            loadAdMobNativeAd();
+            loadAdMobBannerAd();
+//            loadAdMobNativeAd();
 //        }else if (adSource == 2L){
 //            loadAdMobBannerAd();
 //        }else {
@@ -138,22 +142,23 @@ public class AdFragment extends Fragment {
 //    }
 
     private void loadAdMobBannerAd(){
-        com.google.android.gms.ads.AdView adView = new com.google.android.gms.ads.AdView(this.getActivity());
-        adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
-        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
-        adView.setAdListener(new AdListener(){
+
+//        com.google.android.gms.ads.AdView adView = new com.google.android.gms.ads.AdView(this.getActivity());
+//        adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
+//        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+        mAdView.setAdListener(new AdListener(){
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
                 Log.i("Ads", "onAdLoaded");
-                mAdHolder.setVisibility(View.VISIBLE);
+//                mAdHolder.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
                 // Code to be executed when an ad request fails.
                 Log.i("Ads", "onAdFailedToLoad");
-                mAdHolder.setVisibility(View.GONE);
+//                mAdHolder.setVisibility(View.GONE);
             }
 
             @Override
@@ -176,45 +181,45 @@ public class AdFragment extends Fragment {
                 Log.i("Ads", "onAdClosed");
             }
         });
-        mAdHolder.addView(adView);
-        adView.loadAd(new AdRequest.Builder().build());
+//        mAdHolder.addView(adView);
+        mAdView.loadAd(new AdRequest.Builder().build());
 //        mAdHolder.setVisibility(View.VISIBLE);
     }
 
-    private void loadAdMobNativeAd() {
-        if (mAdHolder != null) {
-            mAdHolder.setVisibility(View.INVISIBLE);
-            mAdHolder.post(() -> {
-                try {
-                    AdRequest adRequest = new AdRequest.Builder()
-                            .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)       // All emulators
-                            .build();
-                    float scaleRatio = mAdHolder.getResources().getDisplayMetrics().density;
-                    int width = (int) (mAdHolder.getMeasuredWidth() / scaleRatio);
-                    int height = (int) (mAdHolder.getMeasuredHeight() / scaleRatio);
-
-                    mNativeExpressAdView.setAdSize(new AdSize(width, height));
-                    mNativeExpressAdView.setAdUnitId(mAdHolder.getResources().getString(R.string.ad_unit_id_native));
-                    mNativeExpressAdView.setAdListener(new AdListener() {
-                        @Override
-                        public void onAdLoaded() {
-                            mAdHolder.setVisibility(View.VISIBLE);
-                        }
-
-                        @Override
-                        public void onAdFailedToLoad(int errorCode) {
-                            mAdHolder.setVisibility(View.GONE);
-                        }
-                    });
-
-                    mNativeExpressAdView.loadAd(adRequest);
-                    mAdHolder.addView(mNativeExpressAdView);
-                }catch (NullPointerException e){
-                    e.printStackTrace();
-                }
-            });
-        }
-    }
+//    private void loadAdMobNativeAd() {
+//        if (mAdHolder != null) {
+//            mAdHolder.setVisibility(View.INVISIBLE);
+//            mAdHolder.post(() -> {
+//                try {
+//                    AdRequest adRequest = new AdRequest.Builder()
+//                            .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)       // All emulators
+//                            .build();
+//                    float scaleRatio = mAdHolder.getResources().getDisplayMetrics().density;
+//                    int width = (int) (mAdHolder.getMeasuredWidth() / scaleRatio);
+//                    int height = (int) (mAdHolder.getMeasuredHeight() / scaleRatio);
+//
+//                    mNativeExpressAdView.setAdSize(new AdSize(width, height));
+//                    mNativeExpressAdView.setAdUnitId(mAdHolder.getResources().getString(R.string.ad_unit_id_native));
+//                    mNativeExpressAdView.setAdListener(new AdListener() {
+//                        @Override
+//                        public void onAdLoaded() {
+//                            mAdHolder.setVisibility(View.VISIBLE);
+//                        }
+//
+//                        @Override
+//                        public void onAdFailedToLoad(int errorCode) {
+//                            mAdHolder.setVisibility(View.GONE);
+//                        }
+//                    });
+//
+//                    mNativeExpressAdView.loadAd(adRequest);
+//                    mAdHolder.addView(mNativeExpressAdView);
+//                }catch (NullPointerException e){
+//                    e.printStackTrace();
+//                }
+//            });
+//        }
+//    }
 
     @Override
     public void onResume() {
