@@ -30,10 +30,10 @@ public class AdFragment extends Fragment {
 
     private static final String TAG = AdFragment.class.getSimpleName();
 
-//    private ViewGroup mAdHolder;
+    private ViewGroup mAdHolder;
     private AdView mAdView;
-    private NativeExpressAdView mNativeExpressAdView;
-//    private com.facebook.ads.AdView mAdView;
+//    private NativeExpressAdView mNativeExpressAdView;
+//    private com.facebook.ads.AdView mFbAdView;
 
     public AdFragment() {
         // Required empty public constructor
@@ -48,12 +48,12 @@ public class AdFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_ad, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_banner_ad, container, false);
 
 
-//        mAdHolder = rootView.findViewById(R.id.ad_container_card);
+        mAdHolder = rootView.findViewById(R.id.ad_container_card);
         mAdView = rootView.findViewById(R.id.adView);
-        mNativeExpressAdView = new NativeExpressAdView(getContext());
+//        mNativeExpressAdView = new NativeExpressAdView(getContext());
 
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
@@ -98,23 +98,26 @@ public class AdFragment extends Fragment {
     }
 
     private void loadAd(long adSource){
+        loadAdMobBannerAd();
+
         if (adSource == 0L){
-//            mAdHolder.setVisibility(View.GONE);
+            mAdHolder.setVisibility(View.GONE);
         }else if (adSource == 1L) {
             loadAdMobBannerAd();
 //            loadAdMobNativeAd();
 //        }else if (adSource == 2L){
-//            loadAdMobBannerAd();
+//            loadFbBannerAd();
+////            loadAdMobBannerAd();
 //        }else {
 //            loadFbAd();
         }
     }
 
-//    private void loadFbAd(){
+//    private void loadFbBannerAd(){
 //        com.facebook.ads.AdSettings.addTestDevice("879de71766c2d73162ec561c4e2ec35d");
-//        mAdView = new com.facebook.ads.AdView(this.getContext(), "738564012981533_738845662953368", com.facebook.ads.AdSize.RECTANGLE_HEIGHT_250);
-//        mAdHolder.addView(mAdView);
-//        mAdView.setAdListener(new com.facebook.ads.AdListener() {
+//        mFbAdView = new com.facebook.ads.AdView(this.getContext(), "738564012981533_738845662953368", com.facebook.ads.AdSize.RECTANGLE_HEIGHT_250);
+//        mAdHolder.addView(mFbAdView);
+//        mFbAdView.setAdListener(new com.facebook.ads.AdListener() {
 //            @Override
 //            public void onError(com.facebook.ads.Ad ad, com.facebook.ads.AdError adError) {
 //                Log.e(TAG, adError.getErrorMessage());
@@ -137,7 +140,7 @@ public class AdFragment extends Fragment {
 //            }
 //        });
 //
-//        mAdView.loadAd();
+//        mFbAdView.loadAd();
 ////        mAdHolder.setVisibility(View.VISIBLE);
 //    }
 
@@ -146,43 +149,45 @@ public class AdFragment extends Fragment {
 //        com.google.android.gms.ads.AdView adView = new com.google.android.gms.ads.AdView(this.getActivity());
 //        adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
 //        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
-        mAdView.setAdListener(new AdListener(){
-            @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-                Log.i("Ads", "onAdLoaded");
-//                mAdHolder.setVisibility(View.VISIBLE);
-            }
+        if (mAdView!= null) {
+            mAdView.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+                    // Code to be executed when an ad finishes loading.
+                    Log.i("Ads", "onAdLoaded");
+                    mAdHolder.setVisibility(View.VISIBLE);
+                }
 
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                // Code to be executed when an ad request fails.
-                Log.i("Ads", "onAdFailedToLoad");
-//                mAdHolder.setVisibility(View.GONE);
-            }
+                @Override
+                public void onAdFailedToLoad(int errorCode) {
+                    // Code to be executed when an ad request fails.
+                    Log.i("Ads", "onAdFailedToLoad");
+                    mAdHolder.setVisibility(View.GONE);
+                }
 
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when an ad opens an overlay that
-                // covers the screen.
-                Log.i("Ads", "onAdOpened");
-            }
+                @Override
+                public void onAdOpened() {
+                    // Code to be executed when an ad opens an overlay that
+                    // covers the screen.
+                    Log.i("Ads", "onAdOpened");
+                }
 
-            @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-                Log.i("Ads", "onAdLeftApplication");
-            }
+                @Override
+                public void onAdLeftApplication() {
+                    // Code to be executed when the user has left the app.
+                    Log.i("Ads", "onAdLeftApplication");
+                }
 
-            @Override
-            public void onAdClosed() {
-                // Code to be executed when when the user is about to return
-                // to the app after tapping on an ad.
-                Log.i("Ads", "onAdClosed");
-            }
-        });
+                @Override
+                public void onAdClosed() {
+                    // Code to be executed when when the user is about to return
+                    // to the app after tapping on an ad.
+                    Log.i("Ads", "onAdClosed");
+                }
+            });
 //        mAdHolder.addView(adView);
-        mAdView.loadAd(new AdRequest.Builder().build());
+            mAdView.loadAd(new AdRequest.Builder().build());
+        }
 //        mAdHolder.setVisibility(View.VISIBLE);
     }
 
@@ -226,26 +231,26 @@ public class AdFragment extends Fragment {
         super.onResume();
 
         // Resume the NativeExpressAdView.
-        if (mNativeExpressAdView != null) {
-            mNativeExpressAdView.resume();
-        }
+//        if (mNativeExpressAdView != null) {
+//            mNativeExpressAdView.resume();
+//        }
     }
 
     @Override
     public void onPause() {
         // Pause the NativeExpressAdView.
-        if (mNativeExpressAdView != null) {
-            mNativeExpressAdView.pause();
-        }
+//        if (mNativeExpressAdView != null) {
+//            mNativeExpressAdView.pause();
+//        }
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
         // Destroy the NativeExpressAdView.
-        if (mNativeExpressAdView != null) {
-            mNativeExpressAdView.destroy();
-        }
+//        if (mNativeExpressAdView != null) {
+//            mNativeExpressAdView.destroy();
+//        }
 //        if (mAdView != null){
 //            mAdView.destroy();
 //        }

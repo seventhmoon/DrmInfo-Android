@@ -99,6 +99,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/multi-dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/prebuild" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/processing-tools" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/proguard-rules" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/reload-dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/res" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
@@ -113,54 +114,72 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 26 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="firebase-core-11.4.2" level="project" />
+    <orderEntry type="library" name="firebase-database-connection-license-11.4.2" level="project" />
+    <orderEntry type="library" name="exoplayer-r2.0.3" level="project" />
+    <orderEntry type="library" name="play-services-gass-license-11.4.2" level="project" />
+    <orderEntry type="library" name="firebase-crash-11.4.2" level="project" />
+    <orderEntry type="library" name="play-services-ads-license-11.4.2" level="project" />
+    <orderEntry type="library" name="firebase-config-11.4.2" level="project" />
+    <orderEntry type="library" name="firebase-common-license-11.4.2" level="project" />
+    <orderEntry type="library" name="play-services-ads-11.4.2" level="project" />
+    <orderEntry type="library" name="leanback-v17-26.1.0" level="project" />
+    <orderEntry type="library" name="percent-26.1.0" level="project" />
+    <orderEntry type="library" name="library-1.3.1" level="project" />
+    <orderEntry type="library" name="transition-26.1.0" level="project" />
+    <orderEntry type="library" name="play-services-gass-11.4.2" level="project" />
+    <orderEntry type="library" name="firebase-perf-license-11.4.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="multidex-instrumentation-1.0.2" level="project" />
+    <orderEntry type="library" name="support-compat-26.1.0" level="project" />
+    <orderEntry type="library" name="facebook-4.24.0.0" level="project" />
+    <orderEntry type="library" name="firebase-database-11.4.2" level="project" />
+    <orderEntry type="library" name="firebase-database-license-11.4.2" level="project" />
+    <orderEntry type="library" name="audience-network-sdk-4.24.0" level="project" />
+    <orderEntry type="library" name="support-annotations-26.1.0" level="project" />
+    <orderEntry type="library" name="support-v4-26.1.0" level="project" />
+    <orderEntry type="library" name="firebase-database-connection-11.4.2" level="project" />
+    <orderEntry type="library" name="support-fragment-26.1.0" level="project" />
+    <orderEntry type="library" name="common-1.0.0" level="project" />
+    <orderEntry type="library" name="1_common-1.0.0" level="project" />
+    <orderEntry type="library" name="design-26.1.0" level="project" />
+    <orderEntry type="library" name="firebase-common-11.4.2" level="project" />
+    <orderEntry type="library" name="firebase-perf-11.4.2" level="project" />
+    <orderEntry type="library" name="play-services-tasks-11.4.2" level="project" />
+    <orderEntry type="library" name="play-services-ads-lite-11.4.2" level="project" />
     <orderEntry type="library" name="cardview-v7-26.1.0" level="project" />
     <orderEntry type="library" name="support-core-ui-26.1.0" level="project" />
-    <orderEntry type="library" name="play-services-ads-lite-11.4.0" level="project" />
+    <orderEntry type="library" name="firebase-ads-11.4.2" level="project" />
+    <orderEntry type="library" name="firebase-analytics-license-11.4.2" level="project" />
+    <orderEntry type="library" name="play-services-base-11.4.2" level="project" />
     <orderEntry type="library" name="support-media-compat-26.1.0" level="project" />
+    <orderEntry type="library" name="firebase-iid-11.4.2" level="project" />
     <orderEntry type="library" name="gridlayout-v7-26.1.0" level="project" />
     <orderEntry type="library" name="gson-2.8.1" level="project" />
-    <orderEntry type="library" name="firebase-core-11.4.0" level="project" />
-    <orderEntry type="library" name="firebase-ads-11.4.0" level="project" />
     <orderEntry type="library" name="constraint-layout-1.0.2" level="project" />
     <orderEntry type="library" name="recyclerview-v7-26.1.0" level="project" />
     <orderEntry type="library" name="baseLibrary-3.0.0-beta7" level="project" />
-    <orderEntry type="library" name="firebase-iid-11.4.0" level="project" />
     <orderEntry type="library" name="support-vector-drawable-26.1.0" level="project" />
     <orderEntry type="library" name="support-core-utils-26.1.0" level="project" />
-    <orderEntry type="library" name="firebase-crash-11.4.0" level="project" />
+    <orderEntry type="library" name="play-services-ads-lite-license-11.4.2" level="project" />
+    <orderEntry type="library" name="firebase-auth-license-11.4.2" level="project" />
+    <orderEntry type="library" name="play-services-base-license-11.4.2" level="project" />
     <orderEntry type="library" name="adapters-1.3.1" level="project" />
-    <orderEntry type="library" name="play-services-ads-11.4.0" level="project" />
-    <orderEntry type="library" name="firebase-auth-11.4.0" level="project" />
-    <orderEntry type="library" name="leanback-v17-26.1.0" level="project" />
-    <orderEntry type="library" name="firebase-config-11.4.0" level="project" />
-    <orderEntry type="library" name="percent-26.1.0" level="project" />
-    <orderEntry type="library" name="play-services-basement-11.4.0" level="project" />
-    <orderEntry type="library" name="library-1.3.1" level="project" />
-    <orderEntry type="library" name="transition-26.1.0" level="project" />
-    <orderEntry type="library" name="play-services-base-11.4.0" level="project" />
-    <orderEntry type="library" name="play-services-gass-11.4.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="multidex-instrumentation-1.0.2" level="project" />
-    <orderEntry type="library" name="firebase-database-11.4.0" level="project" />
-    <orderEntry type="library" name="support-compat-26.1.0" level="project" />
+    <orderEntry type="library" name="play-services-basement-11.4.2" level="project" />
+    <orderEntry type="library" name="firebase-auth-11.4.2" level="project" />
+    <orderEntry type="library" name="firebase-config-license-11.4.2" level="project" />
+    <orderEntry type="library" name="firebase-analytics-impl-license-11.4.2" level="project" />
+    <orderEntry type="library" name="firebase-iid-license-11.4.2" level="project" />
     <orderEntry type="library" name="constraint-layout-solver-1.0.2" level="project" />
-    <orderEntry type="library" name="firebase-database-connection-11.4.0" level="project" />
-    <orderEntry type="library" name="support-annotations-26.1.0" level="project" />
-    <orderEntry type="library" name="support-v4-26.1.0" level="project" />
+    <orderEntry type="library" name="play-services-tasks-license-11.4.2" level="project" />
     <orderEntry type="library" name="animated-vector-drawable-26.1.0" level="project" />
-    <orderEntry type="library" name="support-fragment-26.1.0" level="project" />
     <orderEntry type="library" name="runtime-1.0.0" level="project" />
     <orderEntry type="library" name="flexbox-0.2.7" level="project" />
-    <orderEntry type="library" name="firebase-perf-11.4.0" level="project" />
-    <orderEntry type="library" name="common-1.0.0" level="project" />
-    <orderEntry type="library" name="1_common-1.0.0" level="project" />
     <orderEntry type="library" name="appcompat-v7-26.1.0" level="project" />
-    <orderEntry type="library" name="firebase-analytics-11.4.0" level="project" />
-    <orderEntry type="library" name="firebase-analytics-impl-11.4.0" level="project" />
     <orderEntry type="library" scope="TEST" name="hamcrest-core-1.3" level="project" />
+    <orderEntry type="library" name="firebase-analytics-11.4.2" level="project" />
+    <orderEntry type="library" name="firebase-analytics-impl-11.4.2" level="project" />
+    <orderEntry type="library" name="play-services-basement-license-11.4.2" level="project" />
     <orderEntry type="library" scope="TEST" name="junit-4.12" level="project" />
-    <orderEntry type="library" name="design-26.1.0" level="project" />
     <orderEntry type="library" name="multidex-1.0.2" level="project" />
-    <orderEntry type="library" name="play-services-tasks-11.4.0" level="project" />
-    <orderEntry type="library" name="firebase-common-11.4.0" level="project" />
   </component>
 </module>
