@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-beta7'
+        classpath 'com.android.tools.build:gradle:3.0.0-rc1'
         classpath ('com.google.firebase:firebase-plugins:1.1.1') {
             exclude group: 'com.google.guava', module: 'guava-jdk5'
         }

@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     app:contentPadding="8dp"
     app:layout_gravity="center_horizontal"
-    android:visibility="invisible">
+    android:visibility="gone">
     <com.google.android.gms.ads.AdView
         android:layout_gravity="center_horizontal"
         android:id="@+id/adView"
