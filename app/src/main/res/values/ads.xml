@@ -6,11 +6,12 @@
     <!--<dimen name="native_ad_min_height">80dp</dimen>-->
 
     <!--MEDIUM-->
-    <string name="ad_unit_id_native">ca-app-pub-9890667024752973/5357865713</string>
-    <dimen name="native_ad_min_height">132dp</dimen>
+    <!--<string name="ad_unit_id_native">ca-app-pub-9890667024752973/5357865713</string>-->
+    <!--<dimen name="native_ad_min_height">132dp</dimen>-->
 
+    <string name="ad_app_id">ca-app-pub-9890667024752973~1133604110</string>
     <string name="ad_unit_id_medium_rect">ca-app-pub-9890667024752973/2293431713</string>
     <!--LARGE-->
-    <!--<string name="ad_unit_id_native">ca-app-pub-9890667024752973/7878000112</string>-->
-    <!--<dimen name="native_ad_min_height">250dp</dimen>-->
+    <string name="ad_unit_id_native">ca-app-pub-9890667024752973/7878000112</string>
+    <dimen name="native_ad_min_height">250dp</dimen>
 </resources>

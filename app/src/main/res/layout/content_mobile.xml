@@ -21,17 +21,21 @@
         app:justifyContent="center">
 
 
+
+
         <fragment
             android:id="@+id/fragment_info"
             android:name="com.androidfung.drminfo.InfoFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_minWidth="@dimen/box_min_width"
             android:layout_margin="4dp"
             app:layout_flexGrow="@integer/layout_flexGrow"
 
             tools:layout="@layout/fragment_info" />
 
         <fragment
+            app:layout_minWidth="@dimen/box_min_width"
             android:id="@+id/fragment_clearkey"
             android:name="com.androidfung.drminfo.ClearKeyFragment"
             android:layout_width="wrap_content"
@@ -41,6 +45,7 @@
             tools:layout="@layout/fragment_clearkey" />
 
         <fragment
+            app:layout_minWidth="@dimen/box_min_width"
             android:id="@+id/fragment_widevine"
             android:name="com.androidfung.drminfo.WidevineFragment"
             android:layout_width="wrap_content"
@@ -50,6 +55,7 @@
             tools:layout="@layout/fragment_widevine" />
 
         <fragment
+            app:layout_minWidth="@dimen/box_min_width"
             android:id="@+id/fragment_playready"
             android:name="com.androidfung.drminfo.PlayreadyFragment"
             android:layout_width="wrap_content"
@@ -59,6 +65,7 @@
             tools:layout="@layout/fragment_playready" />
 
         <fragment
+            app:layout_minWidth="@dimen/box_min_width"
             android:id="@+id/fragment_primetime"
             android:name="com.androidfung.drminfo.PrimetimeFragment"
             android:layout_width="wrap_content"
@@ -68,7 +75,7 @@
             tools:layout="@layout/fragment_primetime" />
 
         <fragment
-
+            app:layout_minWidth="@dimen/box_min_width"
             android:id="@+id/fragment_marlin"
             android:name="com.androidfung.drminfo.MarlinFragment"
             android:layout_width="wrap_content"
@@ -78,7 +85,7 @@
             tools:layout="@layout/fragment_marlin" />
 
         <fragment
-
+            app:layout_minWidth="@dimen/box_min_width"
             android:id="@+id/fragment_verimatrix"
             android:name="com.androidfung.drminfo.VerimatrixFragment"
             android:layout_width="wrap_content"
@@ -88,6 +95,7 @@
             tools:layout="@layout/fragment_verimatrix" />
 
         <fragment
+            app:layout_minWidth="@dimen/box_min_width"
             android:id="@+id/fragment_ad"
             android:name="com.androidfung.drminfo.AdFragment"
             android:layout_width="wrap_content"

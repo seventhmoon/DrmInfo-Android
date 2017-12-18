@@ -28,6 +28,7 @@
         android:minHeight="@dimen/box_min_height"
         android:minWidth="@dimen/box_min_width"
         app:contentPadding="16dp"
+        app:cardUseCompatPadding="true"
         tools:context="com.androidfung.drminfo.VerimatrixFragment">
 
 
