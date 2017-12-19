@@ -50,8 +50,8 @@ public class AdFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_ad, container, false);
 
-        mBannerAdHolder = rootView.findViewById(R.id.container_banner_ad);
-        mNativeAdHolder = rootView.findViewById(R.id.container_native_ad);
+        mBannerAdHolder = rootView.findViewById(R.id.container_ad);
+        mNativeAdHolder = rootView.findViewById(R.id.container_ad);
 //        mAdHolder = rootView.findViewById(R.id.ad_container_card);
         mAdView = rootView.findViewById(R.id.adView);
         mNativeExpressAdView = new NativeExpressAdView(getContext());
@@ -65,17 +65,8 @@ public class AdFragment extends Fragment {
         remoteConfig.setConfigSettings(configSettings);
         remoteConfig.fetch().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-//                Toast.makeText(getContext(), "Fetch Succeeded",
-//                        Toast.LENGTH_SHORT).show();
-
-                // After config data is successfully fetched, it must be activated before newly fetched
-                // values are returned.
                 remoteConfig.activateFetched();
-//            } else {
-//                Toast.makeText(this.getContext(), "Fetch Failed",
-//                        Toast.LENGTH_SHORT).show();
             }
-//            displayWelcomeMessage();
         });
 
         long adSource = remoteConfig.getLong("ad_source");
@@ -86,13 +77,6 @@ public class AdFragment extends Fragment {
 
         loadAd(adSource);
 //        loadAdMobNativeAd();
-//        boolean displayAd = BuildConfig.VERSION_CODE <= remoteConfig.getLong("current_approved_version");
-
-//        if (displayAd) {
-//           loadAd();
-//        }else{
-//            mAdHolder.setVisibility(View.GONE);
-//        }
 //        loadAdMobBannerAd();
         return rootView;
     }
@@ -103,7 +87,6 @@ public class AdFragment extends Fragment {
     }
 
     private void loadAd(long adSource){
-//        loadAdMobBannerAd();
 
         switch ((int) adSource){
             case 9 : {
@@ -119,22 +102,9 @@ public class AdFragment extends Fragment {
                 loadAdMobBannerAd();
                 break;
             }
-//            default: loadAdMobBannerAd();
             default: loadAdMobNativeAd();
         }
-//
-//        if (adSource == 9L){
-//            mAdHolder.setVisibility(View.GONE);
-//        }else if (adSource == 1L) {
-//            loadAdMobBannerAd();
-////            loadAdMobNativeAd();
-////        }else if (adSource == 2L){
-////            loadFbBannerAd();
-//////            loadAdMobBannerAd();
-//        }else {
-////            loadFbAd();
-//            loadAdMobBannerAd();
-//        }
+
     }
 
 //    private void loadFbBannerAd(){
@@ -180,6 +150,7 @@ public class AdFragment extends Fragment {
                     // Code to be executed when an ad finishes loading.
                     Log.i("Ads", "onAdLoaded");
                     mBannerAdHolder.setVisibility(View.VISIBLE);
+                    mAdView.setVisibility(View.VISIBLE);
                 }
 
                 @Override
@@ -187,6 +158,7 @@ public class AdFragment extends Fragment {
                     // Code to be executed when an ad request fails.
                     Log.i("Ads", "onAdFailedToLoad");
                     mBannerAdHolder.setVisibility(View.GONE);
+                    mAdView.setVisibility(View.GONE);
                 }
 
                 @Override
@@ -233,6 +205,7 @@ public class AdFragment extends Fragment {
                         @Override
                         public void onAdLoaded() {
                             mNativeAdHolder.setVisibility(View.VISIBLE);
+                            mAdView.setVisibility(View.GONE);
                         }
 
                         @Override
@@ -256,26 +229,26 @@ public class AdFragment extends Fragment {
         super.onResume();
 
         // Resume the NativeExpressAdView.
-//        if (mNativeExpressAdView != null) {
-//            mNativeExpressAdView.resume();
-//        }
+        if (mNativeExpressAdView != null) {
+            mNativeExpressAdView.resume();
+        }
     }
 
     @Override
     public void onPause() {
         // Pause the NativeExpressAdView.
-//        if (mNativeExpressAdView != null) {
-//            mNativeExpressAdView.pause();
-//        }
+        if (mNativeExpressAdView != null) {
+            mNativeExpressAdView.pause();
+        }
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
         // Destroy the NativeExpressAdView.
-//        if (mNativeExpressAdView != null) {
-//            mNativeExpressAdView.destroy();
-//        }
+        if (mNativeExpressAdView != null) {
+            mNativeExpressAdView.destroy();
+        }
 //        if (mAdView != null){
 //            mAdView.destroy();
 //        }
