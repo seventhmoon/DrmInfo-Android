@@ -198,7 +198,7 @@ public class AdFragment extends Fragment {
                     float scaleRatio = mNativeAdHolder.getResources().getDisplayMetrics().density;
                     int width = (int) (mNativeAdHolder.getMeasuredWidth() / scaleRatio);
                     int height = (int) (mNativeAdHolder.getMeasuredHeight() / scaleRatio);
-
+                    Log.d(TAG, "loadAdMobNativeAd: width="+width + " height=" +height);
                     mNativeExpressAdView.setAdSize(new AdSize(width, height));
                     mNativeExpressAdView.setAdUnitId(mNativeAdHolder.getResources().getString(R.string.ad_unit_id_native));
                     mNativeExpressAdView.setAdListener(new AdListener() {
@@ -210,6 +210,7 @@ public class AdFragment extends Fragment {
 
                         @Override
                         public void onAdFailedToLoad(int errorCode) {
+                            Log.e(TAG, "onAdFailedToLoad: " + errorCode);
                             mNativeAdHolder.setVisibility(View.GONE);
                             loadAdMobBannerAd();
                         }

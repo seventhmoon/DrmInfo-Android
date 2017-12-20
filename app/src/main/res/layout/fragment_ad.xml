@@ -8,12 +8,11 @@
         android:id="@+id/container_ad"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/box_min_height"
+        android:minHeight="@dimen/native_ad_min_height"
         android:minWidth="@dimen/box_min_width"
 
         app:layout_gravity="center_horizontal"
-        app:cardUseCompatPadding="true"
-        android:visibility="gone">
+        android:visibility="invisible">
         <com.google.android.gms.ads.AdView
             android:layout_margin="8dp"
             android:layout_gravity="center_horizontal"
