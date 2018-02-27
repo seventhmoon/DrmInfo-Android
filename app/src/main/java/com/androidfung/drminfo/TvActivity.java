@@ -52,7 +52,7 @@ public class TvActivity extends Activity {
             String title = getString(R.string.app_name);
             String description = getString(R.string.text_on_android_tv);
             String breadcrumb = null;
-            Drawable icon = ContextCompat.getDrawable(getActivity(), R.mipmap.ic_launcher);
+            Drawable icon = ContextCompat.getDrawable(getActivity(), R.mipmap.ic_launcher_round);
 
             return new GuidanceStylist.Guidance(title, description, breadcrumb, icon);
         }

@@ -11,8 +11,8 @@ android {
         applicationId "com.androidfung.drminfo"
         minSdkVersion 18
         targetSdkVersion 27
-        versionCode 80
-        versionName "1.0.13.180112"
+        versionCode 81
+        versionName "1.0.13.180116"
         resConfigs "en"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
@@ -66,7 +66,7 @@ dependencies {
     implementation 'com.google.ads.mediation:facebook:4.25.0.0'
     implementation 'com.android.support:gridlayout-v7:27.0.2'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
         transitive = true
     }
 }

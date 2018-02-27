@@ -3,6 +3,7 @@ package com.androidfung.drminfo;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Keep;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,14 +45,14 @@ public class AdFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_ad, container, false);
 
-        mBannerAdHolder = rootView.findViewById(R.id.container_ad);
-        mNativeAdHolder = rootView.findViewById(R.id.container_ad);
+        mNativeAdHolder = mBannerAdHolder = rootView.findViewById(R.id.container_ad);
+//        mNativeAdHolder = rootView.findViewById(R.id.container_ad);
 //        mAdHolder = rootView.findViewById(R.id.ad_container_card);
         mAdView = rootView.findViewById(R.id.adView);
         mNativeExpressAdView = new NativeExpressAdView(getContext());
