@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.v17.leanback.app.GuidedStepFragment;
+import android.support.v17.leanback.app.GuidedStepSupportFragment;
 import android.support.v17.leanback.widget.GuidanceStylist;
 import android.support.v17.leanback.widget.GuidedAction;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
@@ -18,7 +20,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.util.ArrayList;
 import java.util.List;
 @Keep
-public class TvActivity extends Activity {
+public class TvActivity extends FragmentActivity {
 
     private static final String TAG = TvActivity.class.getSimpleName();
 //    private static final long WIDEVINE = 2L;
@@ -30,7 +32,7 @@ public class TvActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (null == savedInstanceState) {
-            GuidedStepFragment.addAsRoot(this, new InfoStepFragment(), android.R.id.content);
+            GuidedStepSupportFragment.addAsRoot(this, new InfoStepFragment(), android.R.id.content);
         }
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -38,7 +40,7 @@ public class TvActivity extends Activity {
     }
 
 
-    public static class InfoStepFragment extends GuidedStepFragment {
+    public static class InfoStepFragment extends GuidedStepSupportFragment {
         private MediaDrm mWidevineMediaDrm, mPlayreadyMediaDrm, mMarlinMediaDrm, mVerimatrixMediaDrm, mClearKeyMediaDrm, mPrimetimeMediaDrm;
 
         @Override
