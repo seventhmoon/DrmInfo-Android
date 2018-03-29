@@ -32,7 +32,6 @@ public class AdFragment extends Fragment {
     private ViewGroup mBannerAdHolder, mNativeAdHolder;
     private AdView mAdView;
     private NativeExpressAdView mNativeExpressAdView;
-//    private com.facebook.ads.AdView mFbAdView;
 
     public AdFragment() {
         // Required empty public constructor
@@ -52,8 +51,6 @@ public class AdFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_ad, container, false);
 
         mNativeAdHolder = mBannerAdHolder = rootView.findViewById(R.id.container_ad);
-//        mNativeAdHolder = rootView.findViewById(R.id.container_ad);
-//        mAdHolder = rootView.findViewById(R.id.ad_container_card);
         mAdView = rootView.findViewById(R.id.adView);
         mNativeExpressAdView = new NativeExpressAdView(getContext());
 
@@ -75,10 +72,7 @@ public class AdFragment extends Fragment {
         Log.d(TAG, "current_approved_version: " + String.valueOf(remoteConfig.getLong("current_approved_version")));
 
 
-
         loadAd(adSource);
-//        loadAdMobNativeAd();
-//        loadAdMobBannerAd();
         return rootView;
     }
 
@@ -87,64 +81,27 @@ public class AdFragment extends Fragment {
         super.onAttach(context);
     }
 
-    private void loadAd(long adSource){
+    private void loadAd(long adSource) {
 
-        switch ((int) adSource){
-            case 9 : {
+        switch ((int) adSource) {
+            case 9: {
                 mBannerAdHolder.setVisibility(View.GONE);
                 mNativeAdHolder.setVisibility(View.GONE);
-                break;
-            }
-            case 1: {
-                loadAdMobNativeAd();
                 break;
             }
             case 2: {
                 loadAdMobBannerAd();
                 break;
             }
-            default: loadAdMobNativeAd();
+            default:
+                loadAdMobBannerAd();
         }
 
     }
 
-//    private void loadFbBannerAd(){
-//        com.facebook.ads.AdSettings.addTestDevice("879de71766c2d73162ec561c4e2ec35d");
-//        mFbAdView = new com.facebook.ads.AdView(this.getContext(), "738564012981533_738845662953368", com.facebook.ads.AdSize.RECTANGLE_HEIGHT_250);
-//        mAdHolder.addView(mFbAdView);
-//        mFbAdView.setAdListener(new com.facebook.ads.AdListener() {
-//            @Override
-//            public void onError(com.facebook.ads.Ad ad, com.facebook.ads.AdError adError) {
-//                Log.e(TAG, adError.getErrorMessage());
-//                mAdHolder.setVisibility(View.GONE);
-//            }
-//
-//            @Override
-//            public void onAdLoaded(com.facebook.ads.Ad ad) {
-//                mAdHolder.setVisibility(View.VISIBLE);
-//            }
-//
-//            @Override
-//            public void onAdClicked(com.facebook.ads.Ad ad) {
-//
-//            }
-//
-//            @Override
-//            public void onLoggingImpression(com.facebook.ads.Ad ad) {
-//
-//            }
-//        });
-//
-//        mFbAdView.loadAd();
-////        mAdHolder.setVisibility(View.VISIBLE);
-//    }
+    private void loadAdMobBannerAd() {
 
-    private void loadAdMobBannerAd(){
-
-//        com.google.android.gms.ads.AdView adView = new com.google.android.gms.ads.AdView(this.getActivity());
-//        adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
-//        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
-        if (mAdView!= null) {
+        if (mAdView != null) {
             mAdView.setAdListener(new AdListener() {
                 @Override
                 public void onAdLoaded() {
@@ -182,12 +139,11 @@ public class AdFragment extends Fragment {
                     Log.i("Ads", "onAdClosed");
                 }
             });
-//        mAdHolder.addView(adView);
             mAdView.loadAd(new AdRequest.Builder().build());
         }
-//        mAdHolder.setVisibility(View.VISIBLE);
     }
 
+    @Deprecated
     private void loadAdMobNativeAd() {
         if (mNativeAdHolder != null) {
             mNativeAdHolder.setVisibility(View.INVISIBLE);
@@ -199,7 +155,7 @@ public class AdFragment extends Fragment {
                     float scaleRatio = mNativeAdHolder.getResources().getDisplayMetrics().density;
                     int width = (int) (mNativeAdHolder.getMeasuredWidth() / scaleRatio);
                     int height = (int) (mNativeAdHolder.getMeasuredHeight() / scaleRatio);
-                    Log.d(TAG, "loadAdMobNativeAd: width="+width + " height=" +height);
+                    Log.d(TAG, "loadAdMobNativeAd: width=" + width + " height=" + height);
                     mNativeExpressAdView.setAdSize(new AdSize(width, height));
                     mNativeExpressAdView.setAdUnitId(mNativeAdHolder.getResources().getString(R.string.ad_unit_id_native));
                     mNativeExpressAdView.setAdListener(new AdListener() {
@@ -219,7 +175,7 @@ public class AdFragment extends Fragment {
 
                     mNativeExpressAdView.loadAd(adRequest);
                     mNativeAdHolder.addView(mNativeExpressAdView);
-                }catch (NullPointerException e){
+                } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
             });
@@ -251,9 +207,6 @@ public class AdFragment extends Fragment {
         if (mNativeExpressAdView != null) {
             mNativeExpressAdView.destroy();
         }
-//        if (mAdView != null){
-//            mAdView.destroy();
-//        }
         super.onDestroy();
     }
 
