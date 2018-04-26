@@ -11,8 +11,8 @@ android {
         applicationId "com.androidfung.drminfo"
         minSdkVersion 18
         targetSdkVersion 27
-        versionCode 86
-        versionName "1.0.13.180329"
+        versionCode 87
+        versionName "1.0.13.180412"
         resConfigs "en"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
@@ -47,25 +47,26 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
-    implementation 'com.android.support:support-annotations:27.1.0'
-    implementation 'com.android.support:appcompat-v7:27.1.0'
-    implementation 'com.android.support:design:27.1.0'
-    implementation 'com.android.support:percent:27.1.0'
-    implementation 'com.android.support:leanback-v17:27.1.0'
-    implementation 'com.android.support:cardview-v7:27.1.0'
-    implementation 'com.android.support:gridlayout-v7:27.1.0'
+    implementation 'com.android.support:support-annotations:27.1.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:percent:27.1.1'
+    implementation 'com.android.support:leanback-v17:27.1.1'
+    implementation 'com.android.support:cardview-v7:27.1.1'
+    implementation 'com.android.support:gridlayout-v7:27.1.1'
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'com.google.firebase:firebase-core:12.0.1'
-    implementation 'com.google.firebase:firebase-crash:12.0.1'
-    implementation 'com.google.firebase:firebase-ads:12.0.1'
-    implementation 'com.google.firebase:firebase-perf:12.0.1'
-    implementation 'com.google.firebase:firebase-config:12.0.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.google.firebase:firebase-core:15.0.0'
+    implementation 'com.google.firebase:firebase-crash:15.0.0'
+    implementation 'com.google.firebase:firebase-ads:15.0.0'
+    implementation 'com.google.firebase:firebase-perf:15.0.0'
+    implementation 'com.google.firebase:firebase-config:15.0.0'
     implementation 'com.google.android:flexbox:0.3.2'
-    implementation 'com.google.code.gson:gson:2.8.1'
-    implementation ('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
-        transitive = true
-    }
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.1'
+//    implementation ('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
+//        transitive = true
+//    }
 }
 // ADD THIS AT THE BOTTOM
 apply plugin: 'com.google.gms.google-services'
