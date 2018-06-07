@@ -16,7 +16,7 @@
             type="android.media.MediaDrm" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -95,5 +95,5 @@
                 android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
         </GridLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </layout>
