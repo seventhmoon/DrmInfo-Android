@@ -9,6 +9,8 @@ import android.os.Bundle;
 import androidx.annotation.Keep;
 
 import androidx.fragment.app.Fragment;
+
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +73,20 @@ public class WidevineFragment extends MediaDrmFragment {
             }
 
         }
+
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+//            int maxHdcpLevelLevel = mediaDrm.getMaxHdcpLevel();
+//            properties.put(getString(R.string.key_widevine_max_hdcp_level), String.valueOf(maxHdcpLevelLevel));
+//            int maxSessionCount = mediaDrm.getMaxSessionCount();
+//            properties.put(getString(R.string.key_widevine_max_number_of_sessions), String.valueOf(maxSessionCount));
+//
+//            PersistableBundle metrics = mediaDrm.getMetrics();
+//            if (metrics != null) {
+//                Log.d(TAG, metrics.toString());
+//            }
+//        }
+
+
         return properties;
     }
 

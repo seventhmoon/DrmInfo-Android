@@ -30,4 +30,5 @@
     <string name="text_on_android_tv">on Android TV</string>
     <string name="text_build">Build</string>
     <string name="text_webview_version">WebView Version</string>
+    <string name="text_security_level">Security Level</string>
 </resources>

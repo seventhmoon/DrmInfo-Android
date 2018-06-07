@@ -4,9 +4,6 @@ import androidx.databinding.ObservableArrayMap;
 import android.media.MediaDrm;
 import androidx.annotation.Keep;
 import androidx.fragment.app.Fragment;
-import android.util.Log;
-
-import com.google.firebase.crash.FirebaseCrash;
 
 /**
  * Created by fung on 5/3/2016.
@@ -28,8 +25,6 @@ public class MediaDrmFragment extends Fragment {
                     properties.put(key, string);
                 } catch (Exception e) {
                     //do nothing
-//                    Log.e(TAG, e.toString());
-//                    FirebaseCrash.report(e);
                 }
 
             }
