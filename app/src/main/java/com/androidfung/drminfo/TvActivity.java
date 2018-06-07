@@ -64,13 +64,11 @@ public class TvActivity extends FragmentActivity {
             List<GuidedAction> subActions = new ArrayList<>();
             try {
                 String version = mPlayreadyMediaDrm.getPropertyString(MediaDrm.PROPERTY_VERSION);
-                if (version != null) {
                     subActions.add(new GuidedAction.Builder(getActivity())
                             .infoOnly(true)
                             .title(getString(R.string.text_version))
                             .description(version)
                             .build());
-                }
             } catch (java.lang.IllegalStateException ex) {
                 Log.d(TAG, ex.toString());
             }
@@ -83,13 +81,11 @@ public class TvActivity extends FragmentActivity {
             List<GuidedAction> subActions = new ArrayList<>();
             try {
                 String version = mClearKeyMediaDrm.getPropertyString(MediaDrm.PROPERTY_VERSION);
-                if (version != null) {
                     subActions.add(new GuidedAction.Builder(getActivity())
                             .infoOnly(true)
                             .title(getString(R.string.text_version))
                             .description(version)
                             .build());
-                }
             } catch (java.lang.IllegalStateException ex) {
                 Log.d(TAG, ex.toString());
             }
@@ -100,99 +96,25 @@ public class TvActivity extends FragmentActivity {
         @SuppressWarnings("ResourceType")
         private List<GuidedAction> getWidevineSubActions() {
             List<GuidedAction> subActions = new ArrayList<>();
-            if (mWidevineMediaDrm != null) {
-                try {
-                    String securityLevel = mWidevineMediaDrm.getPropertyString("securityLevel");
-                    if (securityLevel != null) {
+            String[] propertyStrings = {"securityLevel", "systemId", "usageReportingSupport", "hdcpLevel", "maxHdcpLevel", "maxNumberOfSessions", "numberOfOpenSessions"};
+            int[] titles = {R.string.text_widevine_security_level, R.string.text_widevine_system_id, R.string.text_widevine_usage_reporting_support, R.string.key_widevine_hdcp_level,
+            R.string.text_widevine_max_hdcp_level, R.string.text_widevine_max_number_of_sessions, R.string.text_widevine_number_of_open_sessions};
+
+            if (mWidevineMediaDrm != null){
+
+                for (int i=0; i< propertyStrings.length; i++){
+                    try {
+                        String securityLevel = mWidevineMediaDrm.getPropertyString(propertyStrings[i]);
                         subActions.add(new GuidedAction.Builder(getActivity())
                                 .infoOnly(true)
-                                .title(getString(R.string.text_widevine_security_level))
+                                .title(getString(titles[i]))
                                 .description(securityLevel)
                                 .build());
+                    } catch (java.lang.IllegalStateException ex) {
+                        Log.d(TAG, ex.toString());
                     }
-                } catch (java.lang.IllegalStateException ex) {
-                    Log.d(TAG, ex.toString());
                 }
 
-                try {
-                    String systemId = mWidevineMediaDrm.getPropertyString("systemId");
-                    if (systemId != null) {
-                        subActions.add(new GuidedAction.Builder(getActivity())
-                                .infoOnly(true)
-                                .title(getString(R.string.text_widevine_system_id))
-                                .description(systemId)
-                                .build());
-                    }
-                } catch (java.lang.IllegalStateException ex) {
-                    Log.d(TAG, ex.toString());
-                }
-
-
-                try {
-                    String usageReportingSupport = mWidevineMediaDrm.getPropertyString("usageReportingSupport");
-                    if (usageReportingSupport != null) {
-                        subActions.add(new GuidedAction.Builder(getActivity())
-                                .infoOnly(true)
-                                .title(getString(R.string.text_widevine_usage_reporting_support))
-                                .description(usageReportingSupport)
-                                .build());
-                    }
-                } catch (java.lang.IllegalStateException ex) {
-                    Log.d(TAG, ex.toString());
-                }
-
-                try {
-                    String hdcpLevel = mWidevineMediaDrm.getPropertyString("hdcpLevel");
-                    if (hdcpLevel != null) {
-                        subActions.add(new GuidedAction.Builder(getActivity())
-                                .infoOnly(true)
-                                .title(getString(R.string.text_widevine_hdcp_level))
-                                .description(hdcpLevel)
-                                .build());
-                    }
-                } catch (java.lang.IllegalStateException ex) {
-                    Log.d(TAG, ex.toString());
-                }
-
-                try {
-                    String maxHdcpLevel = mWidevineMediaDrm.getPropertyString("maxHdcpLevel");
-                    if (maxHdcpLevel != null) {
-                        subActions.add(new GuidedAction.Builder(getActivity())
-                                .infoOnly(true)
-                                .title(getString(R.string.text_widevine_max_hdcp_level))
-                                .description(maxHdcpLevel)
-                                .build());
-                    }
-                } catch (java.lang.IllegalStateException ex) {
-                    Log.d(TAG, ex.toString());
-                }
-
-
-                try {
-                    String maxNumberOfSessions = mWidevineMediaDrm.getPropertyString("maxNumberOfSessions");
-                    if (maxNumberOfSessions != null) {
-                        subActions.add(new GuidedAction.Builder(getActivity())
-                                .infoOnly(true)
-                                .title(getString(R.string.text_widevine_max_number_of_sessions))
-                                .description(maxNumberOfSessions)
-                                .build());
-                    }
-                } catch (java.lang.IllegalStateException ex) {
-                    Log.d(TAG, ex.toString());
-                }
-
-                try {
-                    String numberOfOpenSessions = mWidevineMediaDrm.getPropertyString("numberOfOpenSessions");
-                    if (numberOfOpenSessions != null) {
-                        subActions.add(new GuidedAction.Builder(getActivity())
-                                .infoOnly(true)
-                                .title(getString(R.string.text_widevine_number_of_open_sessions))
-                                .description(numberOfOpenSessions)
-                                .build());
-                    }
-                } catch (java.lang.IllegalStateException ex) {
-                    Log.d(TAG, ex.toString());
-                }
             }
             return subActions;
         }
@@ -302,139 +224,7 @@ public class TvActivity extends FragmentActivity {
                     .build());
         }
 
-//        @Override
-//        public void onGuidedActionClicked(GuidedAction action) {
-//
-//            if (action.getId() == WIDEVINE) {
-//                    FragmentManager fm = getFragmentManager();
-//                    GuidedStepFragment.add(fm, new WidevineStepFragment());
-//            }
-//        }
-
     }
-
-//    @Deprecated
-//    public static class WidevineStepFragment extends GuidedStepFragment {
-//        private MediaDrm mWidevineMediaDrm;
-//
-//        @Override
-//        public int onProvideTheme() {
-//            return super.onProvideTheme();
-//        }
-//
-//        @NonNull
-//        @Override
-//        public GuidanceStylist.Guidance onCreateGuidance(Bundle savedInstanceState) {
-//            String title = getString(R.string.text_widevine_name);
-//            String description = null;
-//            String breadcrumb = getString(R.string.app_name);
-//            Drawable icon = null;
-//
-//            return new GuidanceStylist.Guidance(title, description, breadcrumb, icon);
-//        }
-//
-//        @SuppressWarnings("ResourceType")
-//        @Override
-//        public void onCreateActions(@NonNull List<GuidedAction> actions, Bundle savedInstanceState) {
-//            mWidevineMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
-//
-//            if (mWidevineMediaDrm != null) {
-//                try {
-//                    String securityLevel = mWidevineMediaDrm.getPropertyString("securityLevel");
-//                    if (securityLevel != null) {
-//                        actions.add(new GuidedAction.Builder(getActivity())
-//                                .infoOnly(true)
-//                                .title(getString(R.string.text_widevine_security_level))
-//                                .description(securityLevel)
-//                                .build());
-//                    }
-//                } catch (java.lang.IllegalStateException ex) {
-//                    Log.d(TAG, ex.toString());
-//                }
-//
-//                try {
-//                    String systemId = mWidevineMediaDrm.getPropertyString("systemId");
-//                    if (systemId != null) {
-//                        actions.add(new GuidedAction.Builder(getActivity())
-//                                .infoOnly(true)
-//                                .title(getString(R.string.text_widevine_system_id))
-//                                .description(systemId)
-//                                .build());
-//                    }
-//                } catch (java.lang.IllegalStateException ex) {
-//                    Log.d(TAG, ex.toString());
-//                }
-//
-//
-//                try {
-//                    String usageReportingSupport = mWidevineMediaDrm.getPropertyString("usageReportingSupport");
-//                    if (usageReportingSupport != null) {
-//                        actions.add(new GuidedAction.Builder(getActivity())
-//                                .infoOnly(true)
-//                                .title(getString(R.string.text_widevine_usage_reporting_support))
-//                                .description(usageReportingSupport)
-//                                .build());
-//                    }
-//                } catch (java.lang.IllegalStateException ex) {
-//                    Log.d(TAG, ex.toString());
-//                }
-//
-//                try {
-//                    String hdcpLevel = mWidevineMediaDrm.getPropertyString("hdcpLevel");
-//                    if (hdcpLevel != null) {
-//                        actions.add(new GuidedAction.Builder(getActivity())
-//                                .infoOnly(true)
-//                                .title(getString(R.string.text_widevine_hdcp_level))
-//                                .description(hdcpLevel)
-//                                .build());
-//                    }
-//                } catch (java.lang.IllegalStateException ex) {
-//                    Log.d(TAG, ex.toString());
-//                }
-//
-//                try {
-//                    String maxHdcpLevel = mWidevineMediaDrm.getPropertyString("maxHdcpLevel");
-//                    if (maxHdcpLevel != null) {
-//                        actions.add(new GuidedAction.Builder(getActivity())
-//                                .infoOnly(true)
-//                                .title(getString(R.string.text_widevine_max_hdcp_level))
-//                                .description(maxHdcpLevel)
-//                                .build());
-//                    }
-//                } catch (java.lang.IllegalStateException ex) {
-//                    Log.d(TAG, ex.toString());
-//                }
-//
-//
-//                try {
-//                    String maxNumberOfSessions = mWidevineMediaDrm.getPropertyString("maxNumberOfSessions");
-//                    if (maxNumberOfSessions != null) {
-//                        actions.add(new GuidedAction.Builder(getActivity())
-//                                .infoOnly(true)
-//                                .title(getString(R.string.text_widevine_max_number_of_sessions))
-//                                .description(maxNumberOfSessions)
-//                                .build());
-//                    }
-//                } catch (java.lang.IllegalStateException ex) {
-//                    Log.d(TAG, ex.toString());
-//                }
-//
-//                try {
-//                    String numberOfOpenSessions = mWidevineMediaDrm.getPropertyString("numberOfOpenSessions");
-//                    if (numberOfOpenSessions != null) {
-//                        actions.add(new GuidedAction.Builder(getActivity())
-//                                .infoOnly(true)
-//                                .title(getString(R.string.text_widevine_number_of_open_sessions))
-//                                .description(numberOfOpenSessions)
-//                                .build());
-//                    }
-//                } catch (java.lang.IllegalStateException ex) {
-//                    Log.d(TAG, ex.toString());
-//                }
-//            }
-//
-//        }
-//    }
 
 }
 
