@@ -2,8 +2,8 @@ package com.androidfung.drminfo;
 
 import android.media.MediaDrm;
 import android.media.UnsupportedSchemeException;
-import android.support.annotation.IntDef;
-import android.support.annotation.Keep;
+import androidx.annotation.IntDef;
+import androidx.annotation.Keep;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

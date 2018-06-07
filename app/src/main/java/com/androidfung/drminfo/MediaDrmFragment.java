@@ -1,9 +1,9 @@
 package com.androidfung.drminfo;
 
-import android.databinding.ObservableArrayMap;
+import androidx.databinding.ObservableArrayMap;
 import android.media.MediaDrm;
-import android.support.annotation.Keep;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Keep;
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 
 import com.google.firebase.crash.FirebaseCrash;

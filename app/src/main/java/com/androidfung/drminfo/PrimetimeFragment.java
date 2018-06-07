@@ -1,12 +1,12 @@
 package com.androidfung.drminfo;
 
-import android.databinding.DataBindingUtil;
-import android.databinding.ObservableArrayMap;
-import android.databinding.ViewDataBinding;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ObservableArrayMap;
+import androidx.databinding.ViewDataBinding;
 import android.media.MediaDrm;
 import android.os.Bundle;
-import android.support.annotation.Keep;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Keep;
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
 @Keep
 public class PrimetimeFragment extends MediaDrmFragment {

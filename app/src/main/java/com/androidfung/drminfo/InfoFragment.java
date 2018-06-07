@@ -2,13 +2,13 @@ package com.androidfung.drminfo;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
-import android.databinding.ObservableArrayMap;
-import android.databinding.ViewDataBinding;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ObservableArrayMap;
+import androidx.databinding.ViewDataBinding;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Keep;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Keep;
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +19,7 @@ import android.view.ViewGroup;
  * A simple {@link Fragment} subclass.
  */
 @Keep
-public class InfoFragment extends Fragment{
+public class InfoFragment extends androidx.fragment.app.Fragment {
 
     private final String TAG = InfoFragment.class.getSimpleName();
 //    private View mRootView;
