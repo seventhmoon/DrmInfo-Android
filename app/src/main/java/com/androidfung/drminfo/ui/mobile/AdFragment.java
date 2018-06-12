@@ -1,4 +1,4 @@
-package com.androidfung.drminfo;
+package com.androidfung.drminfo.ui.mobile;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.androidfung.drminfo.BuildConfig;
+import com.androidfung.drminfo.R;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 

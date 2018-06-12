@@ -28,7 +28,7 @@
         android:minHeight="@dimen/box_min_height"
         android:minWidth="@dimen/box_min_width"
         app:contentPadding="16dp"
-        tools:context="com.androidfung.drminfo.PrimetimeFragment">
+        tools:context="com.androidfung.drminfo.ui.mobile.PrimetimeFragment">
 
 
         <GridLayout

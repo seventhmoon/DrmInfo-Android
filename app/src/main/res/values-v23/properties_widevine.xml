@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string-array name="widevine_string_properties" tools:ignore="InconsistentArrays">
+        <item>securityLevel</item>
+        <item>systemId</item>
+        <item>privacyMode</item>
+        <item>sessionSharing</item>
+        <item>usageReportingSupport</item>
+        <item>maxHdcpLevel</item>
+        <item>maxNumberOfSessions</item>
+    </string-array>
+
+</resources>

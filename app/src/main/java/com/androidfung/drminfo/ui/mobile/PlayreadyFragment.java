@@ -1,16 +1,20 @@
-package com.androidfung.drminfo;
+package com.androidfung.drminfo.ui.mobile;
 
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ObservableArrayMap;
-import androidx.databinding.ViewDataBinding;
-import android.media.MediaDrm;
+
 import android.os.Bundle;
 import androidx.annotation.Keep;
 import androidx.fragment.app.Fragment;
-import android.util.Log;
+import androidx.lifecycle.ViewModelProviders;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.androidfung.drminfo.MediaDrmFragment;
+import com.androidfung.drminfo.R;
+import com.androidfung.drminfo.databinding.FragmentPlayreadyBinding;
 
 
 /**
@@ -22,8 +26,8 @@ public class PlayreadyFragment extends MediaDrmFragment {
 
     private static final String TAG = PlayreadyFragment.class.getSimpleName();
 
-    private MediaDrm mPlayreadyMediaDrm;
-    private ObservableArrayMap<String, Object> mProperties;
+    private MediaDrmViewModel mViewModel;
+    private FragmentPlayreadyBinding mBinding;
 
     public PlayreadyFragment() {
         // Required empty public constructor
@@ -35,21 +39,25 @@ public class PlayreadyFragment extends MediaDrmFragment {
         super.onCreate(savedInstanceState);
         // retain this fragment
         setRetainInstance(true);
-
-        mPlayreadyMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PLAYREADY);
-        mProperties = getMediaDrmProperties(mPlayreadyMediaDrm);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        ViewDataBinding  binding = DataBindingUtil.inflate(inflater, R.layout.fragment_playready, container, false);
-        View rootView = binding.getRoot();
-        binding.setVariable(com.androidfung.drminfo.BR.mediaDrm, mPlayreadyMediaDrm);
-        binding.setVariable(com.androidfung.drminfo.BR.properties, mProperties);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_playready, container, false);
 
-        return rootView;
+        return mBinding.getRoot();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        mViewModel = ViewModelProviders.of(this).get(PlayreadyViewModel.class);
+        mViewModel.getProperties().observe(this, mBinding::setProperties);
+
+        mBinding.setLifecycleOwner(this);
     }
 
 

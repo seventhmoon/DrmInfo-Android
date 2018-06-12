@@ -28,7 +28,7 @@
         android:minHeight="@dimen/box_min_height"
         android:minWidth="@dimen/box_min_width"
         app:contentPadding="16dp"
-        tools:context=".WidevineFragment">
+        tools:context=".ui.mobile.WidevineFragment">
 
 
         <GridLayout
@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="@{mediaDrm != null ? @string/text_supported : @string/text_not_supported}"
+                android:text="@{properties.isEmpty()  ? @string/text_not_supported : @string/text_supported }"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <TextView
@@ -68,7 +68,7 @@
                 android:maxLines="1"
                 android:text="@string/text_media_drm_description"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{properties[@string/key_media_drm_description] != null ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -76,7 +76,7 @@
                 android:layout_gravity="end"
                 android:text='@{properties[@string/key_media_drm_description]?? "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{properties[@string/key_media_drm_description] != null ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -85,7 +85,7 @@
                 android:maxLines="1"
                 android:text="@string/text_media_drm_version"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{properties[@string/key_media_drm_version] != null ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -93,7 +93,7 @@
                 android:layout_gravity="end"
                 android:text='@{properties[@string/key_media_drm_version]?? "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{properties[@string/key_media_drm_version] != null ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -102,7 +102,7 @@
                 android:maxLines="1"
                 android:text="@string/text_widevine_system_id"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{properties[@string/key_widevine_system_id] != null ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -110,7 +110,7 @@
                 android:layout_gravity="end"
                 android:text='@{properties[@string/key_widevine_system_id]?? "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{properties[@string/key_widevine_system_id] != null ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -119,7 +119,7 @@
                 android:maxLines="1"
                 android:text="@string/text_widevine_security_level"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{properties[@string/key_widevine_security_level] != null ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -127,7 +127,7 @@
                 android:layout_gravity="end"
                 android:text='@{properties[@string/key_widevine_security_level]?? "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{properties[@string/key_widevine_security_level] != null ? View.VISIBLE : View.GONE}" />
 
         </GridLayout>
 

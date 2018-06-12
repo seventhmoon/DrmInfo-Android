@@ -22,7 +22,7 @@
         android:minHeight="@dimen/box_min_height"
         android:minWidth="@dimen/box_min_width"
         app:contentPadding="16dp"
-        tools:context="com.androidfung.drminfo.InfoFragment">
+        tools:context="com.androidfung.drminfo.ui.mobile.InfoFragment">
 
 
         <GridLayout
@@ -111,19 +111,19 @@
                 android:text="@{String.valueOf(Build.VERSION.SDK_INT)}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/text_webview_version"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/text_webview_version"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
 
-            <TextView
+            <!--<TextView-->
 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="@{map[`versionName`]}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="end"-->
+                <!--android:text="@{map[`versionName`]}"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
 
         </GridLayout>
 
