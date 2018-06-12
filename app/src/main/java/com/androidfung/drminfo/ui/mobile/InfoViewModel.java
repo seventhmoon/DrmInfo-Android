@@ -1,12 +1,6 @@
 package com.androidfung.drminfo.ui.mobile;
 
 import android.app.Application;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.media.MediaDrm;
-import android.util.Log;
-
-import com.androidfung.drminfo.MediaDrmFactory;
 
 import androidx.databinding.ObservableArrayMap;
 import androidx.lifecycle.AndroidViewModel;

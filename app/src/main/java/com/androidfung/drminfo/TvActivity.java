@@ -1,24 +1,23 @@
 package com.androidfung.drminfo;
 
-import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.media.MediaDrm;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Keep;
-import androidx.annotation.NonNull;
-import androidx.leanback.app.GuidedStepFragment;
-import androidx.leanback.app.GuidedStepSupportFragment;
-import androidx.leanback.widget.GuidanceStylist;
-import androidx.leanback.widget.GuidedAction;
-import androidx.fragment.app.FragmentActivity;
-import androidx.core.content.ContextCompat;
 import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.leanback.app.GuidedStepSupportFragment;
+import androidx.leanback.widget.GuidanceStylist;
+import androidx.leanback.widget.GuidedAction;
 @Keep
 public class TvActivity extends FragmentActivity {
 
@@ -43,20 +42,15 @@ public class TvActivity extends FragmentActivity {
     public static class InfoStepFragment extends GuidedStepSupportFragment {
         private MediaDrm mWidevineMediaDrm, mPlayreadyMediaDrm, mMarlinMediaDrm, mVerimatrixMediaDrm, mClearKeyMediaDrm, mPrimetimeMediaDrm;
 
-        @Override
-        public int onProvideTheme() {
-            return super.onProvideTheme();
-        }
-
         @NonNull
         @Override
         public GuidanceStylist.Guidance onCreateGuidance(Bundle savedInstanceState) {
             String title = getString(R.string.app_name);
             String description = getString(R.string.text_on_android_tv);
-            String breadcrumb = null;
+
             Drawable icon = ContextCompat.getDrawable(getActivity(), R.mipmap.ic_launcher_round);
 
-            return new GuidanceStylist.Guidance(title, description, breadcrumb, icon);
+            return new GuidanceStylist.Guidance(title, description, null, icon);
         }
 
         @SuppressWarnings("ResourceType")

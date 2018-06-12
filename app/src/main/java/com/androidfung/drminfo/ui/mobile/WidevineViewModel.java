@@ -2,8 +2,6 @@ package com.androidfung.drminfo.ui.mobile;
 
 import android.app.Application;
 import android.media.MediaDrm;
-import android.os.PersistableBundle;
-import android.util.Log;
 
 import com.androidfung.drminfo.MediaDrmFactory;
 import com.androidfung.drminfo.R;
@@ -39,11 +37,11 @@ public class WidevineViewModel extends MediaDrmViewModel {
         String[] wvKeys = getApplication().getResources().getStringArray(R.array.widevine_string_properties);
 
         if (mediaDrm != null) {
-            for (int i = 0; i < wvKeys.length; i++) {
+            for (String wvKey : wvKeys) {
                 try {
-                    String value = mediaDrm.getPropertyString(wvKeys[i]);
-                    map.put(wvKeys[i], value);
-                }catch (IllegalStateException e){
+                    String value = mediaDrm.getPropertyString(wvKey);
+                    map.put(wvKey, value);
+                } catch (IllegalStateException ignored) {
                 }
             }
         }

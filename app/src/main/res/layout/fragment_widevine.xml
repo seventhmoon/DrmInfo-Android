@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="@{properties.isEmpty()  ? @string/text_not_supported : @string/text_supported }"
+                android:text="@{properties.isEmpty() ? @string/text_not_supported : @string/text_supported}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <TextView
@@ -128,6 +128,93 @@
                 android:text='@{properties[@string/key_widevine_security_level]?? "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:visibility="@{properties[@string/key_widevine_security_level] != null ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/text_widevine_hdcp_level"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{properties[@string/key_widevine_hdcp_level] != null ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text='@{properties[@string/key_widevine_hdcp_level]?? "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{properties[@string/key_widevine_hdcp_level] != null ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/text_widevine_max_hdcp_level"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{properties[@string/key_widevine_max_hdcp_level] != null ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text='@{properties[@string/key_widevine_max_hdcp_level] ?? "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{properties[@string/key_widevine_max_hdcp_level] != null ? View.VISIBLE : View.GONE}" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/text_widevine_number_of_open_sessions"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{properties[@string/key_widevine_number_of_open_sessions] != null ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text='@{properties[@string/key_widevine_number_of_open_sessions] ?? "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{properties[@string/key_widevine_number_of_open_sessions] != null ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/text_widevine_max_number_of_sessions"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{properties[@string/key_widevine_max_number_of_sessions] != null ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text='@{properties[@string/key_widevine_max_number_of_sessions] ?? "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{properties[@string/key_widevine_max_number_of_sessions] != null ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/text_widevine_usage_reporting_support"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{properties[@string/key_widevine_usage_reporting_support] != null ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text='@{properties[@string/key_widevine_usage_reporting_support] ?? "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{properties[@string/key_widevine_usage_reporting_support] != null ? View.VISIBLE : View.GONE}" />
+
 
         </GridLayout>
 

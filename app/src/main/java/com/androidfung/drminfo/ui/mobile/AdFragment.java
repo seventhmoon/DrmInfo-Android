@@ -78,11 +78,6 @@ public class AdFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
     private void loadAd(long adSource) {
 
         switch ((int) adSource) {
