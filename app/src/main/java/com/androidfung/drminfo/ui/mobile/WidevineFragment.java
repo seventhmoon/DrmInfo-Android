@@ -56,9 +56,9 @@ public class WidevineFragment extends MediaDrmFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-            mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_widevine, container, false);
-        View rootView = mBinding.getRoot();
-        return rootView;
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_widevine, container, false);
+
+        return mBinding.getRoot();
     }
 
 
