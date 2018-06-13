@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="mediadrm_string_properties_key">
+    <string-array name="mediadrm_string_property_keys">
         <item>vendor</item>
         <item>description</item>
         <item>version</item>
         <item>algorithms</item>
     </string-array>
 
-    <string-array name="mediadrm_string_properties_text">
+    <string-array name="mediadrm_string_property_names">
         <item>Vendor</item>
         <item>Description</item>
         <item>Version</item>
         <item>Algorithm</item>
     </string-array>
-    <string-array name="mediadrm_bytearray_properties">
+    <string-array name="mediadrm_bytearray_property_keys">
         <item>deviceUniqueId</item>
     </string-array>
 

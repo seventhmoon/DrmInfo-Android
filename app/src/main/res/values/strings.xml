@@ -21,7 +21,6 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <!--<string name="text_media_drm_description">Description</string>-->
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="label_cts_profile_match">CTS Profile Match</string>
     <string name="text_unknown">Unknown</string>

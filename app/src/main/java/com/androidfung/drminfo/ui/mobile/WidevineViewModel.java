@@ -34,14 +34,14 @@ public class WidevineViewModel extends MediaDrmViewModel {
         super.prepareProperties(mediaDrm);
         ObservableArrayMap<String, Object> map = mProperties.getValue();
 
-        String[] wvKeys = getApplication().getResources().getStringArray(R.array.widevine_string_properties);
+        String[] wvKeys = getApplication().getResources().getStringArray(R.array.widevine_string_property_keys);
 
         if (mediaDrm != null) {
             for (String wvKey : wvKeys) {
                 try {
                     String value = mediaDrm.getPropertyString(wvKey);
                     map.put(wvKey, value);
-                } catch (IllegalStateException ignored) {
+                } catch (IllegalStateException | IllegalArgumentException ignored) {
                 }
             }
         }

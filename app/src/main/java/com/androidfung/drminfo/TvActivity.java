@@ -90,19 +90,40 @@ public class TvActivity extends FragmentActivity {
         @SuppressWarnings("ResourceType")
         private List<GuidedAction> getWidevineSubActions() {
             List<GuidedAction> subActions = new ArrayList<>();
-            String[] propertyStrings = {"securityLevel", "systemId", "usageReportingSupport", "hdcpLevel", "maxHdcpLevel", "maxNumberOfSessions", "numberOfOpenSessions"};
-            int[] titles = {R.string.text_widevine_security_level, R.string.text_widevine_system_id, R.string.text_widevine_usage_reporting_support, R.string.key_widevine_hdcp_level,
-            R.string.text_widevine_max_hdcp_level, R.string.text_widevine_max_number_of_sessions, R.string.text_widevine_number_of_open_sessions};
+            String[] drmStringKeys = getResources().getStringArray(R.array.mediadrm_string_property_keys);
+            String[] drmStringNames = getResources().getStringArray(R.array.mediadrm_string_property_names);
+
+            String[] wvStringKeys = getResources().getStringArray(R.array.widevine_string_property_keys);
+            String[] wvStringNames = getResources().getStringArray(R.array.widevine_string_property_names);
+
+
+//            String[] propertyStrings = {"securityLevel", "systemId", "usageReportingSupport", "hdcpLevel", "maxHdcpLevel", "maxNumberOfSessions", "numberOfOpenSessions"};
+
+//            int[] titles = {R.string.text_widevine_security_level, R.string.text_widevine_system_id, R.string.text_widevine_usage_reporting_support, R.string.key_widevine_hdcp_level,
+//            R.string.text_widevine_max_hdcp_level, R.string.text_widevine_max_number_of_sessions, R.string.text_widevine_number_of_open_sessions};
 
             if (mWidevineMediaDrm != null){
 
-                for (int i=0; i< propertyStrings.length; i++){
+                for (int i=0; i< drmStringKeys.length; i++){
                     try {
-                        String securityLevel = mWidevineMediaDrm.getPropertyString(propertyStrings[i]);
+                        String value = mWidevineMediaDrm.getPropertyString(drmStringKeys[i]);
                         subActions.add(new GuidedAction.Builder(getActivity())
                                 .infoOnly(true)
-                                .title(getString(titles[i]))
-                                .description(securityLevel)
+                                .title(drmStringNames[i])
+                                .description(value)
+                                .build());
+                    } catch (java.lang.IllegalStateException ex) {
+                        Log.d(TAG, ex.toString());
+                    }
+                }
+
+                for (int i=0; i< wvStringKeys.length; i++){
+                    try {
+                        String value = mWidevineMediaDrm.getPropertyString(wvStringKeys[i]);
+                        subActions.add(new GuidedAction.Builder(getActivity())
+                                .infoOnly(true)
+                                .title(wvStringNames[i])
+                                .description(value)
                                 .build());
                     } catch (java.lang.IllegalStateException ex) {
                         Log.d(TAG, ex.toString());

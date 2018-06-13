@@ -30,7 +30,7 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
     protected void prepareProperties(MediaDrm mediaDrm){
         if (mediaDrm != null) {
             ObservableArrayMap<String, Object> map = new ObservableArrayMap<>();
-            String[] mediaDrmKeys = getApplication().getResources().getStringArray(R.array.mediadrm_string_properties_key);
+            String[] mediaDrmKeys = getApplication().getResources().getStringArray(R.array.mediadrm_string_property_keys);
             for (String mediaDrmKey : mediaDrmKeys) {
                 String value = mediaDrm.getPropertyString(mediaDrmKey);
                 map.put(mediaDrmKey, value);
