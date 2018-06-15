@@ -19,7 +19,7 @@ import com.androidfung.drminfo.databinding.FragmentInfoBinding;
  * A simple {@link Fragment} subclass.
  */
 @Keep
-public class InfoFragment extends androidx.fragment.app.Fragment {
+public class InfoFragment extends Fragment {
 
     private final String TAG = InfoFragment.class.getSimpleName();
     private FragmentInfoBinding mBinding;

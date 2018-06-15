@@ -5,13 +5,13 @@ import androidx.databinding.DataBindingUtil;
 
 import android.os.Bundle;
 import androidx.annotation.Keep;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.androidfung.drminfo.MediaDrmFragment;
 import com.androidfung.drminfo.R;
 import com.androidfung.drminfo.databinding.FragmentPrimetimeBinding;
 
@@ -20,7 +20,7 @@ import com.androidfung.drminfo.databinding.FragmentPrimetimeBinding;
  * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
 @Keep
-public class PrimetimeFragment extends MediaDrmFragment {
+public class PrimetimeFragment extends Fragment {
 
     private static final String TAG = PrimetimeFragment.class.getSimpleName();
 

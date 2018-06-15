@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.androidfung.drminfo.MediaDrmFragment;
 import com.androidfung.drminfo.R;
 import com.androidfung.drminfo.databinding.FragmentPlayreadyBinding;
 
@@ -22,7 +21,7 @@ import com.androidfung.drminfo.databinding.FragmentPlayreadyBinding;
  * Activities that contain this fragment must implement the
  */
 @Keep
-public class PlayreadyFragment extends MediaDrmFragment {
+public class PlayreadyFragment extends Fragment {
 
     private static final String TAG = PlayreadyFragment.class.getSimpleName();
 

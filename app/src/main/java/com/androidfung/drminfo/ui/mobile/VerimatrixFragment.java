@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.androidfung.drminfo.MediaDrmFragment;
 import com.androidfung.drminfo.R;
 import com.androidfung.drminfo.databinding.FragmentVerimatrixBinding;
 
@@ -21,7 +20,7 @@ import com.androidfung.drminfo.databinding.FragmentVerimatrixBinding;
  * A simple {@link Fragment} subclass.
  */
 @Keep
-public class VerimatrixFragment extends MediaDrmFragment {
+public class VerimatrixFragment extends Fragment {
 
     private static final String TAG = VerimatrixFragment.class.getSimpleName();
 

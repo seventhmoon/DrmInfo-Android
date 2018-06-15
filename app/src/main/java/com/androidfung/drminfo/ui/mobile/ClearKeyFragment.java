@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.androidfung.drminfo.MediaDrmFragment;
 import com.androidfung.drminfo.R;
 import com.androidfung.drminfo.databinding.FragmentClearkeyBinding;
 
@@ -21,7 +20,7 @@ import com.androidfung.drminfo.databinding.FragmentClearkeyBinding;
  * Activities that contain this fragment must implement the
  */
 @Keep
-public class ClearKeyFragment extends MediaDrmFragment {
+public class ClearKeyFragment extends Fragment {
 
     private static final String TAG = ClearKeyFragment.class.getSimpleName();
 

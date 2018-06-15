@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.androidfung.drminfo.MediaDrmFragment;
 import com.androidfung.drminfo.R;
 import com.androidfung.drminfo.databinding.FragmentMarlinBinding;
 
@@ -21,7 +20,7 @@ import com.androidfung.drminfo.databinding.FragmentMarlinBinding;
  * A simple {@link Fragment} subclass.
  */
 @Keep
-public class MarlinFragment extends MediaDrmFragment {
+public class MarlinFragment extends Fragment {
 
     private static final String TAG = MarlinFragment.class.getSimpleName();
 

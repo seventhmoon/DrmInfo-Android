@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.androidfung.drminfo.MediaDrmFragment;
 import com.androidfung.drminfo.R;
 import com.androidfung.drminfo.databinding.FragmentWidevineBinding;
 
@@ -23,7 +22,7 @@ import com.androidfung.drminfo.databinding.FragmentWidevineBinding;
  * A simple {@link Fragment} subclass.
  */
 @Keep
-public class WidevineFragment extends MediaDrmFragment {
+public class WidevineFragment extends Fragment {
 
     private static final String TAG = WidevineFragment.class.getSimpleName();
 

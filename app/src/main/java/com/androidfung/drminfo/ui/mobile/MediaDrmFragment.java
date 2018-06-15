@@ -1,13 +1,17 @@
-package com.androidfung.drminfo;
+package com.androidfung.drminfo.ui.mobile;
 
 import androidx.databinding.ObservableArrayMap;
 import android.media.MediaDrm;
+
+import com.androidfung.drminfo.R;
+
 import androidx.annotation.Keep;
 import androidx.fragment.app.Fragment;
 
 /**
  * Created by fung on 5/3/2016.
  */
+@Deprecated
 @Keep
 public class MediaDrmFragment extends Fragment {
 
