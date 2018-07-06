@@ -10,7 +10,7 @@ android {
         applicationId "com.androidfung.drminfo"
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 93
+        versionCode 94
         versionName "1.0.15.180705"
         resConfigs "en"
         multiDexEnabled true

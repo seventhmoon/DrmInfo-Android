@@ -15,6 +15,8 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keep class com.androidfung.drminfo.ui.mobile.** { *; }
+-keep class com.androidfung.drminfo.** { *; }
 -keep class android.support.design.** { *; }
 -keep interface android.support.design.** { *; }
 #-keep class android.support.v7.** { *; }
