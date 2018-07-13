@@ -25,19 +25,20 @@
         tools:context="com.androidfung.drminfo.ui.mobile.InfoFragment">
 
 
-        <GridLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="2">
+            android:orientation="vertical"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
                 android:text="@string/text_device_information"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
             <TextView
+                android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/text_brand"
@@ -47,11 +48,12 @@
                 android:id="@+id/textview_brand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
                 android:text="@{Build.BRAND}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                />
 
             <TextView
+                android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/text_model"
@@ -61,11 +63,11 @@
                 android:id="@+id/textview_model"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
                 android:text="@{Build.MODEL}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
             <TextView
+                android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/text_product"
@@ -75,29 +77,26 @@
                 android:id="@+id/textview_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
                 android:text="@{Build.PRODUCT}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
             <TextView
+                android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/text_build"
-
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <TextView
-                android:layout_width="160dp"
-                android:textAlignment="viewEnd"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:ellipsize="marquee"
                 android:singleLine="true"
-                app:autoSizeTextType="uniform"
+                android:ellipsize="middle"
                 android:text="@{Build.DISPLAY}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
             <TextView
+                android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/text_sdk_level"
@@ -107,9 +106,8 @@
                 android:id="@+id/textview_sdk_level"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
                 android:text="@{String.valueOf(Build.VERSION.SDK_INT)}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
             <!--<TextView-->
                 <!--android:layout_width="wrap_content"-->
@@ -125,7 +123,7 @@
                 <!--android:text="@{map[`versionName`]}"-->
                 <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
 
-        </GridLayout>
+        </LinearLayout>
 
 
     </com.google.android.material.card.MaterialCardView>

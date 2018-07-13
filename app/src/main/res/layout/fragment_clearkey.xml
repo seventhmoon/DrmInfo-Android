@@ -31,35 +31,34 @@
         tools:context="com.androidfung.drminfo.ui.mobile.ClearKeyFragment">
 
 
-        <GridLayout
+        <LinearLayout
             android:id="@+id/gridlayout_clearkey"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="2">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
                 android:text="@string/text_clearkey_name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                android:layout_marginTop="4dp"
                 android:text="@string/text_clearkey_name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
                 android:text="@{properties.isEmpty() ?  @string/text_not_supported : @string/text_supported }"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
 
             <TextView
+                android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -71,9 +70,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
                 android:text='@{properties[@string/key_media_drm_description] ?? "-"}'
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:visibility="@{properties[@string/key_media_drm_description]  != null ? View.VISIBLE : View.GONE}" />
 
             <TextView
@@ -81,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:layout_marginTop="4dp"
                 android:text="@string/text_media_drm_version"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:visibility="@{properties[@string/key_media_drm_version] != null ? View.VISIBLE : View.GONE}" />
@@ -88,11 +87,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
                 android:text='@{properties[@string/key_media_drm_version] ?? "-"}'
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:visibility="@{properties[@string/key_media_drm_version] != null ? View.VISIBLE : View.GONE}" />
-        </GridLayout>
+        </LinearLayout>
 
 
     </com.google.android.material.card.MaterialCardView>
