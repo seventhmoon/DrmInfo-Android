@@ -35,21 +35,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/text_device_information"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
             <TextView
                 android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/text_brand"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             <TextView
                 android:id="@+id/textview_brand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{Build.BRAND}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 />
 
             <TextView
@@ -57,35 +57,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/text_model"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             <TextView
                 android:id="@+id/textview_model"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{Build.MODEL}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <TextView
                 android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/text_product"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             <TextView
                 android:id="@+id/textview_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{Build.PRODUCT}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <TextView
                 android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/text_build"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -93,21 +93,21 @@
                 android:singleLine="true"
                 android:ellipsize="middle"
                 android:text="@{Build.DISPLAY}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <TextView
                 android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/text_sdk_level"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             <TextView
                 android:id="@+id/textview_sdk_level"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{String.valueOf(Build.VERSION.SDK_INT)}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <!--<TextView-->
                 <!--android:layout_width="wrap_content"-->
