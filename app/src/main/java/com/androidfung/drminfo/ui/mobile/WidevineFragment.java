@@ -26,10 +26,7 @@ public class WidevineFragment extends Fragment {
 
     private static final String TAG = WidevineFragment.class.getSimpleName();
 
-
-    private WidevineViewModel mViewModel;
     private FragmentWidevineBinding mBinding;
-
 
     public WidevineFragment() {
         // Required empty public constructor
@@ -43,15 +40,6 @@ public class WidevineFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(WidevineViewModel.class);
-        mBinding.setLifecycleOwner(this);
-        mViewModel.getProperties().observe(this, mBinding::setProperties);
-    }
-
-    @SuppressWarnings("ResourceType")
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -60,5 +48,13 @@ public class WidevineFragment extends Fragment {
         return mBinding.getRoot();
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mBinding.setLifecycleOwner(this);
+
+        WidevineViewModel mViewModel = ViewModelProviders.of(this).get(WidevineViewModel.class);
+        mViewModel.getProperties().observe(this, mBinding::setProperties);
+    }
 
 }

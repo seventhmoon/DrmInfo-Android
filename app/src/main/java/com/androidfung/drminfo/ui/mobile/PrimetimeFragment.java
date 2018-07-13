@@ -24,7 +24,6 @@ public class PrimetimeFragment extends Fragment {
 
     private static final String TAG = PrimetimeFragment.class.getSimpleName();
 
-    private MediaDrmViewModel mViewModel;
     private FragmentPrimetimeBinding mBinding;
 
     public PrimetimeFragment() {
@@ -50,8 +49,8 @@ public class PrimetimeFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mViewModel = ViewModelProviders.of(this).get(PrimetimeViewModel.class);
-        mViewModel.getProperties().observe(this, mBinding::setProperties);
+        MediaDrmViewModel viewModel = ViewModelProviders.of(this).get(PrimetimeViewModel.class);
+        viewModel.getProperties().observe(this, mBinding::setProperties);
 
         mBinding.setLifecycleOwner(this);
     }

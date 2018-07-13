@@ -23,7 +23,6 @@ public class InfoFragment extends Fragment {
 
     private final String TAG = InfoFragment.class.getSimpleName();
     private FragmentInfoBinding mBinding;
-    private InfoViewModel mViewModel;
 
 
     public InfoFragment() {
@@ -40,9 +39,11 @@ public class InfoFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(InfoViewModel.class);
+
+        InfoViewModel viewModel = ViewModelProviders.of(this).get(InfoViewModel.class);
+        viewModel.getProperties().observe(this, mBinding::setMap);
+
         mBinding.setLifecycleOwner(this);
-        mViewModel.getProperties().observe(this, mBinding::setMap);
     }
 
     @Override

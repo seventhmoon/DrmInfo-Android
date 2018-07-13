@@ -24,7 +24,6 @@ public class VerimatrixFragment extends Fragment {
 
     private static final String TAG = VerimatrixFragment.class.getSimpleName();
 
-    private MediaDrmViewModel mViewModel;
     private FragmentVerimatrixBinding mBinding;
 
     public VerimatrixFragment() {
@@ -50,8 +49,8 @@ public class VerimatrixFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mViewModel = ViewModelProviders.of(this).get(VerimatrixViewModel.class);
-        mViewModel.getProperties().observe(this, mBinding::setProperties);
+        MediaDrmViewModel viewModel = ViewModelProviders.of(this).get(VerimatrixViewModel.class);
+        viewModel.getProperties().observe(this, mBinding::setProperties);
 
         mBinding.setLifecycleOwner(this);
     }
