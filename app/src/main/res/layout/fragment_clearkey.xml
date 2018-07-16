@@ -44,18 +44,18 @@
                 android:text="@string/text_clearkey_name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/text_clearkey_name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:text="@string/text_clearkey_name"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{properties.isEmpty() ?  @string/text_not_supported : @string/text_supported }"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@{properties.isEmpty() ?  @string/text_not_supported : @string/text_supported }"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
 
 
             <TextView

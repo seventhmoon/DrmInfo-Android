@@ -14,6 +14,7 @@ import com.androidfung.drminfo.R;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -131,6 +132,60 @@ public class AdFragment extends Fragment {
             });
             mAdView.loadAd(new AdRequest.Builder().build());
         }
+    }
+
+    private void loadAdMobBannerAdPost() {
+        mBannerAdHolder.post(() -> {
+            //        if (mAdView != null) {
+            AdView adView = new AdView(getContext());
+            float scaleRatio = mBannerAdHolder.getResources().getDisplayMetrics().density;
+            int width = (int) (mBannerAdHolder.getMeasuredWidth() / scaleRatio);
+            int height = (int) (mBannerAdHolder.getMeasuredHeight() / scaleRatio);
+            Log.d(TAG, "loadAdMobBannerAd: width=" + width + " height=" + height);
+            adView.setAdSize(new AdSize(width, height));
+            adView.setAdUnitId(getString(R.string.ad_unit_id_medium_rect));
+            adView.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+                    // Code to be executed when an ad finishes loading.
+                    Log.i("Ads", "onAdLoaded");
+                    mBannerAdHolder.setVisibility(View.VISIBLE);
+                    adView.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAdFailedToLoad(int errorCode) {
+                    // Code to be executed when an ad request fails.
+                    Log.i("Ads", "onAdFailedToLoad");
+                    mBannerAdHolder.setVisibility(View.GONE);
+                    adView.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAdOpened() {
+                    // Code to be executed when an ad opens an overlay that
+                    // covers the screen.
+                    Log.i("Ads", "onAdOpened");
+                }
+
+                @Override
+                public void onAdLeftApplication() {
+                    // Code to be executed when the user has left the app.
+                    Log.i("Ads", "onAdLeftApplication");
+                }
+
+                @Override
+                public void onAdClosed() {
+                    // Code to be executed when when the user is about to return
+                    // to the app after tapping on an ad.
+                    Log.i("Ads", "onAdClosed");
+                }
+            });
+            adView.loadAd(new AdRequest.Builder().build());
+            mBannerAdHolder.addView(adView);
+//        }
+        });
+
     }
 
 }

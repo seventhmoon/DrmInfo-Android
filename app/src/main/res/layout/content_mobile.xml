@@ -42,9 +42,17 @@
             app:layout_minWidth="@dimen/box_min_width"
             android:layout_margin="4dp"
             app:layout_flexGrow="@integer/layout_flexGrow"
-
             tools:layout="@layout/fragment_info" />
 
+        <fragment
+            app:layout_minWidth="@dimen/box_min_width"
+            android:id="@+id/fragment_clearkey"
+            android:name="com.androidfung.drminfo.ui.mobile.ClearKeyFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            app:layout_flexGrow="@integer/layout_flexGrow"
+            tools:layout="@layout/fragment_clearkey" />
 
         <fragment
             app:layout_minWidth="@dimen/box_min_width"
@@ -97,15 +105,6 @@
             tools:layout="@layout/fragment_verimatrix"
             />
 
-        <fragment
-            app:layout_minWidth="@dimen/box_min_width"
-            android:id="@+id/fragment_clearkey"
-            android:name="com.androidfung.drminfo.ui.mobile.ClearKeyFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:layout_flexGrow="@integer/layout_flexGrow"
-            tools:layout="@layout/fragment_clearkey" />
 
         <fragment
             app:layout_minWidth="@dimen/box_min_width"

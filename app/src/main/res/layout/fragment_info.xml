@@ -110,85 +110,85 @@
                 android:text="@{String.valueOf(Build.VERSION.SDK_INT)}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="@string/text_widevine_name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:singleLine="true"-->
+                <!--android:text="@string/text_widevine_name"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
 
-                android:text='@{map["widevineDrm"] == null ? @string/text_not_supported : @string/text_supported}'
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                <!--android:text='@{map["widevineDrm"] == null ? @string/text_not_supported : @string/text_supported}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="@string/text_verimatrix_name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:singleLine="true"-->
+                <!--android:text="@string/text_verimatrix_name"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
 
-                android:text='@{map["verimatrixDrm"] == null ? @string/text_not_supported : @string/text_supported}'
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                <!--android:text='@{map["verimatrixDrm"] == null ? @string/text_not_supported : @string/text_supported}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="@string/text_primetime_name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:singleLine="true"-->
+                <!--android:text="@string/text_primetime_name"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
 
-                android:text='@{map["primetimeDrm"] == null ? @string/text_not_supported : @string/text_supported}'
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                <!--android:text='@{map["primetimeDrm"] == null ? @string/text_not_supported : @string/text_supported}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="@string/text_playready_name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:singleLine="true"-->
+                <!--android:text="@string/text_playready_name"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
 
-                android:text='@{map["playreadyDrm"] == null ? @string/text_not_supported : @string/text_supported}'
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                <!--android:text='@{map["playreadyDrm"] == null ? @string/text_not_supported : @string/text_supported}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="@string/text_clearkey_name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:singleLine="true"-->
+                <!--android:text="@string/text_clearkey_name"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
 
-                android:text='@{map["clearkeyDrm"] == null ? @string/text_not_supported : @string/text_supported}'
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+                <!--android:text='@{map["clearkeyDrm"] == null ? @string/text_not_supported : @string/text_supported}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
 
 
             <!--<TextView-->
