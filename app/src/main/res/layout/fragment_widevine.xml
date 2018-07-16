@@ -28,7 +28,8 @@
         android:minWidth="@dimen/box_min_width"
         android:minHeight="@dimen/box_min_height"
         app:contentPadding="16dp"
-        tools:context=".ui.mobile.WidevineFragment">
+        tools:context=".ui.mobile.WidevineFragment"
+        android:visibility="@{properties.isEmpty() ? View.GONE : View.VISIBLE}" >
 
 
         <LinearLayout
@@ -45,177 +46,431 @@
                 android:text="@string/text_widevine_name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:singleLine="true"-->
+                <!--android:text="@string/text_widevine_name"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+
+                <!--android:text="@{properties.isEmpty() ? @string/text_not_supported : @string/text_supported}"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:singleLine="true"-->
+                <!--android:text="@string/text_media_drm_description"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead"-->
+                <!--android:visibility="@{properties[@string/key_media_drm_description] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text='@{properties[@string/key_media_drm_description]?? "-"}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2"-->
+                <!--android:visibility="@{properties[@string/key_media_drm_description] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:singleLine="true"-->
+                <!--android:text="@string/text_media_drm_version"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead"-->
+                <!--android:visibility="@{properties[@string/key_media_drm_version] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+
+                <!--android:text='@{properties[@string/key_media_drm_version]?? "-"}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2"-->
+                <!--android:visibility="@{properties[@string/key_media_drm_version] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:singleLine="true"-->
+                <!--android:text='@{@stringArray/mediadrm_string_property_names[3]}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead"-->
+                <!--android:visibility="@{properties[@stringArray/mediadrm_string_property_keys[3]] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+
+                <!--android:text='@{properties[@stringArray/mediadrm_string_property_keys[3]]?? "-"}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2"-->
+                <!--android:visibility="@{properties[@stringArray/mediadrm_string_property_keys[3]] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:singleLine="true"-->
+                <!--android:text="@string/text_widevine_system_id"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead"-->
+                <!--android:visibility="@{properties[@string/key_widevine_system_id] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+
+                <!--android:text='@{properties[@string/key_widevine_system_id]?? "-"}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2"-->
+                <!--android:visibility="@{properties[@string/key_widevine_system_id] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:singleLine="true"-->
+                <!--android:text="@string/text_widevine_security_level"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead"-->
+                <!--android:visibility="@{properties[@string/key_widevine_security_level] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+
+                <!--android:text='@{properties[@string/key_widevine_security_level]?? "-"}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2"-->
+                <!--android:visibility="@{properties[@string/key_widevine_security_level] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:singleLine="true"-->
+                <!--android:text="@string/text_widevine_hdcp_level"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead"-->
+                <!--android:visibility="@{properties[@string/key_widevine_hdcp_level] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text='@{properties[@string/key_widevine_hdcp_level]?? "-"}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2"-->
+                <!--android:visibility="@{properties[@string/key_widevine_hdcp_level] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:maxLines="1"-->
+                <!--android:text="@string/text_widevine_max_hdcp_level"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead"-->
+                <!--android:visibility="@{properties[@string/key_widevine_max_hdcp_level] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text='@{properties[@string/key_widevine_max_hdcp_level] ?? "-"}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2"-->
+                <!--android:visibility="@{properties[@string/key_widevine_max_hdcp_level] != null ? View.VISIBLE : View.GONE}" />-->
+
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:maxLines="1"-->
+                <!--android:text="@string/text_widevine_number_of_open_sessions"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead"-->
+                <!--android:visibility="@{properties[@string/key_widevine_number_of_open_sessions] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text='@{properties[@string/key_widevine_number_of_open_sessions] ?? "-"}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2"-->
+                <!--android:visibility="@{properties[@string/key_widevine_number_of_open_sessions] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:maxLines="1"-->
+                <!--android:text="@string/text_widevine_max_number_of_sessions"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead"-->
+                <!--android:visibility="@{properties[@string/key_widevine_max_number_of_sessions] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text='@{properties[@string/key_widevine_max_number_of_sessions] ?? "-"}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2"-->
+                <!--android:visibility="@{properties[@string/key_widevine_max_number_of_sessions] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="4dp"-->
+                <!--android:ellipsize="end"-->
+                <!--android:maxLines="1"-->
+                <!--android:text="@string/text_widevine_usage_reporting_support"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead"-->
+                <!--android:visibility="@{properties[@string/key_widevine_usage_reporting_support] != null ? View.VISIBLE : View.GONE}" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text='@{properties[@string/key_widevine_usage_reporting_support] ?? "-"}'-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2"-->
+                <!--android:visibility="@{properties[@string/key_widevine_usage_reporting_support] != null ? View.VISIBLE : View.GONE}" />-->
+
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:ellipsize="end"
                 android:singleLine="true"
-                android:text="@string/text_widevine_name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:text="@{properties.isEmpty() ? @string/text_not_supported : @string/text_supported}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="@string/text_media_drm_description"
+                android:text='@{(@stringArray/mediadrm_string_property_names).length >= 0 ? @stringArray/mediadrm_string_property_names[0] : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="@{properties[@string/key_media_drm_description] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 0) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[0])] != null) ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text='@{properties[@string/key_media_drm_description]?? "-"}'
+                android:text='@{(@stringArray/mediadrm_string_property_keys).length >= 0 ? (properties[(@stringArray/mediadrm_string_property_keys[0])] ?? "-") : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{properties[@string/key_media_drm_description] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 0) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[0])] != null) ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:singleLine="true"
-                android:text="@string/text_media_drm_version"
+                android:text='@{(@stringArray/mediadrm_string_property_names).length >= 1 ? @stringArray/mediadrm_string_property_names[1] : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="@{properties[@string/key_media_drm_version] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 1) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[1])] != null) ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-                android:text='@{properties[@string/key_media_drm_version]?? "-"}'
+                android:text='@{(@stringArray/mediadrm_string_property_keys).length >= 1 ? (properties[(@stringArray/mediadrm_string_property_keys[1])] ?? "-") : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{properties[@string/key_media_drm_version] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 1) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[1])] != null) ? View.VISIBLE : View.GONE}" />
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:ellipsize="end"
                 android:singleLine="true"
-                android:text="@string/text_widevine_system_id"
+                android:text='@{(@stringArray/mediadrm_string_property_names).length >= 2 ? @stringArray/mediadrm_string_property_names[2] : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="@{properties[@string/key_widevine_system_id] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 2) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[2])] != null) ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-                android:text='@{properties[@string/key_widevine_system_id]?? "-"}'
+                android:text='@{(@stringArray/mediadrm_string_property_keys).length >= 2 ? (properties[(@stringArray/mediadrm_string_property_keys[2])] ?? "-") : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{properties[@string/key_widevine_system_id] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 2) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[2])] != null) ? View.VISIBLE : View.GONE}" />
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:ellipsize="end"
                 android:singleLine="true"
-                android:text="@string/text_widevine_security_level"
+                android:text='@{(@stringArray/mediadrm_string_property_names).length >= 3 ? @stringArray/mediadrm_string_property_names[3] : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="@{properties[@string/key_widevine_security_level] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 3) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[3])] != null) ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-                android:text='@{properties[@string/key_widevine_security_level]?? "-"}'
+                android:text='@{(@stringArray/mediadrm_string_property_keys).length >= 3 ? (properties[(@stringArray/mediadrm_string_property_keys[3])] ?? "-") : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{properties[@string/key_widevine_security_level] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 3) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[3])] != null) ? View.VISIBLE : View.GONE}" />
+
+
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:ellipsize="end"
                 android:singleLine="true"
-                android:text="@string/text_widevine_hdcp_level"
+                android:text='@{(@stringArray/widevine_string_property_names).length >= 0 ? @stringArray/widevine_string_property_names[0] : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="@{properties[@string/key_widevine_hdcp_level] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 0) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[0])] != null) ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text='@{properties[@string/key_widevine_hdcp_level]?? "-"}'
+                android:text='@{(@stringArray/widevine_string_property_keys).length >= 0 ? (properties[(@stringArray/widevine_string_property_keys[0])] ?? "-") : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{properties[@string/key_widevine_hdcp_level] != null ? View.VISIBLE : View.GONE}" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/text_widevine_max_hdcp_level"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="@{properties[@string/key_widevine_max_hdcp_level] != null ? View.VISIBLE : View.GONE}" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{properties[@string/key_widevine_max_hdcp_level] ?? "-"}'
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{properties[@string/key_widevine_max_hdcp_level] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 0) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[0])] != null) ? View.VISIBLE : View.GONE}" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/text_widevine_number_of_open_sessions"
+                android:singleLine="true"
+                android:text='@{(@stringArray/widevine_string_property_names).length >= 1 ? @stringArray/widevine_string_property_names[1] : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="@{properties[@string/key_widevine_number_of_open_sessions] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 1) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[1])] != null) ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text='@{properties[@string/key_widevine_number_of_open_sessions] ?? "-"}'
+                android:text='@{(@stringArray/widevine_string_property_keys).length >= 1 ? (properties[(@stringArray/widevine_string_property_keys[1])] ?? "-") : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{properties[@string/key_widevine_number_of_open_sessions] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 1) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[1])] != null) ? View.VISIBLE : View.GONE}" />
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/text_widevine_max_number_of_sessions"
+                android:singleLine="true"
+                android:text='@{(@stringArray/widevine_string_property_names).length >= 2 ? @stringArray/widevine_string_property_names[2] : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="@{properties[@string/key_widevine_max_number_of_sessions] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 2) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[2])] != null) ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text='@{properties[@string/key_widevine_max_number_of_sessions] ?? "-"}'
+                android:text='@{(@stringArray/widevine_string_property_keys).length >= 2 ? (properties[(@stringArray/widevine_string_property_keys[2])] ?? "-") : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{properties[@string/key_widevine_max_number_of_sessions] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 2) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[2])] != null) ? View.VISIBLE : View.GONE}" />
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/text_widevine_usage_reporting_support"
+                android:singleLine="true"
+                android:text='@{(@stringArray/widevine_string_property_names).length >= 3 ? @stringArray/widevine_string_property_names[3] : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="@{properties[@string/key_widevine_usage_reporting_support] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 3) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[3])] != null) ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text='@{properties[@string/key_widevine_usage_reporting_support] ?? "-"}'
+                android:text='@{(@stringArray/widevine_string_property_keys).length >= 3 ? (properties[(@stringArray/widevine_string_property_keys[3])] ?? "-") : "-"}'
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{properties[@string/key_widevine_usage_reporting_support] != null ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 3) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[3])] != null) ? View.VISIBLE : View.GONE}" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:singleLine="true"
+                android:text='@{(@stringArray/widevine_string_property_names).length >= 4 ? @stringArray/widevine_string_property_names[4] : "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 4) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[4])] != null) ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{(@stringArray/widevine_string_property_keys).length >= 4 ? (properties[(@stringArray/widevine_string_property_keys[4])] ?? "-") : "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 4) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[4])] != null) ? View.VISIBLE : View.GONE}" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:singleLine="true"
+                android:text='@{(@stringArray/widevine_string_property_names).length >= 5 ? @stringArray/widevine_string_property_names[5] : "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 5) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[5])] != null) ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{(@stringArray/widevine_string_property_keys).length >= 5 ? (properties[(@stringArray/widevine_string_property_keys[5])] ?? "-") : "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 5) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[5])] != null) ? View.VISIBLE : View.GONE}" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:singleLine="true"
+                android:text='@{(@stringArray/widevine_string_property_names).length >= 6 ? @stringArray/widevine_string_property_names[6] : "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 6) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[6])] != null) ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{(@stringArray/widevine_string_property_keys).length >= 6 ? (properties[(@stringArray/widevine_string_property_keys[6])] ?? "-") : "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 6) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[6])] != null) ? View.VISIBLE : View.GONE}" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:singleLine="true"
+                android:text='@{(@stringArray/widevine_string_property_names).length >= 7 ? @stringArray/widevine_string_property_names[7] : "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 7) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[7])] != null) ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{(@stringArray/widevine_string_property_keys).length >= 7 ? (properties[(@stringArray/widevine_string_property_keys[7])] ?? "-") : "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 7) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[7])] != null) ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:singleLine="true"
+                android:text='@{(@stringArray/widevine_string_property_names).length >= 8 ? @stringArray/widevine_string_property_names[8] : "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 8) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[8])] != null) ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{(@stringArray/widevine_string_property_keys).length >= 8 ? (properties[(@stringArray/widevine_string_property_keys[8])] ?? "-") : "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 8) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[8])] != null) ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:singleLine="true"
+                android:text='@{(@stringArray/widevine_string_property_names).length >= 9 ? @stringArray/widevine_string_property_names[9] : "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 9) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[9])] != null) ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{(@stringArray/widevine_string_property_keys).length >= 9 ? (properties[(@stringArray/widevine_string_property_keys[9])] ?? "-") : "-"}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:visibility="@{((@stringArray/widevine_string_property_keys).length >= 9) &amp;&amp; (properties[(@stringArray/widevine_string_property_keys[9])] != null) ? View.VISIBLE : View.GONE}" />
 
 
         </LinearLayout>

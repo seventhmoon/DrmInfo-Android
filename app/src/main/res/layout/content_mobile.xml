@@ -1,6 +1,16 @@
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MobileActivity">
+
+    <data>
+        <variable
+            name="map"
+            type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
+    </data>
+
+<androidx.core.widget.NestedScrollView
     android:name="com.androidfung.drminfo.MobileActivityFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -35,15 +45,6 @@
 
             tools:layout="@layout/fragment_info" />
 
-        <fragment
-            app:layout_minWidth="@dimen/box_min_width"
-            android:id="@+id/fragment_clearkey"
-            android:name="com.androidfung.drminfo.ui.mobile.ClearKeyFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:layout_flexGrow="@integer/layout_flexGrow"
-            tools:layout="@layout/fragment_clearkey" />
 
         <fragment
             app:layout_minWidth="@dimen/box_min_width"
@@ -93,7 +94,18 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             app:layout_flexGrow="@integer/layout_flexGrow"
-            tools:layout="@layout/fragment_verimatrix" />
+            tools:layout="@layout/fragment_verimatrix"
+            />
+
+        <fragment
+            app:layout_minWidth="@dimen/box_min_width"
+            android:id="@+id/fragment_clearkey"
+            android:name="com.androidfung.drminfo.ui.mobile.ClearKeyFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            app:layout_flexGrow="@integer/layout_flexGrow"
+            tools:layout="@layout/fragment_clearkey" />
 
         <fragment
             app:layout_minWidth="@dimen/box_min_width"
@@ -103,7 +115,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             app:layout_flexGrow="@integer/layout_flexGrow"
-            tools:layout="@layout/fragment_ad" />
+            tools:layout="@layout/fragment_ad"
+
+        />
 
         <Space
             android:layout_width="match_parent"
@@ -112,3 +126,4 @@
     </com.google.android.flexbox.FlexboxLayout>
 
 </androidx.core.widget.NestedScrollView>
+</layout>

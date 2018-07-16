@@ -40,7 +40,7 @@ public class InfoFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        InfoViewModel viewModel = ViewModelProviders.of(this).get(InfoViewModel.class);
+        SharedViewModel viewModel = ViewModelProviders.of(this.getActivity()).get(SharedViewModel.class);
         viewModel.getProperties().observe(this, mBinding::setMap);
 
         mBinding.setLifecycleOwner(this);

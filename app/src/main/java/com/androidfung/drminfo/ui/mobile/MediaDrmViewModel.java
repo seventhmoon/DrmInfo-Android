@@ -19,23 +19,24 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public LiveData<ObservableArrayMap<String, Object>> getProperties(){
-        if (mProperties == null){
+    public LiveData<ObservableArrayMap<String, Object>> getProperties() {
+        if (mProperties == null) {
             mProperties = new MutableLiveData<>();
             prepareProperties(mMediaDrm);
         }
         return mProperties;
     }
 
-    protected void prepareProperties(MediaDrm mediaDrm){
+    protected void prepareProperties(MediaDrm mediaDrm) {
+        ObservableArrayMap<String, Object> map = new ObservableArrayMap<>();
         if (mediaDrm != null) {
-            ObservableArrayMap<String, Object> map = new ObservableArrayMap<>();
             String[] mediaDrmKeys = getApplication().getResources().getStringArray(R.array.mediadrm_string_property_keys);
             for (String mediaDrmKey : mediaDrmKeys) {
                 String value = mediaDrm.getPropertyString(mediaDrmKey);
                 map.put(mediaDrmKey, value);
             }
-            mProperties.setValue(map);
         }
+        mProperties.setValue(map);
+
     }
 }

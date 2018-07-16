@@ -28,6 +28,7 @@
         android:minHeight="@dimen/box_min_height"
         android:minWidth="@dimen/box_min_width"
         app:contentPadding="16dp"
+        android:visibility="@{properties.isEmpty() ? View.GONE : View.VISIBLE}"
         tools:context="com.androidfung.drminfo.ui.mobile.VerimatrixFragment">
 
 
