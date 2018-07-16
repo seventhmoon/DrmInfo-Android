@@ -25,17 +25,17 @@ public class SharedViewModel extends ViewModel {
 
             ObservableArrayMap<String, Object> map = new ObservableArrayMap<>();
 
-            MediaDrm widevineDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
-            MediaDrm playreadyDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PLAYREADY);
-            MediaDrm verimatrixDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.VERIMATRIX);
-            MediaDrm clearkeyDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.CLEARKEY);
-            MediaDrm primetimeDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PRIMETIME);
-
-            map.put("widevineDrm", widevineDrm);
-            map.put("playreadyDrm", playreadyDrm);
-            map.put("verimatrixDrm", verimatrixDrm);
-            map.put("clearkeyDrm", clearkeyDrm);
-            map.put("primetimeDrm", primetimeDrm);
+//            MediaDrm widevineDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
+//            MediaDrm playreadyDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PLAYREADY);
+//            MediaDrm verimatrixDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.VERIMATRIX);
+//            MediaDrm clearkeyDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.CLEARKEY);
+//            MediaDrm primetimeDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PRIMETIME);
+//
+//            map.put("widevineDrm", widevineDrm);
+//            map.put("playreadyDrm", playreadyDrm);
+//            map.put("verimatrixDrm", verimatrixDrm);
+//            map.put("clearkeyDrm", clearkeyDrm);
+//            map.put("primetimeDrm", primetimeDrm);
 
             mProperties.setValue(map);
         }
