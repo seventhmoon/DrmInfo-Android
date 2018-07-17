@@ -40,7 +40,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/text_playready_name"
+                android:text="@{properties[(@stringArray/mediadrm_string_property_keys[1])]}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
             <include layout="@layout/merge_mediadrm" bind:properties="@{properties}"/>

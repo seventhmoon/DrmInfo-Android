@@ -3,15 +3,15 @@
     <string-array name="widevine_string_property_keys" tools:ignore="InconsistentArrays">
         <item>securityLevel</item>
         <item>systemId</item>
-        <item>privacyMode</item>
-        <item>sessionSharing</item>
+        <!--<item>privacyMode</item>-->
+        <!--<item>sessionSharing</item>-->
     </string-array>
 
     <string-array name="widevine_string_property_names" tools:ignore="InconsistentArrays">
         <item>Security Level</item>
         <item>System ID</item>
-        <item>Privacy Mode</item>
-        <item>Session Sharing</item>
+        <!--<item>Privacy Mode</item>-->
+        <!--<item>Session Sharing</item>-->
         <!--<item>Usage Reporting Support</item>-->
         <!--<item>Max HDCP Level Supported</item>-->
         <!--<item>Max Number of Sessions</item>-->

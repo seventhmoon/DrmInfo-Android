@@ -6,7 +6,7 @@
     <data>
 
         <import type="android.view.View" />
-
+        <import type="com.google.common.base.Strings" />
         <variable
             name="properties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
@@ -30,21 +30,21 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 0) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[0])] != null) ? View.VISIBLE : View.GONE}" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:singleLine="true"
-        android:text='@{(@stringArray/mediadrm_string_property_names).length >= 1 ? @stringArray/mediadrm_string_property_names[1] : "-"}'
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 1) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[1])] != null) ? View.VISIBLE : View.GONE}" />
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="4dp"-->
+        <!--android:singleLine="true"-->
+        <!--android:text='@{(@stringArray/mediadrm_string_property_names).length >= 1 ? @stringArray/mediadrm_string_property_names[1] : "-"}'-->
+        <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead"-->
+        <!--android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 1) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[1])] != null) ? View.VISIBLE : View.GONE}" />-->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text='@{(@stringArray/mediadrm_string_property_keys).length >= 1 ? (properties[(@stringArray/mediadrm_string_property_keys[1])] ?? "-") : "-"}'
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 1) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[1])] != null) ? View.VISIBLE : View.GONE}" />
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text='@{(@stringArray/mediadrm_string_property_keys).length >= 1 ? (properties[(@stringArray/mediadrm_string_property_keys[1])] ?? "-") : "-"}'-->
+        <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2"-->
+        <!--android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 1) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[1])] != null) ? View.VISIBLE : View.GONE}" />-->
 
 
     <TextView
@@ -71,14 +71,14 @@
         android:singleLine="true"
         android:text='@{(@stringArray/mediadrm_string_property_names).length >= 3 ? @stringArray/mediadrm_string_property_names[3] : "-"}'
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 3) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[3])] != null) ? View.VISIBLE : View.GONE}" />
+        android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 3) &amp;&amp; !(Strings.isNullOrEmpty((String) properties[(@stringArray/mediadrm_string_property_keys[3])]))  ? View.VISIBLE : View.GONE}" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text='@{(@stringArray/mediadrm_string_property_keys).length >= 3 ? (properties[(@stringArray/mediadrm_string_property_keys[3])] ?? "-") : "-"}'
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 3) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[3])] != null) ? View.VISIBLE : View.GONE}" />
+        android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 3) &amp;&amp; !(Strings.isNullOrEmpty((String) properties[(@stringArray/mediadrm_string_property_keys[3])])) ? View.VISIBLE : View.GONE}" />
 
 
 
