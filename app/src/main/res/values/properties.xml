@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string name="mediadrm_string_property_key_vendor">vendor</string>
+    <string name="mediadrm_string_property_key_description">description</string>
+    <string name="mediadrm_string_property_key_version">version</string>
+    <string name="mediadrm_string_property_key_algorithms">algorithms</string>
+
+    <string name="mediadrm_string_property_name_vendor">Vendor</string>
+    <string name="mediadrm_string_property_name_description">Description</string>
+    <string name="mediadrm_string_property_name_version">Version</string>
+    <string name="mediadrm_string_property_name_algorithms">Algorithm</string>
+
+
     <string-array name="mediadrm_string_property_keys">
-        <item>vendor</item>
-        <item>description</item>
-        <item>version</item>
-        <item>algorithms</item>
+        <item>@string/mediadrm_string_property_key_vendor</item>
+        <item>@string/mediadrm_string_property_key_description</item>
+        <item>@string/mediadrm_string_property_key_version</item>
+        <item>@string/mediadrm_string_property_key_algorithms</item>
     </string-array>
 
     <string-array name="mediadrm_string_property_names">
-        <item>Vendor</item>
-        <item>Description</item>
-        <item>Version</item>
-        <item>Algorithm</item>
+        <item>@string/mediadrm_string_property_name_vendor</item>
+        <item>@string/mediadrm_string_property_name_description</item>
+        <item>@string/mediadrm_string_property_name_version</item>
+        <item>@string/mediadrm_string_property_name_algorithms</item>
     </string-array>
+
     <string-array name="mediadrm_bytearray_property_keys">
         <item>deviceUniqueId</item>
     </string-array>

@@ -1,6 +1,7 @@
 <!--suppress AndroidDomInspection -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -11,9 +12,6 @@
             name="properties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
 
-        <variable
-            name="mediaDrm"
-            type="android.media.MediaDrm" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -35,63 +33,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <TextView
-                android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/text_primetime_name"
+                android:text="@{properties[(@stringArray/mediadrm_string_property_keys[1])]}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/text_primetime_name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+            <include layout="@layout/merge_mediadrm" bind:properties="@{properties}"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@{mediaDrm != null ? @string/text_supported : @string/text_not_supported}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:layout_marginTop="4dp"
-                android:text="@string/text_media_drm_description"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{properties[@string/key_media_drm_description] ?? "-"}'
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:layout_marginTop="4dp"
-                android:text="@string/text_media_drm_version"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{properties[@string/key_media_drm_version] ?? "-"}'
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:visibility="@{mediaDrm != null ? View.VISIBLE : View.GONE}" />
         </LinearLayout>
 
 
