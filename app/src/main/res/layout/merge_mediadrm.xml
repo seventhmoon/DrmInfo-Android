@@ -1,86 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
     <data>
 
         <import type="android.view.View" />
+
         <import type="com.google.common.base.Strings" />
+
         <variable
             name="properties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
 
     </data>
 
-<merge>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:singleLine="true"
-        android:text='@{(@stringArray/mediadrm_string_property_names).length >= 0 ? @stringArray/mediadrm_string_property_names[0] : "-"}'
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 0) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[0])] != null) ? View.VISIBLE : View.GONE}" />
+    <merge>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text='@{(@stringArray/mediadrm_string_property_keys).length >= 0 ? (properties[(@stringArray/mediadrm_string_property_keys[0])] ?? "-") : "-"}'
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 0) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[0])] != null) ? View.VISIBLE : View.GONE}" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:singleLine="true"
+            android:text='@{@string/mediadrm_string_property_name_vendor}'
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:visibility="@{properties[(@string/mediadrm_string_property_key_vendor)] != null ? View.VISIBLE : View.GONE}" />
 
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="4dp"-->
-        <!--android:singleLine="true"-->
-        <!--android:text='@{(@stringArray/mediadrm_string_property_names).length >= 1 ? @stringArray/mediadrm_string_property_names[1] : "-"}'-->
-        <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead"-->
-        <!--android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 1) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[1])] != null) ? View.VISIBLE : View.GONE}" />-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{properties[(@string/mediadrm_string_property_key_vendor)] ?? "-"}'
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="@{properties[(@string/mediadrm_string_property_key_vendor)] != null ? View.VISIBLE : View.GONE}" />
 
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text='@{(@stringArray/mediadrm_string_property_keys).length >= 1 ? (properties[(@stringArray/mediadrm_string_property_keys[1])] ?? "-") : "-"}'-->
-        <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2"-->
-        <!--android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 1) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[1])] != null) ? View.VISIBLE : View.GONE}" />-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:singleLine="true"
+            android:text='@{@string/mediadrm_string_property_name_version}'
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:visibility="@{properties[(@string/mediadrm_string_property_key_version)] != null ? View.VISIBLE : View.GONE}" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{properties[(@string/mediadrm_string_property_key_version)] ?? "-"}'
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="@{properties[(@string/mediadrm_string_property_key_version)] != null ? View.VISIBLE : View.GONE}" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:singleLine="true"
-        android:text='@{(@stringArray/mediadrm_string_property_names).length >= 2 ? @stringArray/mediadrm_string_property_names[2] : "-"}'
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 2) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[2])] != null) ? View.VISIBLE : View.GONE}" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:singleLine="true"
+            android:text='@{@string/mediadrm_string_property_name_algorithms}'
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:visibility="@{Strings.isNullOrEmpty((String) properties[(@string/mediadrm_string_property_key_algorithms)]) ? View.GONE : View.VISIBLE}" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text='@{(@stringArray/mediadrm_string_property_keys).length >= 2 ? (properties[(@stringArray/mediadrm_string_property_keys[2])] ?? "-") : "-"}'
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 2) &amp;&amp; (properties[(@stringArray/mediadrm_string_property_keys[2])] != null) ? View.VISIBLE : View.GONE}" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{properties[(@string/mediadrm_string_property_key_algorithms)] ?? "-"}'
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="@{Strings.isNullOrEmpty((String) properties[(@string/mediadrm_string_property_key_algorithms)]) ? View.GONE : View.VISIBLE}" />
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:singleLine="true"
-        android:text='@{(@stringArray/mediadrm_string_property_names).length >= 3 ? @stringArray/mediadrm_string_property_names[3] : "-"}'
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 3) &amp;&amp; !(Strings.isNullOrEmpty((String) properties[(@stringArray/mediadrm_string_property_keys[3])]))  ? View.VISIBLE : View.GONE}" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text='@{(@stringArray/mediadrm_string_property_keys).length >= 3 ? (properties[(@stringArray/mediadrm_string_property_keys[3])] ?? "-") : "-"}'
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:visibility="@{((@stringArray/mediadrm_string_property_keys).length >= 3) &amp;&amp; !(Strings.isNullOrEmpty((String) properties[(@stringArray/mediadrm_string_property_keys[3])])) ? View.VISIBLE : View.GONE}" />
-
-
-
-</merge>
+    </merge>
 </layout>
