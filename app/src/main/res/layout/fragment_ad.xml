@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-    <com.google.android.material.card.MaterialCardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/container_ad"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_ad"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:minWidth="@dimen/box_min_width"
+    android:minHeight="@dimen/native_ad_min_height"
+    android:visibility="invisible"
+    app:layout_gravity="center_horizontal">
+
+    <com.google.android.gms.ads.AdView
+
+        android:id="@+id/adView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/native_ad_min_height"
-        android:minWidth="@dimen/box_min_width"
-
-        app:layout_gravity="center_horizontal"
-        android:visibility="invisible">
-        <com.google.android.gms.ads.AdView
-            android:layout_margin="8dp"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/adView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:visibility="gone"
-            app:adSize="MEDIUM_RECTANGLE"
-            app:adUnitId="@string/ad_unit_id_medium_rect"/>
-    </com.google.android.material.card.MaterialCardView>
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_margin="8dp"
+        android:visibility="gone"
+        app:adSize="@string/banner_ad_size"
+        app:adUnitId="@string/ad_unit_id_medium_rect" />
+</com.google.android.material.card.MaterialCardView>
 
 
 
