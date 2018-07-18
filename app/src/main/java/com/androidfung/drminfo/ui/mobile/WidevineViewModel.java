@@ -58,12 +58,6 @@ public class WidevineViewModel extends MediaDrmViewModel {
                 } catch (IllegalStateException | IllegalArgumentException ignored) {
                 }
             }
-//
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-//                mMediaDrm.close();
-//            } else {
-//                mMediaDrm.release();
-//            }
 
         }
         mProperties.setValue(map);
