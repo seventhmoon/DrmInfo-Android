@@ -25,7 +25,6 @@ public class PlayreadyFragment extends Fragment {
 
     private static final String TAG = PlayreadyFragment.class.getSimpleName();
 
-    private MediaDrmViewModel mViewModel;
     private FragmentPlayreadyBinding mBinding;
 
     public PlayreadyFragment() {
@@ -53,8 +52,8 @@ public class PlayreadyFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mViewModel = ViewModelProviders.of(this).get(PlayreadyViewModel.class);
-        mViewModel.getProperties().observe(this, mBinding::setProperties);
+        MediaDrmViewModel viewModel = ViewModelProviders.of(this).get(PlayreadyViewModel.class);
+        viewModel.getProperties().observe(this, mBinding::setProperties);
 
         mBinding.setLifecycleOwner(this);
     }

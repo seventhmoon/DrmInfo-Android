@@ -10,7 +10,6 @@ import com.androidfung.drminfo.MediaDrmFactory;
 import com.androidfung.drminfo.R;
 import com.google.common.base.Strings;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +22,6 @@ import androidx.leanback.widget.GuidedAction;
 public class InfoStepFragment extends GuidedStepSupportFragment {
 
     private static final String TAG = InfoStepFragment.class.getSimpleName();
-
-
-//    private GuidedAction mWidevineGuidedAction, mPlayreadyGuidedAction, mClearKeyGuidedAction;
-//            private List<GuidedAction> mRootActions;
 
     @NonNull
     @Override
@@ -60,20 +55,6 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
                 Log.d(TAG, ex.toString());
             }
         }
-        Log.d(TAG, "getMediaDrmSubActions: " + subActions.toString());
-////        if (mediaDrm != null) {
-//            try {
-//                String version = mediaDrm.getPropertyString(MediaDrm.PROPERTY_VERSION);
-//                subActions.add(new GuidedAction.Builder(getActivity())
-//                        .infoOnly(true)
-//                        .title(getString(R.string.text_version))
-//                        .description(version)
-//                        .build());
-//            } catch (IllegalStateException ex) {
-//                Log.d(TAG, ex.toString());
-//            }
-//
-////        }
 
         return subActions;
     }
@@ -84,26 +65,8 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
     private List<GuidedAction> getWidevineSubActions(@NonNull MediaDrm widevineDrm) {
         List<GuidedAction> subActions = getMediaDrmSubActions(widevineDrm);
 
-//        if (widevineDrm != null){
-//            String[] drmStringKeys = getResources().getStringArray(R.array.mediadrm_string_property_keys);
-//            String[] drmStringNames = getResources().getStringArray(R.array.mediadrm_string_property_names);
-
             String[] wvStringKeys = getResources().getStringArray(R.array.widevine_string_property_keys);
             String[] wvStringNames = getResources().getStringArray(R.array.widevine_string_property_names);
-
-
-//            for (int i=0; i< drmStringKeys.length; i++){
-//                try {
-//                    String value = widevineDrm.getPropertyString(drmStringKeys[i]);
-//                    subActions.add(new GuidedAction.Builder(getActivity())
-//                            .infoOnly(true)
-//                            .title(drmStringNames[i])
-//                            .description(value)
-//                            .build());
-//                } catch (IllegalStateException ex) {
-//                    Log.d(TAG, ex.toString());
-//                }
-//            }
 
             for (int i=0; i< wvStringKeys.length; i++){
                 try {
@@ -127,13 +90,6 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
     @SuppressWarnings("ResourceType")
     @Override
     public void onCreateActions(@NonNull List<GuidedAction> actions, Bundle savedInstanceState) {
-
-//        mRootActions = actions;
-//        MediaDrm widevineMediaDrm, playreadyMediaDrm, marlinMediaDrm, verimatrixMediaDrm, clearKeyMediaDrm, primetimeMediaDrm;
-//        WidevineViewModel widevineViewModel = ViewModelProviders.of(this).get(WidevineViewModel.class);
-//        ClearKeyViewModel clearKeyViewModel = ViewModelProviders.of(this).get(ClearKeyViewModel.class);
-//        PlayreadyViewModel playreadyViewModel = ViewModelProviders.of(this).get(PlayreadyViewModel.class);
-
 
         //info section here
         actions.add(new GuidedAction.Builder(getActivity())
@@ -160,10 +116,6 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
                 .description(String.valueOf(Build.VERSION.SDK_INT))
                 .build());
 
-        //widevine section here
-//        widevineViewModel.getProperties().observe(this, this::prepareWidevineGuideActionList);
-
-        //
 
         MediaDrm widevineMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
         MediaDrm playreadyMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PLAYREADY);

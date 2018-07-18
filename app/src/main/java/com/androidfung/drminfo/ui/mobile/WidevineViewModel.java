@@ -3,7 +3,6 @@ package com.androidfung.drminfo.ui.mobile;
 import android.app.Application;
 import android.media.MediaDrm;
 import android.os.Build;
-import android.util.Log;
 
 import com.androidfung.drminfo.MediaDrmFactory;
 import com.androidfung.drminfo.R;

@@ -24,7 +24,6 @@ public class MarlinFragment extends Fragment {
 
     private static final String TAG = MarlinFragment.class.getSimpleName();
 
-    private MediaDrmViewModel mViewModel;
     private FragmentMarlinBinding mBinding;
 
     public MarlinFragment() {
@@ -51,8 +50,8 @@ public class MarlinFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mViewModel = ViewModelProviders.of(this).get(MarlinViewModel.class);
-        mViewModel.getProperties().observe(this, mBinding::setProperties);
+        MediaDrmViewModel viewModel = ViewModelProviders.of(this).get(MarlinViewModel.class);
+        viewModel.getProperties().observe(this, mBinding::setProperties);
 
         mBinding.setLifecycleOwner(this);
     }

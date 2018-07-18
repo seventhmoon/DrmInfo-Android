@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- START xml_defaults -->
 <defaultsMap>
-    <!--<entry>-->
-        <!--<key>display_verimatrix</key>-->
-        <!--<value>false</value>-->
-    <!--</entry>-->
-    <!--<entry>-->
-        <!--<key>display_marlin</key>-->
-        <!--<value>false</value>-->
-    <!--</entry>-->
-    <!--<entry>-->
-        <!--<key>welcome_message</key>-->
-        <!--<value>Welcome to my awesome app!</value>-->
-    <!--</entry>-->
     <enrty>
         <key>current_approved_version</key>
         <value>1</value>

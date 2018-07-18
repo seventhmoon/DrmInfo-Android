@@ -1,10 +1,5 @@
 package com.androidfung.drminfo.ui.mobile;
 
-import android.app.Application;
-import android.media.MediaDrm;
-
-import com.androidfung.drminfo.MediaDrmFactory;
-
 import androidx.databinding.ObservableArrayMap;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
