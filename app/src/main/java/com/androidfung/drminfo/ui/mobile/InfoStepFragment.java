@@ -127,12 +127,13 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
 
 
         if (clearKeyMediaDrm != null) {
+            List<GuidedAction> subActions = getWidevineSubActions(clearKeyMediaDrm);
 
             actions.add(new GuidedAction.Builder(getActivity())
 //                    .infoOnly(true)
                     .title(getString(R.string.text_clearkey_name))
                     .description(getString(R.string.text_supported))
-                    .subActions(getMediaDrmSubActions(clearKeyMediaDrm))
+                    .subActions(subActions.isEmpty()?null:subActions)
                     .build());
 
         } else {
@@ -144,12 +145,12 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
         }
 
         if (widevineMediaDrm != null) {
-
+            List<GuidedAction> widevineSubActions = getWidevineSubActions(widevineMediaDrm);
             actions.add(new GuidedAction.Builder(getActivity())
 //                        .id(WIDEVINE)
                     .title(getString(R.string.text_widevine_name))
                     .description(getString(R.string.text_supported))
-                    .subActions(getWidevineSubActions(widevineMediaDrm))
+                    .subActions(widevineSubActions.isEmpty()?null:widevineSubActions)
                     .build());
 
         } else {
@@ -161,14 +162,13 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
         }
 
         if (playreadyMediaDrm != null) {
-
+            List<GuidedAction> playreadySubActions = getMediaDrmSubActions(playreadyMediaDrm);
             actions.add(new GuidedAction.Builder(getActivity())
 //                    .infoOnly(true)
                     .title(getString(R.string.text_playready_name))
                     .description(getString(R.string.text_supported))
-                    .subActions(getMediaDrmSubActions(playreadyMediaDrm))
+                    .subActions(playreadySubActions.isEmpty()?null:playreadySubActions)
                     .build());
-
         } else {
             actions.add(new GuidedAction.Builder(getActivity())
                     .infoOnly(true)
