@@ -26,8 +26,16 @@
         <item>@string/mediadrm_string_property_name_algorithms</item>
     </string-array>
 
+    <string name="mediadrm_bytearray_property_key_deviceuniqueid">deviceUniqueId</string>
+    <string name="mediadrm_bytearray_property_name_deviceuniqueid">Device Unique ID</string>
+
     <string-array name="mediadrm_bytearray_property_keys">
-        <item>deviceUniqueId</item>
+        <item>@string/mediadrm_bytearray_property_key_deviceuniqueid</item>
     </string-array>
+
+    <string-array name="mediadrm_bytearray_property_names">
+        <item>@string/mediadrm_bytearray_property_name_deviceuniqueid</item>
+    </string-array>
+
 
 </resources>

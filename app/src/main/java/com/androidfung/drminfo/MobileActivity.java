@@ -24,7 +24,6 @@ public class MobileActivity extends AppCompatActivity {
 
         ActivityMobileBinding activityMobileBinding = DataBindingUtil.setContentView(this, R.layout.activity_mobile);
         activityMobileBinding.setLifecycleOwner(this);
-//        setContentView(R.layout.activity_mobile);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

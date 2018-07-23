@@ -17,14 +17,14 @@ public class WidevineViewModel extends MediaDrmViewModel {
 
     public WidevineViewModel(Application application) {
         super(application);
-        mMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
-
     }
 
     @Override
     public LiveData<ObservableArrayMap<String, Object>> getProperties() {
         if (mProperties == null) {
             mProperties = new MutableLiveData<>();
+            mMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
+
             prepareProperties(mMediaDrm);
 
             if (mMediaDrm != null) {
@@ -41,23 +41,18 @@ public class WidevineViewModel extends MediaDrmViewModel {
 
     @Override
     protected void prepareProperties(MediaDrm mediaDrm) {
-        ObservableArrayMap<String, Object> map = new ObservableArrayMap<>();
+        super.prepareProperties(mediaDrm);
+        ObservableArrayMap<String, Object> map = mProperties.getValue();
         if (mMediaDrm != null) {
-            String[] mediaDrmKeys = getApplication().getResources().getStringArray(R.array.mediadrm_string_property_keys);
-            for (String mediaDrmKey : mediaDrmKeys) {
-                String value = mediaDrm.getPropertyString(mediaDrmKey);
-                map.put(mediaDrmKey, value);
-            }
+            try {
+                String[] wvKeys = getApplication().getResources().getStringArray(R.array.widevine_string_property_keys);
 
-            String[] wvKeys = getApplication().getResources().getStringArray(R.array.widevine_string_property_keys);
-            for (String wvKey : wvKeys) {
-                try {
+                for (String wvKey : wvKeys) {
                     String value = mediaDrm.getPropertyString(wvKey);
                     map.put(wvKey, value);
-                } catch (IllegalStateException | IllegalArgumentException ignored) {
                 }
+            } catch (IllegalStateException | IllegalArgumentException ignored) {
             }
-
         }
         mProperties.setValue(map);
     }

@@ -5,6 +5,7 @@ import android.media.MediaDrm;
 import android.os.Build;
 
 import com.androidfung.drminfo.R;
+import com.google.common.io.BaseEncoding;
 
 import androidx.databinding.ObservableArrayMap;
 import androidx.lifecycle.AndroidViewModel;
@@ -39,10 +40,19 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
     protected void prepareProperties(MediaDrm mediaDrm) {
         ObservableArrayMap<String, Object> map = new ObservableArrayMap<>();
         if (mediaDrm != null) {
-            String[] mediaDrmKeys = getApplication().getResources().getStringArray(R.array.mediadrm_string_property_keys);
-            for (String mediaDrmKey : mediaDrmKeys) {
-                String value = mediaDrm.getPropertyString(mediaDrmKey);
-                map.put(mediaDrmKey, value);
+            try {
+                String[] mediaDrmKeys = getApplication().getResources().getStringArray(R.array.mediadrm_string_property_keys);
+                for (String mediaDrmKey : mediaDrmKeys) {
+                    String value = mediaDrm.getPropertyString(mediaDrmKey);
+                    map.put(mediaDrmKey, value);
+                }
+
+                String[] mediaDrmKeys2 = getApplication().getResources().getStringArray(R.array.mediadrm_bytearray_property_keys);
+                for (String mediaDrmKey : mediaDrmKeys2) {
+                    byte[] value = mediaDrm.getPropertyByteArray(mediaDrmKey);
+                    map.put(mediaDrmKey, BaseEncoding.base64().encode(value).toUpperCase());
+                }
+            } catch (IllegalArgumentException | IllegalStateException ignored) {
             }
         }
         mProperties.setValue(map);

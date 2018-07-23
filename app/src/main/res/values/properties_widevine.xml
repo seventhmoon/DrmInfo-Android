@@ -17,4 +17,16 @@
         <!--<item>SRM Version</item>-->
         <!--<item>SRM Update Support</item>-->
     </string-array>
+
+    <string-array name="widevine_bytearray_property_keys" tools:ignore="InconsistentArrays">
+        <item>provisioningUniqueId</item>
+        <item>serviceCertificate</item>
+        <item>provisioningServiceCertificate</item>
+    </string-array>
+
+    <string-array name="widevine_bytearray_property_names" tools:ignore="InconsistentArrays">
+        <item>Provisioning Unique Id</item>
+        <item>Service Certificate</item>
+        <item>Provisioning Service Certificate</item>
+    </string-array>
 </resources>

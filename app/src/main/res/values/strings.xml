@@ -30,4 +30,7 @@
     <string name="text_build">Build</string>
     <string name="text_webview_version">WebView Version</string>
     <string name="text_max_security_level">Max Security Level</string>
+    <string name="text_hardware">Hardware</string>
+    <string name="text_type">Type</string>
+    <string name="text_fingerprint">Fingerprint</string>
 </resources>

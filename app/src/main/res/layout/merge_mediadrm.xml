@@ -63,5 +63,24 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="@{Strings.isNullOrEmpty((String) properties[(@string/mediadrm_string_property_key_algorithms)]) ? View.GONE : View.VISIBLE}" />
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:singleLine="true"
+            android:text='@{@string/mediadrm_bytearray_property_name_deviceuniqueid}'
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:visibility="@{Strings.isNullOrEmpty((String) properties[(@string/mediadrm_bytearray_property_key_deviceuniqueid)]) ? View.GONE : View.VISIBLE}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{properties[(@string/mediadrm_bytearray_property_key_deviceuniqueid)] ?? "-"}'
+            android:singleLine="true"
+            android:ellipsize="middle"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="@{Strings.isNullOrEmpty((String) properties[(@string/mediadrm_bytearray_property_key_deviceuniqueid)]) ? View.GONE : View.VISIBLE}" />
+
     </merge>
 </layout>

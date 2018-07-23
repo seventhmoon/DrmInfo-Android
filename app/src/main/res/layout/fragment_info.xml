@@ -5,6 +5,7 @@
     <data>
 
         <import type="android.view.View" />
+
         <import type="android.os.Build" />
 
         <variable
@@ -70,30 +71,134 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/text_product"
+                android:text="@string/text_hardware"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             <TextView
-                android:id="@+id/textview_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{Build.PRODUCT}"
+                android:text="@{Build.HARDWARE}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/text_build"
+                android:text="@string/text_type"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ellipsize="middle"
-                android:singleLine="true"
-                android:text="@{Build.DISPLAY}"
+                android:text="@{Build.TYPE}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:text="Board"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@{Build.BOARD}"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:text="Bootloader"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@{Build.BOOTLOADER}"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:text="@string/text_product"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/textview_product"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@{Build.PRODUCT}"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/text_fingerprint"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{Build.FINGERPRINT}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:text="@string/text_build"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />-->
+
+            <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:ellipsize="middle"-->
+            <!--android:singleLine="true"-->
+            <!--android:text="@{Build.DISPLAY}"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:text="@string/text_hardware"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@{Build.HARDWARE}"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:text="@string/text_type"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@{Build.TYPE}"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:text="Fingerprint"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@{Build.FINGERPRINT}"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Body2" />-->
 
             <TextView
                 android:layout_width="wrap_content"
