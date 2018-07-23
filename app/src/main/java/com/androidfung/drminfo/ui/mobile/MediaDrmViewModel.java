@@ -13,6 +13,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 public abstract class MediaDrmViewModel extends AndroidViewModel {
+
     private final static String TAG = MediaDrmViewModel.class.getSimpleName();
     protected MutableLiveData<ObservableArrayMap<String, Object>> mProperties;
     protected MediaDrm mMediaDrm;

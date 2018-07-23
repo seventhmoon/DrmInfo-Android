@@ -17,26 +17,7 @@ public class WidevineViewModel extends MediaDrmViewModel {
 
     public WidevineViewModel(Application application) {
         super(application);
-    }
-
-    @Override
-    public LiveData<ObservableArrayMap<String, Object>> getProperties() {
-        if (mProperties == null) {
-            mProperties = new MutableLiveData<>();
-            mMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
-
-            prepareProperties(mMediaDrm);
-
-            if (mMediaDrm != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    mMediaDrm.close();
-                } else {
-                    mMediaDrm.release();
-                }
-            }
-        }
-
-        return mProperties;
+        mMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
     }
 
     @Override
