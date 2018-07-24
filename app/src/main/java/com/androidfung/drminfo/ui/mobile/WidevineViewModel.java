@@ -2,14 +2,11 @@ package com.androidfung.drminfo.ui.mobile;
 
 import android.app.Application;
 import android.media.MediaDrm;
-import android.os.Build;
 
 import com.androidfung.drminfo.MediaDrmFactory;
 import com.androidfung.drminfo.R;
 
 import androidx.databinding.ObservableArrayMap;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 public class WidevineViewModel extends MediaDrmViewModel {
 

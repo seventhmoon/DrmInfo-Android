@@ -22,6 +22,7 @@ import com.androidfung.drminfo.databinding.FragmentClearkeyBinding;
 @Keep
 public class ClearKeyFragment extends Fragment {
 
+    @SuppressWarnings("unused")
     private static final String TAG = ClearKeyFragment.class.getSimpleName();
 
     private FragmentClearkeyBinding mBinding;

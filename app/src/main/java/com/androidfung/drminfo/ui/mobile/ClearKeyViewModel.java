@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.androidfung.drminfo.MediaDrmFactory;
 
+@SuppressWarnings("unused")
 public class ClearKeyViewModel extends MediaDrmViewModel {
 
     private final static String TAG = ClearKeyViewModel.class.getSimpleName();
