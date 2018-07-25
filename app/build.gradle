@@ -55,10 +55,15 @@ dependencies {
     implementation 'androidx.gridlayout:gridlayout:1.0.0-beta01'
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
+
     implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation 'com.google.firebase:firebase-ads:15.0.1'
     implementation 'com.google.firebase:firebase-perf:16.0.0'
     implementation 'com.google.firebase:firebase-config:16.0.0'
+    implementation 'com.google.firebase:firebase-database:16.0.1'
+    implementation 'com.google.firebase:firebase-firestore:17.0.3'
+    implementation 'com.google.firebase:firebase-auth:16.0.2'
+
     implementation 'com.google.android.material:material:1.0.0-beta01'
     implementation 'com.google.android:flexbox:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.2'

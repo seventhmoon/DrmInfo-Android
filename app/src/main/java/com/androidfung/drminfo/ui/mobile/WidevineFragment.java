@@ -7,6 +7,8 @@ import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import androidx.annotation.Keep;
 
+import androidx.databinding.ObservableArrayMap;
+import androidx.databinding.ObservableMap;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -57,4 +59,7 @@ public class WidevineFragment extends Fragment {
         mViewModel.getProperties().observe(this, mBinding::setProperties);
     }
 
+//    public ObservableMap<String, Object> getProperties(){
+//        return mBinding.getProperties();
+//    }
 }

@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil;
 
 import android.os.Bundle;
 import androidx.annotation.Keep;
+import androidx.databinding.ObservableArrayMap;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -23,7 +24,6 @@ public class InfoFragment extends Fragment {
 
     private final String TAG = InfoFragment.class.getSimpleName();
     private FragmentInfoBinding mBinding;
-
 
     public InfoFragment() {
         // Required empty public constructor
@@ -53,7 +53,5 @@ public class InfoFragment extends Fragment {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_info, container, false);
 
         return mBinding.getRoot();
-
     }
-
 }
