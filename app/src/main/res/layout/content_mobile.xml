@@ -5,20 +5,21 @@
     tools:context=".MobileActivity">
 
     <data>
+
         <variable
             name="map"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
     </data>
 
-<androidx.core.widget.NestedScrollView
-    android:name="com.androidfung.drminfo.MobileActivityFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:ignore="PrivateResource">
+    <androidx.core.widget.NestedScrollView
+        android:name="com.androidfung.drminfo.MobileActivityFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:ignore="PrivateResource">
 
 
-    <com.google.android.flexbox.FlexboxLayout
+        <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
@@ -31,98 +32,110 @@
         app:flexWrap="wrap"
         app:justifyContent="center">
 
+        <!--<androidx.gridlayout.widget.GridLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+            <!--android:layout_marginTop="@dimen/activity_vertical_margin"-->
+            <!--android:layout_marginEnd="@dimen/activity_horizontal_margin"-->
+            <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
+            <!--android:descendantFocusability="blocksDescendants"-->
+            <!--app:alignContent="stretch"-->
+            <!--app:alignItems="stretch"-->
+            <!--app:columnCount="@integer/col_count"-->
+            <!--app:flexWrap="wrap"-->
+            <!--app:justifyContent="center"-->
+            <!--app:orientation="horizontal">-->
+
+            <fragment
+                android:id="@+id/fragment_info"
+                android:name="com.androidfung.drminfo.ui.mobile.InfoFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:layout_flexGrow="@integer/layout_flexGrow"
+                app:layout_minWidth="@dimen/box_min_width"
+                tools:layout="@layout/fragment_info" />
+
+            <fragment
+                android:id="@+id/fragment_clearkey"
+                android:name="com.androidfung.drminfo.ui.mobile.ClearKeyFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:layout_flexGrow="@integer/layout_flexGrow"
+                app:layout_minWidth="@dimen/box_min_width"
+                tools:layout="@layout/fragment_clearkey" />
+
+            <fragment
+                android:id="@+id/fragment_widevine"
+                android:name="com.androidfung.drminfo.ui.mobile.WidevineFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:layout_flexGrow="@integer/layout_flexGrow"
+                app:layout_minWidth="@dimen/box_min_width"
+                tools:layout="@layout/fragment_widevine" />
+
+            <fragment
+                android:id="@+id/fragment_playready"
+                android:name="com.androidfung.drminfo.ui.mobile.PlayreadyFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:layout_flexGrow="@integer/layout_flexGrow"
+                app:layout_minWidth="@dimen/box_min_width"
+                tools:layout="@layout/fragment_playready" />
+
+            <fragment
+                android:id="@+id/fragment_primetime"
+                android:name="com.androidfung.drminfo.ui.mobile.PrimetimeFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:layout_flexGrow="@integer/layout_flexGrow"
+                app:layout_minWidth="@dimen/box_min_width"
+                tools:layout="@layout/fragment_primetime" />
+
+            <fragment
+                android:id="@+id/fragment_marlin"
+                android:name="com.androidfung.drminfo.ui.mobile.MarlinFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:layout_flexGrow="@integer/layout_flexGrow"
+                app:layout_minWidth="@dimen/box_min_width"
+                tools:layout="@layout/fragment_marlin" />
+
+            <fragment
+                android:id="@+id/fragment_verimatrix"
+                android:name="com.androidfung.drminfo.ui.mobile.VerimatrixFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:layout_flexGrow="@integer/layout_flexGrow"
+                app:layout_minWidth="@dimen/box_min_width"
+                tools:layout="@layout/fragment_verimatrix" />
 
 
+            <fragment
+                android:id="@+id/fragment_ad"
+                android:name="com.androidfung.drminfo.ui.mobile.AdFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:layout_flexGrow="@integer/layout_flexGrow"
+                app:layout_minWidth="@dimen/box_min_width"
+                tools:layout="@layout/fragment_ad"
 
-        <fragment
-            android:id="@+id/fragment_info"
-            android:name="com.androidfung.drminfo.ui.mobile.InfoFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_minWidth="@dimen/box_min_width"
-            android:layout_margin="4dp"
-            app:layout_flexGrow="@integer/layout_flexGrow"
-            tools:layout="@layout/fragment_info" />
+                />
 
-        <fragment
-            app:layout_minWidth="@dimen/box_min_width"
-            android:id="@+id/fragment_clearkey"
-            android:name="com.androidfung.drminfo.ui.mobile.ClearKeyFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:layout_flexGrow="@integer/layout_flexGrow"
-            tools:layout="@layout/fragment_clearkey" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="16dp" />
 
-        <fragment
-            app:layout_minWidth="@dimen/box_min_width"
-            android:id="@+id/fragment_widevine"
-            android:name="com.androidfung.drminfo.ui.mobile.WidevineFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:layout_flexGrow="@integer/layout_flexGrow"
-            tools:layout="@layout/fragment_widevine" />
+        <!--</androidx.gridlayout.widget.GridLayout>-->
+        </com.google.android.flexbox.FlexboxLayout>
 
-        <fragment
-            app:layout_minWidth="@dimen/box_min_width"
-            android:id="@+id/fragment_playready"
-            android:name="com.androidfung.drminfo.ui.mobile.PlayreadyFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:layout_flexGrow="@integer/layout_flexGrow"
-            tools:layout="@layout/fragment_playready" />
-
-        <fragment
-            app:layout_minWidth="@dimen/box_min_width"
-            android:id="@+id/fragment_primetime"
-            android:name="com.androidfung.drminfo.ui.mobile.PrimetimeFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:layout_flexGrow="@integer/layout_flexGrow"
-            tools:layout="@layout/fragment_primetime" />
-
-        <fragment
-            app:layout_minWidth="@dimen/box_min_width"
-            android:id="@+id/fragment_marlin"
-            android:name="com.androidfung.drminfo.ui.mobile.MarlinFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:layout_flexGrow="@integer/layout_flexGrow"
-            tools:layout="@layout/fragment_marlin" />
-
-        <fragment
-            app:layout_minWidth="@dimen/box_min_width"
-            android:id="@+id/fragment_verimatrix"
-            android:name="com.androidfung.drminfo.ui.mobile.VerimatrixFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:layout_flexGrow="@integer/layout_flexGrow"
-            tools:layout="@layout/fragment_verimatrix"
-            />
-
-
-        <fragment
-            app:layout_minWidth="@dimen/box_min_width"
-            android:id="@+id/fragment_ad"
-            android:name="com.androidfung.drminfo.ui.mobile.AdFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:layout_flexGrow="@integer/layout_flexGrow"
-            tools:layout="@layout/fragment_ad"
-
-        />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="16dp" />
-
-    </com.google.android.flexbox.FlexboxLayout>
-
-</androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 </layout>

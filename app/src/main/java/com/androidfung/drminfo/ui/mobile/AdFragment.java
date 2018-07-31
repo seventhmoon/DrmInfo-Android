@@ -12,11 +12,14 @@ import android.view.ViewGroup;
 import com.androidfung.drminfo.BuildConfig;
 import com.androidfung.drminfo.R;
 import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.formats.NativeAdOptions;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -132,6 +135,28 @@ public class AdFragment extends Fragment {
             });
             mAdView.loadAd(new AdRequest.Builder().build());
         }
+    }
+
+    private void loadAdMobNativeAd(){
+        AdLoader adLoader = new AdLoader.Builder(getActivity(), "ca-app-pub-3940256099942544/2247696110")
+                .forUnifiedNativeAd(unifiedNativeAd -> {
+                    // Show the ad.
+                })
+                .withAdListener(new AdListener() {
+                    @Override
+                    public void onAdFailedToLoad(int errorCode) {
+                        // Handle the failure by logging, altering the UI, and so on.
+                        Log.e(TAG, String.valueOf(errorCode));
+                    }
+                })
+                .withNativeAdOptions(new NativeAdOptions.Builder()
+                        // Methods in the NativeAdOptions.Builder class can be
+                        // used here to specify individual options settings.
+                        .build())
+                .build();
+
+        adLoader.loadAd(new AdRequest.Builder().build());
+
     }
 
     private void loadAdMobBannerAdPost() {

@@ -85,3 +85,9 @@
 -dontwarn javax.lang.model.element.Modifier
 -dontwarn afu.org.checkerframework.**
 -dontwarn org.checkerframework.**
+
+-keep class com.google.common.collect.** { *; }
+-dontwarn com.google.common.collect.**
+
+-keep class com.google.firebase.firestore.FirebaseFirestoreSettings
+-keep class com.google.common.base.Objects

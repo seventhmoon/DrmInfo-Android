@@ -33,4 +33,6 @@
     <string name="text_hardware">Hardware</string>
     <string name="text_type">Type</string>
     <string name="text_fingerprint">Fingerprint</string>
+
+    <string name="ad_attribution">Ad</string>
 </resources>
