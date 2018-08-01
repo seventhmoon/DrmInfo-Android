@@ -216,7 +216,7 @@
             android:layout_marginTop="8dp"
             android:singleLine="true"
             android:ellipsize="middle"
-            android:text="@{Build.VERSION.SDK_INT}"
+            android:text="@{String.valueOf(Build.VERSION.SDK_INT)}"
             android:textAlignment="viewEnd"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintHeight_default="wrap"
