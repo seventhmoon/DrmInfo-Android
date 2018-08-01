@@ -190,10 +190,40 @@
             android:textAlignment="viewEnd"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintHeight_default="wrap"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_label_fingerprint"
             app:layout_constraintTop_toBottomOf="@+id/tv_value_display"
+            tools:text="PPR1" />
+
+        <TextView
+            android:id="@+id/tv_label_sdklevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/text_sdk_level"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_value_sdklevel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_label_fingerprint" />
+
+        <TextView
+            android:id="@+id/tv_value_sdklevel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:singleLine="true"
+            android:ellipsize="middle"
+            android:text="@{Build.VERSION.SDK_INT}"
+            android:textAlignment="viewEnd"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_label_sdklevel"
+            app:layout_constraintTop_toBottomOf="@+id/tv_value_fingerprint"
             tools:text="PPR1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
