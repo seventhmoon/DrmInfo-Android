@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <import type="android.os.Build" />
 
         <variable
@@ -13,16 +15,18 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        app:layout_constrainedHeight="true">
 
         <TextView
             android:id="@+id/tv_label_brand"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:text="@string/text_brand"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintHeight_default="wrap"
             app:layout_constraintBottom_toBottomOf="@+id/tv_value_brand"
             app:layout_constraintEnd_toStartOf="@+id/tv_value_brand"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -32,11 +36,12 @@
         <TextView
             android:id="@+id/tv_value_brand"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:text="@{Build.BRAND}"
             android:textAlignment="viewEnd"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintHeight_default="wrap"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_label_brand"
             app:layout_constraintTop_toTopOf="parent"
@@ -45,11 +50,12 @@
         <TextView
             android:id="@+id/tv_label_model"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:text="@string/text_model"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintHeight_default="wrap"
             app:layout_constraintBottom_toBottomOf="@+id/tv_value_model"
             app:layout_constraintEnd_toStartOf="@+id/tv_value_model"
             app:layout_constraintStart_toStartOf="parent"
@@ -58,11 +64,12 @@
         <TextView
             android:id="@+id/tv_value_model"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:text="@{Build.MODEL}"
             android:textAlignment="viewEnd"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintHeight_default="wrap"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_label_model"
             app:layout_constraintTop_toBottomOf="@+id/tv_value_brand"
@@ -72,38 +79,41 @@
         <TextView
             android:id="@+id/tv_label_hardware"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:text="@string/text_hardware"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintHeight_default="wrap"
             app:layout_constraintBottom_toBottomOf="@+id/tv_value_hardware"
             app:layout_constraintEnd_toStartOf="@+id/tv_value_hardware"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_model_" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_label_model" />
 
         <TextView
             android:id="@+id/tv_value_hardware"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
-            android:text="@{Build.HARDWARE}"
             android:singleLine="true"
+            android:text="@{Build.HARDWARE}"
             android:textAlignment="viewEnd"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            app:layout_constraintStart_toEndOf="@+id/tv_label_hardware"
+            app:layout_constraintHeight_default="wrap"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_label_hardware"
             app:layout_constraintTop_toBottomOf="@+id/tv_value_model"
             tools:text="sailfish" />
 
         <TextView
             android:id="@+id/tv_label_type"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:text="@string/text_type"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintHeight_default="wrap"
             app:layout_constraintBottom_toBottomOf="@+id/tv_value_type"
             app:layout_constraintEnd_toStartOf="@+id/tv_value_type"
             app:layout_constraintStart_toStartOf="parent"
@@ -112,11 +122,12 @@
         <TextView
             android:id="@+id/tv_value_type"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:text="@{Build.TYPE}"
             android:textAlignment="viewEnd"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintHeight_default="wrap"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_label_type"
             app:layout_constraintTop_toBottomOf="@+id/tv_value_hardware"
@@ -125,11 +136,12 @@
         <TextView
             android:id="@+id/tv_label_product"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:text="@string/text_product"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintHeight_default="wrap"
             app:layout_constraintBottom_toBottomOf="@+id/tv_value_product"
             app:layout_constraintEnd_toStartOf="@+id/tv_value_product"
             app:layout_constraintStart_toStartOf="parent"
@@ -138,13 +150,14 @@
         <TextView
             android:id="@+id/tv_value_product"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:text="@{Build.PRODUCT}"
             android:textAlignment="viewEnd"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/tv_label_product"
             app:layout_constraintTop_toBottomOf="@+id/tv_value_type"
             tools:text="PPR1" />

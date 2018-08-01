@@ -15,7 +15,6 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -30,7 +29,7 @@
         tools:context="com.androidfung.drminfo.ui.mobile.ClearKeyFragment">
 
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -48,7 +47,7 @@
                 android:layout_height="wrap_content"
                 layout="@layout/viewgroup_mediadrm" bind:properties="@{properties}"/>
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
     </com.google.android.material.card.MaterialCardView>

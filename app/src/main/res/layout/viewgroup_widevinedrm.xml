@@ -140,6 +140,8 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="@{Strings.isNullOrEmpty((String) properties[(@string/widevine_string_property_key_oemCryptoApiVersion)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+
             app:layout_constraintTop_toBottomOf="@+id/tv_label_maxnumberofsessions" />
 
         <TextView
@@ -153,6 +155,8 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="@{Strings.isNullOrEmpty((String) properties[(@string/widevine_string_property_key_oemCryptoApiVersion)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+
             app:layout_constraintStart_toEndOf="@+id/tv_label_oemcryptoversion"
             app:layout_constraintTop_toBottomOf="@+id/tv_value_maxnumberofsession"
             tools:text="{OEM_CRYPTO_VERSION}" />

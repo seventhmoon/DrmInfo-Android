@@ -123,6 +123,8 @@
             app:layout_constraintEnd_toStartOf="@+id/textView9"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3"
+            app:layout_constraintBottom_toBottomOf="parent"
+
             tools:text="Device Unique ID" />
 
         <TextView
@@ -141,6 +143,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView8"
             app:layout_constraintTop_toBottomOf="@+id/textView6"
+            app:layout_constraintBottom_toBottomOf="parent"
+
             tools:text="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
