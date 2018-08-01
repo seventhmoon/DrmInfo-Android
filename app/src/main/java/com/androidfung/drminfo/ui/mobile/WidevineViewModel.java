@@ -45,8 +45,8 @@ public class WidevineViewModel extends MediaDrmViewModel {
         }
         mProperties.setValue(map);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        auth.signInAnonymously().addOnCompleteListener(task -> writeIntoToFirebase(task, map));
+//        FirebaseAuth auth = FirebaseAuth.getInstance();
+//        auth.signInAnonymously().addOnCompleteListener(task -> writeIntoToFirebase(task, map));
 
     }
 //    }

@@ -6,7 +6,6 @@
     <data>
 
         <import type="android.view.View" />
-
         <import type="com.google.common.base.Strings" />
 
         <variable
@@ -136,6 +135,7 @@
             android:ellipsize="middle"
             android:singleLine="true"
             android:text='@{properties[(@string/mediadrm_bytearray_property_key_deviceuniqueid)] ?? "-"}'
+            android:textAlignment="viewEnd"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="@{Strings.isNullOrEmpty((String) properties[(@string/mediadrm_bytearray_property_key_deviceuniqueid)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
