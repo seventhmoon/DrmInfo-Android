@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 
 import com.androidfung.drminfo.R;
 import com.androidfung.drminfo.databinding.FragmentMediadrmBinding;
-import com.androidfung.drminfo.databinding.FragmentPrimetimeBinding;
 
 
 /**

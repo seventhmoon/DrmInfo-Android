@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.androidfung.drminfo.R;
-import com.androidfung.drminfo.databinding.FragmentClearkeyBinding;
 import com.androidfung.drminfo.databinding.FragmentMediadrmBinding;
 
 /**
