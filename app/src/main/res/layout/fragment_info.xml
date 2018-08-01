@@ -27,24 +27,35 @@
         app:contentPadding="16dp"
         tools:context="com.androidfung.drminfo.ui.mobile.InfoFragment">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_headline"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/text_device_information"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+                android:ellipsize="middle"
+                android:singleLine="true"
+                android:text='@{Build.MANUFACTURER + " " + Build.MODEL}'
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="Google Pixel 3 XXXXXXXXXXXXXXXXL" />
 
             <include
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 layout="@layout/viewgroup_info"
+                app:layout_constraintTop_toBottomOf="@+id/tv_headline"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 bind:map="@{map}" />
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
 </layout>
