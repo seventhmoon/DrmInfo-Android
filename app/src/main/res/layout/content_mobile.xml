@@ -20,19 +20,19 @@
 
 
         <com.google.android.flexbox.FlexboxLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:descendantFocusability="blocksDescendants"
-        app:alignContent="stretch"
-        app:alignItems="stretch"
-        app:flexWrap="wrap"
-        app:justifyContent="center">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:descendantFocusability="blocksDescendants"
+            app:alignContent="stretch"
+            app:alignItems="stretch"
+            app:flexWrap="wrap"
+            app:justifyContent="center">
 
-        <!--<androidx.gridlayout.widget.GridLayout-->
+            <!--<androidx.gridlayout.widget.GridLayout-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="match_parent"-->
             <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
@@ -126,15 +126,13 @@
                 android:layout_margin="4dp"
                 app:layout_flexGrow="@integer/layout_flexGrow"
                 app:layout_minWidth="@dimen/box_min_width"
-                tools:layout="@layout/fragment_ad"
-
-                />
+                tools:layout="@layout/fragment_ad" />
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="16dp" />
 
-        <!--</androidx.gridlayout.widget.GridLayout>-->
+            <!--</androidx.gridlayout.widget.GridLayout>-->
         </com.google.android.flexbox.FlexboxLayout>
 
     </androidx.core.widget.NestedScrollView>

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.androidfung.drminfo.R;
+import com.androidfung.drminfo.databinding.FragmentMediadrmBinding;
 import com.androidfung.drminfo.databinding.FragmentPlayreadyBinding;
 
 
@@ -25,7 +26,7 @@ public class PlayreadyFragment extends Fragment {
 
     private static final String TAG = PlayreadyFragment.class.getSimpleName();
 
-    private FragmentPlayreadyBinding mBinding;
+    private FragmentMediadrmBinding mBinding;
 
     public PlayreadyFragment() {
         // Required empty public constructor
@@ -43,7 +44,7 @@ public class PlayreadyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_playready, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_mediadrm, container, false);
 
         return mBinding.getRoot();
     }

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.androidfung.drminfo.R;
 import com.androidfung.drminfo.databinding.FragmentMarlinBinding;
+import com.androidfung.drminfo.databinding.FragmentMediadrmBinding;
 
 
 /**
@@ -24,7 +25,7 @@ public class MarlinFragment extends Fragment {
 
     private static final String TAG = MarlinFragment.class.getSimpleName();
 
-    private FragmentMarlinBinding mBinding;
+    private FragmentMediadrmBinding mBinding;
 
     public MarlinFragment() {
         // Required empty public constructor
@@ -41,7 +42,7 @@ public class MarlinFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_marlin, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_mediadrm, container, false);
 
         return mBinding.getRoot();
     }

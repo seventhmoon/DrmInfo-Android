@@ -1,32 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="widevine_string_property_key_securityLevel">securityLevel</string>
+    <string name="widevine_string_property_key_systemId">systemId</string>
+    <string name="widevine_string_property_key_privacyMode">privacyMode</string>
+    <string name="widevine_string_property_key_sessionSharing">sessionSharing</string>
+    <string name="widevine_string_property_key_usageReportingSupport">usageReportingSupport</string>
+    <string name="widevine_string_property_key_maxHdcpLevel">maxHdcpLevel</string>
+    <string name="widevine_string_property_key_maxNumberOfSessions">maxNumberOfSessions</string>
+    <string name="widevine_string_property_key_oemCryptoApiVersion">oemCryptoApiVersion</string>
+    <string name="widevine_string_property_key_CurrentSRMVersion">CurrentSRMVersion</string>
+    <string name="widevine_string_property_key_SRMUpdateSupport">SRMUpdateSupport</string>
+
+    <string name="widevine_string_property_name_securityLevel">Security Level</string>
+    <string name="widevine_string_property_name_systemId">System ID</string>
+    <string name="widevine_string_property_name_privacyMode">Privacy Mode</string>
+    <string name="widevine_string_property_name_sessionSharing">Session Sharing</string>
+    <string name="widevine_string_property_name_usageReportingSupport">Usage Reporting Support</string>
+    <string name="widevine_string_property_name_maxHdcpLevel">Max HDCP Level Supported</string>
+    <string name="widevine_string_property_name_maxNumberOfSessions">Max Number of Sessions</string>
+    <string name="widevine_string_property_name_oemCryptoApiVersion">OEM Crypto API Version</string>
+    <string name="widevine_string_property_name_CurrentSRMVersion">SRM Version</string>
+    <string name="widevine_string_property_name_SRMUpdateSupport">SRM Update Support</string>
+
     <string-array name="widevine_string_property_keys" tools:ignore="InconsistentArrays">
-        <item>securityLevel</item>
-        <item>systemId</item>
+        <item>@string/widevine_string_property_key_securityLevel</item>
+        <item>@string/widevine_string_property_key_systemId</item>
+        <item>@string/widevine_string_property_key_maxHdcpLevel</item>
+        <item>@string/widevine_string_property_key_maxNumberOfSessions</item>
+        <item>@string/widevine_string_property_key_oemCryptoApiVersion</item>
 
     </string-array>
     <string-array name="widevine_string_property_names" tools:ignore="InconsistentArrays">
-        <item>Security Level</item>
-        <item>System ID</item>
-        <!--<item>Privacy Mode</item>-->
-        <!--<item>Session Sharing</item>-->
-        <!--<item>Usage Reporting Support</item>-->
-        <!--<item>Max HDCP Level Supported</item>-->
-        <!--<item>Max Number of Sessions</item>-->
-        <!--<item>OEM Crypto API Version</item>-->
-        <!--<item>SRM Version</item>-->
-        <!--<item>SRM Update Support</item>-->
+        <item>@string/widevine_string_property_name_securityLevel</item>
+        <item>@string/widevine_string_property_name_systemId</item>
+        <item>@string/widevine_string_property_name_maxHdcpLevel</item>
+        <item>@string/widevine_string_property_name_maxNumberOfSessions</item>
+        <item>@string/widevine_string_property_name_oemCryptoApiVersion</item>
     </string-array>
 
+    <string name="widevine_bytearray_property_key_provisioningUniqueId">provisioningUniqueId</string>
+    <string name="widevine_bytearray_property_name_provisioningUniqueId">Provisioning Unique Id</string>
+    <string name="widevine_bytearray_property_key_serviceCertificate">serviceCertificate</string>
+
+    <string name="widevine_bytearray_property_name_serviceCertificate">Service Certificate</string>
+    <string name="widevine_bytearray_property_key_provisioningServiceCertificate">provisioningServiceCertificate</string>
+    <string name="widevine_bytearray_property_name_provisioningServiceCertificate">Provisioning Service Certificate</string>
+
     <string-array name="widevine_bytearray_property_keys" tools:ignore="InconsistentArrays">
-        <item>provisioningUniqueId</item>
-        <item>serviceCertificate</item>
-        <item>provisioningServiceCertificate</item>
+        <item>@string/widevine_bytearray_property_key_provisioningUniqueId</item>
+        <item>@string/widevine_bytearray_property_key_serviceCertificate</item>
+        <item>@string/widevine_bytearray_property_key_provisioningServiceCertificate</item>
     </string-array>
 
     <string-array name="widevine_bytearray_property_names" tools:ignore="InconsistentArrays">
-        <item>Provisioning Unique Id</item>
-        <item>Service Certificate</item>
-        <item>Provisioning Service Certificate</item>
+        <item>@string/widevine_bytearray_property_name_provisioningUniqueId</item>
+        <item>@string/widevine_bytearray_property_name_serviceCertificate</item>
+        <item>@string/widevine_bytearray_property_name_provisioningServiceCertificate</item>
     </string-array>
 </resources>

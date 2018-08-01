@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.androidfung.drminfo.R;
 import com.androidfung.drminfo.databinding.FragmentClearkeyBinding;
+import com.androidfung.drminfo.databinding.FragmentMediadrmBinding;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,7 +26,7 @@ public class ClearKeyFragment extends Fragment {
     @SuppressWarnings("unused")
     private static final String TAG = ClearKeyFragment.class.getSimpleName();
 
-    private FragmentClearkeyBinding mBinding;
+    private FragmentMediadrmBinding mBinding;
 
 
     public ClearKeyFragment() {
@@ -43,7 +44,7 @@ public class ClearKeyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_clearkey, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_mediadrm, container, false);
         return mBinding.getRoot();
     }
 

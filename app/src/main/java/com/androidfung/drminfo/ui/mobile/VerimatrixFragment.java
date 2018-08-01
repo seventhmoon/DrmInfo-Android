@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.androidfung.drminfo.R;
+import com.androidfung.drminfo.databinding.FragmentMediadrmBinding;
 import com.androidfung.drminfo.databinding.FragmentVerimatrixBinding;
 
 
@@ -24,7 +25,7 @@ public class VerimatrixFragment extends Fragment {
 
     private static final String TAG = VerimatrixFragment.class.getSimpleName();
 
-    private FragmentVerimatrixBinding mBinding;
+    private FragmentMediadrmBinding mBinding;
 
     public VerimatrixFragment() {
         // Required empty public constructor
@@ -41,7 +42,7 @@ public class VerimatrixFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_verimatrix, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_mediadrm, container, false);
         return mBinding.getRoot();
     }
 

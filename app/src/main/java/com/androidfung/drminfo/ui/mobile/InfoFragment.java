@@ -5,7 +5,6 @@ import androidx.databinding.DataBindingUtil;
 
 import android.os.Bundle;
 import androidx.annotation.Keep;
-import androidx.databinding.ObservableArrayMap;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -14,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.androidfung.drminfo.R;
-import com.androidfung.drminfo.databinding.FragmentInfo2Binding;
 import com.androidfung.drminfo.databinding.FragmentInfoBinding;
 
 /**
@@ -24,7 +22,7 @@ import com.androidfung.drminfo.databinding.FragmentInfoBinding;
 public class InfoFragment extends Fragment {
 
     private final String TAG = InfoFragment.class.getSimpleName();
-    private FragmentInfo2Binding mBinding;
+    private FragmentInfoBinding mBinding;
 
     public InfoFragment() {
         // Required empty public constructor
@@ -51,7 +49,7 @@ public class InfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_info2, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_info, container, false);
 
         return mBinding.getRoot();
     }

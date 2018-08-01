@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="com.google.common.base.Strings" />
+
+        <variable
+            name="properties"
+            type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/viewgroup_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_label_systemid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:singleLine="true"
+            android:text="@string/widevine_string_property_name_systemId"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="@{Strings.isNullOrEmpty((String) properties[(@string/widevine_string_property_key_systemId)]) ? View.GONE : View.VISIBLE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_value_systemid"
+            android:layout_width="0dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text='@{properties[(@string/widevine_string_property_key_systemId)] ?? "-"}'
+            android:textAlignment="viewEnd"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="@{Strings.isNullOrEmpty((String) properties[(@string/widevine_string_property_key_systemId)]) ? View.GONE : View.VISIBLE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_label_systemid"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="{SYSTEM_ID}" />
+
+        <TextView
+            android:id="@+id/tv_label_securitylevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:singleLine="true"
+            android:text="@string/widevine_string_property_name_securityLevel"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="@{Strings.isNullOrEmpty((String) properties[(@string/widevine_string_property_key_securityLevel)]) ? View.GONE : View.VISIBLE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_label_systemid" />
+
+        <TextView
+            android:id="@+id/tv_value_securitylevel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text='@{properties[(@string/widevine_string_property_key_securityLevel)] ?? "-"}'
+            android:textAlignment="viewEnd"
+
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="@{Strings.isNullOrEmpty((String) properties[(@string/widevine_string_property_key_securityLevel)]) ? View.GONE : View.VISIBLE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_label_securitylevel"
+            app:layout_constraintTop_toBottomOf="@+id/tv_value_systemid"
+            tools:text="{SECURITY_LEVEL}" />
+
+        <TextView
+            android:id="@+id/tv_label_maxhdcplevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:singleLine="true"
+            android:text="@string/widevine_string_property_name_maxHdcpLevel"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="@{Strings.isNullOrEmpty((String) properties[(@string/widevine_string_property_key_maxHdcpLevel)]) ? View.GONE : View.VISIBLE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_label_securitylevel" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text='@{properties[(@string/widevine_string_property_key_maxHdcpLevel)] ?? "-"}'
+            android:textAlignment="viewEnd"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:visibility="@{Strings.isNullOrEmpty((String) properties[(@string/widevine_string_property_key_maxHdcpLevel)]) ? View.GONE : View.VISIBLE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_label_maxhdcplevel"
+            app:layout_constraintTop_toBottomOf="@+id/tv_value_securitylevel"
+            tools:text="{MAX_HDCP_LEVEL}" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
