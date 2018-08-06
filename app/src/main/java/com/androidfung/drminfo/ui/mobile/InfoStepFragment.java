@@ -4,11 +4,11 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaDrm;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.androidfung.drminfo.MediaDrmFactory;
 import com.androidfung.drminfo.R;
-import com.google.common.base.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
         for (int i=0; i< drmStringKeys.length; i++){
             try {
                 String value = mediaDrm.getPropertyString(drmStringKeys[i]);
-                if (!Strings.isNullOrEmpty(value)) {
+                if (!TextUtils.isEmpty(value)) {
                     subActions.add(new GuidedAction.Builder(getActivity())
                             .infoOnly(true)
                             .title(drmStringNames[i])
@@ -71,7 +71,7 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
             for (int i=0; i< wvStringKeys.length; i++){
                 try {
                     String value = widevineDrm.getPropertyString(wvStringKeys[i]);
-                    if (!Strings.isNullOrEmpty(value)) {
+                    if (!TextUtils.isEmpty(value)) {
                         subActions.add(new GuidedAction.Builder(getActivity())
                                 .infoOnly(true)
                                 .title(wvStringNames[i])
