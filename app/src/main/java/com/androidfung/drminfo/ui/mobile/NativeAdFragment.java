@@ -258,19 +258,15 @@ public class NativeAdFragment extends Fragment {
 
         AdLoader.Builder builder = new AdLoader.Builder(this.getActivity(), "ca-app-pub-3940256099942544/2247696110");
 
-        builder.forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
-            // OnUnifiedNativeAdLoadedListener implementation.
-            @Override
-            public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
-                FrameLayout frameLayout =
-                        getActivity().findViewById(R.id.fl_adplaceholder);
-                UnifiedNativeAdView adView = (UnifiedNativeAdView) getLayoutInflater()
-                        .inflate(R.layout.unifiednativeadview_native, null);
-                populateUnifiedNativeAdView(unifiedNativeAd, adView);
-                frameLayout.removeAllViews();
-                frameLayout.addView(adView);
-            }
-
+        // OnUnifiedNativeAdLoadedListener implementation.
+        builder.forUnifiedNativeAd(unifiedNativeAd -> {
+            FrameLayout frameLayout =
+                    getActivity().findViewById(R.id.fl_adplaceholder);
+            UnifiedNativeAdView adView = (UnifiedNativeAdView) getLayoutInflater()
+                    .inflate(R.layout.unifiednativeadview_native, null);
+            populateUnifiedNativeAdView(unifiedNativeAd, adView);
+            frameLayout.removeAllViews();
+            frameLayout.addView(adView);
         });
 
         VideoOptions videoOptions = new VideoOptions.Builder()

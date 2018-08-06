@@ -3,9 +3,9 @@ package com.androidfung.drminfo.ui.mobile;
 import android.app.Application;
 import android.media.MediaDrm;
 import android.os.Build;
+import android.util.Base64;
 
 import com.androidfung.drminfo.R;
-import com.google.common.io.BaseEncoding;
 
 import androidx.databinding.ObservableArrayMap;
 import androidx.lifecycle.AndroidViewModel;
@@ -51,7 +51,8 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
                 String[] mediaDrmKeys2 = getApplication().getResources().getStringArray(R.array.mediadrm_bytearray_property_keys);
                 for (String mediaDrmKey : mediaDrmKeys2) {
                     byte[] value = mediaDrm.getPropertyByteArray(mediaDrmKey);
-                    map.put(mediaDrmKey, BaseEncoding.base64().encode(value).toUpperCase());
+                    String encodedString = Base64.encodeToString(value, Base64.DEFAULT).toUpperCase();
+                    map.put(mediaDrmKey, encodedString);
                 }
             } catch (IllegalArgumentException | IllegalStateException ignored) {
             }
