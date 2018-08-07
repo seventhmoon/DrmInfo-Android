@@ -4,14 +4,14 @@ apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion '28.0.1'
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
         applicationId "com.androidfung.drminfo"
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 106
-        versionName "1.0.17.180805"
+        versionCode 108
+        versionName "1.0.18.180807"
         resConfigs "en"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
@@ -47,12 +47,12 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-beta01'
-    implementation 'androidx.annotation:annotation:1.0.0-beta01'
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'androidx.leanback:leanback:1.0.0-beta01'
-    implementation 'androidx.cardview:cardview:1.0.0-beta01'
-    implementation 'androidx.gridlayout:gridlayout:1.0.0-beta01'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
+    implementation 'androidx.annotation:annotation:1.0.0-rc01'
+    implementation 'androidx.appcompat:appcompat:1.0.0-rc01'
+    implementation 'androidx.leanback:leanback:1.0.0-rc01'
+    implementation 'androidx.cardview:cardview:1.0.0-rc01'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0-rc01'
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
 
@@ -64,11 +64,11 @@ dependencies {
 //    implementation 'com.google.firebase:firebase-firestore:17.0.3'
 //    implementation 'com.google.firebase:firebase-auth:16.0.2'
 
-    implementation 'com.google.android.material:material:1.0.0-beta01'
+    implementation 'com.google.android.material:material:1.0.0-rc01'
     implementation 'com.google.android:flexbox:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.4'
-    api 'com.google.guava:guava:25.1-android'
+//    api 'com.google.guava:guava:25.1-android'
 
 }
 // ADD THIS AT THE BOTTOM
