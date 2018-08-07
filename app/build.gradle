@@ -5,12 +5,13 @@ apply plugin: 'io.fabric'
 android {
     compileSdkVersion 28
     buildToolsVersion '28.0.2'
+    useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "com.androidfung.drminfo"
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 108
+        versionCode 109
         versionName "1.0.18.180807"
         resConfigs "en"
         multiDexEnabled true
@@ -58,8 +59,8 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation 'com.google.firebase:firebase-ads:15.0.1'
-    implementation 'com.google.firebase:firebase-perf:16.0.0'
     implementation 'com.google.firebase:firebase-config:16.0.0'
+        implementation 'com.google.firebase:firebase-perf:16.0.0'
 //    implementation 'com.google.firebase:firebase-database:16.0.1'
 //    implementation 'com.google.firebase:firebase-firestore:17.0.3'
 //    implementation 'com.google.firebase:firebase-auth:16.0.2'
