@@ -144,6 +144,13 @@ public class AdFragment extends Fragment {
                 })
                 .withAdListener(new AdListener() {
                     @Override
+                    public void onAdLoaded() {
+                        // Code to be executed when an ad finishes loading.
+                        Log.i("Ads", "onAdLoaded");
+                        mBannerAdHolder.setVisibility(View.VISIBLE);
+                        mAdView.setVisibility(View.VISIBLE);
+                    }
+                    @Override
                     public void onAdFailedToLoad(int errorCode) {
                         // Handle the failure by logging, altering the UI, and so on.
                         Log.e(TAG, String.valueOf(errorCode));
@@ -159,7 +166,7 @@ public class AdFragment extends Fragment {
 
     }
 
-    private void loadAdMobBannerAdPost() {
+    private void loadAdMobBannerAdPost(AdSize adSize) {
         mBannerAdHolder.post(() -> {
             //        if (mAdView != null) {
             AdView adView = new AdView(getContext());
