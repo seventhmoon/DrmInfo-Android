@@ -27,7 +27,9 @@ public class WidevineViewModel extends MediaDrmViewModel {
 
                 for (String wvKey : wvKeys) {
                     String value = mediaDrm.getPropertyString(wvKey);
-                    map.put(wvKey, value);
+                    if (map != null && map.get(wvKey) != null) {
+                        map.put(wvKey, value);
+                    }
                 }
             } catch (IllegalStateException | IllegalArgumentException ignored) {
             }
