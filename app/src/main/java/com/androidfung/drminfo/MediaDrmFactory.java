@@ -24,13 +24,10 @@ public class MediaDrmFactory {
     private static final UUID DIVX_UUID = new UUID(0x35BF197B530E42D7L, 0x8B651B4BF415070FL);
     private static final UUID FAIRPLAY_UUID = new UUID(0x94CE86FB07FF4F43L, 0xADB893D2FA968CA2L);
 
-    //Define the list of accepted constants
-    @IntDef({PLAYREADY, WIDEVINE, MARLIN, VERIMATRIX, CLEARKEY, PRIMETIME})
-
     //Tell the compiler not to store annotation data in the .class file
     @Retention(RetentionPolicy.SOURCE)
-
-    //Declare the NavigationMode annotation
+    //Define the list of accepted constants
+    @IntDef({PLAYREADY, WIDEVINE, MARLIN, VERIMATRIX, CLEARKEY, PRIMETIME})
     public @interface Provider {
     }
 

@@ -10,6 +10,8 @@
     <string name="mediadrm_string_property_name_description">Description</string>
     <string name="mediadrm_string_property_name_version">Version</string>
     <string name="mediadrm_string_property_name_algorithms">Algorithm</string>
+    <string name="mediadrm_key_maxHdcpLevel">maxHdcpLevel</string>
+    <string name="mediadrm_key_maxNumberOfSessions">maxNumberOfSessions</string>
 
 
     <string-array name="mediadrm_string_property_keys">

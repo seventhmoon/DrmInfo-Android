@@ -67,7 +67,7 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
                     int maxSessionCount = mediaDrm.getMaxSessionCount();
 //                    int openSessionCount = mediaDrm.getOpenSessionCount();
 
-                    map.put(getApplication().getString(R.string.mediadrm_key_maxNumberOfSessions), maxSessionCount);
+                    map.put(getApplication().getString(R.string.mediadrm_key_maxNumberOfSessions), String.valueOf(maxSessionCount));
                     map.put(getApplication().getString(R.string.mediadrm_key_maxHdcpLevel), toStringValue(maxHdcpLevel));
 
 
@@ -93,16 +93,16 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
                 return "No Digital Output";
 
             case MediaDrm.HDCP_V1:
-                return "v1";
+                return "1";
 
             case MediaDrm.HDCP_V2_1:
-                return "v2.1";
+                return "2.1";
 
             case MediaDrm.HDCP_V2_2:
-                return "v2.2";
+                return "2.2";
 
             case MediaDrm.HDCP_V2:
-                return "v2";
+                return "2";
 
             default:
                 return null;
