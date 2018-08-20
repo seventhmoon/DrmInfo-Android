@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.androidfung.drminfo.databinding.ActivityMobileBinding;
 import com.androidfung.drminfo.ui.mobile.SharedViewModel;
@@ -51,6 +52,10 @@ public class MobileActivity extends AppCompatActivity {
     }
 
     public void displayLicenseInformation(MenuItem item) {
-        startActivity(new Intent(this, OssLicensesMenuActivity.class));
+        try {
+            startActivity(new Intent(this, OssLicensesMenuActivity.class));
+        }catch (NullPointerException e){
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 }
