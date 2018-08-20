@@ -167,7 +167,7 @@
         <TextView
             android:id="@+id/tv_label_fingerprint"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:text="@string/text_fingerprint"
@@ -183,8 +183,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:singleLine="true"
-            android:ellipsize="middle"
+
             android:text="@{Build.FINGERPRINT}"
             android:textAlignment="viewEnd"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
@@ -192,7 +191,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_label_fingerprint"
             app:layout_constraintTop_toBottomOf="@+id/tv_value_display"
-            tools:text="PPR1" />
+            tools:text="PPR1.PEAEGJAOE/egoeogah ea/gega /egvadvasvpoaj jpoavjpodj ajdvavfaogeoaehfoah egae:bv segaegeag egaegaega" />
 
         <TextView
             android:id="@+id/tv_label_sdklevel"
