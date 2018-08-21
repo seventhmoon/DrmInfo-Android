@@ -58,7 +58,7 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
                 String[] mediaDrmKeys2 = getApplication().getResources().getStringArray(R.array.mediadrm_bytearray_property_keys);
                 for (String mediaDrmKey : mediaDrmKeys2) {
                     byte[] value = mediaDrm.getPropertyByteArray(mediaDrmKey);
-                    String encodedString = Base64.encodeToString(value, Base64.DEFAULT).toUpperCase();
+                    String encodedString = Base64.encodeToString(value, Base64.DEFAULT).toUpperCase().trim();
                     map.put(mediaDrmKey, encodedString);
                 }
 
