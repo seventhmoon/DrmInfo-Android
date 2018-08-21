@@ -12,8 +12,8 @@ android {
         applicationId "com.androidfung.drminfo"
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 112
-        versionName "1.0.18.180813"
+        versionCode 119
+        versionName "1.0.18.180820"
         resConfigs "en"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
@@ -21,7 +21,6 @@ android {
             enabled = true
         }
     }
-
 
     buildTypes {
         release {
@@ -41,7 +40,6 @@ android {
         textReport true
         textOutput 'stdout'
         checkReleaseBuilds false
-
     }
 }
 
@@ -60,7 +58,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation 'com.google.firebase:firebase-ads:15.0.1'
     implementation 'com.google.firebase:firebase-config:16.0.0'
-    implementation 'com.google.firebase:firebase-perf:16.0.0'
+    implementation 'com.google.firebase:firebase-perf:16.1.0'
 //    implementation 'com.google.firebase:firebase-database:16.0.1'
 //    implementation 'com.google.firebase:firebase-firestore:17.0.3'
 //    implementation 'com.google.firebase:firebase-auth:16.0.2'
