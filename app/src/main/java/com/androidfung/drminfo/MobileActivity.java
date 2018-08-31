@@ -1,6 +1,6 @@
 package com.androidfung.drminfo;
 
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
+//import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.androidfung.drminfo.databinding.ActivityMobileBinding;
 import com.androidfung.drminfo.ui.mobile.SharedViewModel;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import androidx.annotation.Keep;
@@ -36,7 +37,7 @@ public class MobileActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+//        FirebaseApp.initializeApp(this);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         SharedViewModel sharedViewModel = ViewModelProviders.of(this).get(SharedViewModel.class);
@@ -51,11 +52,11 @@ public class MobileActivity extends AppCompatActivity {
         return true;
     }
 
-    public void displayLicenseInformation(MenuItem item) {
-        try {
-            startActivity(new Intent(this, OssLicensesMenuActivity.class));
-        }catch (NullPointerException e){
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
-        }
-    }
+//    public void displayLicenseInformation(MenuItem item) {
+//        try {
+//            startActivity(new Intent(this, OssLicensesMenuActivity.class));
+//        }catch (NullPointerException e){
+//            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+//        }
+//    }
 }
