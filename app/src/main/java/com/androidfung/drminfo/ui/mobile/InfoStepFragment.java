@@ -51,7 +51,7 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
                             .description(value)
                             .build());
                 }
-            } catch (IllegalStateException ex) {
+            } catch (IllegalStateException | IllegalArgumentException ex) {
                 Log.d(TAG, ex.toString());
             }
         }
@@ -78,7 +78,7 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
                                 .description(value)
                                 .build());
                     }
-                } catch (IllegalStateException ex) {
+                } catch (IllegalStateException | IllegalArgumentException ex) {
                     Log.d(TAG, ex.toString());
                 }
             }
