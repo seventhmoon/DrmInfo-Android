@@ -80,16 +80,16 @@
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:singleLine="true"
             android:text="@string/mediadrm_string_property_name_algorithms"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/mediadrm_string_property_key_algorithms)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintEnd_toStartOf="@+id/textView6"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2"
+            app:layout_constraintBottom_toBottomOf="@+id/textView6"
             tools:text="Algorithm" />
 
         <TextView
@@ -97,8 +97,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:ellipsize="middle"
-            android:singleLine="true"
             android:text='@{properties[(@string/mediadrm_string_property_key_algorithms)] ?? "-"}'
             android:textAlignment="viewEnd"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
