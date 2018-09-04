@@ -35,7 +35,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{properties[(@stringArray/mediadrm_string_property_keys[1])]}"
+                android:text="@{properties[(@string/mediadrm_string_property_key_description)]}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
             <include
