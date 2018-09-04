@@ -24,13 +24,12 @@
         android:layout_marginBottom="@dimen/card_vertical_margin"
         android:minWidth="@dimen/box_min_width"
         android:minHeight="@dimen/box_min_height"
-        app:contentPadding="16dp"
+        app:contentPadding="@dimen/card_padding"
         tools:context="com.androidfung.drminfo.ui.mobile.InfoFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content" >
 
             <TextView
                 android:id="@+id/tv_headline"
