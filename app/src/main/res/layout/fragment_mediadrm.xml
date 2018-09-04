@@ -27,7 +27,7 @@
         android:visibility="@{properties.isEmpty() ? View.GONE : View.VISIBLE}">
 
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -44,7 +44,7 @@
                 layout="@layout/viewgroup_mediadrm"
                 bind:properties="@{properties}"/>
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
     </com.google.android.material.card.MaterialCardView>
