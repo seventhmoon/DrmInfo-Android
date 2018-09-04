@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="middle"
                 android:singleLine="true"
-                android:text="@{properties[(@stringArray/mediadrm_string_property_keys[1])]}"
+                android:text="@{properties[(@string/mediadrm_string_property_key_description)]}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
             <include layout="@layout/viewgroup_mediadrm"
