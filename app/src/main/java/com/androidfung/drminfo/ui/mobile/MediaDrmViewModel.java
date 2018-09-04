@@ -4,20 +4,14 @@ import android.app.Application;
 import android.media.MediaDrm;
 import android.os.Build;
 import android.util.Base64;
-import android.util.Log;
 
 import com.androidfung.drminfo.R;
 
-import androidx.annotation.IntDef;
-import androidx.annotation.IntRange;
 import androidx.annotation.RequiresApi;
 import androidx.databinding.ObservableArrayMap;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
-import static android.media.MediaDrm.HDCP_LEVEL_UNKNOWN;
-import static android.media.MediaDrm.HDCP_NONE;
 
 public abstract class MediaDrmViewModel extends AndroidViewModel {
 

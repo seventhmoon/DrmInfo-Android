@@ -38,7 +38,7 @@
                 android:ellipsize="middle"
                 android:singleLine="true"
                 android:text='@{Build.MANUFACTURER + " " + Build.MODEL}'
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

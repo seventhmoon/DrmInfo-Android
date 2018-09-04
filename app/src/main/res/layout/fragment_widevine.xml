@@ -40,7 +40,8 @@
                 android:ellipsize="middle"
                 android:singleLine="true"
                 android:text="@{properties[(@string/mediadrm_string_property_key_description)]}"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                tools:text="Media DRM" />
 
             <include layout="@layout/viewgroup_mediadrm"
                 android:layout_width="match_parent"
