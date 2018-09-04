@@ -32,21 +32,6 @@
             app:flexWrap="wrap"
             app:justifyContent="center">
 
-            <!--<androidx.gridlayout.widget.GridLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
-            <!--android:layout_marginTop="@dimen/activity_vertical_margin"-->
-            <!--android:layout_marginEnd="@dimen/activity_horizontal_margin"-->
-            <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
-            <!--android:descendantFocusability="blocksDescendants"-->
-            <!--app:alignContent="stretch"-->
-            <!--app:alignItems="stretch"-->
-            <!--app:columnCount="@integer/col_count"-->
-            <!--app:flexWrap="wrap"-->
-            <!--app:justifyContent="center"-->
-            <!--app:orientation="horizontal">-->
-
             <fragment
                 android:id="@+id/fragment_info"
                 android:name="com.androidfung.drminfo.ui.mobile.InfoFragment"
@@ -54,7 +39,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 app:layout_flexGrow="@integer/layout_flexGrow"
-                app:layout_minWidth="@dimen/box_min_width"
                 app:layout_minHeight="@dimen/box_min_height"
                 tools:layout="@layout/fragment_info" />
 
@@ -65,9 +49,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 app:layout_flexGrow="@integer/layout_flexGrow"
-                app:layout_minWidth="@dimen/box_min_width"
                 app:layout_minHeight="@dimen/box_min_height"
-                tools:layout="@layout/fragment_clearkey" />
+                tools:layout="@layout/fragment_mediadrm" />
 
             <fragment
                 android:id="@+id/fragment_widevine"
@@ -76,9 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 app:layout_flexGrow="@integer/layout_flexGrow"
-                app:layout_minWidth="@dimen/box_min_width"
                 app:layout_minHeight="@dimen/box_min_height"
-
                 tools:layout="@layout/fragment_widevine" />
 
             <fragment
@@ -88,43 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 app:layout_flexGrow="@integer/layout_flexGrow"
-                app:layout_minWidth="@dimen/box_min_width"
-                tools:layout="@layout/fragment_playready" />
-
-            <!--<fragment-->
-                <!--android:id="@+id/fragment_primetime"-->
-                <!--android:name="com.androidfung.drminfo.ui.mobile.PrimetimeFragment"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_margin="4dp"-->
-                <!--app:layout_flexGrow="@integer/layout_flexGrow"-->
-                <!--app:layout_minWidth="@dimen/box_min_width"-->
-                <!--app:layout_minHeight="@dimen/box_min_height"-->
-                <!--tools:layout="@layout/fragment_primetime" />-->
-
-            <!--<fragment-->
-                <!--android:id="@+id/fragment_marlin"-->
-                <!--android:name="com.androidfung.drminfo.ui.mobile.MarlinFragment"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_margin="4dp"-->
-                <!--app:layout_flexGrow="@integer/layout_flexGrow"-->
-                <!--app:layout_minWidth="@dimen/box_min_width"-->
-                <!--app:layout_minHeight="@dimen/box_min_height"-->
-
-                <!--tools:layout="@layout/fragment_marlin" />-->
-
-            <!--<fragment-->
-                <!--android:id="@+id/fragment_verimatrix"-->
-                <!--android:name="com.androidfung.drminfo.ui.mobile.VerimatrixFragment"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_margin="4dp"-->
-                <!--app:layout_flexGrow="@integer/layout_flexGrow"-->
-                <!--app:layout_minWidth="@dimen/box_min_width"-->
-                <!--app:layout_minHeight="@dimen/box_min_height"-->
-                <!--tools:layout="@layout/fragment_verimatrix" />-->
-
+                tools:layout="@layout/fragment_mediadrm" />
 
             <fragment
                 android:id="@+id/fragment_ad"
@@ -133,14 +78,12 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 app:layout_flexGrow="@integer/layout_flexGrow"
-                app:layout_minWidth="@dimen/box_min_width"
                 tools:layout="@layout/fragment_ad" />
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="16dp" />
 
-            <!--</androidx.gridlayout.widget.GridLayout>-->
         </com.google.android.flexbox.FlexboxLayout>
 
     </androidx.core.widget.NestedScrollView>

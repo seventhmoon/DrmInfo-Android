@@ -23,7 +23,7 @@
         android:layout_marginTop="@dimen/card_vertical_margin"
         android:minHeight="@dimen/box_min_height"
         android:minWidth="@dimen/box_min_width"
-        app:contentPadding="16dp"
+        app:contentPadding="@dimen/card_padding"
         android:visibility="@{properties.isEmpty() ? View.GONE : View.VISIBLE}">
 
 
