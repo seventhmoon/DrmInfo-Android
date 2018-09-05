@@ -25,6 +25,7 @@
         android:minWidth="@dimen/box_min_width"
         android:minHeight="@dimen/box_min_height"
         app:contentPadding="@dimen/card_padding"
+        app:cardCornerRadius="@dimen/card_corner_radius"
         tools:context=".ui.mobile.WidevineFragment"
         android:visibility="@{properties.isEmpty() ? View.GONE : View.VISIBLE}" >
 
