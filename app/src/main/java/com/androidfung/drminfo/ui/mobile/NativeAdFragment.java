@@ -30,8 +30,8 @@ import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.google.android.gms.ads.formats.NativeAdOptions;
 
 import com.google.android.material.circularreveal.CircularRevealGridLayout;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+//import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+//import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import java.util.List;
 import java.util.Locale;
