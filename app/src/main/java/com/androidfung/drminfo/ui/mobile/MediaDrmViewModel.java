@@ -27,13 +27,13 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
         if (mProperties == null) {
             mProperties = new MutableLiveData<>();
             prepareProperties(mMediaDrm);
-            if (mMediaDrm != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    mMediaDrm.close();
-                } else {
-                    mMediaDrm.release();
-                }
-            }
+//            if (mMediaDrm != null) {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//                    mMediaDrm.close();
+//                } else {
+//                    mMediaDrm.release();
+//                }
+//            }
         }
 
         return mProperties;
