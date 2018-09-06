@@ -39,6 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="middle"
+                android:fontFamily="@font/open_sans"
                 android:singleLine="true"
                 android:text="@{properties[(@string/mediadrm_string_property_key_description)]}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
