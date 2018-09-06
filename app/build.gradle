@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'io.fabric'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
@@ -12,8 +13,8 @@ android {
         applicationId "com.androidfung.drminfo"
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 127
-        versionName "1.0.18.180905"
+        versionCode 128
+        versionName "1.1.0.180906"
         resConfigs "en"
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
