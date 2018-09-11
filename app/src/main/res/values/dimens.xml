@@ -11,5 +11,4 @@
     <dimen name="card_vertical_margin">4dp</dimen>
     <dimen name="card_corner_radius">8dp</dimen>
     <string name="banner_ad_size">MEDIUM_RECTANGLE</string>
-    <bool name="display_ad">false</bool>
 </resources>

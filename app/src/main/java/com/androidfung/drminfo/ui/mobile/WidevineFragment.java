@@ -7,8 +7,6 @@ import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import androidx.annotation.Keep;
 
-import androidx.databinding.ObservableArrayMap;
-import androidx.databinding.ObservableMap;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 

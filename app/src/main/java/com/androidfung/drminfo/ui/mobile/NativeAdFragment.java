@@ -6,14 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.androidfung.drminfo.BuildConfig;
 import com.androidfung.drminfo.R;
 
 import com.google.android.gms.ads.AdListener;
@@ -24,17 +22,14 @@ import com.google.android.gms.ads.VideoController;
 import com.google.android.gms.ads.VideoOptions;
 import com.google.android.gms.ads.formats.MediaView;
 import com.google.android.gms.ads.formats.NativeAd;
-import com.google.android.gms.ads.formats.NativeAdOptions;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.google.android.gms.ads.formats.NativeAdOptions;
 
-import com.google.android.material.circularreveal.CircularRevealGridLayout;
 //import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 //import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

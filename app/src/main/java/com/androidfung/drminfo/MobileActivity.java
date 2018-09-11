@@ -2,16 +2,12 @@ package com.androidfung.drminfo;
 
 //import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.androidfung.drminfo.databinding.ActivityMobileBinding;
 import com.androidfung.drminfo.ui.mobile.SharedViewModel;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import androidx.annotation.Keep;
