@@ -58,6 +58,9 @@ dependencies {
     implementation 'com.google.android:flexbox:1.1.0-beta1'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
+    
+    implementation 'com.facebook.android:audience-network-sdk:4.99.3'
+    implementation 'com.google.ads.mediation:facebook:4.99.3.0'
 
 }
 
