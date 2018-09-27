@@ -54,8 +54,8 @@ public class MobileActivity extends AppCompatActivity {
 //        SharedViewModel sharedViewModel = ViewModelProviders.of(this).get(SharedViewModel.class);
 //        sharedViewModel.getProperties().observe(this, activityMobileBinding::setMap);
 
-        SharedViewModel infoViewModel = ViewModelProviders.of(this).get(SharedViewModel.class);
-        infoViewModel.getProperties().observe(this, mBinding::setInfoProperties);
+//        SharedViewModel infoViewModel = ViewModelProviders.of(this).get(SharedViewModel.class);
+//        infoViewModel.getProperties().observe(this, mBinding::setInfoProperties);
 
         MediaDrmViewModel clearKeyViewModel = ViewModelProviders.of(this).get(ClearKeyViewModel.class);
         clearKeyViewModel.getProperties().observe(this, mBinding::setClearkeyProperties);

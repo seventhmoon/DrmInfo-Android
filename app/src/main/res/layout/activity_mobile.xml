@@ -10,9 +10,9 @@
         <!--<variable-->
             <!--name="map"-->
             <!--type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />-->
-        <variable
-            name="infoProperties"
-            type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
+        <!--<variable-->
+            <!--name="infoProperties"-->
+            <!--type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />-->
 
         <variable
             name="clearkeyProperties"
@@ -57,7 +57,6 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <include layout="@layout/content_mobile"
-            bind:infoProperties="@{infoProperties}"
             bind:clearkeyProperties="@{clearkeyProperties}"
             bind:playreadyProperties="@{playreadyProperties}"
             bind:widevineProperties="@{widevineProperties}" />

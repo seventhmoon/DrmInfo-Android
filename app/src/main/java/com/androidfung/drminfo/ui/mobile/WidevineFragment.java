@@ -22,6 +22,7 @@ import com.androidfung.drminfo.databinding.FragmentWidevineBinding;
  * A simple {@link Fragment} subclass.
  */
 @Keep
+@Deprecated
 public class WidevineFragment extends Fragment {
 
     private static final String TAG = WidevineFragment.class.getSimpleName();

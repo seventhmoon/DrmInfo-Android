@@ -21,6 +21,7 @@ import com.androidfung.drminfo.databinding.FragmentMediadrmBinding;
  * Activities that contain this fragment must implement the
  */
 @Keep
+@Deprecated
 public class PlayreadyFragment extends Fragment {
 
     private static final String TAG = PlayreadyFragment.class.getSimpleName();

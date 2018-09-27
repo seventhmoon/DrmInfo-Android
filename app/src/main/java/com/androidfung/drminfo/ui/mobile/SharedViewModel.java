@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+@Deprecated
 public class SharedViewModel extends AndroidViewModel {
 
     private final static String TAG = SharedViewModel.class.getSimpleName();

@@ -20,6 +20,7 @@ import com.androidfung.drminfo.databinding.FragmentMediadrmBinding;
  * A simple {@link androidx.fragment.app.Fragment} subclass.
  */
 @Keep
+@Deprecated
 public class PrimetimeFragment extends Fragment {
 
     private static final String TAG = PrimetimeFragment.class.getSimpleName();

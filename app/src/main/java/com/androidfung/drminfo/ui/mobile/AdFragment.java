@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
  * A simple {@link Fragment} subclass.
  */
 @Keep
+@Deprecated
 public class AdFragment extends Fragment {
 
     private static final String TAG = AdFragment.class.getSimpleName();

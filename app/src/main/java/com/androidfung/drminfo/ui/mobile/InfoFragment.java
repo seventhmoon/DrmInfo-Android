@@ -19,6 +19,7 @@ import com.androidfung.drminfo.databinding.FragmentInfoBinding;
  * A simple {@link Fragment} subclass.
  */
 @Keep
+@Deprecated
 public class InfoFragment extends Fragment {
 
     private final String TAG = InfoFragment.class.getSimpleName();

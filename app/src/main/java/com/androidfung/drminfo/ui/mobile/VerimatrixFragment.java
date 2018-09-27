@@ -20,6 +20,7 @@ import com.androidfung.drminfo.databinding.FragmentMediadrmBinding;
  * A simple {@link Fragment} subclass.
  */
 @Keep
+@Deprecated
 public class VerimatrixFragment extends Fragment {
 
     private static final String TAG = VerimatrixFragment.class.getSimpleName();

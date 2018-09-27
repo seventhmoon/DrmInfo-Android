@@ -8,9 +8,9 @@
 
         <import type="android.os.Build" />
 
-        <variable
-            name="map"
-            type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
+        <!--<variable-->
+            <!--name="map"-->
+            <!--type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />-->
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

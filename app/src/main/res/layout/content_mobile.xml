@@ -11,9 +11,9 @@
             <!--name="map"-->
             <!--type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />-->
 
-        <variable
-            name="infoProperties"
-            type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
+        <!--<variable-->
+            <!--name="infoProperties"-->
+            <!--type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />-->
 
         <variable
             name="clearkeyProperties"
@@ -61,17 +61,12 @@
 
 
             <include
-
-                layout="@layout/fragment_info" bind:infoProperties="@{infoProperties}"/>
-
+                layout="@layout/fragment_info"/>
             <include
-
                 layout="@layout/fragment_mediadrm" bind:properties="@{clearkeyProperties}"/>
             <include
-
                 layout="@layout/fragment_widevine" bind:properties="@{widevineProperties}"/>
             <include
-
                 layout="@layout/fragment_mediadrm" bind:properties="@{playreadyProperties}"/>
 
             <!--<fragment-->

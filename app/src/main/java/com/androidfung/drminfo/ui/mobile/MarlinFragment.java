@@ -20,6 +20,7 @@ import com.androidfung.drminfo.databinding.FragmentMediadrmBinding;
  * A simple {@link Fragment} subclass.
  */
 @Keep
+@Deprecated
 public class MarlinFragment extends Fragment {
 
     private static final String TAG = MarlinFragment.class.getSimpleName();
