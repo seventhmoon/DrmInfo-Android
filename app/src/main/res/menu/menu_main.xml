@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.androidfung.drminfo.MainActivity">
     <!--<item android:id="@+id/license"-->
-        <!--android:title="@string/text_licenseinformation"-->
-        <!--android:onClick="displayLicenseInformation"/>-->
+    <!--android:title="@string/text_licenseinformation"-->
+    <!--android:onClick="displayLicenseInformation"/>-->
 </menu>

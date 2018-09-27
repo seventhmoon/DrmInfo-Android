@@ -1,6 +1,5 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -28,7 +27,7 @@
         app:cardUseCompatPadding="true"
         app:contentPadding="@dimen/card_padding"
         app:layout_flexGrow="1"
-        tools:context="com.androidfung.drminfo.ui.mobile.InfoFragment">
+        tools:context="com.androidfung.drminfo.MobileActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

@@ -13,14 +13,12 @@ import com.androidfung.drminfo.databinding.ActivityMobileBinding;
 import com.androidfung.drminfo.ui.mobile.ClearKeyViewModel;
 import com.androidfung.drminfo.ui.mobile.MediaDrmViewModel;
 import com.androidfung.drminfo.ui.mobile.PlayreadyViewModel;
-import com.androidfung.drminfo.ui.mobile.SharedViewModel;
 import com.androidfung.drminfo.ui.mobile.WidevineViewModel;
-
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import androidx.annotation.Keep;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,15 +45,8 @@ public class MobileActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        FirebaseApp.initializeApp(this);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         MobileAds.initialize(this, getString(R.string.ad_app_id));
-
-//        SharedViewModel sharedViewModel = ViewModelProviders.of(this).get(SharedViewModel.class);
-//        sharedViewModel.getProperties().observe(this, activityMobileBinding::setMap);
-
-//        SharedViewModel infoViewModel = ViewModelProviders.of(this).get(SharedViewModel.class);
-//        infoViewModel.getProperties().observe(this, mBinding::setInfoProperties);
 
         MediaDrmViewModel clearKeyViewModel = ViewModelProviders.of(this).get(ClearKeyViewModel.class);
         clearKeyViewModel.getProperties().observe(this, mBinding::setClearkeyProperties);

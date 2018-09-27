@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
 
         <variable
@@ -17,17 +18,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/card_vertical_margin"
-        android:layout_marginEnd="@dimen/card_horizontal_margin"
         android:layout_marginStart="@dimen/card_horizontal_margin"
         android:layout_marginTop="@dimen/card_vertical_margin"
-        android:minHeight="@dimen/box_min_height"
+        android:layout_marginEnd="@dimen/card_horizontal_margin"
+        android:layout_marginBottom="@dimen/card_vertical_margin"
         android:minWidth="@dimen/box_min_width"
-        app:contentPadding="@dimen/card_padding"
+        android:minHeight="@dimen/box_min_height"
+        android:visibility="@{properties.isEmpty() ? View.GONE : View.VISIBLE}"
         app:cardCornerRadius="@dimen/card_corner_radius"
         app:cardUseCompatPadding="true"
-        app:layout_flexGrow="1"
-        android:visibility="@{properties.isEmpty() ? View.GONE : View.VISIBLE}">
+        app:contentPadding="@dimen/card_padding"
+        app:layout_flexGrow="1">
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -40,14 +41,13 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans"
                 android:text="@{properties[(@string/mediadrm_string_property_key_description)]}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                />
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
             <include
+                layout="@layout/viewgroup_mediadrm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                layout="@layout/viewgroup_mediadrm"
-                bind:properties="@{properties}"/>
+                bind:properties="@{properties}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

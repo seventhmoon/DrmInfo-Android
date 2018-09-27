@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.androidfung.drminfo" >
+    package="com.androidfung.drminfo">
 
     <uses-feature
         android:name="android.hardware.touchscreen"
@@ -15,18 +15,18 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:resizeableActivity="true"
-        android:supportsPictureInPicture="false"
         android:allowBackup="true"
+        android:banner="@drawable/leanback_launcher"
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:logo="@drawable/leanback_launcher"
-        android:banner="@drawable/leanback_launcher"
+        android:resizeableActivity="true"
+        android:supportsPictureInPicture="false"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:targetApi="lollipop"
-        android:fullBackupContent="@xml/backup_descriptor"
-        tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
+        tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
+        tools:targetApi="lollipop">
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -34,18 +34,19 @@
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/ad_app_id"/>
+            android:value="@string/ad_app_id" />
 
         <activity
             android:name=".MobileActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -55,7 +56,7 @@
         <activity
             android:name=".TvActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.LeanbackBase" >
+            android:theme="@style/Theme.LeanbackBase">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
