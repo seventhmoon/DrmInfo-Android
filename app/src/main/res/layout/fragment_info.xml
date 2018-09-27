@@ -10,12 +10,12 @@
         <import type="android.os.Build" />
 
         <variable
-            name="map"
+            name="infoProperties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/card_horizontal_margin"
@@ -26,6 +26,8 @@
         android:minWidth="@dimen/box_min_width"
         android:minHeight="@dimen/box_min_height"
         app:contentPadding="@dimen/card_padding"
+        app:cardUseCompatPadding="true"
+        app:layout_flexGrow="1"
         tools:context="com.androidfung.drminfo.ui.mobile.InfoFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,7 +57,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                bind:map="@{map}" />
+                bind:map="@{infoProperties}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

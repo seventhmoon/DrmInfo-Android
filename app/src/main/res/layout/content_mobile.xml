@@ -2,12 +2,29 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
     tools:context=".MobileActivity">
 
     <data>
 
+        <!--<variable-->
+            <!--name="map"-->
+            <!--type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />-->
+
         <variable
-            name="map"
+            name="infoProperties"
+            type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
+
+        <variable
+            name="clearkeyProperties"
+            type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
+
+        <variable
+            name="widevineProperties"
+            type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
+
+        <variable
+            name="playreadyProperties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
     </data>
 
@@ -32,53 +49,70 @@
             app:flexWrap="wrap"
             app:justifyContent="center">
 
-            <fragment
-                android:id="@+id/fragment_info"
-                android:name="com.androidfung.drminfo.ui.mobile.InfoFragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:layout_flexGrow="@integer/layout_flexGrow"
-                app:layout_minHeight="@dimen/box_min_height"
-                tools:layout="@layout/fragment_info" />
+            <!--<fragment-->
+                <!--android:id="@+id/fragment_info"-->
+                <!--android:name="com.androidfung.drminfo.ui.mobile.InfoFragment"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="4dp"-->
+                <!--app:layout_flexGrow="@integer/layout_flexGrow"-->
+                <!--app:layout_minHeight="@dimen/box_min_height"-->
+                <!--tools:layout="@layout/fragment_info" />-->
 
-            <fragment
-                android:id="@+id/fragment_clearkey"
-                android:name="com.androidfung.drminfo.ui.mobile.ClearKeyFragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:layout_flexGrow="@integer/layout_flexGrow"
-                app:layout_minHeight="@dimen/box_min_height"
-                tools:layout="@layout/fragment_mediadrm" />
 
-            <fragment
-                android:id="@+id/fragment_widevine"
-                android:name="com.androidfung.drminfo.ui.mobile.WidevineFragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:layout_flexGrow="@integer/layout_flexGrow"
-                app:layout_minHeight="@dimen/box_min_height"
-                tools:layout="@layout/fragment_widevine" />
+            <include
 
-            <fragment
-                android:id="@+id/fragment_playready"
-                android:name="com.androidfung.drminfo.ui.mobile.PlayreadyFragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:layout_flexGrow="@integer/layout_flexGrow"
-                tools:layout="@layout/fragment_mediadrm" />
+                layout="@layout/fragment_info" bind:infoProperties="@{infoProperties}"/>
 
-            <fragment
-                android:id="@+id/fragment_ad"
-                android:name="com.androidfung.drminfo.ui.mobile.AdFragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:layout_flexGrow="@integer/layout_flexGrow"
-                tools:layout="@layout/fragment_ad" />
+            <include
+
+                layout="@layout/fragment_mediadrm" bind:properties="@{clearkeyProperties}"/>
+            <include
+
+                layout="@layout/fragment_widevine" bind:properties="@{widevineProperties}"/>
+            <include
+
+                layout="@layout/fragment_mediadrm" bind:properties="@{playreadyProperties}"/>
+
+            <!--<fragment-->
+                <!--android:id="@+id/fragment_clearkey"-->
+                <!--android:name="com.androidfung.drminfo.ui.mobile.ClearKeyFragment"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="4dp"-->
+                <!--app:layout_flexGrow="@integer/layout_flexGrow"-->
+                <!--app:layout_minHeight="@dimen/box_min_height"-->
+                <!--tools:layout="@layout/fragment_mediadrm" />-->
+
+            <!--<fragment-->
+                <!--android:id="@+id/fragment_widevine"-->
+                <!--android:name="com.androidfung.drminfo.ui.mobile.WidevineFragment"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="4dp"-->
+                <!--app:layout_flexGrow="@integer/layout_flexGrow"-->
+                <!--app:layout_minHeight="@dimen/box_min_height"-->
+                <!--tools:layout="@layout/fragment_widevine" />-->
+
+            <!--<fragment-->
+                <!--android:id="@+id/fragment_playready"-->
+                <!--android:name="com.androidfung.drminfo.ui.mobile.PlayreadyFragment"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="4dp"-->
+                <!--app:layout_flexGrow="@integer/layout_flexGrow"-->
+                <!--tools:layout="@layout/fragment_mediadrm" />-->
+
+            <!--<fragment-->
+                <!--android:id="@+id/fragment_ad"-->
+                <!--android:name="com.androidfung.drminfo.ui.mobile.AdFragment"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="4dp"-->
+                <!--app:layout_flexGrow="@integer/layout_flexGrow"-->
+                <!--tools:layout="@layout/fragment_ad" />-->
+
+            <include layout="@layout/fragment_ad" />
 
             <Space
                 android:layout_width="match_parent"

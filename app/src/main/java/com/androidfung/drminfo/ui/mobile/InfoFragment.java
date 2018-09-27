@@ -40,7 +40,7 @@ public class InfoFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         SharedViewModel viewModel = ViewModelProviders.of(this.getActivity()).get(SharedViewModel.class);
-        viewModel.getProperties().observe(this, mBinding::setMap);
+        viewModel.getProperties().observe(this, mBinding::setInfoProperties);
 
         mBinding.setLifecycleOwner(this);
     }

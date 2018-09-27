@@ -36,7 +36,6 @@ public class AdFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MobileAds.initialize(getActivity(), getString(R.string.ad_app_id));
     }
 
     @Override

@@ -27,6 +27,8 @@
         app:contentPadding="@dimen/card_padding"
         app:cardCornerRadius="@dimen/card_corner_radius"
         tools:context=".ui.mobile.WidevineFragment"
+        app:cardUseCompatPadding="true"
+        app:layout_flexGrow="1"
         android:visibility="@{properties.isEmpty() ? View.GONE : View.VISIBLE}" >
 
 
