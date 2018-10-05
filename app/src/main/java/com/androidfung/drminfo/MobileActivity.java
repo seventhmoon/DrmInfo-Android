@@ -45,8 +45,13 @@ public class MobileActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         MobileAds.initialize(this, getString(R.string.ad_app_id));
+        mBannerAdHolder = findViewById(R.id.container_ad);
+        mAdView = findViewById(R.id.adView);
+        loadAdMobBannerAd();
 
         MediaDrmViewModel clearKeyViewModel = ViewModelProviders.of(this).get(ClearKeyViewModel.class);
         clearKeyViewModel.getProperties().observe(this, mBinding::setClearkeyProperties);
@@ -57,10 +62,6 @@ public class MobileActivity extends AppCompatActivity {
         MediaDrmViewModel playreadyViewModel = ViewModelProviders.of(this).get(PlayreadyViewModel.class);
         playreadyViewModel.getProperties().observe(this, mBinding::setPlayreadyProperties);
 
-        mBannerAdHolder = findViewById(R.id.container_ad);
-        mAdView = findViewById(R.id.adView);
-
-        loadAdMobBannerAd();
     }
 
     @Override
