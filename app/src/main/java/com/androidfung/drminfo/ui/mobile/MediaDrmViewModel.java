@@ -64,7 +64,6 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
                     map.put(getApplication().getString(R.string.mediadrm_key_maxNumberOfSessions), String.valueOf(maxSessionCount));
                     map.put(getApplication().getString(R.string.mediadrm_key_maxHdcpLevel), toStringValue(maxHdcpLevel));
 
-
                 }
             } catch (IllegalArgumentException | IllegalStateException ignored) {
             }
@@ -100,6 +99,16 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
 
             default:
                 return null;
+        }
+    }
+
+    protected void onCleared (){
+        if (mMediaDrm != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                this.mMediaDrm.close();
+            } else {
+                this.mMediaDrm.release();
+            }
         }
     }
 }
