@@ -55,8 +55,7 @@ public class MediaDrmFactory {
                 case PRIMETIME:
                     return new MediaDrm(PRIMETIME_UUID);
             }
-        } catch (UnsupportedSchemeException e) {
-//            e.printStackTrace();
+        } catch (UnsupportedSchemeException ignored) {
         }
         return null;
     }

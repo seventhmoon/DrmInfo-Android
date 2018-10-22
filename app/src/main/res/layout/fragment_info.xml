@@ -1,6 +1,5 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -10,52 +9,53 @@
         <import type="android.os.Build" />
 
         <variable
-            name="map"
+            name="infoProperties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/card_horizontal_margin"
         android:layout_marginTop="@dimen/card_vertical_margin"
         android:layout_marginEnd="@dimen/card_horizontal_margin"
         android:layout_marginBottom="@dimen/card_vertical_margin"
-        app:cardCornerRadius="@dimen/card_corner_radius"
         android:minWidth="@dimen/box_min_width"
         android:minHeight="@dimen/box_min_height"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        app:cardUseCompatPadding="true"
         app:contentPadding="@dimen/card_padding"
-        tools:context="com.androidfung.drminfo.ui.mobile.InfoFragment">
+        app:layout_flexGrow="1"
+        tools:context="com.androidfung.drminfo.MobileActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/tv_headline"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="middle"
-                android:singleLine="true"
                 android:fontFamily="@font/open_sans"
+                android:singleLine="true"
                 android:text='@{Build.MANUFACTURER + " " + Build.MODEL}'
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="Google Pixel 3 XXXXXXXXXXXXXXXXL" />
 
             <include
-                android:layout_width="0dp"
-                app:layout_constrainedWidth="true"
-                android:layout_height="wrap_content"
                 layout="@layout/viewgroup_info"
-                app:layout_constraintTop_toBottomOf="@+id/tv_headline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                bind:map="@{map}" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_headline" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

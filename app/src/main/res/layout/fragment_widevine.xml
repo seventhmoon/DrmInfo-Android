@@ -24,10 +24,12 @@
         android:layout_marginBottom="@dimen/card_vertical_margin"
         android:minWidth="@dimen/box_min_width"
         android:minHeight="@dimen/box_min_height"
-        app:contentPadding="@dimen/card_padding"
+        android:visibility="@{properties.isEmpty() ? View.GONE : View.VISIBLE}"
         app:cardCornerRadius="@dimen/card_corner_radius"
-        tools:context=".ui.mobile.WidevineFragment"
-        android:visibility="@{properties.isEmpty() ? View.GONE : View.VISIBLE}" >
+        app:cardUseCompatPadding="true"
+        app:contentPadding="@dimen/card_padding"
+        app:layout_flexGrow="1"
+        tools:context=".MobileActivity">
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -45,10 +47,11 @@
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 tools:text="Media DRM" />
 
-            <include layout="@layout/viewgroup_mediadrm"
+            <include
+                layout="@layout/viewgroup_mediadrm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                bind:properties="@{properties}"/>
+                bind:properties="@{properties}" />
 
             <include
                 layout="@layout/viewgroup_widevinedrm"

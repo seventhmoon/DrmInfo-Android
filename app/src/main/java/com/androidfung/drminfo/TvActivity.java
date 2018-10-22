@@ -8,6 +8,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import androidx.annotation.Keep;
 import androidx.fragment.app.FragmentActivity;
 import androidx.leanback.app.GuidedStepSupportFragment;
+
 @Keep
 public class TvActivity extends FragmentActivity {
 

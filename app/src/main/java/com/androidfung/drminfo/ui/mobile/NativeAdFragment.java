@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidfung.drminfo.R;
-
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
@@ -22,17 +21,17 @@ import com.google.android.gms.ads.VideoController;
 import com.google.android.gms.ads.VideoOptions;
 import com.google.android.gms.ads.formats.MediaView;
 import com.google.android.gms.ads.formats.NativeAd;
+import com.google.android.gms.ads.formats.NativeAdOptions;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
-import com.google.android.gms.ads.formats.NativeAdOptions;
-
-//import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-//import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+//import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+//import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 public class NativeAdFragment extends Fragment {
     private static final String TAG = NativeAdFragment.class.getSimpleName();
@@ -116,7 +115,7 @@ public class NativeAdFragment extends Fragment {
     }
 
 
-    private void loadAdMobNativeAd(){
+    private void loadAdMobNativeAd() {
         AdLoader adLoader = new AdLoader.Builder(getActivity(), "ca-app-pub-3940256099942544/2247696110")
                 .forUnifiedNativeAd(unifiedNativeAd -> {
                     // Show the ad.
@@ -144,7 +143,7 @@ public class NativeAdFragment extends Fragment {
      * {@link UnifiedNativeAd}.
      *
      * @param nativeAd the object containing the ad's assets
-     * @param adView          the view to be populated
+     * @param adView   the view to be populated
      */
     private void populateUnifiedNativeAdView(UnifiedNativeAd nativeAd, UnifiedNativeAdView adView) {
         // Get the video controller for the ad. One will always be provided, even if the ad doesn't
@@ -246,7 +245,6 @@ public class NativeAdFragment extends Fragment {
     /**
      * Creates a request for a new native ad based on the boolean parameters and calls the
      * corresponding "populate" method when one is successfully returned.
-     *
      */
     private void refreshAd() {
 //        refresh.setEnabled(false);

@@ -41,7 +41,7 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
 
         String[] drmStringKeys = getResources().getStringArray(R.array.mediadrm_string_property_keys);
         String[] drmStringNames = getResources().getStringArray(R.array.mediadrm_string_property_names);
-        for (int i=0; i< drmStringKeys.length; i++){
+        for (int i = 0; i < drmStringKeys.length; i++) {
             try {
                 String value = mediaDrm.getPropertyString(drmStringKeys[i]);
                 if (!TextUtils.isEmpty(value)) {
@@ -60,28 +60,27 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
     }
 
 
-
     @SuppressWarnings("ResourceType")
     private List<GuidedAction> getWidevineSubActions(@NonNull MediaDrm widevineDrm) {
         List<GuidedAction> subActions = getMediaDrmSubActions(widevineDrm);
 
-            String[] wvStringKeys = getResources().getStringArray(R.array.widevine_string_property_keys);
-            String[] wvStringNames = getResources().getStringArray(R.array.widevine_string_property_names);
+        String[] wvStringKeys = getResources().getStringArray(R.array.widevine_string_property_keys);
+        String[] wvStringNames = getResources().getStringArray(R.array.widevine_string_property_names);
 
-            for (int i=0; i< wvStringKeys.length; i++){
-                try {
-                    String value = widevineDrm.getPropertyString(wvStringKeys[i]);
-                    if (!TextUtils.isEmpty(value)) {
-                        subActions.add(new GuidedAction.Builder(getActivity())
-                                .infoOnly(true)
-                                .title(wvStringNames[i])
-                                .description(value)
-                                .build());
-                    }
-                } catch (IllegalStateException | IllegalArgumentException ex) {
-                    Log.d(TAG, ex.toString());
+        for (int i = 0; i < wvStringKeys.length; i++) {
+            try {
+                String value = widevineDrm.getPropertyString(wvStringKeys[i]);
+                if (!TextUtils.isEmpty(value)) {
+                    subActions.add(new GuidedAction.Builder(getActivity())
+                            .infoOnly(true)
+                            .title(wvStringNames[i])
+                            .description(value)
+                            .build());
                 }
+            } catch (IllegalStateException | IllegalArgumentException ex) {
+                Log.d(TAG, ex.toString());
             }
+        }
 //        }
 
         return subActions;
@@ -125,7 +124,6 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
         MediaDrm primetimeMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PRIMETIME);
 
 
-
         if (clearKeyMediaDrm != null) {
             List<GuidedAction> subActions = getWidevineSubActions(clearKeyMediaDrm);
 
@@ -133,7 +131,7 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
 //                    .infoOnly(true)
                     .title(getString(R.string.text_clearkey_name))
                     .description(getString(R.string.text_supported))
-                    .subActions(subActions.isEmpty()?null:subActions)
+                    .subActions(subActions.isEmpty() ? null : subActions)
                     .build());
 
         } else {
@@ -150,7 +148,7 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
 //                        .id(WIDEVINE)
                     .title(getString(R.string.text_widevine_name))
                     .description(getString(R.string.text_supported))
-                    .subActions(widevineSubActions.isEmpty()?null:widevineSubActions)
+                    .subActions(widevineSubActions.isEmpty() ? null : widevineSubActions)
                     .build());
 
         } else {
@@ -167,7 +165,7 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
 //                    .infoOnly(true)
                     .title(getString(R.string.text_playready_name))
                     .description(getString(R.string.text_supported))
-                    .subActions(playreadySubActions.isEmpty()?null:playreadySubActions)
+                    .subActions(playreadySubActions.isEmpty() ? null : playreadySubActions)
                     .build());
         } else {
             actions.add(new GuidedAction.Builder(getActivity())
