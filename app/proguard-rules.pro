@@ -92,3 +92,4 @@
 -keep class com.google.firebase.firestore.FirebaseFirestoreSettings
 -keep class com.google.common.base.Objects
 -keep class com.google.android.gms.internal.firebase-perf.** { *; }
+-keep class com.google.android.gms.internal.measurement.** { *; }
