@@ -10,8 +10,8 @@ android {
         applicationId "com.androidfung.drminfo"
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 146
-        versionName "1.1.0.181107"
+        versionCode 147
+        versionName "1.1.0.181109"
         resConfigs "en"
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -49,15 +49,19 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.1'
     implementation 'androidx.leanback:leanback:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     implementation 'com.google.firebase:firebase-core:16.0.5'
     implementation 'com.google.firebase:firebase-analytics:16.0.5'
     implementation 'com.google.firebase:firebase-ads:17.1.0'
     implementation 'com.google.firebase:firebase-perf:16.2.0'
 
+    implementation 'com.google.android.gms:play-services-basement:16.1.0'
+    implementation 'com.google.android.gms:play-services-measurement-sdk-api:16.0.3'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.google.android:flexbox:1.1.0'
-    implementation 'com.google.code.gson:gson:2.8.5'
+
+//    implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.6'
 
     testImplementation 'junit:junit:4.12'
