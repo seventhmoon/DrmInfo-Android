@@ -128,7 +128,7 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
             List<GuidedAction> subActions = getWidevineSubActions(clearKeyMediaDrm);
 
             actions.add(new GuidedAction.Builder(getActivity())
-//                    .infoOnly(true)
+                    .infoOnly(subActions.isEmpty())
                     .title(getString(R.string.text_clearkey_name))
                     .description(getString(R.string.text_supported))
                     .subActions(subActions.isEmpty() ? null : subActions)
@@ -162,7 +162,7 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
         if (playreadyMediaDrm != null) {
             List<GuidedAction> playreadySubActions = getMediaDrmSubActions(playreadyMediaDrm);
             actions.add(new GuidedAction.Builder(getActivity())
-//                    .infoOnly(true)
+                    .infoOnly(playreadySubActions.isEmpty())
                     .title(getString(R.string.text_playready_name))
                     .description(getString(R.string.text_supported))
                     .subActions(playreadySubActions.isEmpty() ? null : playreadySubActions)
