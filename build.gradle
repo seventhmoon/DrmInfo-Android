@@ -7,7 +7,6 @@ buildscript {
             url 'https://maven.fabric.io/public'
         }
         jcenter()
-
     }
 
     dependencies {
