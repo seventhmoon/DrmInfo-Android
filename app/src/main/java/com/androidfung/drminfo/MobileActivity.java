@@ -25,7 +25,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.appcompat.app.AppCompatDelegate;
 
 @Keep
 public class MobileActivity extends AppCompatActivity {
@@ -36,10 +35,6 @@ public class MobileActivity extends AppCompatActivity {
     private ViewGroup mBannerAdHolder;
     private AdView mAdView;
 
-//    static {
-//        AppCompatDelegate.setDefaultNightMode(
-//                AppCompatDelegate.MODE_NIGHT_AUTO);
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -13,8 +13,6 @@ import androidx.leanback.app.GuidedStepSupportFragment;
 public class TvActivity extends FragmentActivity {
 
     private static final String TAG = TvActivity.class.getSimpleName();
-//    private static final long WIDEVINE = 2L;
-
     private FirebaseAnalytics mFirebaseAnalytics;
 
 
