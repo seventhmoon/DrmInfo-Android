@@ -37,4 +37,5 @@
     <string name="ad_attribution">Ad</string>
     <string name="text_display">Display</string>
     <string name="text_licenseinformation">License Information</string>
+    <string name="label_copy">Copy</string>
 </resources>
