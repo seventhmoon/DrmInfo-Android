@@ -2,6 +2,9 @@ package com.androidfung.drminfo;
 
 import android.media.MediaDrm;
 import android.media.UnsupportedSchemeException;
+
+import com.crashlytics.android.Crashlytics;
+
 import androidx.annotation.IntDef;
 import androidx.annotation.Keep;
 
@@ -56,6 +59,9 @@ public class MediaDrmFactory {
                     return new MediaDrm(PRIMETIME_UUID);
             }
         } catch (UnsupportedSchemeException ignored) {
+//            if (provider == WIDEVINE){
+//                Crashlytics.getInstance().crash(); // Force a crash
+//            }
         }
         return null;
     }

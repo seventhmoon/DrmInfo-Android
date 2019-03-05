@@ -2,16 +2,21 @@ package com.androidfung.drminfo;
 
 //import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.androidfung.drminfo.databinding.ActivityMobileBinding;
 import com.androidfung.drminfo.ui.mobile.ClearKeyViewModel;
 import com.androidfung.drminfo.ui.mobile.MediaDrmViewModel;
+import com.androidfung.drminfo.ui.mobile.MyHandlers;
 import com.androidfung.drminfo.ui.mobile.PlayreadyViewModel;
 import com.androidfung.drminfo.ui.mobile.WidevineViewModel;
 import com.google.android.gms.ads.AdListener;
@@ -42,6 +47,10 @@ public class MobileActivity extends AppCompatActivity {
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_mobile);
         mBinding.setLifecycleOwner(this);
+//        mBinding.setVariable(D)
+        MyHandlers handler = new MyHandlers();
+        mBinding.setHandler(handler);
+//        mBinding.
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -53,6 +62,8 @@ public class MobileActivity extends AppCompatActivity {
         mAdView = findViewById(R.id.adView);
         loadAdMobBannerAd();
 
+//        mBinding.
+
         MediaDrmViewModel clearKeyViewModel = ViewModelProviders.of(this).get(ClearKeyViewModel.class);
         clearKeyViewModel.getProperties().observe(this, mBinding::setClearkeyProperties);
 
@@ -63,6 +74,18 @@ public class MobileActivity extends AppCompatActivity {
         playreadyViewModel.getProperties().observe(this, mBinding::setPlayreadyProperties);
 
     }
+
+//    public void copyToClipboard(View v) {
+//        ClipboardManager clipboard = (ClipboardManager)
+//                v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+//
+//        Log.d(TAG, v.toString());
+//        ClipData clip = ClipData.newPlainText(v.toString(), v.toString());
+//        clipboard.setPrimaryClip(clip);
+//        Toast.makeText(v.getContext(), v.toString(), Toast.LENGTH_SHORT).show();
+////        view.visibility = visible ? View.VISIBLE : View.GONE;
+////        return true;
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

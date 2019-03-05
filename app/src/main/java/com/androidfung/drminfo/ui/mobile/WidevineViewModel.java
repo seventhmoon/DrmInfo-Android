@@ -38,33 +38,6 @@ public class WidevineViewModel extends MediaDrmViewModel {
         }
         mProperties.setValue(map);
 
-//        FirebaseAuth auth = FirebaseAuth.getInstance();
-//        auth.signInAnonymously().addOnCompleteListener(task -> writeIntoToFirebase(task, map));
-
     }
-//    }
-//    private void writeIntoToFirebase(Task<AuthResult> task, Map<String, Object> record){
-//        if (task.isSuccessful()) {
-//            FirebaseDatabase database = FirebaseDatabase.getInstance();
-//            DatabaseReference myRef = database.getReference("devices");
-////        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//            // Sign in success, update UI with the signed-in user's information
-//            Log.d(TAG, "signInAnonymously:success");
-////                FirebaseUser user = auth.getCurrentUser();
-//            myRef.child(Build.BRAND).child(Build.HARDWARE).child(String.valueOf(Build.VERSION.SDK_INT)).child("widevine").setValue(record)
-//                    .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added"))
-//                    .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
-//            // Add a new document with a generated ID
-////                db.collection("devices").document(auth.getUid())
-////                        .set(record)
-////                        .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added"))
-////                        .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
-//
-//        } else {
-//            // If sign in fails, display a message to the user.
-//            Log.w(TAG, "signInAnonymously:failure", task.getException());
-//
-//        }
-//    }
 
 }

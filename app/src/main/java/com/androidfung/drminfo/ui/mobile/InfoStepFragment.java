@@ -44,10 +44,12 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
         for (int i = 0; i < drmStringKeys.length; i++) {
             try {
                 String value = mediaDrm.getPropertyString(drmStringKeys[i]);
+                String name = drmStringNames[i];
+
                 if (!TextUtils.isEmpty(value)) {
                     subActions.add(new GuidedAction.Builder(getActivity())
                             .infoOnly(true)
-                            .title(drmStringNames[i])
+                            .title(name)
                             .description(value)
                             .build());
                 }

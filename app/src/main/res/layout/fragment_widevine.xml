@@ -11,6 +11,7 @@
         <variable
             name="properties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
+        <variable name="handler" type="com.androidfung.drminfo.ui.mobile.MyHandlers"/>
 
     </data>
 
@@ -51,13 +52,15 @@
                 layout="@layout/viewgroup_mediadrm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                bind:properties="@{properties}" />
+                bind:properties="@{properties}"
+                bind:handler="@{handler}"/>
 
             <include
                 layout="@layout/viewgroup_widevinedrm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                bind:properties="@{properties}" />
+                bind:properties="@{properties}"
+                bind:handler="@{handler}"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

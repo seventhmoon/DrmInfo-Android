@@ -30,9 +30,6 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-//import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-//import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-
 public class NativeAdFragment extends Fragment {
     private static final String TAG = NativeAdFragment.class.getSimpleName();
 
@@ -60,38 +57,6 @@ public class NativeAdFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_nativead, container, false);
-
-//        mBannerAdHolder = rootView.findViewById(R.id.container_ad);
-////        mAdView = rootView.findViewById(R.id.adView);
-//
-//        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
-//        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-//                .setDeveloperModeEnabled(BuildConfig.DEBUG)
-//                .build();
-//
-//        remoteConfig.setDefaults(R.xml.remote_config_defaults);
-//        remoteConfig.setConfigSettings(configSettings);
-//        remoteConfig.fetch().addOnCompleteListener(task -> {
-//            if (task.isSuccessful()) {
-//                remoteConfig.activateFetched();
-//            }
-//        });
-//
-//        long adSource = remoteConfig.getLong("ad_source");
-//        Log.d(TAG, "ad_source: " + String.valueOf(adSource));
-//
-//        loadAd(adSource);
-
-//        refresh = rootView.findViewById(R.id.btn_refresh);
-//        startVideoAdsMuted = rootView.findViewById(R.id.cb_start_muted);
-//        videoStatus = rootView.findViewById(R.id.tv_video_status);
-//
-//        refresh.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View unusedView) {
-//                refreshAd();
-//            }
-//        });
 
         refreshAd();
         return rootView;
@@ -247,42 +212,42 @@ public class NativeAdFragment extends Fragment {
      * corresponding "populate" method when one is successfully returned.
      */
     private void refreshAd() {
-//        refresh.setEnabled(false);
+        if (this.getActivity() != null) {
 
-        AdLoader.Builder builder = new AdLoader.Builder(this.getActivity(), "ca-app-pub-3940256099942544/2247696110");
+            AdLoader.Builder builder = new AdLoader.Builder(this.getActivity(), "ca-app-pub-3940256099942544/2247696110");
 
-        // OnUnifiedNativeAdLoadedListener implementation.
-        builder.forUnifiedNativeAd(unifiedNativeAd -> {
-            FrameLayout frameLayout =
-                    getActivity().findViewById(R.id.fl_adplaceholder);
-            UnifiedNativeAdView adView = (UnifiedNativeAdView) getLayoutInflater()
-                    .inflate(R.layout.unifiednativeadview_native, null);
-            populateUnifiedNativeAdView(unifiedNativeAd, adView);
-            frameLayout.removeAllViews();
-            frameLayout.addView(adView);
-        });
+            // OnUnifiedNativeAdLoadedListener implementation.
+            builder.forUnifiedNativeAd(unifiedNativeAd -> {
+                FrameLayout frameLayout =
+                        getActivity().findViewById(R.id.fl_adplaceholder);
+                UnifiedNativeAdView adView = (UnifiedNativeAdView) getLayoutInflater()
+                        .inflate(R.layout.unifiednativeadview_native, null);
+                populateUnifiedNativeAdView(unifiedNativeAd, adView);
+                frameLayout.removeAllViews();
+                frameLayout.addView(adView);
+            });
 
-        VideoOptions videoOptions = new VideoOptions.Builder()
+            VideoOptions videoOptions = new VideoOptions.Builder()
 //                .setStartMuted(startVideoAdsMuted.isChecked())
-                .build();
+                    .build();
 
-        NativeAdOptions adOptions = new NativeAdOptions.Builder()
-                .setVideoOptions(videoOptions)
-                .build();
+            NativeAdOptions adOptions = new NativeAdOptions.Builder()
+                    .setVideoOptions(videoOptions)
+                    .build();
 
-        builder.withNativeAdOptions(adOptions);
+            builder.withNativeAdOptions(adOptions);
 
-        AdLoader adLoader = builder.withAdListener(new AdListener() {
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
+            AdLoader adLoader = builder.withAdListener(new AdListener() {
+                @Override
+                public void onAdFailedToLoad(int errorCode) {
 //                refresh.setEnabled(true);
-                Toast.makeText(getContext(), "Failed to load native ad: "
-                        + errorCode, Toast.LENGTH_SHORT).show();
-            }
-        }).build();
+                    Toast.makeText(getContext(), "Failed to load native ad: "
+                            + errorCode, Toast.LENGTH_SHORT).show();
+                }
+            }).build();
 
-        adLoader.loadAd(new AdRequest.Builder().build());
+            adLoader.loadAd(new AdRequest.Builder().build());
 
-//        videoStatus.setText("");
+        }
     }
 }

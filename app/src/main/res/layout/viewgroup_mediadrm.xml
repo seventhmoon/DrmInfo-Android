@@ -12,7 +12,7 @@
         <variable
             name="properties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
-
+        <variable name="handler" type="com.androidfung.drminfo.ui.mobile.MyHandlers"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -105,11 +105,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView3"
             app:layout_constraintTop_toBottomOf="@+id/textView5"
+            android:onClick="@{handler::copyToClipboard}"
             tools:text="AES................" />
 
 
         <TextView
-            android:id="@+id/textView8"
+            android:id="@+id/tvDeviceUniqueIdLabel"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
@@ -119,13 +120,13 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/mediadrm_bytearray_property_key_deviceuniqueid)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView9"
+            app:layout_constraintEnd_toStartOf="@+id/tvDeviceUniqueIdValue"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3"
             tools:text="Device Unique ID" />
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/tvDeviceUniqueIdValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -133,9 +134,10 @@
             android:textAlignment="viewEnd"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/mediadrm_bytearray_property_key_deviceuniqueid)]) ? View.GONE : View.VISIBLE}"
+            android:onClick="@{handler::copyToClipboard}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView8"
+            app:layout_constraintStart_toEndOf="@+id/tvDeviceUniqueIdLabel"
             app:layout_constraintTop_toBottomOf="@+id/textView6"
             tools:text="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 

@@ -12,7 +12,7 @@
         <variable
             name="properties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
-
+        <variable name="handler" type="com.androidfung.drminfo.ui.mobile.MyHandlers"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

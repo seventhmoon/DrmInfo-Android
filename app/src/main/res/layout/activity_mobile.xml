@@ -18,6 +18,9 @@
         <variable
             name="playreadyProperties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
+
+        <variable name="handler" type="com.androidfung.drminfo.ui.mobile.MyHandlers"/>
+
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -45,6 +48,7 @@
 
         <include
             layout="@layout/content_mobile"
+            bind:handler="@{handler}"
             bind:clearkeyProperties="@{clearkeyProperties}"
             bind:playreadyProperties="@{playreadyProperties}"
             bind:widevineProperties="@{widevineProperties}" />
