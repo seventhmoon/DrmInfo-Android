@@ -12,8 +12,7 @@ import com.google.android.material.snackbar.Snackbar;
 public class MyHandlers {
     private static final String TAG = MyHandlers.class.getSimpleName();
 
-    private void copyToClipboard(View view, String label, String text) {
-
+    private boolean copyToClipboard(View view, String label, String text) {
 
         Snackbar.make(view, text, Snackbar.LENGTH_LONG).setAction(R.string.label_copy, v -> {
             ClipboardManager clipboard = (ClipboardManager)
@@ -21,12 +20,14 @@ public class MyHandlers {
 
             ClipData clip = ClipData.newPlainText(label, text);
             clipboard.setPrimaryClip(clip);
+
         }).show();
 
+        return true;
     }
 
 
-    public void copyToClipboard(View v) {
+    public boolean copyToClipboard(View v) {
         String label = String.valueOf(v.getId());
         String text = v.toString();
 
@@ -34,7 +35,7 @@ public class MyHandlers {
             text = ((TextView) v).getText().toString();
         }
 
-        copyToClipboard(v, label, text);
+        return copyToClipboard(v, label, text);
     }
 
 }
