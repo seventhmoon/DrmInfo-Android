@@ -4,7 +4,6 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaDrm;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -123,10 +122,10 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
 
         MediaDrm widevineMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
         MediaDrm playreadyMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PLAYREADY);
-        MediaDrm marlinMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.MARLIN);
-        MediaDrm verimatrixMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.VERIMATRIX);
+//        MediaDrm marlinMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.MARLIN);
+//        MediaDrm verimatrixMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.VERIMATRIX);
         MediaDrm clearKeyMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.CLEARKEY);
-        MediaDrm primetimeMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PRIMETIME);
+//        MediaDrm primetimeMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PRIMETIME);
 
         boolean verimatrixSupported = MediaDrm.isCryptoSchemeSupported(VERIMATRIX_UUID);
         boolean primetimeSupported = MediaDrm.isCryptoSchemeSupported(PRIMETIME_UUID);
@@ -187,19 +186,19 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
         actions.add(new GuidedAction.Builder(getActivity())
                 .infoOnly(true)
                 .title(getString(R.string.text_primetime_name))
-                .description(primetimeMediaDrm != null ? getString(R.string.text_supported) : getString(R.string.text_not_supported))
+                .description(primetimeSupported ? getString(R.string.text_supported) : getString(R.string.text_not_supported))
                 .build());
 
         actions.add(new GuidedAction.Builder(getActivity())
                 .infoOnly(true)
                 .title(getString(R.string.text_marlin_name))
-                .description(marlinMediaDrm != null ? getString(R.string.text_supported) : getString(R.string.text_not_supported))
+                .description(marlinSupported ? getString(R.string.text_supported) : getString(R.string.text_not_supported))
                 .build());
 
         actions.add(new GuidedAction.Builder(getActivity())
                 .infoOnly(true)
                 .title(getString(R.string.text_verimatrix_name))
-                .description(verimatrixMediaDrm != null ? getString(R.string.text_supported) : getString(R.string.text_not_supported))
+                .description(verimatrixSupported ? getString(R.string.text_supported) : getString(R.string.text_not_supported))
                 .build());
 
 

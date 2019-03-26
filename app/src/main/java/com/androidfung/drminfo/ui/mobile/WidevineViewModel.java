@@ -4,10 +4,7 @@ import android.app.Application;
 import android.media.MediaDrm;
 
 import com.androidfung.drminfo.Constants;
-import com.androidfung.drminfo.MediaDrmFactory;
 import com.androidfung.drminfo.R;
-
-import java.util.UUID;
 
 import androidx.databinding.ObservableArrayMap;
 
