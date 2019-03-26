@@ -17,7 +17,6 @@ public class WidevineViewModel extends MediaDrmViewModel {
 
     public WidevineViewModel(Application application) {
         super(application);
-//        mMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.WIDEVINE);
         mUUID = Constants.WIDEVINE_UUID;
     }
 
@@ -25,7 +24,6 @@ public class WidevineViewModel extends MediaDrmViewModel {
     protected void prepareProperties(MediaDrm mediaDrm) {
         super.prepareProperties(mediaDrm);
         ObservableArrayMap<String, Object> map = mProperties.getValue();
-//        MediaDrm mediaDrm = super.getMediaDrm();
         if (mediaDrm != null) {
             try {
                 String[] wvKeys = getApplication().getResources().getStringArray(R.array.widevine_string_property_keys);

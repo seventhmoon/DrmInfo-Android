@@ -1,23 +1,16 @@
 package com.androidfung.drminfo.ui.mobile;
 
 import android.app.Application;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.media.MediaDrm;
 import android.media.UnsupportedSchemeException;
 import android.os.Build;
 import android.util.Base64;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import com.androidfung.drminfo.R;
 
 import java.util.UUID;
 
 import androidx.annotation.RequiresApi;
-import androidx.databinding.BindingAdapter;
 import androidx.databinding.ObservableArrayMap;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -27,10 +20,6 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
 
     private final static String TAG = MediaDrmViewModel.class.getSimpleName();
     protected MutableLiveData<ObservableArrayMap<String, Object>> mProperties;
-
-    public MediaDrm getMediaDrm() {
-        return mMediaDrm;
-    }
 
     private MediaDrm mMediaDrm;
     protected UUID mUUID;
@@ -56,8 +45,7 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
         return mProperties;
     }
 
-        protected void prepareProperties(MediaDrm mediaDrm) {
-//        protected void prepareProperties(UUID uuid) {
+    protected void prepareProperties(MediaDrm mediaDrm) {
         ObservableArrayMap<String, Object> map = new ObservableArrayMap<>();
         if (mediaDrm != null) {
             try {
@@ -115,12 +103,15 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
             case MediaDrm.HDCP_V2:
                 return "2";
 
+//            case MediaDrm.HDCP_V2_3:
+//                return "2.3";
+//
             default:
                 return null;
         }
     }
 
-    protected void onCleared (){
+    protected void onCleared() {
         if (mMediaDrm != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 this.mMediaDrm.close();
@@ -130,15 +121,4 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
         }
     }
 
-//    public void copyToClipboard(View v) {
-//        ClipboardManager clipboard = (ClipboardManager)
-//                v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-//
-//        Log.d(TAG, v.toString());
-//        ClipData clip = ClipData.newPlainText(v.toString(), v.toString());
-//        clipboard.setPrimaryClip(clip);
-//        Toast.makeText(v.getContext(), v.toString(), Toast.LENGTH_SHORT).show();
-////        view.visibility = visible ? View.VISIBLE : View.GONE;
-////        return true;
-//    }
 }
