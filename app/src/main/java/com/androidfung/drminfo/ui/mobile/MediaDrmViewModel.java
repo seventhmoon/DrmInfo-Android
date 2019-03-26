@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.media.MediaDrm;
+import android.media.UnsupportedSchemeException;
 import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.androidfung.drminfo.R;
+
+import java.util.UUID;
 
 import androidx.annotation.RequiresApi;
 import androidx.databinding.BindingAdapter;
@@ -24,7 +27,13 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
 
     private final static String TAG = MediaDrmViewModel.class.getSimpleName();
     protected MutableLiveData<ObservableArrayMap<String, Object>> mProperties;
-    protected MediaDrm mMediaDrm;
+
+    public MediaDrm getMediaDrm() {
+        return mMediaDrm;
+    }
+
+    private MediaDrm mMediaDrm;
+    protected UUID mUUID;
 
     protected MediaDrmViewModel(Application application) {
         super(application);
@@ -33,13 +42,22 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
     public LiveData<ObservableArrayMap<String, Object>> getProperties() {
         if (mProperties == null) {
             mProperties = new MutableLiveData<>();
-            prepareProperties(mMediaDrm);
+
+            if (MediaDrm.isCryptoSchemeSupported(mUUID)) {
+                try {
+                    mMediaDrm = new MediaDrm(mUUID);
+                    prepareProperties(mMediaDrm);
+                } catch (UnsupportedSchemeException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         return mProperties;
     }
 
-    protected void prepareProperties(MediaDrm mediaDrm) {
+        protected void prepareProperties(MediaDrm mediaDrm) {
+//        protected void prepareProperties(UUID uuid) {
         ObservableArrayMap<String, Object> map = new ObservableArrayMap<>();
         if (mediaDrm != null) {
             try {

@@ -2,6 +2,7 @@ package com.androidfung.drminfo.ui.mobile;
 
 import android.app.Application;
 
+import com.androidfung.drminfo.Constants;
 import com.androidfung.drminfo.MediaDrmFactory;
 
 public class MarlinViewModel extends MediaDrmViewModel {
@@ -10,7 +11,8 @@ public class MarlinViewModel extends MediaDrmViewModel {
 
     public MarlinViewModel(Application application) {
         super(application);
-        mMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.MARLIN);
+        mUUID = Constants.MARLIN_UUID;
+//        mMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.MARLIN);
     }
 
 }

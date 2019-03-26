@@ -15,6 +15,7 @@ import static com.androidfung.drminfo.Constants.*;
  * Created by fung on 11/13/2015.
  */
 @Keep
+@Deprecated
 public class MediaDrmFactory {
 //    private static final UUID WIDEVINE_UUID = new UUID(0xEDEF8BA979D64ACEL, 0xA3C827DCD51D21EDL);
 //    private static final UUID PLAYREADY_UUID = new UUID(0x9A04F07998404286L, 0xAB92E65BE0885F95L);

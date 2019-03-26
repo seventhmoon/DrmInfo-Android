@@ -4,9 +4,11 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaDrm;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.androidfung.drminfo.Constants;
 import com.androidfung.drminfo.MediaDrmFactory;
 import com.androidfung.drminfo.R;
 
@@ -14,10 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.leanback.app.GuidedStepSupportFragment;
 import androidx.leanback.widget.GuidanceStylist;
 import androidx.leanback.widget.GuidedAction;
+
+import static com.androidfung.drminfo.Constants.*;
 
 public class InfoStepFragment extends GuidedStepSupportFragment {
 
@@ -28,8 +32,7 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
     public GuidanceStylist.Guidance onCreateGuidance(Bundle savedInstanceState) {
         String title = getString(R.string.app_name);
         String description = getString(R.string.text_on_android_tv);
-
-        Drawable icon = ContextCompat.getDrawable(getActivity(), R.mipmap.ic_launcher_round);
+        Drawable icon = ResourcesCompat.getDrawable(getResources(), R.mipmap.ic_launcher_round, null);
 
         return new GuidanceStylist.Guidance(title, description, null, icon);
     }
@@ -124,6 +127,10 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
         MediaDrm verimatrixMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.VERIMATRIX);
         MediaDrm clearKeyMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.CLEARKEY);
         MediaDrm primetimeMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PRIMETIME);
+
+        boolean verimatrixSupported = MediaDrm.isCryptoSchemeSupported(VERIMATRIX_UUID);
+        boolean primetimeSupported = MediaDrm.isCryptoSchemeSupported(PRIMETIME_UUID);
+        boolean marlinSupported = MediaDrm.isCryptoSchemeSupported(Constants.MARLIN_UUID);
 
 
         if (clearKeyMediaDrm != null) {

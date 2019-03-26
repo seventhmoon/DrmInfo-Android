@@ -2,6 +2,7 @@ package com.androidfung.drminfo.ui.mobile;
 
 import android.app.Application;
 
+import com.androidfung.drminfo.Constants;
 import com.androidfung.drminfo.MediaDrmFactory;
 
 public class PlayreadyViewModel extends MediaDrmViewModel {
@@ -10,7 +11,8 @@ public class PlayreadyViewModel extends MediaDrmViewModel {
 
     public PlayreadyViewModel(Application application) {
         super(application);
-        mMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PLAYREADY);
+//        mMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PLAYREADY);
+        mUUID = Constants.PLAYREADY_UUID;
     }
 
 }

@@ -2,6 +2,7 @@ package com.androidfung.drminfo.ui.mobile;
 
 import android.app.Application;
 
+import com.androidfung.drminfo.Constants;
 import com.androidfung.drminfo.MediaDrmFactory;
 
 @SuppressWarnings("unused")
@@ -11,7 +12,8 @@ public class ClearKeyViewModel extends MediaDrmViewModel {
 
     public ClearKeyViewModel(Application application) {
         super(application);
-        mMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.CLEARKEY);
+//        mMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.CLEARKEY);
+        mUUID = Constants.CLEARKEY_UUID;
     }
 
 }

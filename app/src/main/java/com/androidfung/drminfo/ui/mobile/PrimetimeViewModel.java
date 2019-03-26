@@ -2,6 +2,7 @@ package com.androidfung.drminfo.ui.mobile;
 
 import android.app.Application;
 
+import com.androidfung.drminfo.Constants;
 import com.androidfung.drminfo.MediaDrmFactory;
 
 public class PrimetimeViewModel extends MediaDrmViewModel {
@@ -10,7 +11,8 @@ public class PrimetimeViewModel extends MediaDrmViewModel {
 
     public PrimetimeViewModel(Application application) {
         super(application);
-        mMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PRIMETIME);
+//        mMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PRIMETIME);
+        mUUID = Constants.PRIMETIME_UUID;
     }
 
 }

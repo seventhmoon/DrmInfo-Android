@@ -25,7 +25,7 @@
         android:layout_marginBottom="@dimen/card_vertical_margin"
         android:minWidth="@dimen/box_min_width"
         android:minHeight="@dimen/box_min_height"
-        android:visibility="@{properties.isEmpty() ? View.GONE : View.VISIBLE}"
+        android:visibility="@{(properties == null  || properties.isEmpty()) ? View.GONE : View.VISIBLE}"
         app:cardCornerRadius="@dimen/card_corner_radius"
         app:cardUseCompatPadding="true"
         app:contentPadding="@dimen/card_padding"
