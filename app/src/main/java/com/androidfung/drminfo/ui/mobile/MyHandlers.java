@@ -27,7 +27,7 @@ public class MyHandlers {
     }
 
 
-    public boolean copyToClipboard(View v) {
+    public boolean onLongClick(View v) {
         String label = String.valueOf(v.getId());
         String text = v.toString();
 

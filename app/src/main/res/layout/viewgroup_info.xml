@@ -159,7 +159,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_label_display"
             app:layout_constraintTop_toBottomOf="@+id/tv_value_type"
-            android:onLongClick="@{handler::copyToClipboard}"
+            android:onLongClick="@{handler::onLongClick}"
             tools:text="PPR1" />
 
         <TextView
@@ -181,7 +181,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:onLongClick="@{handler::copyToClipboard}"
+            android:onLongClick="@{handler::onLongClick}"
 
             android:text="@{Build.FINGERPRINT}"
             android:textAlignment="viewEnd"
