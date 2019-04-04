@@ -129,9 +129,11 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
 
             }
 
+            boolean infoOnly = subActions == null || subActions.isEmpty();
+
             actions.add(new GuidedAction.Builder(getActivity())
-                    .infoOnly(subActions == null || subActions.isEmpty())
-                    .subActions((subActions == null || subActions.isEmpty() )? null: subActions)
+                    .infoOnly(infoOnly)
+                    .subActions(infoOnly ? null: subActions)
                     .title(getString(titles[i]))
                     .description(supported ? getString(R.string.text_supported) : getString(R.string.text_not_supported))
                     .build());
