@@ -87,7 +87,6 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
                 Log.d(TAG, ex.toString());
             }
         }
-//        }
 
         return subActions;
     }
@@ -97,111 +96,19 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
     public void onCreateActions(@NonNull List<GuidedAction> actions, Bundle savedInstanceState) {
 
         //info section here
-        actions.add(new GuidedAction.Builder(getActivity())
-                .infoOnly(true)
-                .title(getString(R.string.text_brand))
-                .description(Build.BRAND)
-                .build());
+        int[] infoTitles = {R.string.text_brand, R.string.text_product, R.string.text_model, R.string.text_sdk_level};
+        String[] descriptions = {Build.BRAND, Build.PRODUCT, Build.MODEL, String.valueOf(Build.VERSION.SDK_INT)};
 
-        actions.add(new GuidedAction.Builder(getActivity())
-                .infoOnly(true)
-                .title(getString(R.string.text_product))
-                .description(Build.PRODUCT)
-                .build());
-
-        actions.add(new GuidedAction.Builder(getActivity())
-                .infoOnly(true)
-                .title(getString(R.string.text_model))
-                .description(Build.MODEL)
-                .build());
-
-        actions.add(new GuidedAction.Builder(getActivity())
-                .infoOnly(true)
-                .title(getString(R.string.text_sdk_level))
-                .description(String.valueOf(Build.VERSION.SDK_INT))
-                .build());
-//
-//        boolean verimatrixSupported = MediaDrm.isCryptoSchemeSupported(VERIMATRIX_UUID);
-//        boolean primetimeSupported = MediaDrm.isCryptoSchemeSupported(PRIMETIME_UUID);
-//        boolean marlinSupported = MediaDrm.isCryptoSchemeSupported(Constants.MARLIN_UUID);
-//        boolean clearKeySupported = MediaDrm.isCryptoSchemeSupported(Constants.CLEARKEY_UUID);
-//        boolean playreadySupported = MediaDrm.isCryptoSchemeSupported(Constants.PLAYREADY_UUID);
-//        boolean widevineSupported = MediaDrm.isCryptoSchemeSupported(Constants.WIDEVINE_UUID);
-//
-//        if (clearKeySupported) {
-//            try {
-//                MediaDrm clearKeyMediaDrm = new MediaDrm(Constants.CLEARKEY_UUID);
-//
-//                List<GuidedAction> subActions = getWidevineSubActions(clearKeyMediaDrm);
-//
-//                actions.add(new GuidedAction.Builder(getActivity())
-//                        .infoOnly(subActions.isEmpty())
-//                        .title(getString(R.string.text_clearkey_name))
-//                        .description(getString(R.string.text_supported))
-//                        .subActions(subActions.isEmpty() ? null : subActions)
-//                        .build());
-//            } catch (UnsupportedSchemeException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            actions.add(new GuidedAction.Builder(getActivity())
-//                    .infoOnly(true)
-//                    .title(getString(R.string.text_clearkey_name))
-//                    .description(getString(R.string.text_not_supported))
-//                    .build());
-//        }
-//
-//        if (widevineSupported) {
-//            try {
-//                MediaDrm widevineDrm = new MediaDrm(Constants.WIDEVINE_UUID);
-//
-//                List<GuidedAction> widevineSubActions = getWidevineSubActions(widevineDrm);
-//                actions.add(new GuidedAction.Builder(getActivity())
-////                        .id(WIDEVINE)
-//                        .title(getString(R.string.text_widevine_name))
-//                        .description(getString(R.string.text_supported))
-//                        .subActions(widevineSubActions.isEmpty() ? null : widevineSubActions)
-//                        .build());
-//
-//            } catch (UnsupportedSchemeException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            actions.add(new GuidedAction.Builder(getActivity())
-//                    .infoOnly(true)
-//                    .title(getString(R.string.text_widevine_name))
-//                    .description(getString(R.string.text_not_supported))
-//                    .build());
-//        }
-//
-//        if (playreadySupported) {
-//            try {
-//                MediaDrm playReadyDrm = new MediaDrm(Constants.PLAYREADY_UUID);
-//
-//                List<GuidedAction> playreadySubActions = getMediaDrmSubActions(playReadyDrm);
-//                actions.add(new GuidedAction.Builder(getActivity())
-//                        .infoOnly(playreadySubActions.isEmpty())
-//                        .title(getString(R.string.text_playready_name))
-//                        .description(getString(R.string.text_supported))
-//                        .subActions(playreadySubActions.isEmpty() ? null : playreadySubActions)
-//                        .build());
-//            } catch (UnsupportedSchemeException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            actions.add(new GuidedAction.Builder(getActivity())
-//                    .infoOnly(true)
-//                    .title(getString(R.string.text_playready_name))
-//                    .description(getString(R.string.text_not_supported))
-//                    .build());
-//        }
-
+        for (int i=0; i<infoTitles.length; i++){
+            actions.add(new GuidedAction.Builder(getActivity())
+                    .infoOnly(true)
+                    .title(getString(infoTitles[i]))
+                    .description(descriptions[i])
+                    .build());
+        }
 
         UUID[] uuids = {Constants.CLEARKEY_UUID, Constants.WIDEVINE_UUID, Constants.PLAYREADY_UUID, Constants.VERIMATRIX_UUID, Constants.MARLIN_UUID, Constants.PRIMETIME_UUID};
         int[] titles = {R.string.text_clearkey_name, R.string.text_widevine_name, R.string.text_playready_name, R.string.text_verimatrix_name, R.string.text_marlin_name, R.string.text_primetime_name};
-//        boolean[] supportingStatus = {verimatrixSupported, marlinSupported, primetimeSupported};
-        //        int[] titles = {R.string.text_verimatrix_name, R.string.text_marlin_name, R.string.text_primetime_name};
-//        boolean[] supportingStatus = {verimatrixSupported, marlinSupported, primetimeSupported};
 
         for (int i=0; i < uuids.length; i++){
             boolean supported = MediaDrm.isCryptoSchemeSupported(uuids[i]);
