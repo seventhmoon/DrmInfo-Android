@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.androidfung.drminfo.Constants;
-import com.androidfung.drminfo.MediaDrmFactory;
 import com.androidfung.drminfo.R;
 
 import java.util.ArrayList;
@@ -21,9 +20,6 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.leanback.app.GuidedStepSupportFragment;
 import androidx.leanback.widget.GuidanceStylist;
 import androidx.leanback.widget.GuidedAction;
-
-import static com.androidfung.drminfo.Constants.PRIMETIME_UUID;
-import static com.androidfung.drminfo.Constants.VERIMATRIX_UUID;
 
 public class InfoStepFragment extends GuidedStepSupportFragment {
 

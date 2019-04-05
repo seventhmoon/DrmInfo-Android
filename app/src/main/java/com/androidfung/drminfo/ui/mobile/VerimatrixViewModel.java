@@ -3,7 +3,6 @@ package com.androidfung.drminfo.ui.mobile;
 import android.app.Application;
 
 import com.androidfung.drminfo.Constants;
-import com.androidfung.drminfo.MediaDrmFactory;
 
 public class VerimatrixViewModel extends MediaDrmViewModel {
 

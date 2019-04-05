@@ -1,14 +1,11 @@
 package com.androidfung.drminfo.ui.mobile;
 
 import android.app.Application;
-import android.media.MediaDrm;
-import android.media.UnsupportedSchemeException;
 
 import androidx.databinding.ObservableArrayMap;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
 
 public class InfoViewModel extends AndroidViewModel {
 

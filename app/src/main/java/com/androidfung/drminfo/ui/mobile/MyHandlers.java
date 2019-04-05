@@ -18,16 +18,17 @@ public class MyHandlers {
 
     private boolean copyToClipboard(View view, String label, String text) {
 
-        Snackbar.make(view, text, Snackbar.LENGTH_LONG).setAction(R.string.label_copy, v -> {
+        Snackbar snackbar = Snackbar.make(view, text, Snackbar.LENGTH_LONG).setAction(R.string.label_copy, v -> {
             ClipboardManager clipboard = (ClipboardManager)
                     v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
 
             ClipData clip = ClipData.newPlainText(label, text);
             clipboard.setPrimaryClip(clip);
 
-        }).show();
+        });
+        snackbar.show();
 
-        return true;
+        return snackbar.isShownOrQueued();
     }
 
 
