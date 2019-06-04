@@ -64,6 +64,8 @@ public class MobileActivity extends AppCompatActivity {
         MediaDrmViewModel playreadyViewModel = ViewModelProviders.of(this).get(PlayreadyViewModel.class);
         playreadyViewModel.getProperties().observe(this, mBinding::setPlayreadyProperties);
 
+
+
     }
 
 
