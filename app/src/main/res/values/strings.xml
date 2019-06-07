@@ -1,8 +1,5 @@
 <resources>
-    <string name="app_name">DRM Info</string>
-    <string name="action_settings">Settings</string>
-    <string name="text_not_supported">Not Supported</string>
-    <string name="text_supported">Supported</string>
+
     <string name="text_supported_with_security_level">Supported (%1$s)</string>
     <string name="text_playready_name">Microsoft Playready DRM</string>
     <string name="text_clearkey_name">CENC ClearKey</string>
@@ -23,9 +20,6 @@
 
     <!--<string name="hello_blank_fragment">Hello blank fragment</string>-->
     <string name="label_cts_profile_match">CTS Profile Match</string>
-    <string name="text_unknown">Unknown</string>
-    <string name="text_yes">Yes</string>
-    <string name="text_no">No</string>
     <string name="text_on_android_tv">on Android TV</string>
     <string name="text_build">Build</string>
     <string name="text_webview_version">WebView Version</string>
@@ -37,5 +31,4 @@
     <string name="ad_attribution">Ad</string>
     <string name="text_display">Display</string>
     <string name="text_licenseinformation">License Information</string>
-    <string name="label_copy">Copy</string>
 </resources>
