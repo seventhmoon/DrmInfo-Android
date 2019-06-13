@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DRM Info</string>
+    <string name="action_settings">設定</string>
+    <string name="text_not_supported">不支持</string>
+    <string name="text_supported">支持</string>
+    <string name="text_unknown">未知</string>
+    <string name="text_yes">是</string>
+    <string name="text_no">不是</string>
+    <string name="label_copy">複製</string>
+</resources>
