@@ -10,8 +10,8 @@ android {
         applicationId "com.androidfung.drminfo"
         minSdkVersion 18
         targetSdkVersion 29
-        versionCode 183
-        versionName "1.1.2.190820"
+        versionCode 185
+        versionName "1.1.2.190829"
         resConfigs "en", "zh", "ja", "fr", "es", "it"
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -57,7 +57,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
     implementation 'com.google.firebase:firebase-core:17.1.0'
-    implementation 'com.google.firebase:firebase-analytics:17.1.0'
+    implementation 'com.google.firebase:firebase-analytics:17.2.0'
     implementation 'com.google.firebase:firebase-ads:18.1.1'
     implementation 'com.google.firebase:firebase-perf:19.0.0'
 
