@@ -42,6 +42,7 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
 
         String[] drmStringKeys = getResources().getStringArray(R.array.mediadrm_string_property_keys);
         String[] drmStringNames = getResources().getStringArray(R.array.mediadrm_string_property_names);
+
         for (int i = 0; i < drmStringKeys.length; i++) {
             try {
                 String value = mediaDrm.getPropertyString(drmStringKeys[i]);
