@@ -92,15 +92,20 @@ public class InfoStepFragment extends GuidedStepSupportFragment {
     public void onCreateActions(@NonNull List<GuidedAction> actions, Bundle savedInstanceState) {
 
         //info section here
-        int[] infoTitles = {R.string.text_brand, R.string.text_product, R.string.text_model, R.string.text_sdk_level};
-        String[] descriptions = {Build.BRAND, Build.PRODUCT, Build.MODEL, String.valueOf(Build.VERSION.SDK_INT)};
+        int[] infoTitles = {R.string.text_brand, R.string.text_product, R.string.text_model, R.string.text_sdk_level, R.string.text_hdr, R.string.text_wide_color};
+        String[] descriptions = {Build.BRAND, Build.PRODUCT, Build.MODEL, String.valueOf(Build.VERSION.SDK_INT),
+            this.getResources().getBoolean(R.bool.is_highdr)?getString(R.string.text_supported):getString(R.string.text_not_supported),
+                this.getResources().getBoolean(R.bool.is_widecg)?getString(R.string.text_supported):getString(R.string.text_not_supported),
+        };
 
         for (int i=0; i<infoTitles.length; i++){
-            actions.add(new GuidedAction.Builder(getActivity())
-                    .infoOnly(true)
-                    .title(getString(infoTitles[i]))
-                    .description(descriptions[i])
-                    .build());
+            if (descriptions[i] != null) {
+                actions.add(new GuidedAction.Builder(getActivity())
+                        .infoOnly(true)
+                        .title(getString(infoTitles[i]))
+                        .description(descriptions[i])
+                        .build());
+            }
         }
 
         UUID[] uuids = {Constants.CLEARKEY_UUID, Constants.WIDEVINE_UUID, Constants.PLAYREADY_UUID, Constants.VERIMATRIX_UUID, Constants.MARLIN_UUID, Constants.PRIMETIME_UUID};
