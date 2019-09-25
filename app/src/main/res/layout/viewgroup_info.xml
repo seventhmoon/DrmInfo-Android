@@ -233,8 +233,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="Supported ABI"
+            android:text="@string/text_abi"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:visibility="@{Build.VERSION.SDK_INT >= 21?View.VISIBLE:View.GONE}"
             app:layout_constrainedHeight="true"
             app:layout_constraintEnd_toStartOf="@+id/tv_value_abis"
             app:layout_constraintStart_toStartOf="parent"
@@ -245,9 +246,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:ellipsize="middle"
             android:singleLine="true"
-            android:text='@{java.util.Arrays.toString(Build.SUPPORTED_ABIS).replace("[","").replace("]","")}'
+            android:text='@{(Build.VERSION.SDK_INT &lt; 21)?"-":java.util.Arrays.toString(Build.SUPPORTED_ABIS).replace("[","").replace("]","")}'
+            android:onLongClick="@{handler::onLongClick}"
+            android:visibility="@{Build.VERSION.SDK_INT >= 21?View.VISIBLE:View.GONE}"
             android:textAlignment="viewEnd"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             app:layout_constrainedHeight="true"
