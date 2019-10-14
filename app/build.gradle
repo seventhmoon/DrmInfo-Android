@@ -10,8 +10,8 @@ android {
         applicationId "com.androidfung.drminfo"
         minSdkVersion 18
         targetSdkVersion 29
-        versionCode 190
-        versionName "1.1.2.190925"
+        versionCode 192
+        versionName "1.1.2.191014"
         resConfigs "en", "zh", "ja", "fr", "es", "it"
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
