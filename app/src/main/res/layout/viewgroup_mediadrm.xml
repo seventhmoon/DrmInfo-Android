@@ -118,7 +118,7 @@
             android:singleLine="true"
             android:text="@string/mediadrm_bytearray_property_name_deviceuniqueid"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-            android:visibility="@{TextUtils.isEmpty((String) properties[(@string/mediadrm_bytearray_property_key_deviceuniqueid)]) ? View.GONE : View.VISIBLE}"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvDeviceUniqueIdValue"
             app:layout_constraintStart_toStartOf="parent"
@@ -133,7 +133,7 @@
             android:text='@{properties[(@string/mediadrm_bytearray_property_key_deviceuniqueid)] ?? "-"}'
             android:textAlignment="viewEnd"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-            android:visibility="@{TextUtils.isEmpty((String) properties[(@string/mediadrm_bytearray_property_key_deviceuniqueid)]) ? View.GONE : View.VISIBLE}"
+            android:visibility="gone"
             android:onLongClick="@{handler::onLongClick}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
