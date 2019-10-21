@@ -65,10 +65,12 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     int maxHdcpLevel = mediaDrm.getMaxHdcpLevel();
                     int maxSessionCount = mediaDrm.getMaxSessionCount();
+                    int connectedHdcpLevel = mediaDrm.getConnectedHdcpLevel();
 //                    int openSessionCount = mediaDrm.getOpenSessionCount();
 
                     map.put(getApplication().getString(R.string.mediadrm_key_maxNumberOfSessions), String.valueOf(maxSessionCount));
                     map.put(getApplication().getString(R.string.mediadrm_key_maxHdcpLevel), toStringValue(maxHdcpLevel));
+                    map.put("hdcpLevel", toStringValue(connectedHdcpLevel));
 
                 }
             } catch (IllegalArgumentException | IllegalStateException ignored) {
@@ -103,9 +105,9 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
             case MediaDrm.HDCP_V2:
                 return "2";
 
-//            case MediaDrm.HDCP_V2_3:
-//                return "2.3";
-//
+            case MediaDrm.HDCP_V2_3:
+                return "2.3";
+
             default:
                 return null;
         }
