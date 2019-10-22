@@ -8,7 +8,11 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.androidfung.drminfo.R;
+
 import java.util.Arrays;
+
+import static com.androidfung.drminfo.Util.toHdcpLevelString;
 
 public class InfoViewModel extends AndroidViewModel {
 

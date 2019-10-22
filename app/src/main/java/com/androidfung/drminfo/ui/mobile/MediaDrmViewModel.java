@@ -16,6 +16,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import static com.androidfung.drminfo.Util.toHdcpLevelString;
+
 public abstract class MediaDrmViewModel extends AndroidViewModel {
 
     private final static String TAG = MediaDrmViewModel.class.getSimpleName();
@@ -69,8 +71,8 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
 //                    int openSessionCount = mediaDrm.getOpenSessionCount();
 
                     map.put(getApplication().getString(R.string.mediadrm_key_maxNumberOfSessions), String.valueOf(maxSessionCount));
-                    map.put(getApplication().getString(R.string.mediadrm_key_maxHdcpLevel), toStringValue(maxHdcpLevel));
-                    map.put("hdcpLevel", toStringValue(connectedHdcpLevel));
+                    map.put(getApplication().getString(R.string.mediadrm_key_maxHdcpLevel), toHdcpLevelString(maxHdcpLevel));
+                    map.put(getApplication().getString(R.string.mediadrm_key_hdcpLevel), toHdcpLevelString(connectedHdcpLevel));
 
                 }
             } catch (IllegalArgumentException | IllegalStateException ignored) {
@@ -81,37 +83,7 @@ public abstract class MediaDrmViewModel extends AndroidViewModel {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.P)
-    private String toStringValue(@MediaDrm.HdcpLevel int maxHdcpLevel) {
-        switch (maxHdcpLevel) {
-            case MediaDrm.HDCP_LEVEL_UNKNOWN:
-                return "Unknown";
 
-            case MediaDrm.HDCP_NONE:
-                return "None";
-
-            case MediaDrm.HDCP_NO_DIGITAL_OUTPUT:
-                return "No Digital Output";
-
-            case MediaDrm.HDCP_V1:
-                return "1";
-
-            case MediaDrm.HDCP_V2_1:
-                return "2.1";
-
-            case MediaDrm.HDCP_V2_2:
-                return "2.2";
-
-            case MediaDrm.HDCP_V2:
-                return "2";
-
-            case MediaDrm.HDCP_V2_3:
-                return "2.3";
-
-            default:
-                return null;
-        }
-    }
 
     protected void onCleared() {
         if (mMediaDrm != null) {
