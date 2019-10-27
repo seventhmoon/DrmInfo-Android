@@ -9,5 +9,5 @@
     android:layout_gravity="center_vertical|center_horizontal"
     android:layout_margin="8dp"
     android:visibility="gone"
-    app:adSize="MEDIUM_RECTANGLE"
+    app:adSize="300x250"
     app:adUnitId="@string/ad_unit_id_medium_rect" />

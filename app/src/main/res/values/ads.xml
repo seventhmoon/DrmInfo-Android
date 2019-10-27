@@ -15,6 +15,9 @@
     <!-- BILLBOARD -->
     <string name="ad_unit_id_billboard" translatable="false">ca-app-pub-9890667024752973/9262313550</string>
 
+    <!-- 336x280 -->
+    <string name="ad_unit_id_336x280" translatable="false">ca-app-pub-9890667024752973/3782756164</string>
+
     <!--LARGE-->
     <!--<string name="ad_unit_id_native">ca-app-pub-9890667024752973/7878000112</string>-->
     <dimen name="native_ad_min_height">250dp</dimen>
