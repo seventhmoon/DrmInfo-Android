@@ -8,6 +8,10 @@
     <data>
 
         <variable
+            name="infoProperties"
+            type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
+
+        <variable
             name="clearkeyProperties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
 
@@ -45,6 +49,7 @@
             app:justifyContent="center">
 
             <include layout="@layout/fragment_info"
+                bind:infoProperties="@{infoProperties}"
                 bind:handler="@{handler}"/>
 
             <include

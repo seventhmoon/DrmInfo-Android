@@ -8,6 +8,10 @@
     <data>
 
         <variable
+            name="infoProperties"
+            type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
+
+        <variable
             name="clearkeyProperties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
 
@@ -49,6 +53,7 @@
         <include
             layout="@layout/content_mobile"
             bind:handler="@{handler}"
+            bind:infoProperties="@{infoProperties}"
             bind:clearkeyProperties="@{clearkeyProperties}"
             bind:playreadyProperties="@{playreadyProperties}"
             bind:widevineProperties="@{widevineProperties}" />

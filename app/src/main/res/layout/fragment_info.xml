@@ -7,12 +7,12 @@
     <data>
 
         <import type="android.view.View" />
-
         <import type="android.os.Build" />
 
         <variable
             name="infoProperties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
+
         <variable name="handler" type="com.androidfung.drminfo.ui.mobile.MyHandlers"/>
 
     </data>
@@ -60,6 +60,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_headline"
+                bind:infoProperties="@{infoProperties}"
                 bind:handler="@{handler}"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.androidfung.drminfo.databinding.ActivityMobileBinding;
 import com.androidfung.drminfo.ui.mobile.ClearKeyViewModel;
+import com.androidfung.drminfo.ui.mobile.InfoViewModel;
 import com.androidfung.drminfo.ui.mobile.MediaDrmViewModel;
 import com.androidfung.drminfo.ui.mobile.MyHandlers;
 import com.androidfung.drminfo.ui.mobile.PlayreadyViewModel;
@@ -54,6 +55,9 @@ public class MobileActivity extends AppCompatActivity {
         mBannerAdHolder = findViewById(R.id.container_ad);
         mAdView = findViewById(R.id.adView);
         loadAdMobBannerAd();
+
+        InfoViewModel infoViewModel = ViewModelProviders.of(this).get(InfoViewModel.class);
+        infoViewModel.getProperties().observe(this, mBinding::setInfoProperties);
 
         MediaDrmViewModel clearKeyViewModel = ViewModelProviders.of(this).get(ClearKeyViewModel.class);
         clearKeyViewModel.getProperties().observe(this, mBinding::setClearkeyProperties);
