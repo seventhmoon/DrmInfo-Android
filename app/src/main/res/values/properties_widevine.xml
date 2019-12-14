@@ -43,12 +43,12 @@
         <item>@string/widevine_string_property_name_oemCryptoApiVersion</item>
     </string-array>
 
-    <string name="widevine_bytearray_property_key_provisioningUniqueId">provisioningUniqueId</string>
+    <string name="widevine_bytearray_property_key_provisioningUniqueId" translatable="false">provisioningUniqueId</string>
     <string name="widevine_bytearray_property_name_provisioningUniqueId">Provisioning Unique Id</string>
-    <string name="widevine_bytearray_property_key_serviceCertificate">serviceCertificate</string>
+    <string name="widevine_bytearray_property_key_serviceCertificate" translatable="false">serviceCertificate</string>
 
     <string name="widevine_bytearray_property_name_serviceCertificate">Service Certificate</string>
-    <string name="widevine_bytearray_property_key_provisioningServiceCertificate">provisioningServiceCertificate</string>
+    <string name="widevine_bytearray_property_key_provisioningServiceCertificate" translatable="false">provisioningServiceCertificate</string>
     <string name="widevine_bytearray_property_name_provisioningServiceCertificate">Provisioning Service Certificate</string>
 
     <string-array name="widevine_bytearray_property_keys" tools:ignore="InconsistentArrays">

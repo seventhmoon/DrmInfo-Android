@@ -6,7 +6,6 @@ import android.os.Build;
 import android.view.Display;
 import android.view.WindowManager;
 
-import androidx.collection.ArrayMap;
 import androidx.databinding.ObservableArrayMap;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -21,7 +20,6 @@ import static android.view.Display.HdrCapabilities.HDR_TYPE_DOLBY_VISION;
 import static android.view.Display.HdrCapabilities.HDR_TYPE_HDR10;
 import static android.view.Display.HdrCapabilities.HDR_TYPE_HDR10_PLUS;
 import static android.view.Display.HdrCapabilities.HDR_TYPE_HLG;
-import static com.androidfung.drminfo.Util.toHdcpLevelString;
 
 public class InfoViewModel extends AndroidViewModel {
 

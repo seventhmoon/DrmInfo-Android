@@ -10,7 +10,6 @@ import com.androidfung.drminfo.R;
 
 import java.util.UUID;
 
-import androidx.annotation.RequiresApi;
 import androidx.databinding.ObservableArrayMap;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
