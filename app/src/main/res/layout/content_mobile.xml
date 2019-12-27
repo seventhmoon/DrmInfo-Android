@@ -28,12 +28,23 @@
     </data>
 
     <androidx.core.widget.NestedScrollView
+
         android:name="com.androidfung.drminfo.MobileActivityFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:ignore="PrivateResource">
 
+<!--        <androidx.gridlayout.widget.GridLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            app:columnCount="@integer/col_count"-->
+<!--            app:orientation="horizontal"-->
+<!--            android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+<!--            android:layout_marginTop="@dimen/activity_vertical_margin"-->
+<!--            android:layout_marginEnd="@dimen/activity_horizontal_margin"-->
+<!--            android:layout_marginBottom="@dimen/activity_vertical_margin"-->
+<!--            android:descendantFocusability="blocksDescendants">-->
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
@@ -43,7 +54,6 @@
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:descendantFocusability="blocksDescendants"
-            app:alignContent="stretch"
             app:alignItems="stretch"
             app:flexWrap="wrap"
             app:justifyContent="center">
@@ -75,6 +85,7 @@
                 android:layout_height="16dp" />
 
         </com.google.android.flexbox.FlexboxLayout>
+<!--        </androidx.gridlayout.widget.GridLayout>>-->
 
     </androidx.core.widget.NestedScrollView>
 </layout>
