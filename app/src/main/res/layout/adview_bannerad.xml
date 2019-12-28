@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge>
-    <include layout="@layout/adview_bannerad_mediumrect" />
-</merge>
+
+<com.google.android.gms.ads.AdView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/adView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:layout_gravity="center_vertical|center_horizontal"
+    android:layout_margin="8dp"
+    android:visibility="gone"
+    app:adSize="@string/adsize"
+    app:adUnitId="@string/ad_unit_id" />
+<!--<merge>-->
+<!--    <include layout="@layout/adview_bannerad_mediumrect" />-->
+<!--</merge>-->
