@@ -32,6 +32,7 @@
     <string name="text_display">Display</string>
     <string name="text_licenseinformation">License Information</string>
     <string name="text_hdr">High Dynamic Range (HDR)</string>
+    <string name="text_hdr_type">HDR Type</string>
     <string name="text_wide_color">Wide Color Gamut</string>
     <string name="text_abi">Supported ABI</string>
 </resources>
