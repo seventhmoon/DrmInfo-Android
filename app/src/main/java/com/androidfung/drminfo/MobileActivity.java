@@ -26,7 +26,7 @@ import androidx.annotation.Keep;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 @Keep
 public class MobileActivity extends AppCompatActivity {
@@ -56,16 +56,18 @@ public class MobileActivity extends AppCompatActivity {
         mAdView = findViewById(R.id.adView);
         loadAdMobBannerAd();
 
-        InfoViewModel infoViewModel = ViewModelProviders.of(this).get(InfoViewModel.class);
+        ViewModelProvider viewModelProvider = new ViewModelProvider(this);
+
+        InfoViewModel infoViewModel = viewModelProvider.get(InfoViewModel.class);
         infoViewModel.getProperties().observe(this, mBinding::setInfoProperties);
 
-        MediaDrmViewModel clearKeyViewModel = ViewModelProviders.of(this).get(ClearKeyViewModel.class);
+        MediaDrmViewModel clearKeyViewModel = viewModelProvider.get(ClearKeyViewModel.class);
         clearKeyViewModel.getProperties().observe(this, mBinding::setClearkeyProperties);
 
-        WidevineViewModel widevineViewModel = ViewModelProviders.of(this).get(WidevineViewModel.class);
+        WidevineViewModel widevineViewModel = viewModelProvider.get(WidevineViewModel.class);
         widevineViewModel.getProperties().observe(this, mBinding::setWidevineProperties);
 
-        MediaDrmViewModel playreadyViewModel = ViewModelProviders.of(this).get(PlayreadyViewModel.class);
+        MediaDrmViewModel playreadyViewModel = viewModelProvider.get(PlayreadyViewModel.class);
         playreadyViewModel.getProperties().observe(this, mBinding::setPlayreadyProperties);
 
     }
