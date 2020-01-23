@@ -11,9 +11,9 @@ android {
         applicationId "com.androidfung.drminfo"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 204
-        versionName "1.1.2.191227"
-        resConfigs "en", "zh", "ja", "fr", "es", "it"
+        versionCode 208
+        versionName "1.1.3.200123"
+//        resConfigs "en", "zh", "ja", "fr", "es", "it"
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
         dataBinding {
@@ -22,7 +22,7 @@ android {
     }
 
     buildTypes {
-        
+
         release {
             minifyEnabled true
             shrinkResources false
@@ -51,7 +51,10 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0'
+    implementation 'androidx.activity:activity:1.1.0'
+    implementation 'androidx.fragment:fragment:1.2.0'
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.core:core:1.1.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -62,10 +65,10 @@ dependencies {
     implementation "androidx.collection:collection:1.1.0"
 //    implementation "androidx.gridlayout:gridlayout:1.0.0"
 
-    implementation 'com.google.firebase:firebase-core:17.2.1'
-    implementation 'com.google.firebase:firebase-analytics:17.2.1'
+    implementation 'com.google.firebase:firebase-core:17.2.2'
+    implementation 'com.google.firebase:firebase-analytics:17.2.2'
     implementation 'com.google.firebase:firebase-ads:18.3.0'
-    implementation 'com.google.firebase:firebase-perf:19.0.4'
+    implementation 'com.google.firebase:firebase-perf:19.0.5'
     implementation 'com.google.firebase:firebase-iid:20.0.2'
 
     implementation 'com.google.android.material:material:1.0.0'
