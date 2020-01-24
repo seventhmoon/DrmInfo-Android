@@ -4,10 +4,14 @@
 
     <data>
 
-        <import type="android.view.View" />
+        <import
+            type="android.view.View" />
 
-        <import type="android.content.res.Configuration" />
-        <import type="android.os.Build" />
+        <import
+            type="android.content.res.Configuration" />
+
+        <import
+            type="android.os.Build" />
 
         <variable
             name="infoProperties"

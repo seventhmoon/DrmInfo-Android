@@ -5,14 +5,19 @@
 
     <data>
 
-        <import type="android.view.View" />
+        <import
+            type="android.view.View" />
 
-        <import type="android.text.TextUtils" />
+        <import
+            type="android.text.TextUtils" />
 
         <variable
             name="properties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
-        <variable name="handler" type="com.androidfung.drminfo.ui.mobile.MyHandlers"/>
+
+        <variable
+            name="handler"
+            type="com.androidfung.drminfo.ui.mobile.MyHandlers"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

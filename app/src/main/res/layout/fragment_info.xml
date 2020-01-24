@@ -1,8 +1,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:bind="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -13,7 +12,9 @@
             name="infoProperties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
 
-        <variable name="handler" type="com.androidfung.drminfo.ui.mobile.MyHandlers"/>
+        <variable
+            name="handler"
+            type="com.androidfung.drminfo.ui.mobile.MyHandlers"/>
 
     </data>
 

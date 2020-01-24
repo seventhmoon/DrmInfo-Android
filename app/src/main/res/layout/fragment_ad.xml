@@ -21,7 +21,8 @@
     app:cardUseCompatPadding="true"
     app:layout_flexGrow="1">
 
-    <include layout="@layout/adview_bannerad" />
+    <include
+        layout="@layout/adview_bannerad" />
 
 </com.google.android.material.card.MaterialCardView>
 
