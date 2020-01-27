@@ -9,6 +9,12 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Keep;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.androidfung.drminfo.databinding.ActivityMobileBinding;
 import com.androidfung.drminfo.ui.mobile.ClearKeyViewModel;
 import com.androidfung.drminfo.ui.mobile.InfoViewModel;
@@ -21,12 +27,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
-import androidx.annotation.Keep;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProvider;
 
 @Keep
 public class MobileActivity extends AppCompatActivity {
