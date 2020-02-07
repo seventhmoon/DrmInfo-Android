@@ -6,6 +6,8 @@
     tools:context=".MobileActivity">
 
     <data>
+        <import type="android.view.View" />
+        <import type="android.os.Build" />
 
         <variable
             name="infoProperties"
@@ -33,6 +35,229 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:ignore="PrivateResource">
+
+<!--        <androidx.gridlayout.widget.GridLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:columnCount="@integer/col_count"-->
+<!--            app:orientation="vertical"-->
+<!--            android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+<!--            android:layout_marginTop="@dimen/activity_vertical_margin"-->
+<!--            android:layout_marginEnd="@dimen/activity_horizontal_margin"-->
+<!--            android:layout_marginBottom="@dimen/activity_vertical_margin"-->
+<!--            android:descendantFocusability="blocksDescendants">-->
+
+<!--            &lt;!&ndash; Info &ndash;&gt;-->
+<!--            <com.google.android.material.card.MaterialCardView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:layout_gravity="center"-->
+<!--                android:layout_marginStart="@dimen/card_horizontal_margin"-->
+<!--                android:layout_marginTop="@dimen/card_vertical_margin"-->
+<!--                android:layout_marginEnd="@dimen/card_horizontal_margin"-->
+<!--                android:layout_marginBottom="@dimen/card_vertical_margin"-->
+<!--                android:minWidth="@dimen/box_min_width"-->
+<!--                android:minHeight="@dimen/box_min_height"-->
+<!--                app:cardCornerRadius="@dimen/card_corner_radius"-->
+<!--                app:cardUseCompatPadding="true"-->
+<!--                app:contentPadding="@dimen/card_padding"-->
+<!--                app:layout_flexGrow="1"-->
+<!--                tools:context="com.androidfung.drminfo.MobileActivity">-->
+
+<!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content">-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/tv_headline"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:ellipsize="middle"-->
+<!--                        android:fontFamily="@font/open_sans"-->
+<!--                        android:singleLine="true"-->
+<!--                        android:text='@{Build.MANUFACTURER + " " + Build.MODEL}'-->
+<!--                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent"-->
+<!--                        tools:text="Google Pixel 3 XXXXXXXXXXXXXXXXL" />-->
+
+<!--                    <include-->
+<!--                        layout="@layout/viewgroup_info"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        app:layout_constrainedWidth="true"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/tv_headline"-->
+<!--                        bind:infoProperties="@{infoProperties}"-->
+<!--                        bind:handler="@{handler}"/>-->
+
+<!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--            </com.google.android.material.card.MaterialCardView>-->
+
+<!--            &lt;!&ndash; ClearKey &ndash;&gt;-->
+<!--            <com.google.android.material.card.MaterialCardView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:layout_gravity="center"-->
+<!--                android:layout_marginStart="@dimen/card_horizontal_margin"-->
+<!--                android:layout_marginTop="@dimen/card_vertical_margin"-->
+<!--                android:layout_marginEnd="@dimen/card_horizontal_margin"-->
+<!--                android:layout_marginBottom="@dimen/card_vertical_margin"-->
+<!--                android:minWidth="@dimen/box_min_width"-->
+<!--                android:minHeight="@dimen/box_min_height"-->
+<!--                android:visibility="@{(clearkeyProperties == null  || clearkeyProperties.isEmpty()) ? View.GONE : View.VISIBLE}"-->
+<!--                app:cardCornerRadius="@dimen/card_corner_radius"-->
+<!--                app:cardUseCompatPadding="true"-->
+<!--                app:contentPadding="@dimen/card_padding"-->
+<!--                app:layout_flexGrow="1">-->
+
+
+<!--                <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical">-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="@font/open_sans"-->
+<!--                        android:text="@{clearkeyProperties[(@string/mediadrm_string_property_key_description)]}"-->
+<!--                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />-->
+
+<!--                    <include-->
+<!--                        layout="@layout/viewgroup_mediadrm"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        bind:properties="@{clearkeyProperties}"-->
+<!--                        bind:handler="@{handler}"/>-->
+
+<!--                </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+
+<!--            </com.google.android.material.card.MaterialCardView>-->
+
+<!--            &lt;!&ndash; Widevine &ndash;&gt;-->
+<!--            <com.google.android.material.card.MaterialCardView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:layout_gravity="center"-->
+<!--                android:layout_marginStart="@dimen/card_horizontal_margin"-->
+<!--                android:layout_marginTop="@dimen/card_vertical_margin"-->
+<!--                android:layout_marginEnd="@dimen/card_horizontal_margin"-->
+<!--                android:layout_marginBottom="@dimen/card_vertical_margin"-->
+<!--                android:minWidth="@dimen/box_min_width"-->
+<!--                android:minHeight="@dimen/box_min_height"-->
+<!--                android:visibility="@{widevineProperties.isEmpty() ? View.GONE : View.VISIBLE}"-->
+<!--                app:cardCornerRadius="@dimen/card_corner_radius"-->
+<!--                app:cardUseCompatPadding="true"-->
+<!--                app:contentPadding="@dimen/card_padding"-->
+<!--                app:layout_flexGrow="1"-->
+<!--                tools:context=".MobileActivity">-->
+
+
+<!--                <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical">-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:ellipsize="middle"-->
+<!--                        android:fontFamily="@font/open_sans"-->
+<!--                        android:singleLine="true"-->
+<!--                        android:text="@{widevineProperties[(@string/mediadrm_string_property_key_description)]}"-->
+<!--                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"-->
+<!--                        tools:text="Media DRM" />-->
+
+<!--                    <include-->
+<!--                        layout="@layout/viewgroup_mediadrm"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        bind:properties="@{widevineProperties}"-->
+<!--                        bind:handler="@{handler}"/>-->
+
+<!--                    <include-->
+<!--                        layout="@layout/viewgroup_widevinedrm"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        bind:properties="@{widevineProperties}"-->
+<!--                        bind:handler="@{handler}"/>-->
+
+<!--                </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+<!--            </com.google.android.material.card.MaterialCardView>-->
+
+<!--            &lt;!&ndash; Playready &ndash;&gt;-->
+<!--            <com.google.android.material.card.MaterialCardView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:layout_gravity="center"-->
+<!--                android:layout_marginStart="@dimen/card_horizontal_margin"-->
+<!--                android:layout_marginTop="@dimen/card_vertical_margin"-->
+<!--                android:layout_marginEnd="@dimen/card_horizontal_margin"-->
+<!--                android:layout_marginBottom="@dimen/card_vertical_margin"-->
+<!--                android:minWidth="@dimen/box_min_width"-->
+<!--                android:minHeight="@dimen/box_min_height"-->
+<!--                android:visibility="@{(playreadyProperties == null  || clearkeyProperties.isEmpty()) ? View.GONE : View.VISIBLE}"-->
+<!--                app:cardCornerRadius="@dimen/card_corner_radius"-->
+<!--                app:cardUseCompatPadding="true"-->
+<!--                app:contentPadding="@dimen/card_padding"-->
+<!--                app:layout_flexGrow="1">-->
+
+
+<!--                <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical">-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="@font/open_sans"-->
+<!--                        android:text="@{playreadyProperties[(@string/mediadrm_string_property_key_description)]}"-->
+<!--                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />-->
+
+<!--                    <include-->
+<!--                        layout="@layout/viewgroup_mediadrm"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        bind:properties="@{playreadyProperties}"-->
+<!--                        bind:handler="@{handler}"/>-->
+
+<!--                </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+
+<!--            </com.google.android.material.card.MaterialCardView>-->
+
+<!--            &lt;!&ndash; Ad &ndash;&gt;-->
+<!--            <com.google.android.material.card.MaterialCardView-->
+<!--                android:id="@+id/container_ad"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_centerInParent="true"-->
+<!--                app:layout_gravity="center"-->
+<!--                android:layout_marginStart="@dimen/card_horizontal_margin"-->
+<!--                android:layout_marginTop="@dimen/card_vertical_margin"-->
+<!--                android:layout_marginEnd="@dimen/card_horizontal_margin"-->
+<!--                android:layout_marginBottom="@dimen/card_vertical_margin"-->
+<!--                android:minWidth="@dimen/box_min_width"-->
+<!--                android:minHeight="@dimen/box_min_height"-->
+<!--                android:visibility="invisible"-->
+<!--                app:cardCornerRadius="@dimen/card_corner_radius"-->
+<!--                app:cardUseCompatPadding="true"-->
+<!--                app:layout_flexGrow="1">-->
+
+<!--                <include-->
+<!--                    layout="@layout/adview_bannerad" />-->
+
+<!--            </com.google.android.material.card.MaterialCardView>-->
+
+<!--        </androidx.gridlayout.widget.GridLayout>-->
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
@@ -65,7 +290,6 @@
                 layout="@layout/fragment_mediadrm"
                 bind:handler="@{handler}"
                 bind:properties="@{playreadyProperties}" />
-
 
             <include
                 layout="@layout/fragment_ad" />
