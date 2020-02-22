@@ -8,7 +8,10 @@
     android:layout_height="wrap_content"
     android:layout_centerInParent="true"
     android:layout_gravity="center_vertical|center_horizontal"
-    android:layout_margin="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginStart="2dp"
+    android:layout_marginEnd="2dp"
     android:visibility="gone"
     app:adSize="@string/adsize"
     app:adUnitId="@string/ad_unit_id" />
