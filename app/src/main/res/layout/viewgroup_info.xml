@@ -293,7 +293,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_label_widecg"
             app:layout_constraintTop_toBottomOf="@+id/tv_value_abis"
-            tools:text="True" />
+            tools:text="@string/text_supported" />
 
 
         <TextView
@@ -327,7 +327,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_value_widecg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="True" />
+            tools:text="@string/text_supported" />
 
 <!--        <TextView-->
 <!--            android:id="@+id/tv_label_hdr_type"-->

@@ -5,6 +5,8 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import java.util.Arrays;
+
 public class Util {
 
     @RequiresApi(api = Build.VERSION_CODES.P)
@@ -37,5 +39,13 @@ public class Util {
             default:
                 return null;
         }
+    }
+
+    public static String formatStringArray(String[] input){
+
+        String output = Arrays.toString(input).replace("[","").replace("]","");
+
+        return output;
+
     }
 }

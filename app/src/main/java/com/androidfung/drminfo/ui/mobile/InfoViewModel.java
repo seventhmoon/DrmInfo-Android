@@ -8,6 +8,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.androidfung.drminfo.Util;
+
 import java.util.Arrays;
 
 import static android.view.Display.HdrCapabilities.HDR_TYPE_DOLBY_VISION;
@@ -33,9 +35,9 @@ public class InfoViewModel extends AndroidViewModel {
 
             map.put("sdkLevel", Build.VERSION.SDK_INT);
             if (Build.VERSION.SDK_INT >= 21) {
-                String[] supportedAbis = Build.SUPPORTED_ABIS;
-                String abis = Arrays.toString(supportedAbis).replace("[","").replace("]","");
-                map.put("abis", abis);
+//                String[] supportedAbis = Build.SUPPORTED_ABIS;
+//                String abis = Arrays.toString(supportedAbis).replace("[","").replace("]","");
+                map.put("abis", Util.formatStringArray(Build.SUPPORTED_ABIS));
             }
 
 //            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
