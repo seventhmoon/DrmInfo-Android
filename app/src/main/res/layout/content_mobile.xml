@@ -6,6 +6,8 @@
     tools:context=".MobileActivity">
 
     <data>
+        <import type="android.view.View" />
+        <import type="android.os.Build" />
 
         <variable
             name="infoProperties"
@@ -65,7 +67,6 @@
                 layout="@layout/fragment_mediadrm"
                 bind:handler="@{handler}"
                 bind:properties="@{playreadyProperties}" />
-
 
             <include
                 layout="@layout/fragment_ad" />
