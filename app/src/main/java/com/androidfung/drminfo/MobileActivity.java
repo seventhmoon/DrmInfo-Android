@@ -1,7 +1,5 @@
 package com.androidfung.drminfo;
 
-//import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;

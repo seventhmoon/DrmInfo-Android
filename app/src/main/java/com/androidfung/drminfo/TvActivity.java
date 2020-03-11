@@ -24,7 +24,6 @@ public class TvActivity extends FragmentActivity {
         }
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
     }
 
 }
