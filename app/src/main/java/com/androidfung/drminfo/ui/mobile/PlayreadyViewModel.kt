@@ -1,6 +1,7 @@
 package com.androidfung.drminfo.ui.mobile
 
 import android.app.Application
+import android.media.MediaDrm
 import com.androidfung.drminfo.Constants
 
 class PlayreadyViewModel(application: Application?) : MediaDrmViewModel(application) {
@@ -11,5 +12,6 @@ class PlayreadyViewModel(application: Application?) : MediaDrmViewModel(applicat
     init {
         //        mMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.PLAYREADY);
         mUUID = Constants.PLAYREADY_UUID
+//        mMediaDrm = MediaDrm(mUUID);
     }
 }

@@ -9,7 +9,6 @@ import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
@@ -26,6 +25,7 @@ class MobileActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivityMobileBinding
     private lateinit var mBannerAdHolder: ViewGroup
     private lateinit var mAdView: AdView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

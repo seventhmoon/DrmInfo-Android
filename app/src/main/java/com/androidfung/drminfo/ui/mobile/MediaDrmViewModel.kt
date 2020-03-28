@@ -10,13 +10,15 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.androidfung.drminfo.R
+import com.androidfung.drminfo.Util
 import com.androidfung.drminfo.Util.toHdcpLevelString
 import java.util.*
 
 abstract class MediaDrmViewModel protected constructor(application: Application?) : AndroidViewModel(application!!) {
     protected var mProperties: MutableLiveData<ObservableArrayMap<String, Any?>>? = null
-    private lateinit var mMediaDrm: MediaDrm
+    private var mMediaDrm: MediaDrm? = null
     protected lateinit var mUUID: UUID
+
     val properties: LiveData<ObservableArrayMap<String, Any?>>
         get() {
             if (mProperties == null) {
@@ -24,7 +26,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
                 if (MediaDrm.isCryptoSchemeSupported(mUUID)) {
                     try {
                         mMediaDrm = MediaDrm(mUUID)
-                        prepareProperties(mMediaDrm)
+                        prepareProperties(mMediaDrm!!)
                     } catch (e: UnsupportedSchemeException) {
                         e.printStackTrace()
                     }
@@ -33,7 +35,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
             return mProperties!!
         }
 
-    protected open fun prepareProperties(mediaDrm: MediaDrm) {
+    protected open fun prepareProperties(mediaDrm: MediaDrm?) {
         val map = ObservableArrayMap<String, Any?>()
         if (mediaDrm != null) {
             try {
@@ -45,8 +47,8 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
                 val mediaDrmKeys2 = getApplication<Application>().resources.getStringArray(R.array.mediadrm_bytearray_property_keys)
                 for (mediaDrmKey in mediaDrmKeys2) {
                     val value = mediaDrm.getPropertyByteArray(mediaDrmKey)
-                    val encodedString = Base64.encodeToString(value, Base64.DEFAULT).toUpperCase().trim { it <= ' ' }
-                    map[mediaDrmKey] = encodedString
+//                    val encodedString = Base64.encodeToString(value, Base64.DEFAULT).toUpperCase().trim { it <= ' ' }
+                    map[mediaDrmKey] = Util.formatByteArray(value)
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     val maxHdcpLevel = mediaDrm.maxHdcpLevel
@@ -66,13 +68,13 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
     }
 
     override fun onCleared() {
-//        if (mMediaDrm != null) {
+        if (mMediaDrm != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                mMediaDrm.close()
+                mMediaDrm?.close()
             } else {
-                mMediaDrm.release()
+                mMediaDrm?.release()
             }
-//        }
+        }
     }
 
     companion object {
