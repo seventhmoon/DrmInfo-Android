@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.androidfung.drminfo.Constants;
 
+@Deprecated
 public class MarlinViewModel extends MediaDrmViewModel {
 
     private final static String TAG = MarlinViewModel.class.getSimpleName();

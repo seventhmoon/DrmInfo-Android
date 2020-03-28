@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.androidfung.drminfo.Constants;
 
+@Deprecated
 public class PrimetimeViewModel extends MediaDrmViewModel {
 
     private final static String TAG = PrimetimeViewModel.class.getSimpleName();

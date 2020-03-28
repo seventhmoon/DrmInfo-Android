@@ -30,6 +30,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+@Deprecated
 public class NativeAdFragment extends Fragment {
     private static final String TAG = NativeAdFragment.class.getSimpleName();
 
