@@ -14,7 +14,7 @@ class WidevineViewModel(application: Application?) : MediaDrmViewModel(applicati
                 val wvKeys = getApplication<Application>().resources.getStringArray(R.array.widevine_string_property_keys)
                 if (map != null) {
                     for (wvKey in wvKeys) {
-                        val value = mediaDrm?.getPropertyString(wvKey)
+                        val value = mediaDrm.getPropertyString(wvKey)
                         if (map[wvKey] == null) {
                             map[wvKey] = value
                         }

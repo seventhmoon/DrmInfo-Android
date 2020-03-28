@@ -9,7 +9,6 @@ class ClearKeyViewModel(application: Application?) : MediaDrmViewModel(applicati
     }
 
     init {
-        //        mMediaDrm = MediaDrmFactory.getMediaDrm(MediaDrmFactory.CLEARKEY);
         mUUID = Constants.CLEARKEY_UUID
     }
 }
