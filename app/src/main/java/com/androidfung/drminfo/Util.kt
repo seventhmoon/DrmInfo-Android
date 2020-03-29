@@ -9,8 +9,7 @@ import java.util.*
 
 object Util {
     @JvmStatic
-    @RequiresApi(api = Build.VERSION_CODES.P)
-    fun toHdcpLevelString(@HdcpLevel maxHdcpLevel: Int): String? {
+    fun toHdcpLevelString(maxHdcpLevel: Int): String? {
         return when (maxHdcpLevel) {
             MediaDrm.HDCP_LEVEL_UNKNOWN -> "Unknown"
             MediaDrm.HDCP_NONE -> "None"

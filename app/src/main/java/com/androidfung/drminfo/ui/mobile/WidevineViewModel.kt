@@ -8,6 +8,7 @@ import com.androidfung.drminfo.R
 class WidevineViewModel(application: Application?) : MediaDrmViewModel(application) {
     override fun prepareProperties(mediaDrm: MediaDrm?) {
         super.prepareProperties(mediaDrm)
+
         val map = mProperties!!.value
         if (mediaDrm != null) {
             try {

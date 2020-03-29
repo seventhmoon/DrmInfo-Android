@@ -23,8 +23,8 @@ import com.google.firebase.analytics.FirebaseAnalytics
 class MobileActivity : AppCompatActivity() {
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics
     private lateinit var mBinding: ActivityMobileBinding
-    private lateinit var mBannerAdHolder: ViewGroup
-    private lateinit var mAdView: AdView
+    private var mBannerAdHolder: ViewGroup? = null
+    private var mAdView: AdView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,20 +73,20 @@ class MobileActivity : AppCompatActivity() {
     }
 
     private fun loadAdMobBannerAd() {
-//        if (mAdView != null) {
-            mAdView.adListener = object : AdListener() {
+        if (mAdView != null) {
+            mAdView!!.adListener = object : AdListener() {
                 override fun onAdLoaded() {
                     // Code to be executed when an ad finishes loading.
                     Log.i("Ads", "onAdLoaded")
-                    mBannerAdHolder.visibility = View.VISIBLE
-                    mAdView.visibility = View.VISIBLE
+                    mBannerAdHolder!!.visibility = View.VISIBLE
+                    mAdView!!.visibility = View.VISIBLE
                 }
 
                 override fun onAdFailedToLoad(errorCode: Int) {
                     // Code to be executed when an ad request fails.
                     Log.i("Ads", "onAdFailedToLoad")
-                    mBannerAdHolder.visibility = View.GONE
-                    mAdView.visibility = View.GONE
+                    mBannerAdHolder!!.visibility = View.GONE
+                    mAdView!!.visibility = View.GONE
                 }
 
                 override fun onAdOpened() {
@@ -106,16 +106,9 @@ class MobileActivity : AppCompatActivity() {
                     Log.i("Ads", "onAdClosed")
                 }
             }
-            mAdView.loadAd(AdRequest.Builder().build())
-//        }
-    } //    public void displayLicenseInformation(MenuItem item) {
-
-    //        try {
-    //            startActivity(new Intent(this, OssLicensesMenuActivity.class));
-    //        }catch (NullPointerException e){
-    //            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
-    //        }
-    //    }
+            mAdView!!.loadAd(AdRequest.Builder().build())
+        }
+    }
     companion object {
         private val TAG = MobileActivity::class.java.simpleName
     }
