@@ -11,7 +11,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.Util
-import com.androidfung.drminfo.Util.toHdcpLevelString
 import java.util.*
 
 abstract class MediaDrmViewModel protected constructor(application: Application?) : AndroidViewModel(application!!) {
@@ -19,9 +18,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
     protected lateinit var mUUID: UUID
 
     protected val properties: MutableLiveData<ObservableArrayMap<String, Any>> by lazy {
-        MutableLiveData<ObservableArrayMap<String, Any>>().also {
-            prepareProperties(it)
-        }
+        MutableLiveData<ObservableArrayMap<String, Any>>().also(::prepareProperties)
     }
 
     protected open fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm) : ArrayMap<String, Any>{
@@ -42,8 +39,8 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 with(mediaDrm) {
                     map[getApplication<Application>().getString(com.androidfung.drminfo.R.string.mediadrm_key_maxNumberOfSessions)] = maxSessionCount.toString()
-                    map[getApplication<Application>().getString(com.androidfung.drminfo.R.string.mediadrm_key_maxHdcpLevel)] = com.androidfung.drminfo.Util.toHdcpLevelString(maxHdcpLevel)
-                    map[getApplication<Application>().getString(com.androidfung.drminfo.R.string.mediadrm_key_hdcpLevel)] = com.androidfung.drminfo.Util.toHdcpLevelString(connectedHdcpLevel)
+                    map[getApplication<Application>().getString(com.androidfung.drminfo.R.string.mediadrm_key_maxHdcpLevel)] = Util.toHdcpLevelString(maxHdcpLevel)
+                    map[getApplication<Application>().getString(com.androidfung.drminfo.R.string.mediadrm_key_hdcpLevel)] = Util.toHdcpLevelString(connectedHdcpLevel)
                 }
             }
         } catch (ignored: IllegalArgumentException) {
@@ -53,7 +50,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
         return map
     }
 
-    protected open fun prepareProperties(it : MutableLiveData<ObservableArrayMap<String, Any>>) {
+    private fun prepareProperties(it : MutableLiveData<ObservableArrayMap<String, Any>>) {
         val map = ObservableArrayMap<String, Any>()
 
 
