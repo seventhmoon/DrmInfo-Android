@@ -9,7 +9,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 
 @Keep
 class TvActivity : FragmentActivity() {
-    private var mFirebaseAnalytics: FirebaseAnalytics? = null
+    private lateinit var mFirebaseAnalytics: FirebaseAnalytics
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (null == savedInstanceState) {

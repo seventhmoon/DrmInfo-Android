@@ -45,7 +45,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
         return subActions
     }
 
-    private fun getWidevineSubActions(widevineDrm: MediaDrm): List<GuidedAction> {
+    private fun getWidevineSubActions(widevineDrm: MediaDrm): MutableList<GuidedAction> {
         val subActions = getMediaDrmSubActions(widevineDrm)
         val wvStringKeys = resources.getStringArray(R.array.widevine_string_property_keys)
         val wvStringNames = resources.getStringArray(R.array.widevine_string_property_names)

@@ -38,9 +38,9 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 with(mediaDrm) {
-                    map[getApplication<Application>().getString(com.androidfung.drminfo.R.string.mediadrm_key_maxNumberOfSessions)] = maxSessionCount.toString()
-                    map[getApplication<Application>().getString(com.androidfung.drminfo.R.string.mediadrm_key_maxHdcpLevel)] = Util.toHdcpLevelString(maxHdcpLevel)
-                    map[getApplication<Application>().getString(com.androidfung.drminfo.R.string.mediadrm_key_hdcpLevel)] = Util.toHdcpLevelString(connectedHdcpLevel)
+                    map[getApplication<Application>().getString(R.string.mediadrm_key_maxNumberOfSessions)] = maxSessionCount.toString()
+                    map[getApplication<Application>().getString(R.string.mediadrm_key_maxHdcpLevel)] = Util.toHdcpLevelString(maxHdcpLevel)
+                    map[getApplication<Application>().getString(R.string.mediadrm_key_hdcpLevel)] = Util.toHdcpLevelString(connectedHdcpLevel)
                 }
             }
         } catch (ignored: IllegalArgumentException) {
@@ -73,6 +73,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
     }
 
 
+    @Suppress("DEPRECATION")
     override fun onCleared() {
         if (mediaDrm != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -84,6 +85,6 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
     }
 
     companion object {
-        private val TAG = MediaDrmViewModel::class.java.simpleName
+        private val TAG: String = MediaDrmViewModel::class.java.simpleName
     }
 }

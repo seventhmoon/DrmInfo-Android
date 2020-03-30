@@ -3,13 +3,9 @@ package com.androidfung.drminfo.ui.mobile
 import android.app.Application
 import android.media.MediaDrm
 import android.media.UnsupportedSchemeException
-import android.os.Build
 import android.util.ArrayMap
-import androidx.databinding.ObservableArrayMap
-import androidx.lifecycle.MutableLiveData
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
-import com.androidfung.drminfo.Util
 
 class WidevineViewModel(application: Application?) : MediaDrmViewModel(application) {
 

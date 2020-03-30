@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -44,18 +45,16 @@ class MobileActivity : AppCompatActivity() {
 
         loadAdMobBannerAd()
 
-        val viewModelProvider = ViewModelProvider(this)
-
-        val infoViewModel = viewModelProvider.get(InfoViewModel::class.java)
+        val infoViewModel: InfoViewModel by viewModels()
         infoViewModel.getProperties().observe(this, Observer (mBinding::setInfoProperties))
 
-        val clearKeyViewModel: MediaDrmViewModel = viewModelProvider.get(ClearKeyViewModel::class.java)
+        val clearKeyViewModel: ClearKeyViewModel by viewModels()
         clearKeyViewModel.getProperties().observe(this, Observer(mBinding::setClearkeyProperties))
 
-        val widevineViewModel = viewModelProvider.get(WidevineViewModel::class.java)
+        val widevineViewModel: WidevineViewModel by viewModels()
         widevineViewModel.getProperties().observe(this, Observer(mBinding::setWidevineProperties))
 
-        val playreadyViewModel: MediaDrmViewModel = viewModelProvider.get(PlayreadyViewModel::class.java)
+        val playreadyViewModel: PlayreadyViewModel by viewModels()
         playreadyViewModel.getProperties().observe(this, Observer(mBinding::setPlayreadyProperties))
     }
 
