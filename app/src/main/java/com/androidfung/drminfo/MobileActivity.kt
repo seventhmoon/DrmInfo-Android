@@ -47,23 +47,16 @@ class MobileActivity : AppCompatActivity() {
         val viewModelProvider = ViewModelProvider(this)
 
         val infoViewModel = viewModelProvider.get(InfoViewModel::class.java)
-        infoViewModel.properties.observe(this, Observer (mBinding::setInfoProperties))
-//        {mBinding::setInfoProperties infoProperties: ObservableArrayMap<String, Any> -> mBinding.infoProperties = infoProperties })
-//        infoViewModel.properties.observe(this, Observer{infoProperties -> mBinding.infoProperties(infoProperties)})
+        infoViewModel.getProperties().observe(this, Observer (mBinding::setInfoProperties))
 
         val clearKeyViewModel: MediaDrmViewModel = viewModelProvider.get(ClearKeyViewModel::class.java)
         clearKeyViewModel.properties.observe(this, Observer(mBinding::setClearkeyProperties))
-//        clearKeyViewModel.properties.observe(this, Observer { clearkeyProperties -> mBinding.setClearkeyProperties(clearkeyProperties) })
-
 
         val widevineViewModel = viewModelProvider.get(WidevineViewModel::class.java)
         widevineViewModel.properties.observe(this, Observer(mBinding::setWidevineProperties))
-//        widevineViewModel.properties.observe(this, Observer { widevineProperties -> mBinding.setWidevineProperties(widevineProperties) })
 
         val playreadyViewModel: MediaDrmViewModel = viewModelProvider.get(PlayreadyViewModel::class.java)
         playreadyViewModel.properties.observe(this, Observer(mBinding::setPlayreadyProperties))
-//        playreadyViewModel.properties.observe(this, Observer { playreadyProperties -> mBinding.setPlayreadyProperties(playreadyProperties) })
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -109,6 +102,7 @@ class MobileActivity : AppCompatActivity() {
             mAdView!!.loadAd(AdRequest.Builder().build())
         }
     }
+
     companion object {
         private val TAG = MobileActivity::class.java.simpleName
     }

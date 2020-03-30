@@ -4,7 +4,6 @@ import android.app.Application
 import android.media.MediaDrm
 import android.media.UnsupportedSchemeException
 import android.os.Build
-import android.util.Base64
 import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -44,26 +43,25 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
                     val value = mediaDrm.getPropertyString(mediaDrmKey)
                     map[mediaDrmKey] = value
                 }
+
                 val mediaDrmKeys2 = getApplication<Application>().resources.getStringArray(R.array.mediadrm_bytearray_property_keys)
                 for (mediaDrmKey in mediaDrmKeys2) {
                     val value = mediaDrm.getPropertyByteArray(mediaDrmKey)
-//                    val encodedString = Base64.encodeToString(value, Base64.DEFAULT).toUpperCase().trim { it <= ' ' }
                     map[mediaDrmKey] = Util.formatByteArray(value)
                 }
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    val maxHdcpLevel = mediaDrm.maxHdcpLevel
-                    val maxSessionCount = mediaDrm.maxSessionCount
-                    val connectedHdcpLevel = mediaDrm.connectedHdcpLevel
-                    //                    int openSessionCount = mediaDrm.getOpenSessionCount();
-                    map[getApplication<Application>().getString(R.string.mediadrm_key_maxNumberOfSessions)] = maxSessionCount.toString()
-                    map[getApplication<Application>().getString(R.string.mediadrm_key_maxHdcpLevel)] = toHdcpLevelString(maxHdcpLevel)
-                    map[getApplication<Application>().getString(R.string.mediadrm_key_hdcpLevel)] = toHdcpLevelString(connectedHdcpLevel)
+                    with (mediaDrm) {
+                        map[getApplication<Application>().getString(R.string.mediadrm_key_maxNumberOfSessions)] = maxSessionCount.toString()
+                        map[getApplication<Application>().getString(R.string.mediadrm_key_maxHdcpLevel)] = toHdcpLevelString(maxHdcpLevel)
+                        map[getApplication<Application>().getString(R.string.mediadrm_key_hdcpLevel)] = toHdcpLevelString(connectedHdcpLevel)
+                    }
+
                 }
             } catch (ignored: IllegalArgumentException) {
             } catch (ignored: IllegalStateException) {
             }
         }
-        //        Log.d(TAG, map.toString());
         mProperties!!.value = map
     }
 

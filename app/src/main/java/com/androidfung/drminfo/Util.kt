@@ -1,10 +1,7 @@
 package com.androidfung.drminfo
 
 import android.media.MediaDrm
-import android.media.MediaDrm.HdcpLevel
-import android.os.Build
 import android.util.Base64
-import androidx.annotation.RequiresApi
 import java.util.*
 
 object Util {
@@ -30,7 +27,7 @@ object Util {
 
     @JvmStatic
     fun formatByteArray(input: ByteArray): String {
-        return Base64.encodeToString(input, Base64.DEFAULT).toUpperCase().trim()
+        return Base64.encodeToString(input, Base64.DEFAULT).toUpperCase(Locale.ROOT).trim()
     }
 
 }

@@ -13,7 +13,7 @@ class TvActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (null == savedInstanceState) {
-            GuidedStepSupportFragment.addAsRoot(this, InfoStepFragment(), R.id.content)
+            GuidedStepSupportFragment.addAsRoot(this, InfoStepFragment(), android.R.id.content)
         }
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)

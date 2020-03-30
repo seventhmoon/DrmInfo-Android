@@ -12,10 +12,9 @@ import androidx.leanback.widget.GuidanceStylist.Guidance
 import androidx.leanback.widget.GuidedAction
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
-import java.util.*
 
 class InfoStepFragment : GuidedStepSupportFragment() {
-    override fun onCreateGuidance(savedInstanceState: Bundle): Guidance {
+    override fun onCreateGuidance(savedInstanceState: Bundle?): Guidance {
         val title = getString(R.string.app_name)
         val description = getString(R.string.text_on_android_tv)
         val icon = ResourcesCompat.getDrawable(resources, R.mipmap.ic_launcher_round, null)
@@ -69,7 +68,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
         return subActions
     }
 
-    override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle) {
+    override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
 
         //info section here
         val infoTitles = intArrayOf(R.string.text_brand, R.string.text_product, R.string.text_model, R.string.text_sdk_level, R.string.text_hdr, R.string.text_wide_color)
