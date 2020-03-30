@@ -9,17 +9,18 @@ import com.androidfung.drminfo.Util.formatStringArray
 
 class InfoViewModel : ViewModel() {
      private val properties: MutableLiveData<ObservableArrayMap<String, Any>> by lazy {
+        MutableLiveData<ObservableArrayMap<String, Any>>().also(::prepareProperties)
+    }
 
-        MutableLiveData<ObservableArrayMap<String, Any>>().also {
-            val map = ObservableArrayMap<String, Any>()
+    private fun prepareProperties(it : MutableLiveData<ObservableArrayMap<String, Any>>){
+        val map = ObservableArrayMap<String, Any>()
 
-            map["sdkLevel"] = Build.VERSION.SDK_INT
-            if (Build.VERSION.SDK_INT >= 21) {
-                map["abis"] = formatStringArray(Build.SUPPORTED_ABIS)
-            }
-
-            it.value = map
+        map["sdkLevel"] = Build.VERSION.SDK_INT
+        if (Build.VERSION.SDK_INT >= 21) {
+            map["abis"] = formatStringArray(Build.SUPPORTED_ABIS)
         }
+
+        it.value = map
     }
 
     fun getProperties(): LiveData<ObservableArrayMap<String, Any>> {
