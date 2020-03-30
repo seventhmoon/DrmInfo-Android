@@ -2,30 +2,36 @@ package com.androidfung.drminfo.ui.mobile
 
 import android.app.Application
 import android.media.MediaDrm
+import android.media.UnsupportedSchemeException
+import android.os.Build
+import android.util.ArrayMap
+import androidx.databinding.ObservableArrayMap
+import androidx.lifecycle.MutableLiveData
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
+import com.androidfung.drminfo.Util
 
 class WidevineViewModel(application: Application?) : MediaDrmViewModel(application) {
-    override fun prepareProperties(mediaDrm: MediaDrm?) {
-        super.prepareProperties(mediaDrm)
 
-        val map = mProperties!!.value
-        if (mediaDrm != null) {
-            try {
-                val wvKeys = getApplication<Application>().resources.getStringArray(R.array.widevine_string_property_keys)
-                if (map != null) {
-                    for (wvKey in wvKeys) {
-                        val value = mediaDrm.getPropertyString(wvKey)
-                        if (map[wvKey] == null) {
-                            map[wvKey] = value
-                        }
-                    }
+    override fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm): ArrayMap<String, Any> {
+        val map = super.obtainPropertiesFromMediaDrm(mediaDrm)
+
+        try {
+            val wvKeys = getApplication<Application>().resources.getStringArray(R.array.widevine_string_property_keys)
+            for (wvKey in wvKeys) {
+                val value = mediaDrm.getPropertyString(wvKey)
+                if (map[wvKey] == null) {
+                    map[wvKey] = value
                 }
-            } catch (ignored: IllegalStateException) {
-            } catch (ignored: IllegalArgumentException) {
             }
+
+        } catch (e: UnsupportedSchemeException) {
+            e.printStackTrace()
+        } catch (ignored: IllegalArgumentException) {
+        } catch (ignored: IllegalStateException) {
         }
-        mProperties!!.value = map
+
+        return map
     }
 
     companion object {

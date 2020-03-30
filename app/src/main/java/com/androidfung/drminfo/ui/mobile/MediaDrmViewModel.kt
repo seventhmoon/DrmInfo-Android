@@ -4,6 +4,7 @@ import android.app.Application
 import android.media.MediaDrm
 import android.media.UnsupportedSchemeException
 import android.os.Build
+import android.util.ArrayMap
 import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -14,63 +15,73 @@ import com.androidfung.drminfo.Util.toHdcpLevelString
 import java.util.*
 
 abstract class MediaDrmViewModel protected constructor(application: Application?) : AndroidViewModel(application!!) {
-    protected var mProperties: MutableLiveData<ObservableArrayMap<String, Any?>>? = null
-    private var mMediaDrm: MediaDrm? = null
+    private var mediaDrm: MediaDrm? = null
     protected lateinit var mUUID: UUID
 
-    val properties: LiveData<ObservableArrayMap<String, Any?>>
-        get() {
-            if (mProperties == null) {
-                mProperties = MutableLiveData()
-                if (MediaDrm.isCryptoSchemeSupported(mUUID)) {
-                    try {
-                        mMediaDrm = MediaDrm(mUUID)
-                        prepareProperties(mMediaDrm!!)
-                    } catch (e: UnsupportedSchemeException) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-            return mProperties!!
+    protected val properties: MutableLiveData<ObservableArrayMap<String, Any>> by lazy {
+        MutableLiveData<ObservableArrayMap<String, Any>>().also {
+            prepareProperties(it)
         }
-
-    protected open fun prepareProperties(mediaDrm: MediaDrm?) {
-        val map = ObservableArrayMap<String, Any?>()
-        if (mediaDrm != null) {
-            try {
-                val mediaDrmKeys = getApplication<Application>().resources.getStringArray(R.array.mediadrm_string_property_keys)
-                for (mediaDrmKey in mediaDrmKeys) {
-                    val value = mediaDrm.getPropertyString(mediaDrmKey)
-                    map[mediaDrmKey] = value
-                }
-
-                val mediaDrmKeys2 = getApplication<Application>().resources.getStringArray(R.array.mediadrm_bytearray_property_keys)
-                for (mediaDrmKey in mediaDrmKeys2) {
-                    val value = mediaDrm.getPropertyByteArray(mediaDrmKey)
-                    map[mediaDrmKey] = Util.formatByteArray(value)
-                }
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    with (mediaDrm) {
-                        map[getApplication<Application>().getString(R.string.mediadrm_key_maxNumberOfSessions)] = maxSessionCount.toString()
-                        map[getApplication<Application>().getString(R.string.mediadrm_key_maxHdcpLevel)] = toHdcpLevelString(maxHdcpLevel)
-                        map[getApplication<Application>().getString(R.string.mediadrm_key_hdcpLevel)] = toHdcpLevelString(connectedHdcpLevel)
-                    }
-
-                }
-            } catch (ignored: IllegalArgumentException) {
-            } catch (ignored: IllegalStateException) {
-            }
-        }
-        mProperties!!.value = map
     }
 
-    override fun onCleared() {
-        if (mMediaDrm != null) {
+    protected open fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm) : ArrayMap<String, Any>{
+        val map = ArrayMap<String, Any>()
+        try {
+            val mediaDrmKeys = getApplication<Application>().resources.getStringArray(R.array.mediadrm_string_property_keys)
+            for (mediaDrmKey in mediaDrmKeys) {
+                val value = mediaDrm.getPropertyString(mediaDrmKey)
+                map[mediaDrmKey] = value
+            }
+
+            val mediaDrmKeys2 = getApplication<Application>().resources.getStringArray(R.array.mediadrm_bytearray_property_keys)
+            for (mediaDrmKey in mediaDrmKeys2) {
+                val value = mediaDrm.getPropertyByteArray(mediaDrmKey)
+                map[mediaDrmKey] = Util.formatByteArray(value)
+            }
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                mMediaDrm?.close()
+                with(mediaDrm) {
+                    map[getApplication<Application>().getString(com.androidfung.drminfo.R.string.mediadrm_key_maxNumberOfSessions)] = maxSessionCount.toString()
+                    map[getApplication<Application>().getString(com.androidfung.drminfo.R.string.mediadrm_key_maxHdcpLevel)] = com.androidfung.drminfo.Util.toHdcpLevelString(maxHdcpLevel)
+                    map[getApplication<Application>().getString(com.androidfung.drminfo.R.string.mediadrm_key_hdcpLevel)] = com.androidfung.drminfo.Util.toHdcpLevelString(connectedHdcpLevel)
+                }
+            }
+        } catch (ignored: IllegalArgumentException) {
+        } catch (ignored: IllegalStateException) {
+        }
+
+        return map
+    }
+
+    protected open fun prepareProperties(it : MutableLiveData<ObservableArrayMap<String, Any>>) {
+        val map = ObservableArrayMap<String, Any>()
+
+
+        if (MediaDrm.isCryptoSchemeSupported(mUUID)) {
+            try {
+                mediaDrm = MediaDrm(mUUID)
+
+                if (mediaDrm != null) {
+                    map.putAll(obtainPropertiesFromMediaDrm(mediaDrm!!))
+                }
+            } catch (e: UnsupportedSchemeException) {
+                e.printStackTrace()
+            }
+        }
+        it.value = map
+    }
+
+    fun getProperties(): LiveData<ObservableArrayMap<String, Any>> {
+        return properties
+    }
+
+
+    override fun onCleared() {
+        if (mediaDrm != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                mediaDrm?.close()
             } else {
-                mMediaDrm?.release()
+                mediaDrm?.release()
             }
         }
     }

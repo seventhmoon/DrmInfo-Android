@@ -50,13 +50,13 @@ class MobileActivity : AppCompatActivity() {
         infoViewModel.getProperties().observe(this, Observer (mBinding::setInfoProperties))
 
         val clearKeyViewModel: MediaDrmViewModel = viewModelProvider.get(ClearKeyViewModel::class.java)
-        clearKeyViewModel.properties.observe(this, Observer(mBinding::setClearkeyProperties))
+        clearKeyViewModel.getProperties().observe(this, Observer(mBinding::setClearkeyProperties))
 
         val widevineViewModel = viewModelProvider.get(WidevineViewModel::class.java)
-        widevineViewModel.properties.observe(this, Observer(mBinding::setWidevineProperties))
+        widevineViewModel.getProperties().observe(this, Observer(mBinding::setWidevineProperties))
 
         val playreadyViewModel: MediaDrmViewModel = viewModelProvider.get(PlayreadyViewModel::class.java)
-        playreadyViewModel.properties.observe(this, Observer(mBinding::setPlayreadyProperties))
+        playreadyViewModel.getProperties().observe(this, Observer(mBinding::setPlayreadyProperties))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
