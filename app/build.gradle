@@ -11,20 +11,21 @@ android {
 
     defaultConfig {
         applicationId "com.androidfung.drminfo"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 29
-        versionCode 222
-        versionName "1.1.3.200330"
+        versionCode 223
+        versionName "1.1.3.200331"
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
+        buildFeatures {
+            viewBinding = false
+        }
         dataBinding {
             //noinspection DataBindingWithoutKapt
             enabled = true
         }
-//        viewBinding{
-//            enabled = true
-//        }
+
     }
 
     buildTypes {
@@ -74,10 +75,10 @@ dependencies {
     implementation "androidx.collection:collection-ktx:1.1.0"
     implementation 'androidx.leanback:leanback:1.0.0'
 
-    implementation 'com.google.firebase:firebase-analytics:17.2.3'
+    implementation 'com.google.firebase:firebase-analytics-ktx:17.3.0'
     implementation 'com.google.firebase:firebase-ads:19.0.1'
     implementation 'com.google.firebase:firebase-perf:19.0.5'
-    implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta02'
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta03'
 
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.google.android:flexbox:1.1.1'
