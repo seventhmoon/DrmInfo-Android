@@ -9,14 +9,16 @@ import com.google.firebase.analytics.FirebaseAnalytics
 
 @Keep
 class TvActivity : FragmentActivity() {
-    private lateinit var mFirebaseAnalytics: FirebaseAnalytics
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         if (null == savedInstanceState) {
             GuidedStepSupportFragment.addAsRoot(this, InfoStepFragment(), android.R.id.content)
         }
         // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
     }
 
     companion object {

@@ -9,13 +9,12 @@ import com.androidfung.drminfo.R
 import com.google.android.material.snackbar.Snackbar
 
 class MyHandlers {
-    private fun copyToClipboard(view: View, label: String, text: String): Boolean {
+    private fun showSnackbar(view: View, label: String, text: String): Boolean {
         val snackbar = Snackbar.make(view, text, Snackbar.LENGTH_LONG).setAction(R.string.label_copy) { v: View ->
-            val clipboard = v.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText(label, text)
-            clipboard.setPrimaryClip(clip)
+            copyToClipboard(v, label, text)
+        }.apply {
+            show()
         }
-        snackbar.show()
         return snackbar.isShownOrQueued
     }
 
@@ -25,7 +24,13 @@ class MyHandlers {
         if (v is TextView) {
             text = v.text.toString()
         }
-        return copyToClipboard(v, label, text)
+        return showSnackbar(v, label, text)
+    }
+
+    private fun copyToClipboard(v : View, label: String, text: String){
+        val clipboard = v.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText(label, text)
+        clipboard.setPrimaryClip(clip)
     }
 
     companion object {

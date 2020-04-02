@@ -6,17 +6,17 @@ import java.util.*
 
 object Util {
     @JvmStatic
-    fun toHdcpLevelString(maxHdcpLevel: Int): String? {
+    fun toHdcpLevelRes(maxHdcpLevel: Int): Int {
         return when (maxHdcpLevel) {
-            MediaDrm.HDCP_LEVEL_UNKNOWN -> "Unknown"
-            MediaDrm.HDCP_NONE -> "None"
-            MediaDrm.HDCP_NO_DIGITAL_OUTPUT -> "No Digital Output"
-            MediaDrm.HDCP_V1 -> "1"
-            MediaDrm.HDCP_V2_1 -> "2.1"
-            MediaDrm.HDCP_V2_2 -> "2.2"
-            MediaDrm.HDCP_V2 -> "2"
-            MediaDrm.HDCP_V2_3 -> "2.3"
-            else -> null
+            MediaDrm.HDCP_LEVEL_UNKNOWN -> R.string.message_hdcp_level_unknown
+            MediaDrm.HDCP_NONE -> R.string.message_hdcp_none
+            MediaDrm.HDCP_NO_DIGITAL_OUTPUT -> R.string.message_hdcp_no_digital_output
+            MediaDrm.HDCP_V1 -> R.string.message_hdcp_level_1
+            MediaDrm.HDCP_V2_1 -> R.string.message_hdcp_level_2_1
+            MediaDrm.HDCP_V2_2 -> R.string.message_hdcp_level_2_2
+            MediaDrm.HDCP_V2 -> R.string.message_hdcp_level_2
+            MediaDrm.HDCP_V2_3 -> R.string.message_hdcp_level_2_3
+            else -> R.string.message_hdcp_level_unknown
         }
     }
 

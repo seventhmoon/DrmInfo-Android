@@ -21,7 +21,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
         MutableLiveData<ObservableArrayMap<String, Any>>().also(::prepareProperties)
     }
 
-    protected open fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm) : ArrayMap<String, Any>{
+    protected open fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm): ArrayMap<String, Any> {
         val map = ArrayMap<String, Any>()
         try {
             val mediaDrmKeys = getApplication<Application>().resources.getStringArray(R.array.mediadrm_string_property_keys)
@@ -39,8 +39,8 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 with(mediaDrm) {
                     map[getApplication<Application>().getString(R.string.mediadrm_key_maxNumberOfSessions)] = maxSessionCount.toString()
-                    map[getApplication<Application>().getString(R.string.mediadrm_key_maxHdcpLevel)] = Util.toHdcpLevelString(maxHdcpLevel)
-                    map[getApplication<Application>().getString(R.string.mediadrm_key_hdcpLevel)] = Util.toHdcpLevelString(connectedHdcpLevel)
+                    map[getApplication<Application>().getString(R.string.mediadrm_key_maxHdcpLevel)] = getApplication<Application>().getString(Util.toHdcpLevelRes(maxHdcpLevel))
+                    map[getApplication<Application>().getString(R.string.mediadrm_key_hdcpLevel)] = getApplication<Application>().getString(Util.toHdcpLevelRes(connectedHdcpLevel))
                 }
             }
         } catch (ignored: IllegalArgumentException) {
@@ -50,9 +50,8 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
         return map
     }
 
-    private fun prepareProperties(it : MutableLiveData<ObservableArrayMap<String, Any>>) {
+    private fun prepareProperties(it: MutableLiveData<ObservableArrayMap<String, Any>>) {
         val map = ObservableArrayMap<String, Any>()
-
 
         if (MediaDrm.isCryptoSchemeSupported(mUUID)) {
             try {
