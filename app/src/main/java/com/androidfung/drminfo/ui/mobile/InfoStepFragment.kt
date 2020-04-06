@@ -27,8 +27,8 @@ class InfoStepFragment : GuidedStepSupportFragment() {
         val drmStringNames = resources.getStringArray(R.array.mediadrm_string_property_names)
         for (i in drmStringKeys.indices) {
             try {
-                val value = mediaDrm.getPropertyString(drmStringKeys[i])
                 val name = drmStringNames[i]
+                val value = mediaDrm.getPropertyString(drmStringKeys[i])
                 if (!TextUtils.isEmpty(value)) {
                     subActions.add(GuidedAction.Builder(activity)
                             .infoOnly(true)
@@ -51,11 +51,12 @@ class InfoStepFragment : GuidedStepSupportFragment() {
         val wvStringNames = resources.getStringArray(R.array.widevine_string_property_names)
         for (i in wvStringKeys.indices) {
             try {
+                val name = wvStringNames[i]
                 val value = widevineDrm.getPropertyString(wvStringKeys[i])
                 if (!TextUtils.isEmpty(value)) {
                     subActions.add(GuidedAction.Builder(activity)
                             .infoOnly(true)
-                            .title(wvStringNames[i])
+                            .title(name)
                             .description(value)
                             .build())
                 }
@@ -69,12 +70,12 @@ class InfoStepFragment : GuidedStepSupportFragment() {
     }
 
     override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
-
         //info section here
         val infoTitles = intArrayOf(R.string.text_brand, R.string.text_product, R.string.text_model, R.string.text_sdk_level, R.string.text_hdr, R.string.text_wide_color)
         val descriptions = arrayOf(Build.BRAND, Build.PRODUCT, Build.MODEL, Build.VERSION.SDK_INT.toString(),
                 if (this.resources.getBoolean(R.bool.is_highdr)) getString(R.string.text_supported) else getString(R.string.text_not_supported),
                 if (this.resources.getBoolean(R.bool.is_widecg)) getString(R.string.text_supported) else getString(R.string.text_not_supported))
+
         for (i in infoTitles.indices) {
             if (descriptions[i] != null) {
                 actions.add(GuidedAction.Builder(activity)
@@ -84,6 +85,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                         .build())
             }
         }
+
         val uuids = arrayOf(Constants.CLEARKEY_UUID, Constants.WIDEVINE_UUID, Constants.PLAYREADY_UUID, Constants.VERIMATRIX_UUID, Constants.MARLIN_UUID, Constants.PRIMETIME_UUID)
         val titles = intArrayOf(R.string.text_clearkey_name, R.string.text_widevine_name, R.string.text_playready_name, R.string.text_verimatrix_name, R.string.text_marlin_name, R.string.text_primetime_name)
         for (i in uuids.indices) {
