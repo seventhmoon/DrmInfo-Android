@@ -13,18 +13,19 @@ android {
         applicationId "com.androidfung.drminfo"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 224
+        versionCode 225
         versionName "1.1.3.200406"
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
         buildFeatures {
             viewBinding = false
+            dataBinding = true
         }
-        dataBinding {
-            //noinspection DataBindingWithoutKapt
-            enabled = true
-        }
+//        dataBinding {
+//            //noinspection DataBindingWithoutKapt
+//            enabled = true
+//        }
 
     }
 

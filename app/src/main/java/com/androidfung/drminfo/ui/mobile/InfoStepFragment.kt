@@ -17,7 +17,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
     override fun onCreateGuidance(savedInstanceState: Bundle?): Guidance {
         val title = getString(R.string.app_name)
         val description = getString(R.string.text_on_android_tv)
-        val icon = ResourcesCompat.getDrawable(resources, R.mipmap.ic_launcher_round, null)
+        val icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_launcher, null)
         return Guidance(title, description, null, icon)
     }
 
