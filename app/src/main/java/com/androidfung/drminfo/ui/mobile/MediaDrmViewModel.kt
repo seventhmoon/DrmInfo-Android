@@ -61,13 +61,13 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
                     map.putAll(obtainPropertiesFromMediaDrm(mediaDrm!!))
                 }
             }
-            } catch (e: UnsupportedSchemeException) {
-                e.printStackTrace()
-            } catch (e: IllegalArgumentException){
-                e.printStackTrace()
-            } catch (e: IllegalStateException){
-                e.printStackTrace()
-            }
+        } catch (e: UnsupportedSchemeException) {
+            e.printStackTrace()
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
 
         it.value = map
     }
