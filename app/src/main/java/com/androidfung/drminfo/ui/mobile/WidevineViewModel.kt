@@ -35,6 +35,6 @@ class WidevineViewModel(application: Application?) : MediaDrmViewModel(applicati
     }
 
     init {
-        mUUID = Constants.WIDEVINE_UUID
+        uuid = Constants.WIDEVINE_UUID
     }
 }

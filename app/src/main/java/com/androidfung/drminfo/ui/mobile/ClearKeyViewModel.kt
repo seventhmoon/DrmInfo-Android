@@ -9,6 +9,6 @@ class ClearKeyViewModel(application: Application?) : MediaDrmViewModel(applicati
     }
 
     init {
-        mUUID = Constants.CLEARKEY_UUID
+        uuid = Constants.CLEARKEY_UUID
     }
 }

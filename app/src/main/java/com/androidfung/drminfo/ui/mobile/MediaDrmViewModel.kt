@@ -15,7 +15,7 @@ import java.util.*
 
 abstract class MediaDrmViewModel protected constructor(application: Application?) : AndroidViewModel(application!!) {
     private var mediaDrm: MediaDrm? = null
-    protected lateinit var mUUID: UUID
+    protected lateinit var uuid: UUID
 
     protected val properties: MutableLiveData<ObservableArrayMap<String, Any>> by lazy {
         MutableLiveData<ObservableArrayMap<String, Any>>().also(::prepareProperties)
@@ -53,17 +53,22 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
     private fun prepareProperties(it: MutableLiveData<ObservableArrayMap<String, Any>>) {
         val map = ObservableArrayMap<String, Any>()
 
-        if (MediaDrm.isCryptoSchemeSupported(mUUID)) {
-            try {
-                mediaDrm = MediaDrm(mUUID)
+        try {
+            if (MediaDrm.isCryptoSchemeSupported(uuid)) {
+                mediaDrm = MediaDrm(uuid)
 
                 if (mediaDrm != null) {
                     map.putAll(obtainPropertiesFromMediaDrm(mediaDrm!!))
                 }
+            }
             } catch (e: UnsupportedSchemeException) {
                 e.printStackTrace()
+            } catch (e: IllegalArgumentException){
+                e.printStackTrace()
+            } catch (e: IllegalStateException){
+                e.printStackTrace()
             }
-        }
+
         it.value = map
     }
 

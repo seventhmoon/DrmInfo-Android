@@ -9,7 +9,6 @@ import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.doOnPreDraw
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
@@ -57,13 +56,11 @@ class MobileActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     private fun loadAdMobBannerAd(adView: AdView, bannerAdHolder : ViewGroup) {
-//        if (adView != null) {
         adView.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
@@ -98,7 +95,6 @@ class MobileActivity : AppCompatActivity() {
         }
         adView.loadAd(AdRequest.Builder().build())
     }
-//    }
 
     companion object {
         private val TAG = MobileActivity::class.java.simpleName

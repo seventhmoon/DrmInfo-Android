@@ -9,6 +9,6 @@ class PlayreadyViewModel(application: Application?) : MediaDrmViewModel(applicat
     }
 
     init {
-        mUUID = Constants.PLAYREADY_UUID
+        uuid = Constants.PLAYREADY_UUID
     }
 }
