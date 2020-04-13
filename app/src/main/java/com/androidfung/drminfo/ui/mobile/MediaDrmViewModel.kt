@@ -5,6 +5,7 @@ import android.media.MediaDrm
 import android.media.UnsupportedSchemeException
 import android.os.Build
 import android.util.ArrayMap
+import android.util.Log
 import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -45,6 +46,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
             }
         } catch (ignored: IllegalArgumentException) {
         } catch (ignored: IllegalStateException) {
+        } catch (ignored: NoSuchMethodError){
         }
 
         return map
@@ -61,14 +63,10 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
                     map.putAll(obtainPropertiesFromMediaDrm(mediaDrm!!))
                 }
             }
-        } catch (e: UnsupportedSchemeException) {
-            e.printStackTrace()
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
+        } catch (ignored: UnsupportedSchemeException) {
+        } catch (ignored: IllegalArgumentException) {
+        } catch (ignored: IllegalStateException) {
         }
-
         it.value = map
     }
 
