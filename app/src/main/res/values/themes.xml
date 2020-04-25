@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
     <resources>
-        <style name="Theme.YourApp.Light" parent="Theme.MaterialComponents.Light">
-            <!-- your light theme attributes -->
+<!--        <style name="Theme.YourApp.Light" parent="Theme.MaterialComponents.Light">-->
+<!--            &lt;!&ndash; your light theme attributes &ndash;&gt;-->
 
-        </style>
+<!--        </style>-->
 
-        <style name="Theme.YourApp.Dark" parent="Theme.MaterialComponents">
-            <!-- your dark theme attributes -->
+<!--        <style name="Theme.YourApp.Dark" parent="Theme.MaterialComponents">-->
+<!--            &lt;!&ndash; your dark theme attributes &ndash;&gt;-->
 
-        </style>
+<!--        </style>-->
 
-        <style name="Base.Theme.YourApp.DayNight" parent="Theme.YourApp.Light" />
+<!--        <style name="Base.Theme.YourApp.DayNight" parent="Theme.YourApp.Light" />-->
 
-        <style name="Theme.YourApp.DayNight" parent="Base.Theme.YourApp.DayNight">
-            <!-- your light/dark theme independent attributes -->
-        </style>
+<!--        <style name="Theme.YourApp.DayNight" parent="Base.Theme.YourApp.DayNight">-->
+<!--            &lt;!&ndash; your light/dark theme independent attributes &ndash;&gt;-->
+<!--        </style>-->
     </resources>

@@ -17,7 +17,6 @@
     android:minWidth="@dimen/box_min_width"
     android:minHeight="@dimen/box_min_height"
     android:visibility="invisible"
-    app:cardCornerRadius="@dimen/card_corner_radius"
     app:cardUseCompatPadding="true"
     app:layout_flexGrow="1">
 

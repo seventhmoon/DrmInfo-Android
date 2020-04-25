@@ -28,7 +28,6 @@
         android:layout_marginBottom="@dimen/card_vertical_margin"
         android:minWidth="@dimen/box_min_width"
         android:minHeight="@dimen/box_min_height"
-        app:cardCornerRadius="@dimen/card_corner_radius"
         app:cardUseCompatPadding="true"
         app:contentPadding="@dimen/card_padding"
         app:layout_flexGrow="1"
