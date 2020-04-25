@@ -48,7 +48,7 @@
                 android:fontFamily="@font/open_sans"
                 android:singleLine="true"
                 android:text="@{properties[(@string/mediadrm_string_property_key_description)]}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                android:textAppearance="?attr/textAppearanceHeadline6"
                 tools:text="Media DRM" />
 
             <include

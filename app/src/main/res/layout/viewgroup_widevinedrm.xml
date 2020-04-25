@@ -32,7 +32,7 @@
             android:layout_marginTop="8dp"
             android:singleLine="true"
             android:text="@string/widevine_string_property_name_systemId"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_systemId)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -45,7 +45,7 @@
             android:layout_marginTop="8dp"
             android:text='@{properties[(@string/widevine_string_property_key_systemId)] ?? "-"}'
             android:textAlignment="viewEnd"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_systemId)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_label_systemid"
@@ -59,7 +59,7 @@
             android:layout_marginTop="8dp"
             android:singleLine="true"
             android:text="@string/widevine_string_property_name_securityLevel"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_securityLevel)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_label_systemid" />
@@ -73,7 +73,7 @@
             android:text='@{properties[(@string/widevine_string_property_key_securityLevel)] ?? "-"}'
             android:textAlignment="viewEnd"
 
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_securityLevel)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_label_securitylevel"
@@ -87,7 +87,7 @@
             android:layout_marginTop="8dp"
             android:singleLine="true"
             android:text="@string/widevine_string_property_name_maxHdcpLevel"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_maxHdcpLevel)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_label_securitylevel" />
@@ -100,7 +100,7 @@
             android:layout_marginTop="8dp"
             android:text='@{properties[(@string/widevine_string_property_key_maxHdcpLevel)] ?? "-"}'
             android:textAlignment="viewEnd"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_maxHdcpLevel)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_label_maxhdcplevel"
@@ -114,7 +114,7 @@
             android:layout_marginTop="8dp"
             android:singleLine="true"
             android:text="@string/widevine_string_property_name_hdcpLevel"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_hdcpLevel)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_label_maxhdcplevel" />
@@ -127,7 +127,7 @@
             android:layout_marginTop="8dp"
             android:text='@{properties[(@string/widevine_string_property_key_hdcpLevel)] ?? "-"}'
             android:textAlignment="viewEnd"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_hdcpLevel)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_label_hdcplevel"
@@ -141,7 +141,7 @@
             android:layout_marginTop="8dp"
             android:singleLine="true"
             android:text="@string/widevine_string_property_name_maxNumberOfSessions"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_maxNumberOfSessions)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_label_hdcplevel" />
@@ -154,7 +154,7 @@
             android:layout_marginTop="8dp"
             android:text='@{properties[(@string/widevine_string_property_key_maxNumberOfSessions)] ?? "-"}'
             android:textAlignment="viewEnd"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_maxNumberOfSessions)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_label_maxnumberofsessions"
@@ -169,7 +169,7 @@
             android:layout_marginTop="8dp"
             android:singleLine="true"
             android:text="@string/widevine_string_property_name_oemCryptoApiVersion"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_oemCryptoApiVersion)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -183,7 +183,7 @@
             android:layout_marginTop="8dp"
             android:text='@{properties[(@string/widevine_string_property_key_oemCryptoApiVersion)] ?? "-"}'
             android:textAlignment="viewEnd"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_oemCryptoApiVersion)]) ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
