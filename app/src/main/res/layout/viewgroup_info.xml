@@ -13,6 +13,9 @@
         <import
             type="android.os.Build" />
 
+        <import
+            type="java.util.Collection" />
+
         <variable
             name="infoProperties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
@@ -285,7 +288,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text='@{(infoProperties["hardwareAcceleratedType"]).toString().replace("[","").replace("]","").replace(", ", "\n")}'
+            android:text='@{((Collection)infoProperties["hardwareAcceleratedType"]).isEmpty()?"nil":infoProperties["hardwareAcceleratedType"].toString().replace("[","").replace("]","").replace(", ", "\n")}'
             android:onLongClick="@{handler::onLongClick}"
             android:visibility="@{Build.VERSION.SDK_INT >= 29?View.VISIBLE:View.GONE}"
             android:textAlignment="viewEnd"
