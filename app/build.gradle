@@ -13,7 +13,7 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 231
+        versionCode 233
         versionName '1.1.4.200425'
 
         multiDexEnabled false
