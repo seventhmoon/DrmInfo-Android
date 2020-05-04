@@ -22,15 +22,16 @@
     <string name="text_webview_version">WebView Version</string>
     <string name="text_max_security_level">Max Security Level</string>
     <string name="text_hardware">Hardware</string>
-    <string name="text_type">Type</string>
-    <string name="text_fingerprint">Fingerprint</string>
+    <string name="text_type">Build Type</string>
+    <string name="text_fingerprint">Build Fingerprint</string>
 
     <string name="ad_attribution">Ad</string>
-    <string name="text_display">Display</string>
+    <string name="text_display">Build</string>
     <string name="text_licenseinformation">License Information</string>
     <string name="text_hdr">High Dynamic Range (HDR)</string>
     <string name="text_hdr_type">HDR Type</string>
     <string name="text_wide_color">Wide Color Gamut</string>
     <string name="text_abi">Supported ABI</string>
+    <string name="text_hw_decode_type">Supported HW Decode</string>
 
 </resources>

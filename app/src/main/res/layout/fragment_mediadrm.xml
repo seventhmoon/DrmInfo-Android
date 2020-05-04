@@ -29,7 +29,6 @@
         android:minWidth="@dimen/box_min_width"
         android:minHeight="@dimen/box_min_height"
         android:visibility="@{(properties == null  || properties.isEmpty()) ? View.GONE : View.VISIBLE}"
-        app:cardCornerRadius="@dimen/card_corner_radius"
         app:cardUseCompatPadding="true"
         app:contentPadding="@dimen/card_padding"
         app:layout_flexGrow="1">
@@ -45,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans"
                 android:text="@{properties[(@string/mediadrm_string_property_key_description)]}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                android:textAppearance="?attr/textAppearanceHeadline6" />
 
             <include
                 layout="@layout/viewgroup_mediadrm"
