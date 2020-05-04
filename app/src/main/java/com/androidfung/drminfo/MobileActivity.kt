@@ -48,7 +48,7 @@ class MobileActivity : AppCompatActivity() {
 
         val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
         val adView = findViewById<AdView>(R.id.adView)
-        MobileAds.initialize(this, getString(R.string.ad_app_id))
+        MobileAds.initialize(this){}
 
         if (bannerAdHolder != null && adView != null){
             loadAdMobBannerAd(adView, bannerAdHolder)
