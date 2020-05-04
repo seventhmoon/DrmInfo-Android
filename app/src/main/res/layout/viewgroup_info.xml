@@ -119,33 +119,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_value_model"
             tools:text="sailfish" />
 
-        <TextView
-            android:id="@+id/tv_label_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/text_type"
-            android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_value_type"
-            app:layout_constraintEnd_toStartOf="@+id/tv_value_type"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_product" />
 
-        <TextView
-            android:id="@+id/tv_value_type"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@{Build.TYPE}"
-            android:textAlignment="viewEnd"
-            android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_label_type"
-            app:layout_constraintTop_toBottomOf="@+id/tv_value_product"
-            tools:text="user" />
 
         <TextView
             android:id="@+id/tv_label_display"
@@ -159,7 +133,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_value_display"
             app:layout_constraintEnd_toStartOf="@+id/tv_value_display"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_type" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_label_product" />
 
         <TextView
             android:id="@+id/tv_value_display"
@@ -173,8 +147,36 @@
             app:layout_constrainedHeight="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_label_display"
-            app:layout_constraintTop_toBottomOf="@+id/tv_value_type"
+            app:layout_constraintTop_toBottomOf="@+id/tv_value_product"
             tools:text="PPR1" />
+
+        <TextView
+            android:id="@+id/tv_label_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/text_type"
+            android:textAppearance="?attr/textAppearanceBody2"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_value_type"
+            app:layout_constraintEnd_toStartOf="@+id/tv_value_type"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_label_display" />
+
+        <TextView
+            android:id="@+id/tv_value_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{Build.TYPE}"
+            android:textAlignment="viewEnd"
+            android:textAppearance="?attr/textAppearanceBody2"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_label_type"
+            app:layout_constraintTop_toBottomOf="@+id/tv_value_display"
+            tools:text="user" />
 
         <TextView
             android:id="@+id/tv_label_fingerprint"
@@ -188,7 +190,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_value_fingerprint"
             app:layout_constraintEnd_toStartOf="@+id/tv_value_fingerprint"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_display" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_label_type" />
 
         <TextView
             android:id="@+id/tv_value_fingerprint"
@@ -196,15 +198,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:onLongClick="@{handler::onLongClick}"
-
             android:text="@{Build.FINGERPRINT}"
             android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
             app:layout_constrainedHeight="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_label_fingerprint"
-            app:layout_constraintTop_toBottomOf="@+id/tv_value_display"
-            tools:text="PPR1.PEAEGJAOE/egoeogah ea/gega /egvadvasvpoaj jpoavjpodj ajdvavfaogeoaehfoah egae:bv segaegeag egaegaega" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_value_type"
+            tools:text="google/sdk_gphone_x86_64/generic_x86_64_arm64:10/RSR1.200417.003/6415074:user/release-keys" />
 
 
         <TextView
@@ -275,12 +276,11 @@
             android:layout_marginEnd="8dp"
             android:text="@string/text_hw_decode_type"
             android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility="@{Build.VERSION.SDK_INT >= 29?View.VISIBLE:View.GONE}"
+            android:visibility='@{Build.VERSION.SDK_INT >= 29 &amp;&amp; !((Collection)infoProperties["hardwareAcceleratedType"]).isEmpty()?View.VISIBLE:View.GONE}'
             app:layout_constrainedHeight="true"
             app:layout_constraintEnd_toStartOf="@+id/tv_value_hw_decode_type"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_value_abis" />
-
 
 
         <TextView
@@ -288,9 +288,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text='@{((Collection)infoProperties["hardwareAcceleratedType"]).isEmpty()?"nil":infoProperties["hardwareAcceleratedType"].toString().replace("[","").replace("]","").replace(", ", "\n")}'
+            android:text='@{infoProperties["hardwareAcceleratedType"].toString().replace("[","").replace("]","").replace(", ", "\n")}'
             android:onLongClick="@{handler::onLongClick}"
-            android:visibility="@{Build.VERSION.SDK_INT >= 29?View.VISIBLE:View.GONE}"
+            android:visibility='@{Build.VERSION.SDK_INT >= 29 &amp;&amp; !((Collection)infoProperties["hardwareAcceleratedType"]).isEmpty()?View.VISIBLE:View.GONE}'
             android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
             app:layout_constrainedHeight="true"
