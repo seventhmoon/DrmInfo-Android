@@ -1,5 +1,6 @@
 package com.androidfung.drminfo.ui.mobile
 
+import android.media.MediaCodecList
 import android.media.MediaDrm
 import android.media.UnsupportedSchemeException
 import android.os.Build
@@ -12,6 +13,8 @@ import androidx.leanback.widget.GuidanceStylist.Guidance
 import androidx.leanback.widget.GuidedAction
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
+import java.util.*
+import kotlin.collections.ArrayList
 
 class InfoStepFragment : GuidedStepSupportFragment() {
     override fun onCreateGuidance(savedInstanceState: Bundle?): Guidance {
@@ -71,8 +74,10 @@ class InfoStepFragment : GuidedStepSupportFragment() {
 
     override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
         //info section here
-        val infoTitles = intArrayOf(R.string.text_brand, R.string.text_product, R.string.text_model, R.string.text_sdk_level, R.string.text_hdr, R.string.text_wide_color)
-        val descriptions = arrayOf(Build.BRAND, Build.PRODUCT, Build.MODEL, Build.VERSION.SDK_INT.toString(),
+        val infoTitles = intArrayOf(R.string.text_brand, R.string.text_product, R.string.text_model, R.string.text_display, R.string.text_type, R.string.text_fingerprint, R.string.text_sdk_level, R.string.text_hdr, R.string.text_wide_color)
+        val descriptions = arrayOf(Build.BRAND, Build.PRODUCT, Build.MODEL,
+                Build.DISPLAY, Build.TYPE, Build.FINGERPRINT,
+                Build.VERSION.SDK_INT.toString(),
                 if (this.resources.getBoolean(R.bool.is_highdr)) getString(R.string.text_supported) else getString(R.string.text_not_supported),
                 if (this.resources.getBoolean(R.bool.is_widecg)) getString(R.string.text_supported) else getString(R.string.text_not_supported))
 
@@ -82,6 +87,39 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                         .infoOnly(true)
                         .title(getString(infoTitles[i]))
                         .description(descriptions[i])
+                        .build())
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            val supportedAbis = Build.SUPPORTED_ABIS
+            actions.add(GuidedAction.Builder(activity)
+                    .infoOnly(true)
+                    .title(getString(R.string.text_abi))
+                    .description(Arrays.toString(supportedAbis).replace("[", "").replace("]", ""))
+                    .build())
+        }
+
+        if (Build.VERSION.SDK_INT >= 29) {
+            val mediaCodecList = MediaCodecList(MediaCodecList.REGULAR_CODECS)
+            val mediaCodecInfo = mediaCodecList.codecInfos
+            val supportedHardwareAcceleratedDecodeType = TreeSet<String>()
+
+            mediaCodecInfo.iterator().forEach {
+                if (Build.VERSION.SDK_INT >= 29) {
+                    if (!it.isEncoder && it.isHardwareAccelerated) {
+                        it.supportedTypes.iterator().forEach { supportedType ->
+                            supportedHardwareAcceleratedDecodeType.add(supportedType.toString())
+                        }
+                    }
+                }
+            }
+
+            if (!supportedHardwareAcceleratedDecodeType.isEmpty()) {
+                actions.add(GuidedAction.Builder(activity)
+                        .infoOnly(true)
+                        .title(getString(R.string.text_hw_decode_type))
+                        .description(supportedHardwareAcceleratedDecodeType.toString().replace("[", "").replace("]", ""))
                         .build())
             }
         }
