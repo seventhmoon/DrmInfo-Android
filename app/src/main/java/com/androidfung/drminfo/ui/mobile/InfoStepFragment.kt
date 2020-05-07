@@ -49,7 +49,6 @@ class InfoStepFragment : GuidedStepSupportFragment() {
     }
 
     private fun getWidevineSubActions(widevineDrm: MediaDrm): MutableList<GuidedAction> {
-//        val subActions = getMediaDrmSubActions(widevineDrm)
         val subActions: MutableList<GuidedAction> = ArrayList()
         val wvStringKeys = resources.getStringArray(R.array.widevine_string_property_keys)
         val wvStringNames = resources.getStringArray(R.array.widevine_string_property_names)
@@ -107,11 +106,9 @@ class InfoStepFragment : GuidedStepSupportFragment() {
             val mediaCodecInfo = mediaCodecList.codecInfos
             val supportedHardwareAcceleratedDecodeType = TreeSet<String>()
 
-            mediaCodecInfo.iterator().forEach {
+            mediaCodecInfo.forEach {
                 if (!it.isEncoder && it.isHardwareAccelerated) {
-                    it.supportedTypes.iterator().forEach { supportedType ->
-                        supportedHardwareAcceleratedDecodeType.add(supportedType.toString())
-                    }
+                    supportedHardwareAcceleratedDecodeType.addAll(it.supportedTypes)
                 }
             }
 
@@ -137,28 +134,12 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                 if (Constants.WIDEVINE_UUID === uuids[i]) {
                     subActions.addAll(getWidevineSubActions(mediaDrm))
                 }
-//                subActions.addAll(if (Constants.WIDEVINE_UUID === uuids[i])
-//                    getWidevineSubActions(MediaDrm(uuids[i]))
-//                else
-//                    getMediaDrmSubActions(MediaDrm(uuids[i])))
+
             } catch (e: UnsupportedSchemeException) {
                 e.printStackTrace()
             }
 
-//            var subActions: List<GuidedAction>? = null
-//            if (supported) {
-//                try {
-//                    val mediaDrm = MediaDrm(uuids[i])
-//                    subActions = if (Constants.WIDEVINE_UUID === uuids[i]) {
-//                        getWidevineSubActions(mediaDrm)
-//                    } else {
-//                        getMediaDrmSubActions(mediaDrm)
-//                    }
-//                } catch (e: UnsupportedSchemeException) {
-//                    e.printStackTrace()
-//                }
-//            }
-            val infoOnly = subActions.isNullOrEmpty() //subActions == null || subActions.isEmpty()
+            val infoOnly = subActions.isNullOrEmpty()
             actions.add(GuidedAction.Builder(activity)
                     .infoOnly(infoOnly)
                     .subActions(if (infoOnly) null else subActions)
