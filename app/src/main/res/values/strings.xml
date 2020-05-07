@@ -15,24 +15,23 @@
 
     <string name="text_device_information">Device Information</string>
     <string name="title_activity_main">MainActivity</string>
-    <!--<string name="section_format">Hello World from section: %1$d</string>-->
-    <!--<string name="text_media_drm_description">Description</string>-->
 
-    <!--<string name="hello_blank_fragment">Hello blank fragment</string>-->
     <string name="label_cts_profile_match">CTS Profile Match</string>
     <string name="text_on_android_tv">on Android TV</string>
     <string name="text_build">Build</string>
     <string name="text_webview_version">WebView Version</string>
     <string name="text_max_security_level">Max Security Level</string>
     <string name="text_hardware">Hardware</string>
-    <string name="text_type">Type</string>
-    <string name="text_fingerprint">Fingerprint</string>
+    <string name="text_type">Build Type</string>
+    <string name="text_fingerprint">Build Fingerprint</string>
 
     <string name="ad_attribution">Ad</string>
-    <string name="text_display">Display</string>
+    <string name="text_display">Build</string>
     <string name="text_licenseinformation">License Information</string>
     <string name="text_hdr">High Dynamic Range (HDR)</string>
     <string name="text_hdr_type">HDR Type</string>
     <string name="text_wide_color">Wide Color Gamut</string>
     <string name="text_abi">Supported ABI</string>
+    <string name="text_hw_decode_type">Supported HW Decode</string>
+
 </resources>

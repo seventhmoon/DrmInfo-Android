@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'com.google.android.gms.strict-version-matcher-plugin'
 apply plugin: 'com.google.firebase.crashlytics'
@@ -8,16 +10,17 @@ android {
     buildToolsVersion '29.0.3'
 
     defaultConfig {
-        applicationId "com.androidfung.drminfo"
-        minSdkVersion 21
+        applicationId 'com.androidfung.drminfo'
+        minSdkVersion 24
         targetSdkVersion 29
-        versionCode 216
-        versionName "1.1.3.200310"
+        versionCode 233
+        versionName '1.1.4.200425'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
-        dataBinding {
-            enabled = true
+        buildFeatures {
+            viewBinding = false
+            dataBinding = true
         }
     }
 
@@ -29,7 +32,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            minifyEnabled true
+            minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -38,6 +41,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     lintOptions {
@@ -50,32 +57,36 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation platform('com.google.firebase:firebase-bom:25.3.0')
 
-    implementation 'androidx.activity:activity:1.1.0'
-    implementation 'androidx.fragment:fragment:1.2.3'
+    implementation 'androidx.activity:activity-ktx:1.1.0'
     implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'androidx.core:core:1.2.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation "androidx.appcompat:appcompat-resources:1.1.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel:2.2.0"
-    implementation "androidx.lifecycle:lifecycle-reactivestreams:2.2.0"
+    implementation 'androidx.appcompat:appcompat-resources:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
-    implementation "androidx.collection:collection:1.1.0"
+    implementation 'androidx.collection:collection-ktx:1.1.0'
+    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
+    implementation 'androidx.fragment:fragment-ktx:1.2.4'
     implementation 'androidx.leanback:leanback:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
-    implementation 'com.google.firebase:firebase-analytics:17.3.0'
-    implementation 'com.google.firebase:firebase-ads:19.0.1'
-    implementation 'com.google.firebase:firebase-perf:19.0.5'
-    implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta03'
-
-    implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.google.android:flexbox:1.1.1'
+    implementation 'com.google.android.material:material:1.1.0'
 
-    annotationProcessor "androidx.lifecycle:lifecycle-common-java8:2.2.0"
+    implementation 'com.google.firebase:firebase-ads'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-perf'
 
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    annotationProcessor 'androidx.lifecycle:lifecycle-common-java8:2.2.0'
+
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation 'junit:junit:4.12'
-    testImplementation "androidx.arch.core:core-testing:2.1.0"
 
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
