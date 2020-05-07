@@ -6,7 +6,6 @@ import android.media.MediaDrm
 import android.media.UnsupportedSchemeException
 import android.os.Build
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
 import androidx.core.content.res.ResourcesCompat
 import androidx.leanback.app.GuidedStepSupportFragment
@@ -33,7 +32,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
             try {
                 val name = drmStringNames[i]
                 val value = mediaDrm.getPropertyString(drmStringKeys[i])
-                if (!TextUtils.isEmpty(value)) {
+                if (!value.isBlank()){
                     subActions.add(GuidedAction.Builder(activity)
                             .infoOnly(true)
                             .title(name)
@@ -57,7 +56,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
             try {
                 val name = wvStringNames[i]
                 val value = widevineDrm.getPropertyString(wvStringKeys[i])
-                if (!TextUtils.isEmpty(value)) {
+                if (!value.isBlank()){
                     subActions.add(GuidedAction.Builder(activity)
                             .infoOnly(true)
                             .title(name)
