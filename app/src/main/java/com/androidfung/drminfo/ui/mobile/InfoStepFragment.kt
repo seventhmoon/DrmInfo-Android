@@ -49,7 +49,8 @@ class InfoStepFragment : GuidedStepSupportFragment() {
     }
 
     private fun getWidevineSubActions(widevineDrm: MediaDrm): MutableList<GuidedAction> {
-        val subActions = getMediaDrmSubActions(widevineDrm)
+//        val subActions = getMediaDrmSubActions(widevineDrm)
+        val subActions: MutableList<GuidedAction> = ArrayList()
         val wvStringKeys = resources.getStringArray(R.array.widevine_string_property_keys)
         val wvStringNames = resources.getStringArray(R.array.widevine_string_property_names)
         for (i in wvStringKeys.indices) {
@@ -83,7 +84,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                 if (this.resources.getBoolean(R.bool.is_widecg)) getString(R.string.text_supported) else getString(R.string.text_not_supported))
 
         for (i in infoTitles.indices) {
-            if (descriptions[i] != null) {
+            if (!descriptions[i].isNullOrBlank()) {
                 actions.add(GuidedAction.Builder(activity)
                         .infoOnly(true)
                         .title(getString(infoTitles[i]))
@@ -130,10 +131,16 @@ class InfoStepFragment : GuidedStepSupportFragment() {
             val subActions = ArrayList<GuidedAction>()
 
             try {
-                subActions.addAll(if (Constants.WIDEVINE_UUID === uuids[i])
-                    getWidevineSubActions(MediaDrm(uuids[i]))
-                else
-                    getMediaDrmSubActions(MediaDrm(uuids[i])))
+                val mediaDrm = MediaDrm(uuids[i])
+                subActions.addAll(getMediaDrmSubActions(mediaDrm))
+
+                if (Constants.WIDEVINE_UUID === uuids[i]) {
+                    subActions.addAll(getWidevineSubActions(mediaDrm))
+                }
+//                subActions.addAll(if (Constants.WIDEVINE_UUID === uuids[i])
+//                    getWidevineSubActions(MediaDrm(uuids[i]))
+//                else
+//                    getMediaDrmSubActions(MediaDrm(uuids[i])))
             } catch (e: UnsupportedSchemeException) {
                 e.printStackTrace()
             }
