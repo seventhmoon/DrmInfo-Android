@@ -1,5 +1,6 @@
 package com.androidfung.drminfo.ui.mobile
 
+import android.annotation.SuppressLint
 import android.media.MediaCodecList
 import android.media.MediaDrm
 import android.media.UnsupportedSchemeException
@@ -72,6 +73,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
         return subActions
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
         //info section here
         val infoTitles = intArrayOf(R.string.text_brand, R.string.text_product, R.string.text_model, R.string.text_display, R.string.text_type, R.string.text_fingerprint, R.string.text_sdk_level, R.string.text_hdr, R.string.text_wide_color)
@@ -91,7 +93,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
             }
         }
 
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val supportedAbis = Build.SUPPORTED_ABIS
             actions.add(GuidedAction.Builder(activity)
                     .infoOnly(true)
@@ -100,17 +102,15 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                     .build())
         }
 
-        if (Build.VERSION.SDK_INT >= 29) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val mediaCodecList = MediaCodecList(MediaCodecList.REGULAR_CODECS)
             val mediaCodecInfo = mediaCodecList.codecInfos
             val supportedHardwareAcceleratedDecodeType = TreeSet<String>()
 
             mediaCodecInfo.iterator().forEach {
-                if (Build.VERSION.SDK_INT >= 29) {
-                    if (!it.isEncoder && it.isHardwareAccelerated) {
-                        it.supportedTypes.iterator().forEach { supportedType ->
-                            supportedHardwareAcceleratedDecodeType.add(supportedType.toString())
-                        }
+                if (!it.isEncoder && it.isHardwareAccelerated) {
+                    it.supportedTypes.iterator().forEach { supportedType ->
+                        supportedHardwareAcceleratedDecodeType.add(supportedType.toString())
                     }
                 }
             }
@@ -128,20 +128,31 @@ class InfoStepFragment : GuidedStepSupportFragment() {
         val titles = intArrayOf(R.string.text_clearkey_name, R.string.text_widevine_name, R.string.text_playready_name, R.string.text_verimatrix_name, R.string.text_marlin_name, R.string.text_primetime_name)
         for (i in uuids.indices) {
             val supported = MediaDrm.isCryptoSchemeSupported(uuids[i])
-            var subActions: List<GuidedAction>? = null
-            if (supported) {
-                try {
-                    val mediaDrm = MediaDrm(uuids[i])
-                    subActions = if (Constants.WIDEVINE_UUID === uuids[i]) {
-                        getWidevineSubActions(mediaDrm)
-                    } else {
-                        getMediaDrmSubActions(mediaDrm)
-                    }
-                } catch (e: UnsupportedSchemeException) {
-                    e.printStackTrace()
-                }
+            val subActions = ArrayList<GuidedAction>()
+
+            try {
+                subActions.addAll(if (Constants.WIDEVINE_UUID === uuids[i])
+                    getWidevineSubActions(MediaDrm(uuids[i]))
+                else
+                    getMediaDrmSubActions(MediaDrm(uuids[i])))
+            } catch (e: UnsupportedSchemeException) {
+                e.printStackTrace()
             }
-            val infoOnly = subActions == null || subActions.isEmpty()
+
+//            var subActions: List<GuidedAction>? = null
+//            if (supported) {
+//                try {
+//                    val mediaDrm = MediaDrm(uuids[i])
+//                    subActions = if (Constants.WIDEVINE_UUID === uuids[i]) {
+//                        getWidevineSubActions(mediaDrm)
+//                    } else {
+//                        getMediaDrmSubActions(mediaDrm)
+//                    }
+//                } catch (e: UnsupportedSchemeException) {
+//                    e.printStackTrace()
+//                }
+//            }
+            val infoOnly = subActions.isNullOrEmpty() //subActions == null || subActions.isEmpty()
             actions.add(GuidedAction.Builder(activity)
                     .infoOnly(infoOnly)
                     .subActions(if (infoOnly) null else subActions)
