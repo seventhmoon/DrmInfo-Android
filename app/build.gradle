@@ -13,8 +13,8 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 236
-        versionName '1.1.4.200505'
+        versionCode 238
+        versionName '1.1.4.200508'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -57,7 +57,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation platform('com.google.firebase:firebase-bom:25.3.0')
+    implementation platform('com.google.firebase:firebase-bom:25.3.1')
 
     implementation 'androidx.activity:activity-ktx:1.1.0'
     implementation 'androidx.annotation:annotation:1.1.0'

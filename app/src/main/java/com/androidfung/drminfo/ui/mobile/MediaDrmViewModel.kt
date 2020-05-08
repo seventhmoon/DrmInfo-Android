@@ -4,17 +4,16 @@ import android.app.Application
 import android.media.MediaDrm
 import android.media.UnsupportedSchemeException
 import android.os.Build
-import android.util.ArrayMap
-import android.util.Log
+import androidx.collection.SimpleArrayMap
 import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.Util
-import java.util.*
+import java.util.UUID
 
-abstract class MediaDrmViewModel protected constructor(application: Application?) : AndroidViewModel(application!!) {
+abstract class MediaDrmViewModel protected constructor(application: Application) : AndroidViewModel(application) {
     private var mediaDrm: MediaDrm? = null
     protected lateinit var uuid: UUID
 
@@ -22,39 +21,30 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
         MutableLiveData<ObservableArrayMap<String, Any>>().also(::prepareProperties)
     }
 
-    protected open fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm): ArrayMap<String, Any> {
-        val map = ArrayMap<String, Any>()
+    protected fun getPropertyString(key: String): String?{
         try {
-            val mediaDrmKeys = getApplication<Application>().resources.getStringArray(R.array.mediadrm_string_property_keys)
-            mediaDrmKeys.forEach {
-                map[it] = mediaDrm.getPropertyString(it)
-            }
-
-//            for (mediaDrmKey in mediaDrmKeys) {
-//                val value = mediaDrm.getPropertyString(mediaDrmKey)
-//                map[mediaDrmKey] = value
-//            }
-
-            val mediaDrmKeys2 = getApplication<Application>().resources.getStringArray(R.array.mediadrm_bytearray_property_keys)
-            mediaDrmKeys2.forEach {
-                map[it] = Util.formatByteArray(mediaDrm.getPropertyByteArray(it))
-
-            }
-//            for (mediaDrmKey in mediaDrmKeys2) {
-//                val value = mediaDrm.getPropertyByteArray(mediaDrmKey)
-//                map[mediaDrmKey] = Util.formatByteArray(value)
-//            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                with(mediaDrm) {
-                    map[getApplication<Application>().getString(R.string.mediadrm_key_maxNumberOfSessions)] = maxSessionCount.toString()
-                    map[getApplication<Application>().getString(R.string.mediadrm_key_maxHdcpLevel)] = getApplication<Application>().getString(Util.toHdcpLevelRes(maxHdcpLevel))
-                    map[getApplication<Application>().getString(R.string.mediadrm_key_hdcpLevel)] = getApplication<Application>().getString(Util.toHdcpLevelRes(connectedHdcpLevel))
-                }
-            }
+            return mediaDrm?.getPropertyString(key)
         } catch (ignored: IllegalArgumentException) {
         } catch (ignored: IllegalStateException) {
-        } catch (ignored: NoSuchMethodError){
+        } catch (ignored: NoSuchMethodError) {
+        }
+        return null
+    }
+
+    protected open fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm): SimpleArrayMap<String, Any> {
+        val map = SimpleArrayMap<String, Any>()
+        val mediaDrmKeys = getApplication<Application>().resources.getStringArray(R.array.mediadrm_string_property_keys)
+
+        mediaDrmKeys.forEach {
+            map.put(it, getPropertyString(it))
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            with(getApplication<Application>().resources) {
+                map.put(getString(R.string.mediadrm_key_maxNumberOfSessions), mediaDrm.maxSessionCount.toString())
+                map.put(getString(R.string.mediadrm_key_maxHdcpLevel), getString(Util.toHdcpLevelRes(mediaDrm.maxHdcpLevel)))
+                map.put(getString(R.string.mediadrm_key_hdcpLevel), getString(Util.toHdcpLevelRes(mediaDrm.connectedHdcpLevel)))
+            }
         }
 
         return map
@@ -85,16 +75,15 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
 
     @Suppress("DEPRECATION")
     override fun onCleared() {
-        if (mediaDrm != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                mediaDrm?.close()
-            } else {
-                mediaDrm?.release()
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            mediaDrm?.close()
+        } else {
+            mediaDrm?.release()
         }
     }
 
     companion object {
+        @JvmStatic
         private val TAG: String = MediaDrmViewModel::class.java.simpleName
     }
 }

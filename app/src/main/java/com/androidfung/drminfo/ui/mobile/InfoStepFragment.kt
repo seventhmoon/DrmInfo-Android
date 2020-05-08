@@ -24,52 +24,43 @@ class InfoStepFragment : GuidedStepSupportFragment() {
         return Guidance(title, description, null, icon)
     }
 
-    private fun getMediaDrmSubActions(mediaDrm: MediaDrm): MutableList<GuidedAction> {
-        val subActions: MutableList<GuidedAction> = ArrayList()
-        val drmStringKeys = resources.getStringArray(R.array.mediadrm_string_property_keys)
-        val drmStringNames = resources.getStringArray(R.array.mediadrm_string_property_names)
-        for (i in drmStringKeys.indices) {
+    private fun getSubActions(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>): List<GuidedAction> {
+        val drmStringValue = drmStringKeys.mapNotNull {
             try {
-                val name = drmStringNames[i]
-                val value = mediaDrm.getPropertyString(drmStringKeys[i])
-                if (!value.isBlank()){
-                    subActions.add(GuidedAction.Builder(activity)
-                            .infoOnly(true)
-                            .title(name)
-                            .description(value)
-                            .build())
-                }
+                mediaDrm.getPropertyString(it)
             } catch (ex: IllegalStateException) {
                 Log.d(TAG, ex.toString())
+                null
             } catch (ex: IllegalArgumentException) {
                 Log.d(TAG, ex.toString())
+                null
             }
         }
-        return subActions
+
+        return drmStringNames.zip(drmStringValue)
+                .filter {
+                    !it.second.toString().isBlank()
+                }.map {
+                    GuidedAction.Builder(activity)
+                            .infoOnly(true)
+                            .title(it.first)
+                            .description(it.second)
+                            .build()
+                }
     }
 
-    private fun getWidevineSubActions(widevineDrm: MediaDrm): MutableList<GuidedAction> {
-        val subActions: MutableList<GuidedAction> = ArrayList()
+    private fun getMediaDrmSubActions(mediaDrm: MediaDrm): List<GuidedAction> {
+        val drmStringKeys = resources.getStringArray(R.array.mediadrm_string_property_keys)
+        val drmStringNames = resources.getStringArray(R.array.mediadrm_string_property_names)
+
+        return getSubActions(mediaDrm, drmStringKeys, drmStringNames)
+    }
+
+    private fun getWidevineSubActions(widevineDrm: MediaDrm): List<GuidedAction> {
         val wvStringKeys = resources.getStringArray(R.array.widevine_string_property_keys)
         val wvStringNames = resources.getStringArray(R.array.widevine_string_property_names)
-        for (i in wvStringKeys.indices) {
-            try {
-                val name = wvStringNames[i]
-                val value = widevineDrm.getPropertyString(wvStringKeys[i])
-                if (!value.isBlank()){
-                    subActions.add(GuidedAction.Builder(activity)
-                            .infoOnly(true)
-                            .title(name)
-                            .description(value)
-                            .build())
-                }
-            } catch (ex: IllegalStateException) {
-                Log.d(TAG, ex.toString())
-            } catch (ex: IllegalArgumentException) {
-                Log.d(TAG, ex.toString())
-            }
-        }
-        return subActions
+
+        return getSubActions(widevineDrm, wvStringKeys, wvStringNames)
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -82,15 +73,16 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                 if (this.resources.getBoolean(R.bool.is_highdr)) getString(R.string.text_supported) else getString(R.string.text_not_supported),
                 if (this.resources.getBoolean(R.bool.is_widecg)) getString(R.string.text_supported) else getString(R.string.text_not_supported))
 
-        for (i in infoTitles.indices) {
-            if (!descriptions[i].isNullOrBlank()) {
-                actions.add(GuidedAction.Builder(activity)
-                        .infoOnly(true)
-                        .title(getString(infoTitles[i]))
-                        .description(descriptions[i])
-                        .build())
-            }
-        }
+        actions.addAll(
+                infoTitles.zip(descriptions).filter { !it.second.isNullOrBlank() }
+                        .map {
+                            GuidedAction.Builder(activity)
+                                    .infoOnly(true)
+                                    .title(it.first)
+                                    .description(it.second)
+                                    .build()
+                        })
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val supportedAbis = Build.SUPPORTED_ABIS
@@ -102,15 +94,11 @@ class InfoStepFragment : GuidedStepSupportFragment() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val mediaCodecList = MediaCodecList(MediaCodecList.REGULAR_CODECS)
-            val mediaCodecInfo = mediaCodecList.codecInfos
-            val supportedHardwareAcceleratedDecodeType = TreeSet<String>()
-
-            mediaCodecInfo.forEach {
-                if (!it.isEncoder && it.isHardwareAccelerated) {
-                    supportedHardwareAcceleratedDecodeType.addAll(it.supportedTypes)
-                }
-            }
+            val supportedHardwareAcceleratedDecodeType = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+                    .filter { !it.isEncoder && it.isHardwareAccelerated }
+                    .map { it.supportedTypes.toList() }
+                    .flatten()
+                    .toSortedSet()
 
             if (!supportedHardwareAcceleratedDecodeType.isEmpty()) {
                 actions.add(GuidedAction.Builder(activity)
@@ -123,30 +111,34 @@ class InfoStepFragment : GuidedStepSupportFragment() {
 
         val uuids = arrayOf(Constants.CLEARKEY_UUID, Constants.WIDEVINE_UUID, Constants.PLAYREADY_UUID, Constants.VERIMATRIX_UUID, Constants.MARLIN_UUID, Constants.PRIMETIME_UUID)
         val titles = intArrayOf(R.string.text_clearkey_name, R.string.text_widevine_name, R.string.text_playready_name, R.string.text_verimatrix_name, R.string.text_marlin_name, R.string.text_primetime_name)
-        for (i in uuids.indices) {
-            val supported = MediaDrm.isCryptoSchemeSupported(uuids[i])
+        val names = titles.map { getString(it) }
+
+        actions.addAll(uuids.zip(names).map {
+            val supported = MediaDrm.isCryptoSchemeSupported(it.first)
             val subActions = ArrayList<GuidedAction>()
 
-            try {
-                val mediaDrm = MediaDrm(uuids[i])
-                subActions.addAll(getMediaDrmSubActions(mediaDrm))
+            if (supported) {
+                try {
+                    val mediaDrm = MediaDrm(it.first)
+                    subActions.addAll(getMediaDrmSubActions(mediaDrm))
 
-                if (Constants.WIDEVINE_UUID === uuids[i]) {
-                    subActions.addAll(getWidevineSubActions(mediaDrm))
+                    if (Constants.WIDEVINE_UUID === it.first) {
+                        subActions.addAll(getWidevineSubActions(mediaDrm))
+                    }
+
+                } catch (e: UnsupportedSchemeException) {
+                    e.printStackTrace()
                 }
-
-            } catch (e: UnsupportedSchemeException) {
-                e.printStackTrace()
             }
 
-            val infoOnly = subActions.isNullOrEmpty()
-            actions.add(GuidedAction.Builder(activity)
+            val infoOnly = subActions.isEmpty()
+            GuidedAction.Builder(activity)
                     .infoOnly(infoOnly)
                     .subActions(if (infoOnly) null else subActions)
-                    .title(getString(titles[i]))
+                    .title(it.second)
                     .description(if (supported) getString(R.string.text_supported) else getString(R.string.text_not_supported))
-                    .build())
-        }
+                    .build()
+        })
     }
 
     companion object {
