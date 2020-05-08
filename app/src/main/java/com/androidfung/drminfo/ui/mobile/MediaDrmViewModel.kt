@@ -26,16 +26,24 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
         val map = ArrayMap<String, Any>()
         try {
             val mediaDrmKeys = getApplication<Application>().resources.getStringArray(R.array.mediadrm_string_property_keys)
-            for (mediaDrmKey in mediaDrmKeys) {
-                val value = mediaDrm.getPropertyString(mediaDrmKey)
-                map[mediaDrmKey] = value
+            mediaDrmKeys.forEach {
+                map[it] = mediaDrm.getPropertyString(it)
             }
 
+//            for (mediaDrmKey in mediaDrmKeys) {
+//                val value = mediaDrm.getPropertyString(mediaDrmKey)
+//                map[mediaDrmKey] = value
+//            }
+
             val mediaDrmKeys2 = getApplication<Application>().resources.getStringArray(R.array.mediadrm_bytearray_property_keys)
-            for (mediaDrmKey in mediaDrmKeys2) {
-                val value = mediaDrm.getPropertyByteArray(mediaDrmKey)
-                map[mediaDrmKey] = Util.formatByteArray(value)
+            mediaDrmKeys2.forEach {
+                map[it] = Util.formatByteArray(mediaDrm.getPropertyByteArray(it))
+
             }
+//            for (mediaDrmKey in mediaDrmKeys2) {
+//                val value = mediaDrm.getPropertyByteArray(mediaDrmKey)
+//                map[mediaDrmKey] = Util.formatByteArray(value)
+//            }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 with(mediaDrm) {

@@ -14,12 +14,17 @@ class WidevineViewModel(application: Application?) : MediaDrmViewModel(applicati
 
         try {
             val wvKeys = getApplication<Application>().resources.getStringArray(R.array.widevine_string_property_keys)
-            for (wvKey in wvKeys) {
-                val value = mediaDrm.getPropertyString(wvKey)
-                if (map[wvKey] == null) {
-                    map[wvKey] = value
-                }
+
+            wvKeys.forEach {
+                map[it] = mediaDrm.getPropertyString(it)
             }
+
+//            for (wvKey in wvKeys) {
+//                val value = mediaDrm.getPropertyString(wvKey)
+//                if (map[wvKey] == null) {
+//                    map[wvKey] = value
+//                }
+//            }
 
         } catch (e: UnsupportedSchemeException) {
             e.printStackTrace()
