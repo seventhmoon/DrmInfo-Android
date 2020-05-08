@@ -27,25 +27,20 @@ class InfoViewModel : ViewModel() {
             map["abis"] = formatStringArray(Build.SUPPORTED_ABIS)
         }
 
-        val mediaCodecList = MediaCodecList(MediaCodecList.REGULAR_CODECS)
-        val mediaCodecInfo = mediaCodecList.codecInfos
+        if (SDK_INT >= Build.VERSION_CODES.Q) {
+            val mediaCodecList = MediaCodecList(MediaCodecList.REGULAR_CODECS)
+            val mediaCodecInfo = mediaCodecList.codecInfos
 
-        val supportedHardwareAcceleratedDecodeType = TreeSet<String>()
+            val supportedHardwareAcceleratedDecodeType = TreeSet<String>()
 
-        mediaCodecInfo.iterator().forEach{
-            if (Build.VERSION.SDK_INT >= 29){
+            mediaCodecInfo.forEach {
                 if (!it.isEncoder && it.isHardwareAccelerated) {
-//                    Log.d("InfoViewModel", it.canonicalName + "\t" + it.isHardwareAccelerated)
-
-                    it.supportedTypes.iterator().forEach { supportedType ->
-//                        Log.d("InfoViewModel", supportedType.toString())
-                        supportedHardwareAcceleratedDecodeType.add(supportedType.toString())
-                    }
+                    supportedHardwareAcceleratedDecodeType.addAll(it.supportedTypes)
                 }
             }
-        }
 
-        map["hardwareAcceleratedType"] = supportedHardwareAcceleratedDecodeType
+            map["hardwareAcceleratedType"] = supportedHardwareAcceleratedDecodeType
+        }
 
         it.value = map
     }
