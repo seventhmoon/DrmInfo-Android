@@ -5,7 +5,6 @@ import android.media.MediaDrm
 import android.media.UnsupportedSchemeException
 import android.os.Build
 import android.util.ArrayMap
-import android.util.Log
 import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -30,19 +29,10 @@ abstract class MediaDrmViewModel protected constructor(application: Application?
                 map[it] = mediaDrm.getPropertyString(it)
             }
 
-//            for (mediaDrmKey in mediaDrmKeys) {
-//                val value = mediaDrm.getPropertyString(mediaDrmKey)
-//                map[mediaDrmKey] = value
-//            }
-
-            val mediaDrmKeys2 = getApplication<Application>().resources.getStringArray(R.array.mediadrm_bytearray_property_keys)
-            mediaDrmKeys2.forEach {
-                map[it] = Util.formatByteArray(mediaDrm.getPropertyByteArray(it))
-
-            }
-//            for (mediaDrmKey in mediaDrmKeys2) {
-//                val value = mediaDrm.getPropertyByteArray(mediaDrmKey)
-//                map[mediaDrmKey] = Util.formatByteArray(value)
+            //Not in use
+//            val mediaDrmKeys2 = getApplication<Application>().resources.getStringArray(R.array.mediadrm_bytearray_property_keys)
+//            mediaDrmKeys2.forEach {
+//                map[it] = Util.formatByteArray(mediaDrm.getPropertyByteArray(it))
 //            }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
