@@ -5,11 +5,9 @@
 
     <data>
 
-        <import
-            type="android.view.View" />
+        <import type="android.view.View" />
 
-        <import
-            type="android.text.TextUtils" />
+        <import type="android.text.TextUtils" />
 
         <variable
             name="properties"
@@ -17,19 +15,20 @@
 
         <variable
             name="handler"
-            type="com.androidfung.drminfo.ui.mobile.MyHandlers"/>
+            type="com.androidfung.drminfo.ui.mobile.MyHandlers" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/viewgroup_wvcontainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <TextView
             android:id="@+id/tv_label_systemid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:singleLine="true"
             android:text="@string/widevine_string_property_name_systemId"
             android:textAppearance="?attr/textAppearanceBody2"
@@ -42,7 +41,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:text='@{properties[(@string/widevine_string_property_key_systemId)] ?? "-"}'
             android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
@@ -56,7 +55,7 @@
             android:id="@+id/tv_label_securitylevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:singleLine="true"
             android:text="@string/widevine_string_property_name_securityLevel"
             android:textAppearance="?attr/textAppearanceBody2"
@@ -69,7 +68,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:text='@{properties[(@string/widevine_string_property_key_securityLevel)] ?? "-"}'
             android:textAlignment="viewEnd"
 
@@ -84,7 +83,7 @@
             android:id="@+id/tv_label_maxhdcplevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:singleLine="true"
             android:text="@string/widevine_string_property_name_maxHdcpLevel"
             android:textAppearance="?attr/textAppearanceBody2"
@@ -97,7 +96,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:text='@{properties[(@string/widevine_string_property_key_maxHdcpLevel)] ?? "-"}'
             android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
@@ -111,7 +110,7 @@
             android:id="@+id/tv_label_hdcplevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:singleLine="true"
             android:text="@string/widevine_string_property_name_hdcpLevel"
             android:textAppearance="?attr/textAppearanceBody2"
@@ -124,7 +123,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:text='@{properties[(@string/widevine_string_property_key_hdcpLevel)] ?? "-"}'
             android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
@@ -138,7 +137,7 @@
             android:id="@+id/tv_label_maxnumberofsessions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:singleLine="true"
             android:text="@string/widevine_string_property_name_maxNumberOfSessions"
             android:textAppearance="?attr/textAppearanceBody2"
@@ -151,7 +150,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:text='@{properties[(@string/widevine_string_property_key_maxNumberOfSessions)] ?? "-"}'
             android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
@@ -166,7 +165,7 @@
             android:id="@+id/tv_label_oemcryptoversion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:singleLine="true"
             android:text="@string/widevine_string_property_name_oemCryptoApiVersion"
             android:textAppearance="?attr/textAppearanceBody2"
@@ -180,7 +179,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:text='@{properties[(@string/widevine_string_property_key_oemCryptoApiVersion)] ?? "-"}'
             android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
