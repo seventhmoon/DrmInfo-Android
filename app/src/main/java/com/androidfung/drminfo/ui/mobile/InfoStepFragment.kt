@@ -13,8 +13,6 @@ import androidx.leanback.widget.GuidanceStylist.Guidance
 import androidx.leanback.widget.GuidedAction
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
-import java.util.*
-import kotlin.collections.ArrayList
 
 class InfoStepFragment : GuidedStepSupportFragment() {
     override fun onCreateGuidance(savedInstanceState: Bundle?): Guidance {
@@ -142,8 +140,6 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                     .description(if (supported) getString(R.string.text_supported) else getString(R.string.text_not_supported))
                     .build()
         })
-
-
     }
 
     companion object {
