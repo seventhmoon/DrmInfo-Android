@@ -13,8 +13,6 @@ import androidx.leanback.widget.GuidanceStylist.Guidance
 import androidx.leanback.widget.GuidedAction
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
-import java.util.*
-import kotlin.collections.ArrayList
 
 class InfoStepFragment : GuidedStepSupportFragment() {
     override fun onCreateGuidance(savedInstanceState: Bundle?): Guidance {
@@ -24,22 +22,25 @@ class InfoStepFragment : GuidedStepSupportFragment() {
         return Guidance(title, description, null, icon)
     }
 
+    private fun getPropertyString(mediaDrm: MediaDrm, key: String) : String? {
+        try {
+            return mediaDrm.getPropertyString(key)
+        } catch (ex: IllegalStateException) {
+            Log.d(TAG, ex.toString())
+        } catch (ex: IllegalArgumentException) {
+            Log.d(TAG, ex.toString())
+        }
+        return null
+    }
+
     private fun getSubActions(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>): List<GuidedAction> {
         val drmStringValue = drmStringKeys.mapNotNull {
-            try {
-                mediaDrm.getPropertyString(it)
-            } catch (ex: IllegalStateException) {
-                Log.d(TAG, ex.toString())
-                null
-            } catch (ex: IllegalArgumentException) {
-                Log.d(TAG, ex.toString())
-                null
-            }
+            getPropertyString(mediaDrm,it)
         }
 
         return drmStringNames.zip(drmStringValue)
                 .filter {
-                    !it.second.toString().isBlank()
+                    !it.second.isBlank()
                 }.map {
                     GuidedAction.Builder(activity)
                             .infoOnly(true)
@@ -83,13 +84,12 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                                     .build()
                         })
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val supportedAbis = Build.SUPPORTED_ABIS
             actions.add(GuidedAction.Builder(activity)
                     .infoOnly(true)
                     .title(getString(R.string.text_abi))
-                    .description(Arrays.toString(supportedAbis).replace("[", "").replace("]", ""))
+                    .description(supportedAbis!!.contentToString().replace("[", "").replace("]", ""))
                     .build())
         }
 

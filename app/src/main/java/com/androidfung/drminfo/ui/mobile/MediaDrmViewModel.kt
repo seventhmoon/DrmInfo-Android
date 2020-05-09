@@ -21,7 +21,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application)
         MutableLiveData<ObservableArrayMap<String, Any>>().also(::prepareProperties)
     }
 
-    protected fun getPropertyString(key: String): String?{
+    protected fun getPropertyString(key: String): String? {
         try {
             return mediaDrm?.getPropertyString(key)
         } catch (ignored: IllegalArgumentException) {
@@ -71,7 +71,6 @@ abstract class MediaDrmViewModel protected constructor(application: Application)
     fun getProperties(): LiveData<ObservableArrayMap<String, Any>> {
         return properties
     }
-
 
     @Suppress("DEPRECATION")
     override fun onCleared() {
