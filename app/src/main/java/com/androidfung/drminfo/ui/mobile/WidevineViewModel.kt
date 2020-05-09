@@ -2,34 +2,18 @@ package com.androidfung.drminfo.ui.mobile
 
 import android.app.Application
 import android.media.MediaDrm
-import android.media.UnsupportedSchemeException
-import android.util.ArrayMap
+import androidx.collection.SimpleArrayMap
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
 
-class WidevineViewModel(application: Application?) : MediaDrmViewModel(application) {
+class WidevineViewModel(application: Application) : MediaDrmViewModel(application) {
 
-    override fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm): ArrayMap<String, Any> {
+    override fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm): SimpleArrayMap<String, Any> {
         val map = super.obtainPropertiesFromMediaDrm(mediaDrm)
+        val wvKeys = getApplication<Application>().resources.getStringArray(R.array.widevine_string_property_keys)
 
-        try {
-            val wvKeys = getApplication<Application>().resources.getStringArray(R.array.widevine_string_property_keys)
-
-            wvKeys.forEach {
-                map[it] = mediaDrm.getPropertyString(it)
-            }
-
-//            for (wvKey in wvKeys) {
-//                val value = mediaDrm.getPropertyString(wvKey)
-//                if (map[wvKey] == null) {
-//                    map[wvKey] = value
-//                }
-//            }
-
-        } catch (e: UnsupportedSchemeException) {
-            e.printStackTrace()
-        } catch (ignored: IllegalArgumentException) {
-        } catch (ignored: IllegalStateException) {
+        wvKeys.forEach {
+            map.put(it, getPropertyString(it))
         }
 
         return map
