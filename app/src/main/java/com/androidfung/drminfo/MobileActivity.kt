@@ -1,5 +1,9 @@
 package com.androidfung.drminfo
 
+import android.app.Activity
+import android.app.ActivityManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -9,6 +13,7 @@ import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityManagerCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
@@ -44,14 +49,24 @@ class MobileActivity : AppCompatActivity() {
         val playreadyViewModel: PlayreadyViewModel by viewModels()
         playreadyViewModel.getProperties().observe(this, Observer(binding::setPlayreadyProperties))
 
+        val wiseplayViewModel: WiseplayViewModel by viewModels()
+        wiseplayViewModel.getProperties().observe(this, Observer(binding::setWiseplayProperties))
+
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
-        val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
-        val adView = findViewById<AdView>(R.id.adView)
-        MobileAds.initialize(this){}
+        val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager;
+        val lowRam = ActivityManagerCompat.isLowRamDevice(activityManager);
+        val runningTestHarness = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ActivityManager.isRunningInUserTestHarness() else ActivityManager.isRunningInTestHarness())
+        val monkey = ActivityManager.isUserAMonkey()
 
-        if (bannerAdHolder != null && adView != null){
-            loadAdMobBannerAd(adView, bannerAdHolder)
+        if (!lowRam && !runningTestHarness && !monkey) {
+            val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
+            val adView = findViewById<AdView>(R.id.adView)
+            MobileAds.initialize(this) {}
+
+            if (bannerAdHolder != null && adView != null) {
+                loadAdMobBannerAd(adView, bannerAdHolder)
+            }
         }
     }
 
