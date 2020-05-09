@@ -13,6 +13,8 @@ import androidx.leanback.widget.GuidanceStylist.Guidance
 import androidx.leanback.widget.GuidedAction
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
+import java.util.*
+import kotlin.collections.ArrayList
 
 class InfoStepFragment : GuidedStepSupportFragment() {
     override fun onCreateGuidance(savedInstanceState: Bundle?): Guidance {
@@ -67,7 +69,8 @@ class InfoStepFragment : GuidedStepSupportFragment() {
     @SuppressLint("ObsoleteSdkInt")
     override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
         //info section here
-        val infoTitles = intArrayOf(R.string.text_brand, R.string.text_product, R.string.text_model, R.string.text_display, R.string.text_type, R.string.text_fingerprint, R.string.text_sdk_level, R.string.text_hdr, R.string.text_wide_color)
+        val infoTitles = intArrayOf(R.string.text_brand, R.string.text_product, R.string.text_model, R.string.text_display,
+                R.string.text_type, R.string.text_fingerprint, R.string.text_sdk_level, R.string.text_hdr, R.string.text_wide_color)
         val descriptions = arrayOf(Build.BRAND, Build.PRODUCT, Build.MODEL,
                 Build.DISPLAY, Build.TYPE, Build.FINGERPRINT,
                 Build.VERSION.SDK_INT.toString(),
@@ -109,8 +112,8 @@ class InfoStepFragment : GuidedStepSupportFragment() {
             }
         }
 
-        val uuids = arrayOf(Constants.CLEARKEY_UUID, Constants.WIDEVINE_UUID, Constants.PLAYREADY_UUID, Constants.VERIMATRIX_UUID, Constants.MARLIN_UUID, Constants.PRIMETIME_UUID)
-        val titles = intArrayOf(R.string.text_clearkey_name, R.string.text_widevine_name, R.string.text_playready_name, R.string.text_verimatrix_name, R.string.text_marlin_name, R.string.text_primetime_name)
+        val uuids = arrayOf(Constants.CLEARKEY_UUID, Constants.WIDEVINE_UUID, Constants.PLAYREADY_UUID, Constants.VERIMATRIX_UUID, Constants.MARLIN_UUID, Constants.PRIMETIME_UUID, Constants.WISEPLAY_UUID)
+        val titles = intArrayOf(R.string.text_clearkey_name, R.string.text_widevine_name, R.string.text_playready_name, R.string.text_verimatrix_name, R.string.text_marlin_name, R.string.text_primetime_name, R.string.text_wiseplay_name)
         val names = titles.map { getString(it) }
 
         actions.addAll(uuids.zip(names).map {
@@ -139,6 +142,8 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                     .description(if (supported) getString(R.string.text_supported) else getString(R.string.text_not_supported))
                     .build()
         })
+
+
     }
 
     companion object {

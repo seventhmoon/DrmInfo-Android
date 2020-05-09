@@ -44,6 +44,9 @@ class MobileActivity : AppCompatActivity() {
         val playreadyViewModel: PlayreadyViewModel by viewModels()
         playreadyViewModel.getProperties().observe(this, Observer(binding::setPlayreadyProperties))
 
+        val wiseplayViewModel: WiseplayViewModel by viewModels()
+        wiseplayViewModel.getProperties().observe(this, Observer(binding::setWiseplayProperties))
+
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
