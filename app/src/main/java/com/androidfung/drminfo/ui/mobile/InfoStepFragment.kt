@@ -68,10 +68,10 @@ class InfoStepFragment : GuidedStepSupportFragment() {
     override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
         //info section here
         val infoTitles = intArrayOf(R.string.text_brand, R.string.text_product, R.string.text_model, R.string.text_display,
-                R.string.text_type, R.string.text_fingerprint, R.string.text_sdk_level, R.string.text_hdr, R.string.text_wide_color)
+                R.string.text_type, R.string.text_fingerprint, R.string.text_sdk_level,
+                R.string.text_hdr, R.string.text_wide_color)
         val descriptions = arrayOf(Build.BRAND, Build.PRODUCT, Build.MODEL,
-                Build.DISPLAY, Build.TYPE, Build.FINGERPRINT,
-                Build.VERSION.SDK_INT.toString(),
+                Build.DISPLAY, Build.TYPE, Build.FINGERPRINT, Build.VERSION.SDK_INT.toString(),
                 if (this.resources.getBoolean(R.bool.is_highdr)) getString(R.string.text_supported) else getString(R.string.text_not_supported),
                 if (this.resources.getBoolean(R.bool.is_widecg)) getString(R.string.text_supported) else getString(R.string.text_not_supported))
 
@@ -86,11 +86,12 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                         })
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val supportedAbis = Build.SUPPORTED_ABIS
             actions.add(GuidedAction.Builder(activity)
                     .infoOnly(true)
                     .title(getString(R.string.text_abi))
-                    .description(supportedAbis!!.contentToString().replace("[", "").replace("]", ""))
+                    .description(Build.SUPPORTED_ABIS!!.contentToString()
+//                            .replace("^.|.$", ""))
+                            .replace("[", "").replace("]", ""))
                     .build())
         }
 
@@ -105,7 +106,8 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                 actions.add(GuidedAction.Builder(activity)
                         .infoOnly(true)
                         .title(getString(R.string.text_hw_decode_type))
-                        .description(supportedHardwareAcceleratedDecodeType.toString().replace("[", "").replace("]", ""))
+                        .description(supportedHardwareAcceleratedDecodeType.toString()
+                                .replace("[", "").replace("]", ""))
                         .build())
             }
         }

@@ -23,6 +23,10 @@
             name="playreadyProperties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
 
+        <variable
+            name="wiseplayProperties"
+            type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
+
         <variable name="handler" type="com.androidfung.drminfo.ui.mobile.MyHandlers"/>
 
     </data>
@@ -56,7 +60,8 @@
             bind:infoProperties="@{infoProperties}"
             bind:clearkeyProperties="@{clearkeyProperties}"
             bind:playreadyProperties="@{playreadyProperties}"
-            bind:widevineProperties="@{widevineProperties}" />
+            bind:widevineProperties="@{widevineProperties}"
+            bind:wiseplayProperties="@{wiseplayProperties}"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
