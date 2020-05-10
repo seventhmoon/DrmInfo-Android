@@ -37,7 +37,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
 
     private fun getSubActions(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>): List<GuidedAction> {
         val drmStringValue = drmStringKeys.mapNotNull {
-            getPropertyString(mediaDrm,it)
+            getPropertyString(mediaDrm, it)
         }
 
         return drmStringNames.zip(drmStringValue)

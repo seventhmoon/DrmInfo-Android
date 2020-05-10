@@ -1,6 +1,5 @@
 package com.androidfung.drminfo
 
-import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
@@ -9,6 +8,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewStub
 import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
@@ -60,11 +60,12 @@ class MobileActivity : AppCompatActivity() {
         val monkey = ActivityManager.isUserAMonkey()
 
         if (!lowRam && !runningTestHarness && !monkey) {
-            val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
-            val adView = findViewById<AdView>(R.id.adView)
-            MobileAds.initialize(this) {}
+            val viewStub = findViewById<ViewStub>(R.id.viewstub_ad_container)
 
-            if (bannerAdHolder != null && adView != null) {
+            if (viewStub != null) {
+                val bannerAdHolder : ViewGroup = viewStub.inflate() as ViewGroup
+                val adView = findViewById<AdView>(R.id.adView)
+                MobileAds.initialize(this) {}
                 loadAdMobBannerAd(adView, bannerAdHolder)
             }
         }
