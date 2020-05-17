@@ -77,8 +77,12 @@
                 bind:handler="@{handler}"
                 bind:properties="@{wiseplayProperties}" />
 
-            <include
-                layout="@layout/fragment_ad" />
+            <ViewStub
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/viewstub_ad_container"
+                android:inflatedId="@+id/container_ad"
+                android:layout="@layout/fragment_ad"/>
 
             <Space
                 android:layout_width="match_parent"

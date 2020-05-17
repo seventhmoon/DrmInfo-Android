@@ -1,14 +1,19 @@
 package com.androidfung.drminfo
 
+import android.app.ActivityManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewStub
 import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityManagerCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
@@ -49,12 +54,20 @@ class MobileActivity : AppCompatActivity() {
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
-        val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
-        val adView = findViewById<AdView>(R.id.adView)
-        MobileAds.initialize(this){}
+        val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager;
+        val lowRam = ActivityManagerCompat.isLowRamDevice(activityManager);
+        val runningTestHarness = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ActivityManager.isRunningInUserTestHarness() else ActivityManager.isRunningInTestHarness())
+        val monkey = ActivityManager.isUserAMonkey()
 
-        if (bannerAdHolder != null && adView != null){
-            loadAdMobBannerAd(adView, bannerAdHolder)
+        if (!lowRam && !runningTestHarness && !monkey) {
+            val viewStub = findViewById<ViewStub>(R.id.viewstub_ad_container)
+
+            if (viewStub != null) {
+                val bannerAdHolder : ViewGroup = viewStub.inflate() as ViewGroup
+                val adView = findViewById<AdView>(R.id.adView)
+                MobileAds.initialize(this) {}
+                loadAdMobBannerAd(adView, bannerAdHolder)
+            }
         }
     }
 

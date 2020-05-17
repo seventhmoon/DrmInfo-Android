@@ -35,7 +35,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
 
     private fun getSubActions(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>): List<GuidedAction> {
         val drmStringValue = drmStringKeys.mapNotNull {
-            getPropertyString(mediaDrm,it)
+            getPropertyString(mediaDrm, it)
         }
 
         return drmStringNames.zip(drmStringValue)
@@ -90,7 +90,6 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                     .infoOnly(true)
                     .title(getString(R.string.text_abi))
                     .description(Build.SUPPORTED_ABIS!!.contentToString()
-//                            .replace("^.|.$", ""))
                             .replace("[", "").replace("]", ""))
                     .build())
         }
