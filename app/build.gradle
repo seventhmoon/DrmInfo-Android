@@ -18,6 +18,7 @@ android {
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
+        resConfig "en"
         buildFeatures {
             viewBinding = false
             dataBinding = true
