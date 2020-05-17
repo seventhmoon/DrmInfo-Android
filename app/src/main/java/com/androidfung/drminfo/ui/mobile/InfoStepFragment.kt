@@ -13,7 +13,6 @@ import androidx.leanback.widget.GuidanceStylist.Guidance
 import androidx.leanback.widget.GuidedAction
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
-import java.util.*
 import kotlin.collections.ArrayList
 
 class InfoStepFragment : GuidedStepSupportFragment() {
@@ -25,24 +24,25 @@ class InfoStepFragment : GuidedStepSupportFragment() {
     }
 
     private fun getPropertyString(mediaDrm: MediaDrm, key: String) : String? {
-        try {
-            return mediaDrm.getPropertyString(key)
+        return try {
+            mediaDrm.getPropertyString(key)
         } catch (ex: IllegalStateException) {
             Log.d(TAG, ex.toString())
+            null
         } catch (ex: IllegalArgumentException) {
             Log.d(TAG, ex.toString())
+            null
         }
-        return null
     }
 
     private fun getSubActions(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>): List<GuidedAction> {
-        val drmStringValue = drmStringKeys.mapNotNull {
+        val drmStringValue = drmStringKeys.map {
             getPropertyString(mediaDrm, it)
         }
 
         return drmStringNames.zip(drmStringValue)
                 .filter {
-                    !it.second.isBlank()
+                    !it.second.isNullOrBlank()
                 }.map {
                     GuidedAction.Builder(activity)
                             .infoOnly(true)
@@ -78,7 +78,8 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                 if (this.resources.getBoolean(R.bool.is_widecg)) getString(R.string.text_supported) else getString(R.string.text_not_supported))
 
         actions.addAll(
-                infoTitles.zip(descriptions).filter { !it.second.isNullOrBlank() }
+                infoTitles.zip(descriptions)
+                        .filter { !it.second.isNullOrBlank() }
                         .map {
                             GuidedAction.Builder(activity)
                                     .infoOnly(true)
@@ -142,7 +143,6 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                     .description(if (supported) getString(R.string.text_supported) else getString(R.string.text_not_supported))
                     .build()
         })
-
 
     }
 
