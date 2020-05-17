@@ -13,8 +13,8 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 238
-        versionName '1.1.4.200508'
+        versionCode 240
+        versionName '1.1.4.200517'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -22,19 +22,22 @@ android {
             viewBinding = false
             dataBinding = true
         }
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-
         release {
             minifyEnabled true
             shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
+            versionNameSuffix ".debug"
+            debuggable true
             minifyEnabled false
             shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -83,12 +86,13 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    annotationProcessor 'androidx.lifecycle:lifecycle-common-java8:2.2.0'
-
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
 
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    annotationProcessor 'androidx.lifecycle:lifecycle-common-java8:2.2.0'
 
 }
 

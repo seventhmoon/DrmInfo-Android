@@ -5,15 +5,14 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewStub
+import android.view.*
+import android.widget.ProgressBar
 import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityManagerCompat
+import androidx.core.widget.ContentLoadingProgressBar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
@@ -26,7 +25,6 @@ class MobileActivity : AppCompatActivity() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var binding: ActivityMobileBinding
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -38,7 +36,7 @@ class MobileActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         val infoViewModel: InfoViewModel by viewModels()
-        infoViewModel.getProperties().observe(this, Observer (binding::setInfoProperties))
+        infoViewModel.getProperties().observe(this, Observer(binding::setInfoProperties))
 
         val clearKeyViewModel: ClearKeyViewModel by viewModels()
         clearKeyViewModel.getProperties().observe(this, Observer(binding::setClearkeyProperties))
@@ -63,7 +61,7 @@ class MobileActivity : AppCompatActivity() {
             val viewStub = findViewById<ViewStub>(R.id.viewstub_ad_container)
 
             if (viewStub != null) {
-                val bannerAdHolder : ViewGroup = viewStub.inflate() as ViewGroup
+                val bannerAdHolder: ViewGroup = viewStub.inflate() as ViewGroup
                 val adView = findViewById<AdView>(R.id.adView)
                 MobileAds.initialize(this) {}
                 loadAdMobBannerAd(adView, bannerAdHolder)
@@ -76,7 +74,7 @@ class MobileActivity : AppCompatActivity() {
         return true
     }
 
-    private fun loadAdMobBannerAd(adView: AdView, bannerAdHolder : ViewGroup) {
+    private fun loadAdMobBannerAd(adView: AdView, bannerAdHolder: ViewGroup) {
         adView.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
@@ -109,7 +107,9 @@ class MobileActivity : AppCompatActivity() {
                 Log.i("Ads", "onAdClosed")
             }
         }
-        adView.loadAd(AdRequest.Builder().build())
+
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
     }
 
     companion object {
