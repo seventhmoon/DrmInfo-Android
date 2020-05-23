@@ -54,15 +54,12 @@ class MobileActivity : AppCompatActivity() {
 
         val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager;
         val lowRam = ActivityManagerCompat.isLowRamDevice(activityManager);
-        val runningTestHarness = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ActivityManager.isRunningInUserTestHarness() else ActivityManager.isRunningInTestHarness())
-        val monkey = ActivityManager.isUserAMonkey()
 
-        if (!lowRam && !runningTestHarness && !monkey) {
-            val viewStub = findViewById<ViewStub>(R.id.viewstub_ad_container)
+        if (!lowRam) {
 
-            if (viewStub != null) {
-                val bannerAdHolder: ViewGroup = viewStub.inflate() as ViewGroup
+                val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
                 val adView = findViewById<AdView>(R.id.adView)
+            if (bannerAdHolder != null && adView != null) {
                 MobileAds.initialize(this) {}
                 loadAdMobBannerAd(adView, bannerAdHolder)
             }
