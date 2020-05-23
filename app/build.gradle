@@ -13,8 +13,8 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 240
-        versionName '1.1.4.200517'
+        versionCode 241
+        versionName '1.1.5.200523'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -76,6 +76,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.2.0'
 
     implementation 'com.google.android:flexbox:1.1.1'
     implementation 'com.google.android.material:material:1.1.0'

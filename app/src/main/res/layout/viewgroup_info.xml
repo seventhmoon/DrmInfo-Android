@@ -22,374 +22,237 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_label_brand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
-            android:layout_marginEnd="8dp"
+
+            android:layout_marginTop="@dimen/listitem_padding"
+
             android:text="@string/text_brand"
-            android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_value_brand"
-            app:layout_constraintEnd_toStartOf="@+id/tv_value_brand"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textAppearance="?attr/textAppearanceCaption" />
 
         <TextView
             android:id="@+id/tv_value_brand"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:text="@{Build.BRAND}"
-            android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_label_brand"
-            app:layout_constraintTop_toTopOf="parent"
             tools:text="Google" />
-
         <TextView
             android:id="@+id/tv_label_model"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="@dimen/listitem_padding"
             android:text="@string/text_model"
-            android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility="gone"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_value_model"
-            app:layout_constraintEnd_toStartOf="@+id/tv_value_model"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_brand" />
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_value_model"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:text="@{Build.MODEL}"
-            android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="gone"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_label_model"
-            app:layout_constraintTop_toBottomOf="@+id/tv_value_brand"
             tools:text="Pixel" />
-
 
         <TextView
             android:id="@+id/tv_label_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="@dimen/listitem_padding"
             android:text="@string/text_hardware"
-            android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_value_product"
-            app:layout_constraintEnd_toStartOf="@+id/tv_value_product"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_model" />
+            android:textAppearance="?attr/textAppearanceCaption" />
 
         <TextView
             android:id="@+id/tv_value_product"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:singleLine="true"
             android:text="@{Build.HARDWARE}"
-            android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_label_product"
-            app:layout_constraintTop_toBottomOf="@+id/tv_value_model"
             tools:text="sailfish" />
-
 
         <TextView
             android:id="@+id/tv_label_display"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
-            android:layout_marginEnd="8dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/listitem_padding"
             android:text="@string/text_display"
-            android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_value_display"
-            app:layout_constraintEnd_toStartOf="@+id/tv_value_display"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_product" />
+            android:textAppearance="?attr/textAppearanceCaption" />
 
         <TextView
             android:id="@+id/tv_value_display"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:onLongClick="@{handler::onLongClick}"
             android:text="@{Build.DISPLAY}"
-            android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_label_display"
-            app:layout_constraintTop_toBottomOf="@+id/tv_value_product"
             tools:text="PPR1" />
 
         <TextView
             android:id="@+id/tv_label_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="@dimen/listitem_padding"
             android:text="@string/text_type"
-            android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_value_type"
-            app:layout_constraintEnd_toStartOf="@+id/tv_value_type"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_display" />
+            android:textAppearance="?attr/textAppearanceCaption" />
 
         <TextView
             android:id="@+id/tv_value_type"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:text="@{Build.TYPE}"
-            android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_label_type"
-            app:layout_constraintTop_toBottomOf="@+id/tv_value_display"
             tools:text="user" />
 
         <TextView
             android:id="@+id/tv_label_fingerprint"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
-            android:layout_marginEnd="8dp"
+            android:layout_height="wrap_content"
             android:text="@string/text_fingerprint"
-            android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_value_fingerprint"
-            app:layout_constraintEnd_toStartOf="@+id/tv_value_fingerprint"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_type" />
+            android:layout_marginTop="@dimen/listitem_padding"
+            android:textAppearance="?attr/textAppearanceCaption" />
 
         <TextView
             android:id="@+id/tv_value_fingerprint"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:onLongClick="@{handler::onLongClick}"
             android:text="@{Build.FINGERPRINT}"
-            android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_label_fingerprint"
-            app:layout_constraintTop_toBottomOf="@+id/tv_value_type"
             tools:text="google/sdk_gphone_x86_64/generic_x86_64_arm64:10/RSR1.200417.003/6415074:user/release-keys" />
-
 
         <TextView
             android:id="@+id/tv_label_sdklevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
-            android:layout_marginEnd="8dp"
             android:text="@string/text_sdk_level"
-            android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintEnd_toStartOf="@+id/tv_value_sdklevel"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_fingerprint" />
+            android:layout_marginTop="@dimen/listitem_padding"
+            android:textAppearance="?attr/textAppearanceCaption" />
 
         <TextView
             android:id="@+id/tv_value_sdklevel"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:ellipsize="middle"
             android:singleLine="true"
             android:text="@{String.valueOf(Build.VERSION.SDK_INT)}"
-            android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_label_sdklevel"
-            app:layout_constraintTop_toBottomOf="@+id/tv_value_fingerprint"
             tools:text="1" />
-
 
         <TextView
             android:id="@+id/tv_label_abis"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
-            android:layout_marginEnd="8dp"
             android:text="@string/text_abi"
-            android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility="@{Build.VERSION.SDK_INT >= 21?View.VISIBLE:View.GONE}"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintEnd_toStartOf="@+id/tv_value_abis"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_sdklevel" />
+            android:layout_marginTop="@dimen/listitem_padding"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:visibility="@{Build.VERSION.SDK_INT >= 21?View.VISIBLE:View.GONE}" />
 
         <TextView
             android:id="@+id/tv_value_abis"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:onLongClick="@{handler::onLongClick}"
-            android:text='@{(Build.VERSION.SDK_INT &lt; 21)?"-":java.util.Arrays.toString(Build.SUPPORTED_ABIS).replace("[","").replace("]","").replace(", ", "\n")}'
-            android:textAlignment="viewEnd"
+            android:text='@{(Build.VERSION.SDK_INT &lt; 21)?"-":java.util.Arrays.toString(Build.SUPPORTED_ABIS).replace("[","").replace("]","")}'
             android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{Build.VERSION.SDK_INT >= 21?View.VISIBLE:View.GONE}"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_label_abis"
-            app:layout_constraintTop_toBottomOf="@+id/tv_value_sdklevel"
             tools:text="1" />
 
         <TextView
             android:id="@+id/tv_label_hw_decode_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="@dimen/listitem_padding"
             android:text="@string/text_hw_decode_type"
-            android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility='@{Build.VERSION.SDK_INT >= 29 &amp;&amp; !((Collection)infoProperties["hardwareAcceleratedType"]).isEmpty()?View.VISIBLE:View.GONE}'
-            app:layout_constrainedHeight="true"
-            app:layout_constraintEnd_toStartOf="@+id/tv_value_hw_decode_type"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_value_abis" />
-
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:visibility='@{Build.VERSION.SDK_INT >= 29 &amp;&amp; !((Collection)infoProperties["hardwareAcceleratedType"]).isEmpty()?View.VISIBLE:View.GONE}' />
 
         <TextView
             android:id="@+id/tv_value_hw_decode_type"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:onLongClick="@{handler::onLongClick}"
-            android:text='@{infoProperties["hardwareAcceleratedType"].toString().replace("[","").replace("]","").replace(", ", "\n")}'
-            android:textAlignment="viewEnd"
+            android:text='@{infoProperties["hardwareAcceleratedType"].toString().replace("[","").replace("]","")}'
             android:textAppearance="?attr/textAppearanceBody2"
             android:visibility='@{Build.VERSION.SDK_INT >= 29 &amp;&amp; !((Collection)infoProperties["hardwareAcceleratedType"]).isEmpty()?View.VISIBLE:View.GONE}'
-            app:layout_constrainedHeight="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_label_hw_decode_type"
-            app:layout_constraintTop_toBottomOf="@+id/tv_value_abis"
             tools:text="1" />
 
         <TextView
             android:id="@+id/tv_label_widecg"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
-            android:layout_marginEnd="8dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/listitem_padding"
             android:text="@string/text_wide_color"
-            android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_value_widecg"
-            app:layout_constraintEnd_toStartOf="@+id/tv_value_widecg"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_value_hw_decode_type" />
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}" />
 
         <TextView
             android:id="@+id/tv_value_widecg"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:text="@{(@bool/is_widecg)?@string/text_supported:@string/text_not_supported}"
-            android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_label_widecg"
-            app:layout_constraintTop_toBottomOf="@+id/tv_value_hw_decode_type"
             tools:text="@string/text_supported" />
-
 
         <TextView
             android:id="@+id/tv_label_hdr"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
-            android:layout_marginEnd="8dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/listitem_padding"
             android:text="@string/text_hdr"
-            android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_value_hdr"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_widecg" />
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}" />
 
         <TextView
             android:id="@+id/tv_value_hdr"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:text="@{(@bool/is_highdr)?@string/text_supported:@string/text_not_supported}"
-            android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_label_hdr"
-            app:layout_constraintTop_toBottomOf="@+id/tv_value_widecg"
             tools:text="@string/text_supported" />
 
-        <!--        <TextView-->
-        <!--            android:id="@+id/tv_label_hdr_type"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="0dp"-->
-        <!--            android:layout_marginTop="8dp"-->
-        <!--            android:layout_marginEnd="8dp"-->
-        <!--            android:text="@string/text_hdr_type"-->
-        <!--            android:textAppearance="?attr/textAppearanceBody2"-->
-        <!--            android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}"-->
-        <!--            app:layout_constrainedHeight="true"-->
-        <!--            app:layout_constraintEnd_toStartOf="@+id/tv_value_hdr_type"-->
-        <!--            app:layout_constraintStart_toStartOf="parent"-->
-        <!--            app:layout_constraintTop_toBottomOf="@+id/tv_label_hdr"-->
-        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            />-->
+        <!--        &lt;!&ndash;        <TextView&ndash;&gt;-->
+        <!--        &lt;!&ndash;            android:id="@+id/tv_label_hdr_type"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            android:layout_width="wrap_content"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            android:layout_height="0dp"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            android:layout_marginTop="8dp"&ndash;&gt;-->
+        <!--        &lt;!&ndash;&ndash;&gt;-->
+        <!--        &lt;!&ndash;            android:text="@string/text_hdr_type"&ndash;&gt;-->
+        <!--        &lt;!&ndash;android:textAppearance="?attr/textAppearanceCaption"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            app:layout_constrainedHeight="true"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            app:layout_constraintEnd_toStartOf="@+id/tv_value_hdr_type"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            app:layout_constraintTop_toBottomOf="@+id/tv_label_hdr"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            />&ndash;&gt;-->
 
-        <!--        <TextView-->
-        <!--            android:id="@+id/tv_value_hdr_type"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginTop="8dp"-->
-        <!--            android:text='@{infoProperties["supportedHdrTypes"].toString().replace("{","").replace("}","").replace(", ", "\n")}'-->
-        <!--            android:textAlignment="viewEnd"-->
-        <!--            android:textAppearance="?attr/textAppearanceBody2"-->
-        <!--            android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}"-->
-        <!--            app:layout_constrainedHeight="true"-->
-        <!--            app:layout_constraintStart_toEndOf="@+id/tv_label_hdr_type"-->
-        <!--            app:layout_constraintTop_toBottomOf="@+id/tv_value_hdr"-->
-        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            tools:text="True" />-->
+        <!--        &lt;!&ndash;        <TextView&ndash;&gt;-->
+        <!--        &lt;!&ndash;            android:id="@+id/tv_value_hdr_type"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            android:layout_width="wrap_content"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            android:layout_marginTop="8dp"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            android:text='@{infoProperties["supportedHdrTypes"].toString().replace("{","").replace("}","").replace(", ", "\n")}'&ndash;&gt;-->
+        <!--        &lt;!&ndash;            &ndash;&gt;-->
+        <!--        &lt;!&ndash;android:textAppearance="?attr/textAppearanceCaption"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            app:layout_constrainedHeight="true"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            app:layout_constraintStart_toEndOf="@+id/tv_label_hdr_type"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            app:layout_constraintTop_toBottomOf="@+id/tv_value_hdr"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+        <!--        &lt;!&ndash;            tools:text="True" />&ndash;&gt;-->
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>
