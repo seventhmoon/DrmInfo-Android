@@ -2,17 +2,14 @@ package com.androidfung.drminfo
 
 import android.app.ActivityManager
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.ProgressBar
 import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityManagerCompat
-import androidx.core.widget.ContentLoadingProgressBar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
@@ -56,7 +53,6 @@ class MobileActivity : AppCompatActivity() {
         val lowRam = ActivityManagerCompat.isLowRamDevice(activityManager)
 
         if (!lowRam) {
-
             val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
             val adView = findViewById<AdView>(R.id.adView)
             if (bannerAdHolder != null && adView != null) {
