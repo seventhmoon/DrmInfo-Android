@@ -18,21 +18,20 @@
             type="com.androidfung.drminfo.ui.mobile.MyHandlers" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/viewgroup_mediacontainer"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:orientation="vertical">
+
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="@dimen/listitem_padding"
             android:singleLine="true"
             android:text="@string/mediadrm_string_property_name_vendor"
-            android:textAppearance="?attr/textAppearanceBody2"
+            android:textAppearance="?attr/textAppearanceCaption"
             android:visibility="@{properties[(@string/mediadrm_string_property_key_vendor)] != null ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toStartOf="@+id/textView4"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,9 +40,8 @@
 
         <TextView
             android:id="@+id/textView4"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:text='@{properties[(@string/mediadrm_string_property_key_vendor)] ?? "-"}'
             android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
@@ -57,93 +55,66 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="@dimen/listitem_padding"
             android:singleLine="true"
             android:text="@string/mediadrm_string_property_name_version"
-            android:textAppearance="?attr/textAppearanceBody2"
+            android:textAppearance="?attr/textAppearanceCaption"
             android:visibility="@{properties[(@string/mediadrm_string_property_key_version)] != null ? View.VISIBLE : View.GONE}"
-            app:layout_constraintEnd_toStartOf="@+id/textView5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
             tools:text="Version" />
 
         <TextView
             android:id="@+id/textView5"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:text='@{properties[(@string/mediadrm_string_property_key_version)] ?? "-"}'
             android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{properties[(@string/mediadrm_string_property_key_version)] != null ? View.VISIBLE : View.GONE}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView2"
-            app:layout_constraintTop_toBottomOf="@+id/textView4"
             tools:text="1" />
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
-            android:layout_marginEnd="16dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/listitem_padding"
             android:text="@string/mediadrm_string_property_name_algorithms"
-            android:textAppearance="?attr/textAppearanceBody2"
+            android:textAppearance="?attr/textAppearanceCaption"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/mediadrm_string_property_key_algorithms)]) ? View.GONE : View.VISIBLE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView6"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
             tools:text="Algorithm" />
 
         <TextView
             android:id="@+id/textView6"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:onLongClick="@{handler::onLongClick}"
             android:text='@{properties[(@string/mediadrm_string_property_key_algorithms)] ?? "-"}'
             android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{TextUtils.isEmpty((String) properties[(@string/mediadrm_string_property_key_algorithms)]) ? View.GONE : View.VISIBLE}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView3"
-            app:layout_constraintTop_toBottomOf="@+id/textView5"
             tools:text="AES................" />
-
 
         <TextView
             android:id="@+id/tvDeviceUniqueIdLabel"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
-            android:layout_marginEnd="16dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/listitem_padding"
             android:singleLine="true"
             android:text="@string/mediadrm_bytearray_property_name_deviceuniqueid"
-            android:textAppearance="?attr/textAppearanceBody2"
+            android:textAppearance="?attr/textAppearanceCaption"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvDeviceUniqueIdValue"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3"
             tools:text="Device Unique ID" />
 
         <TextView
             android:id="@+id/tvDeviceUniqueIdValue"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_cell_margin_vertical"
             android:onLongClick="@{handler::onLongClick}"
             android:text='@{properties[(@string/mediadrm_bytearray_property_key_deviceuniqueid)] ?? "-"}'
             android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvDeviceUniqueIdLabel"
-            app:layout_constraintTop_toBottomOf="@+id/textView6"
             tools:text="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+    </LinearLayout>
 </layout>

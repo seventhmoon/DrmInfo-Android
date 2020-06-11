@@ -103,13 +103,18 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                     .map { it.supportedTypes.toList() }
                     .flatten()
                     .toSortedSet()
+                    .map {
+                        GuidedAction.Builder(activity)
+                                .infoOnly(true)
+                                .title(it)
+                                .build()
+                    }
 
-            if (!supportedHardwareAcceleratedDecodeType.isEmpty()) {
+            if (supportedHardwareAcceleratedDecodeType.isNotEmpty()) {
                 actions.add(GuidedAction.Builder(activity)
-                        .infoOnly(true)
+                        .infoOnly(false)
                         .title(getString(R.string.text_hw_decode_type))
-                        .description(supportedHardwareAcceleratedDecodeType.toString()
-                                .replace("[", "").replace("]", ""))
+                        .subActions(supportedHardwareAcceleratedDecodeType)
                         .build())
             }
         }

@@ -42,7 +42,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="middle"
-                android:fontFamily="@font/open_sans"
                 android:singleLine="true"
                 android:text='@{Build.MANUFACTURER + " " + Build.MODEL}'
                 android:textAppearance="?attr/textAppearanceHeadline6"
