@@ -54,7 +54,6 @@ class MobileActivity : AppCompatActivity() {
         val lowRam = ActivityManagerCompat.isLowRamDevice(activityManager)
 
         if (!lowRam) {
-
             val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
             val adView = findViewById<AdView>(R.id.adView)
             if (bannerAdHolder != null && adView != null) {
