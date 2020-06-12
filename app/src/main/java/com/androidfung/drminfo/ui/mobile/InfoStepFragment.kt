@@ -7,13 +7,15 @@ import android.media.UnsupportedSchemeException
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Display
+import android.view.Display.HdrCapabilities.*
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.GuidanceStylist.Guidance
 import androidx.leanback.widget.GuidedAction
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
-import kotlin.collections.ArrayList
 
 class InfoStepFragment : GuidedStepSupportFragment() {
     override fun onCreateGuidance(savedInstanceState: Bundle?): Guidance {
@@ -23,7 +25,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
         return Guidance(title, description, null, icon)
     }
 
-    private fun getPropertyString(mediaDrm: MediaDrm, key: String) : String? {
+    private fun getPropertyString(mediaDrm: MediaDrm, key: String): String? {
         return try {
             mediaDrm.getPropertyString(key)
         } catch (ex: IllegalStateException) {
@@ -70,12 +72,9 @@ class InfoStepFragment : GuidedStepSupportFragment() {
     override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
         //info section here
         val infoTitles = intArrayOf(R.string.text_brand, R.string.text_product, R.string.text_model, R.string.text_display,
-                R.string.text_type, R.string.text_fingerprint, R.string.text_sdk_level,
-                R.string.text_hdr, R.string.text_wide_color)
+                R.string.text_type, R.string.text_fingerprint, R.string.text_sdk_level)
         val descriptions = arrayOf(Build.BRAND, Build.PRODUCT, Build.MODEL,
-                Build.DISPLAY, Build.TYPE, Build.FINGERPRINT, Build.VERSION.SDK_INT.toString(),
-                if (this.resources.getBoolean(R.bool.is_highdr)) getString(R.string.text_supported) else getString(R.string.text_not_supported),
-                if (this.resources.getBoolean(R.bool.is_widecg)) getString(R.string.text_supported) else getString(R.string.text_not_supported))
+                Build.DISPLAY, Build.TYPE, Build.FINGERPRINT, Build.VERSION.SDK_INT.toString())
 
         actions.addAll(
                 infoTitles.zip(descriptions)
@@ -92,9 +91,35 @@ class InfoStepFragment : GuidedStepSupportFragment() {
             actions.add(GuidedAction.Builder(activity)
                     .infoOnly(true)
                     .title(getString(R.string.text_abi))
-                    .description(Build.SUPPORTED_ABIS!!.contentToString()
-                            .replace("[", "").replace("]", ""))
+                    .description(Build.SUPPORTED_ABIS.joinToString { it } )
                     .build())
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val displayManager = DisplayManagerCompat.getInstance(requireActivity())
+            val display = displayManager.getDisplay(Display.DEFAULT_DISPLAY)
+
+            if (display != null) {
+                val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
+
+                if (supportedHdrType.isNotEmpty()) {
+                    GuidedAction.Builder(activity)
+                            .infoOnly(true)
+                            .title(R.string.text_supported_hdr_types)
+                            .description(supportedHdrType.map {
+                                when (it) {
+                                    HDR_TYPE_DOLBY_VISION -> getString(R.string.hdr_type_dolby_vision)
+                                    HDR_TYPE_HDR10 -> getString(R.string.hdr_type_hdr10)
+                                    HDR_TYPE_HDR10_PLUS -> getString(R.string.hdr_type_hdr10_plus)
+                                    HDR_TYPE_HLG -> getString(R.string.hdr_type_hlg)
+                                    else -> null
+                                }
+
+                            }.filterNotNull().joinToString {it})
+                            .build()
+
+                }
+            }
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
