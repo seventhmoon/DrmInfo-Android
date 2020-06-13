@@ -2,7 +2,6 @@ package com.androidfung.drminfo.ui.mobile
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.content.res.Configuration
 import android.media.MediaCodecList
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
@@ -33,20 +32,12 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
             val displayManager = DisplayManagerCompat.getInstance(getApplication())
             val display = displayManager.getDisplay(DEFAULT_DISPLAY)
 
-            if (display != null) {
-                val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
-
-                map["supportedHdrType"] = supportedHdrType.map{
-                    with(getApplication<Application>()) {
-                        when (it) {
-                            HDR_TYPE_DOLBY_VISION -> getString(R.string.hdr_type_dolby_vision)
-                            HDR_TYPE_HDR10 -> getString(R.string.hdr_type_hdr10)
-                            HDR_TYPE_HDR10_PLUS -> getString(R.string.hdr_type_hdr10_plus)
-                            HDR_TYPE_HLG -> getString(R.string.hdr_type_hlg)
-                            else -> null
-                        }
-                    }
-                }.filterNotNull()
+            display?.let{
+//            if (display != null) {
+                val supportedHdrType = it.hdrCapabilities.supportedHdrTypes
+                if (supportedHdrType.isNotEmpty()) {
+                    map["supportedHdrType"] = supportedHdrType.map(this::convertHdrTypeToString).filterNotNull()
+                }
 
 //                if (SDK_INT >= Build.VERSION_CODES.O) {
 //                        map["hdr"] = display.isHdr
@@ -55,14 +46,13 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
-        if (SDK_INT >= Build.VERSION_CODES.O){
-            val validConfig = Configuration()
-            validConfig.setToDefaults()
-
-            map["wideColorGamut"] = validConfig.isScreenWideColorGamut
-            map["hdr"] = validConfig.isScreenHdr
-
-        }
+//        if (SDK_INT >= Build.VERSION_CODES.O){
+//            val validConfig = Configuration().apply { setToDefaults() }
+//
+//            map["wideColorGamut"] = validConfig.isScreenWideColorGamut
+//            map["hdr"] = validConfig.isScreenHdr
+//
+//        }
 
         if (SDK_INT >= Build.VERSION_CODES.Q) {
             map["hardwareAcceleratedType"] = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
@@ -73,6 +63,18 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         it.value = map
+    }
+
+    private fun convertHdrTypeToString(hdrType: Int) : String?{
+        with(getApplication<Application>()) {
+            return when (hdrType) {
+                HDR_TYPE_DOLBY_VISION -> getString(R.string.hdr_type_dolby_vision)
+                HDR_TYPE_HDR10 -> getString(R.string.hdr_type_hdr10)
+                HDR_TYPE_HDR10_PLUS -> getString(R.string.hdr_type_hdr10_plus)
+                HDR_TYPE_HLG -> getString(R.string.hdr_type_hlg)
+                else -> null
+            }
+        }
     }
 
     fun getProperties(): LiveData<ObservableArrayMap<String, Any>> {

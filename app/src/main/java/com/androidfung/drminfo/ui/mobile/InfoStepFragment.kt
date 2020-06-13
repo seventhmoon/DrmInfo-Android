@@ -91,7 +91,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
             actions.add(GuidedAction.Builder(activity)
                     .infoOnly(true)
                     .title(getString(R.string.text_abi))
-                    .description(Build.SUPPORTED_ABIS.joinToString { it } )
+                    .description(Build.SUPPORTED_ABIS.joinToString { it })
                     .build())
         }
 
@@ -106,18 +106,11 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                     GuidedAction.Builder(activity)
                             .infoOnly(true)
                             .title(R.string.text_supported_hdr_types)
-                            .description(supportedHdrType.map {
-                                when (it) {
-                                    HDR_TYPE_DOLBY_VISION -> getString(R.string.hdr_type_dolby_vision)
-                                    HDR_TYPE_HDR10 -> getString(R.string.hdr_type_hdr10)
-                                    HDR_TYPE_HDR10_PLUS -> getString(R.string.hdr_type_hdr10_plus)
-                                    HDR_TYPE_HLG -> getString(R.string.hdr_type_hlg)
-                                    else -> null
-                                }
-
-                            }.filterNotNull().joinToString {it})
+                            .description(supportedHdrType
+                                    .map(this@InfoStepFragment::convertHdrTypeToString)
+                                    .filterNotNull()
+                                    .joinToString { it })
                             .build()
-
                 }
             }
         }
@@ -143,6 +136,41 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                         .build())
             }
         }
+
+
+//        val supportedCryptoScheme = if (SDK_INT >= Build.VERSION_CODES.R) MediaDrm.getSupportedCryptoSchemes()
+//        else listOf(Constants.CLEARKEY_UUID, Constants.WIDEVINE_UUID, Constants.PLAYREADY_UUID, Constants.VERIMATRIX_UUID, Constants.MARLIN_UUID, Constants.PRIMETIME_UUID, Constants.WISEPLAY_UUID)
+//
+//        actions.addAll(supportedCryptoScheme.map {
+//                    it to try {
+//                        MediaDrm(it)
+//                    } catch (e: UnsupportedSchemeException) {
+//                        null
+//                    }}
+//                .filter { it.second != null }
+//                .filter { try{
+//                    it.second!!.getPropertyString(MediaDrm.PROPERTY_DESCRIPTION).isNotEmpty()
+//                }catch(e: IllegalArgumentException){
+//                    false
+//                } }
+//                .distinctBy { it.second!!.getPropertyString(MediaDrm.PROPERTY_DESCRIPTION) }
+//                .map {
+//                    val subActions = ArrayList<GuidedAction>()
+//                    subActions.addAll(getMediaDrmSubActions(it.second!!))
+//
+//                    if (Constants.WIDEVINE_UUID === it.first) {
+//                        subActions.addAll(getWidevineSubActions(it.second!!))
+//                    }
+//
+//                    val infoOnly = subActions.isEmpty()
+//                    GuidedAction.Builder(activity)
+//                            .infoOnly(infoOnly)
+//                            .subActions(if (infoOnly) null else subActions)
+//                            .title(it.second!!.getPropertyString(MediaDrm.PROPERTY_DESCRIPTION))
+//                            .description(getString(R.string.text_supported))
+//                            .build()
+//                })
+
 
         val uuids = arrayOf(Constants.CLEARKEY_UUID, Constants.WIDEVINE_UUID, Constants.PLAYREADY_UUID, Constants.VERIMATRIX_UUID, Constants.MARLIN_UUID, Constants.PRIMETIME_UUID, Constants.WISEPLAY_UUID)
         val titles = intArrayOf(R.string.text_clearkey_name, R.string.text_widevine_name, R.string.text_playready_name, R.string.text_verimatrix_name, R.string.text_marlin_name, R.string.text_primetime_name, R.string.text_wiseplay_name)
@@ -174,6 +202,16 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                     .description(if (supported) getString(R.string.text_supported) else getString(R.string.text_not_supported))
                     .build()
         })
+    }
+
+    private fun convertHdrTypeToString(hdrType: Int): String? {
+        return when (hdrType) {
+            HDR_TYPE_DOLBY_VISION -> getString(R.string.hdr_type_dolby_vision)
+            HDR_TYPE_HDR10 -> getString(R.string.hdr_type_hdr10)
+            HDR_TYPE_HDR10_PLUS -> getString(R.string.hdr_type_hdr10_plus)
+            HDR_TYPE_HLG -> getString(R.string.hdr_type_hlg)
+            else -> null
+        }
     }
 
     companion object {

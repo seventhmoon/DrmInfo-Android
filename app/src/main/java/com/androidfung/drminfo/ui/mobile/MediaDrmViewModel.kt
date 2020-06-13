@@ -57,8 +57,8 @@ abstract class MediaDrmViewModel protected constructor(application: Application)
             if (MediaDrm.isCryptoSchemeSupported(uuid)) {
                 mediaDrm = MediaDrm(uuid)
 
-                if (mediaDrm != null) {
-                    map.putAll(obtainPropertiesFromMediaDrm(mediaDrm!!))
+                mediaDrm?.let {
+                    map.putAll(obtainPropertiesFromMediaDrm(it))
                 }
             }
         } catch (ignored: UnsupportedSchemeException) {
