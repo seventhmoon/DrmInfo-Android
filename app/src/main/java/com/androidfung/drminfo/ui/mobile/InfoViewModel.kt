@@ -35,18 +35,9 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
 
             if (display != null) {
                 val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
-
-                map["supportedHdrType"] = supportedHdrType.map{
-                    with(getApplication<Application>()) {
-                        when (it) {
-                            HDR_TYPE_DOLBY_VISION -> getString(R.string.hdr_type_dolby_vision)
-                            HDR_TYPE_HDR10 -> getString(R.string.hdr_type_hdr10)
-                            HDR_TYPE_HDR10_PLUS -> getString(R.string.hdr_type_hdr10_plus)
-                            HDR_TYPE_HLG -> getString(R.string.hdr_type_hlg)
-                            else -> null
-                        }
-                    }
-                }.filterNotNull()
+                if (supportedHdrType.isNotEmpty()) {
+                    map["supportedHdrType"] = supportedHdrType.map(this::convertHdrTypeToString).filterNotNull()
+                }
 
 //                if (SDK_INT >= Build.VERSION_CODES.O) {
 //                        map["hdr"] = display.isHdr
@@ -73,6 +64,18 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         it.value = map
+    }
+
+    private fun convertHdrTypeToString(hdrType: Int) : String?{
+        with(getApplication<Application>()) {
+            return when (hdrType) {
+                HDR_TYPE_DOLBY_VISION -> getString(R.string.hdr_type_dolby_vision)
+                HDR_TYPE_HDR10 -> getString(R.string.hdr_type_hdr10)
+                HDR_TYPE_HDR10_PLUS -> getString(R.string.hdr_type_hdr10_plus)
+                HDR_TYPE_HLG -> getString(R.string.hdr_type_hlg)
+                else -> null
+            }
+        }
     }
 
     fun getProperties(): LiveData<ObservableArrayMap<String, Any>> {

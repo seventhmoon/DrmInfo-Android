@@ -106,18 +106,11 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                     GuidedAction.Builder(activity)
                             .infoOnly(true)
                             .title(R.string.text_supported_hdr_types)
-                            .description(supportedHdrType.map {
-                                when (it) {
-                                    HDR_TYPE_DOLBY_VISION -> getString(R.string.hdr_type_dolby_vision)
-                                    HDR_TYPE_HDR10 -> getString(R.string.hdr_type_hdr10)
-                                    HDR_TYPE_HDR10_PLUS -> getString(R.string.hdr_type_hdr10_plus)
-                                    HDR_TYPE_HLG -> getString(R.string.hdr_type_hlg)
-                                    else -> null
-                                }
-
-                            }.filterNotNull().joinToString {it})
+                            .description(supportedHdrType
+                                    .map(this@InfoStepFragment::convertHdrTypeToString)
+                                    .filterNotNull()
+                                    .joinToString {it})
                             .build()
-
                 }
             }
         }
@@ -174,6 +167,16 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                     .description(if (supported) getString(R.string.text_supported) else getString(R.string.text_not_supported))
                     .build()
         })
+    }
+
+    private fun convertHdrTypeToString(hdrType: Int) : String?{
+            return when (hdrType) {
+                HDR_TYPE_DOLBY_VISION -> getString(R.string.hdr_type_dolby_vision)
+                HDR_TYPE_HDR10 -> getString(R.string.hdr_type_hdr10)
+                HDR_TYPE_HDR10_PLUS -> getString(R.string.hdr_type_hdr10_plus)
+                HDR_TYPE_HLG -> getString(R.string.hdr_type_hlg)
+                else -> null
+            }
     }
 
     companion object {
