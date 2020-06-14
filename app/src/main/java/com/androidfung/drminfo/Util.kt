@@ -23,22 +23,36 @@ object Util {
     }
 
     @JvmStatic
-    fun convertHdrTypeToStringRes(hdrType: Int): Int? {
+    fun convertHdrTypeToStringRes(hdrType: Int): Int {
         return when (hdrType) {
             HdrCapabilities.HDR_TYPE_DOLBY_VISION -> R.string.hdr_type_dolby_vision
             HdrCapabilities.HDR_TYPE_HDR10 -> R.string.hdr_type_hdr10
             HdrCapabilities.HDR_TYPE_HDR10_PLUS -> R.string.hdr_type_hdr10_plus
             HdrCapabilities.HDR_TYPE_HLG -> R.string.hdr_type_hlg
-            else -> null
+            else -> R.string.hdr_type_unknown
         }
     }
 
     @JvmStatic
     fun format(input: Any?): String {
         return when (input) {
-            is Array<*> -> input.joinToString { it.toString() }
-            is Collection<*> -> input.joinToString { it.toString() }
+            is Array<*> -> input.joinToString()
+            is Collection<*> -> input.joinToString()
             else -> input.toString()
+        }
+    }
+
+    @JvmStatic
+    fun convertCryptoSchemeToStringRes(cryptoScheme: UUID): Int {
+        return when (cryptoScheme) {
+            Constants.CLEARKEY_UUID -> R.string.text_clearkey_name
+            Constants.WIDEVINE_UUID -> R.string.text_widevine_name
+            Constants.PLAYREADY_UUID -> R.string.text_playready_name
+            Constants.VERIMATRIX_UUID -> R.string.text_verimatrix_name
+            Constants.MARLIN_UUID -> R.string.text_marlin_name
+            Constants.PRIMETIME_UUID -> R.string.text_primetime_name
+            Constants.WISEPLAY_UUID -> R.string.text_wiseplay_name
+            else -> R.string.text_undefined_name
         }
     }
 

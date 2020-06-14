@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'com.google.android.gms.strict-version-matcher-plugin'
 apply plugin: 'com.google.firebase.crashlytics'
@@ -13,7 +14,7 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 250
+        versionCode 252
         versionName '1.1.5.200612'
 
         multiDexEnabled false

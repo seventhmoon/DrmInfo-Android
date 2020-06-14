@@ -1,19 +1,13 @@
 <resources>
 
     <string name="text_supported_with_security_level">Supported (%1$s)</string>
-    <string name="text_playready_name">Microsoft Playready DRM</string>
-    <string name="text_clearkey_name">CENC ClearKey</string>
-    <string name="text_marlin_name">Marlin DRM</string>
-    <string name="text_verimatrix_name">Verimatrix VCAS™</string>
-    <string name="text_widevine_name">Google Widevine Modular DRM</string>
-    <string name="text_primetime_name">Adobe Primetime DRM</string>
-    <string name="text_wiseplay_name">Huawei WisePlay DRM</string>
-    <string name="text_sdk_level">SDK Level</string>
+
+    <!-- Info -->
     <string name="text_model">Model</string>
     <string name="text_brand">Brand</string>
     <string name="text_product">Product</string>
     <string name="text_version">Version</string>
-
+    <string name="text_sdk_level">SDK Level</string>
     <string name="text_device_information">Device Information</string>
     <!--    <string name="title_activity_main">MainActivity</string>-->
 
@@ -25,8 +19,6 @@
     <string name="text_hardware">Hardware</string>
     <string name="text_type">Build Type</string>
     <string name="text_fingerprint">Build Fingerprint</string>
-
-    <string name="ad_attribution">Ad</string>
     <string name="text_display">Build</string>
     <string name="text_licenseinformation">License Information</string>
     <string name="text_hdr">High Dynamic Range (HDR)</string>
@@ -35,6 +27,19 @@
     <string name="text_abi">Supported ABI</string>
     <string name="text_hw_decode_type">Supported Hardware Decoder</string>
     <string name="text_supported_hdr_types">Supported HDR Types</string>
+
+    <!-- Crypto Scheme -->
+    <string name="text_playready_name">Microsoft Playready DRM</string>
+    <string name="text_clearkey_name">CENC ClearKey</string>
+    <string name="text_marlin_name">Marlin DRM</string>
+    <string name="text_verimatrix_name">Verimatrix VCAS™</string>
+    <string name="text_widevine_name">Google Widevine Modular DRM</string>
+    <string name="text_primetime_name">Adobe Primetime DRM</string>
+    <string name="text_wiseplay_name">Huawei WisePlay DRM</string>
+    <string name="text_undefined_name">Undefined</string>
+
+    <string name="ad_attribution">Ad</string>
+
 
     <!-- HDCP -->
     <string name="message_hdcp_level_1" translatable="false">HDCP 1</string>
@@ -51,6 +56,7 @@
     <string name="hdr_type_hdr10" translatable="false">HDR10</string>
     <string name="hdr_type_hdr10_plus" translatable="false">HDR10+</string>
     <string name="hdr_type_hlg" translatable="false">Hybrid Log-Gamma</string>
+    <string name="hdr_type_unknown" translatable="false">Unknown</string>
 
 
     <!--    val hdrMap = mapOf<Int, String>(HDR_TYPE_DOLBY_VISION to "Dolby Vision", HDR_TYPE_HDR10 to "HDR 10", HDR_TYPE_HDR10_PLUS to "HDR 10+", HDR_TYPE_HLG to "HLG")-->
