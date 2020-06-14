@@ -11,7 +11,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.Util
-import java.util.UUID
+import java.util.*
 
 abstract class MediaDrmViewModel protected constructor(application: Application) : AndroidViewModel(application) {
     private var mediaDrm: MediaDrm? = null
@@ -35,15 +35,15 @@ abstract class MediaDrmViewModel protected constructor(application: Application)
         val map = SimpleArrayMap<String, Any>()
         val mediaDrmKeys = getApplication<Application>().resources.getStringArray(R.array.mediadrm_string_property_keys)
 
-        mediaDrmKeys.forEach {
-            map.put(it, getPropertyString(it))
+        mediaDrmKeys.forEach { key ->
+            map.put(key, getPropertyString(key))
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             with(getApplication<Application>().resources) {
                 map.put(getString(R.string.mediadrm_key_maxNumberOfSessions), mediaDrm.maxSessionCount.toString())
-                map.put(getString(R.string.mediadrm_key_maxHdcpLevel), getString(Util.toHdcpLevelRes(mediaDrm.maxHdcpLevel)))
-                map.put(getString(R.string.mediadrm_key_hdcpLevel), getString(Util.toHdcpLevelRes(mediaDrm.connectedHdcpLevel)))
+                map.put(getString(R.string.mediadrm_key_maxHdcpLevel), getString(Util.convertHdcpLevelToIntRes(mediaDrm.maxHdcpLevel)))
+                map.put(getString(R.string.mediadrm_key_hdcpLevel), getString(Util.convertHdcpLevelToIntRes(mediaDrm.connectedHdcpLevel)))
             }
         }
 

@@ -8,50 +8,53 @@ import java.util.*
 
 object Util {
     @JvmStatic
-    fun convertHdcpLevelToIntRes(maxHdcpLevel: Int): Int {
-        return when (maxHdcpLevel) {
-            MediaDrm.HDCP_LEVEL_UNKNOWN -> R.string.message_hdcp_level_unknown
-            MediaDrm.HDCP_NONE -> R.string.message_hdcp_none
-            MediaDrm.HDCP_NO_DIGITAL_OUTPUT -> R.string.message_hdcp_no_digital_output
-            MediaDrm.HDCP_V1 -> R.string.message_hdcp_level_1
-            MediaDrm.HDCP_V2_1 -> R.string.message_hdcp_level_2_1
-            MediaDrm.HDCP_V2_2 -> R.string.message_hdcp_level_2_2
-            MediaDrm.HDCP_V2 -> R.string.message_hdcp_level_2
-            MediaDrm.HDCP_V2_3 -> R.string.message_hdcp_level_2_3
-            else -> R.string.message_hdcp_level_unknown
-        }
+    fun convertHdcpLevelToIntRes(maxHdcpLevel: Int) = when (maxHdcpLevel) {
+        MediaDrm.HDCP_LEVEL_UNKNOWN -> R.string.message_hdcp_level_unknown
+        MediaDrm.HDCP_NONE -> R.string.message_hdcp_none
+        MediaDrm.HDCP_NO_DIGITAL_OUTPUT -> R.string.message_hdcp_no_digital_output
+        MediaDrm.HDCP_V1 -> R.string.message_hdcp_level_1
+        MediaDrm.HDCP_V2_1 -> R.string.message_hdcp_level_2_1
+        MediaDrm.HDCP_V2_2 -> R.string.message_hdcp_level_2_2
+        MediaDrm.HDCP_V2 -> R.string.message_hdcp_level_2
+        MediaDrm.HDCP_V2_3 -> R.string.message_hdcp_level_2_3
+        else -> R.string.message_hdcp_level_unknown
     }
 
     @JvmStatic
-    fun convertHdrTypeToStringRes(hdrType: Int): Int? {
-        return when (hdrType) {
-            HdrCapabilities.HDR_TYPE_DOLBY_VISION -> R.string.hdr_type_dolby_vision
-            HdrCapabilities.HDR_TYPE_HDR10 -> R.string.hdr_type_hdr10
-            HdrCapabilities.HDR_TYPE_HDR10_PLUS -> R.string.hdr_type_hdr10_plus
-            HdrCapabilities.HDR_TYPE_HLG -> R.string.hdr_type_hlg
-            else -> null
-        }
+    fun convertHdrTypeToStringRes(hdrType: Int) = when (hdrType) {
+        HdrCapabilities.HDR_TYPE_DOLBY_VISION -> R.string.hdr_type_dolby_vision
+        HdrCapabilities.HDR_TYPE_HDR10 -> R.string.hdr_type_hdr10
+        HdrCapabilities.HDR_TYPE_HDR10_PLUS -> R.string.hdr_type_hdr10_plus
+        HdrCapabilities.HDR_TYPE_HLG -> R.string.hdr_type_hlg
+        else -> R.string.hdr_type_unknown
     }
 
     @JvmStatic
-    fun format(input: Any?): String {
-        return when (input) {
-            is Array<*> -> input.joinToString { it.toString() }
-            is Collection<*> -> input.joinToString { it.toString() }
-            else -> input.toString()
-        }
+    fun format(input: Any?) = when (input) {
+        is Array<*> -> input.joinToString()
+        is Collection<*> -> input.joinToString()
+        else -> input.toString()
     }
 
     @JvmStatic
-    fun goneIfNullOrEmpty(input: Any?): Int {
-        return if (input is Array<*> && input.isEmpty()) {
-            View.GONE
-        } else if (input is Collection<*> && input.isEmpty()) {
-            View.GONE
-        } else if (input is String && input.isBlank()) {
-            View.GONE
-        } else if (input == null) View.GONE
-        else View.VISIBLE
+    fun convertCryptoSchemeToStringRes(cryptoScheme: UUID) = when (cryptoScheme) {
+        Constants.CLEARKEY_UUID -> R.string.text_clearkey_name
+        Constants.WIDEVINE_UUID -> R.string.text_widevine_name
+        Constants.PLAYREADY_UUID -> R.string.text_playready_name
+        Constants.VERIMATRIX_UUID -> R.string.text_verimatrix_name
+        Constants.MARLIN_UUID -> R.string.text_marlin_name
+        Constants.PRIMETIME_UUID -> R.string.text_primetime_name
+        Constants.WISEPLAY_UUID -> R.string.text_wiseplay_name
+        else -> R.string.text_undefined_name
+    }
+
+    @JvmStatic
+    fun goneIfNullOrEmpty(input: Any?) = when {
+        input is Array<*> && input.isEmpty() ||
+                input is Collection<*> && input.isEmpty() ||
+                input is String && input.isBlank() ||
+                input == null -> View.GONE
+        else -> View.VISIBLE
     }
 
     @JvmStatic

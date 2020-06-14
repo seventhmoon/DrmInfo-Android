@@ -14,11 +14,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
 import com.androidfung.drminfo.ui.mobile.*
+import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.android.gms.ads.AdListener
 
 
 @Keep
@@ -55,7 +55,7 @@ class MobileActivity : AppCompatActivity() {
         val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val lowRam = ActivityManagerCompat.isLowRamDevice(activityManager)
 
-        if (!lowRam) {
+        if (!lowRam && !BuildConfig.DEBUG) {
             val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
             val adView = findViewById<AdView>(R.id.adView)
             if (bannerAdHolder != null && adView != null) {
