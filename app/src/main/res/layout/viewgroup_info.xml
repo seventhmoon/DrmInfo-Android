@@ -12,6 +12,8 @@
 
         <import type="java.util.Collection" />
 
+        <import type="com.androidfung.drminfo.Util" />
+
         <variable
             name="infoProperties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
@@ -159,7 +161,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onLongClick="@{handler::onLongClick}"
-            android:text='@{(Build.VERSION.SDK_INT &lt; 21)?"-":java.util.Arrays.toString(Build.SUPPORTED_ABIS).replace("[","").replace("]","")}'
+            android:text='@{(Build.VERSION.SDK_INT &lt; 21)?"-":Util.format(Build.SUPPORTED_ABIS)}'
             android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{Build.VERSION.SDK_INT >= 21?View.VISIBLE:View.GONE}"
             tools:text="1" />
@@ -171,16 +173,16 @@
             android:layout_marginTop="@dimen/listitem_padding"
             android:text="@string/text_hw_decode_type"
             android:textAppearance="?attr/textAppearanceCaption"
-            android:visibility='@{Build.VERSION.SDK_INT >= 29 &amp;&amp; !((Collection)infoProperties["hardwareAcceleratedType"]).isEmpty()?View.VISIBLE:View.GONE}' />
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["hardwareAcceleratedType"])}' />
 
         <TextView
             android:id="@+id/tv_value_hw_decode_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onLongClick="@{handler::onLongClick}"
-            android:text='@{infoProperties["hardwareAcceleratedType"].toString().replace("[","").replace("]","")}'
+            android:text='@{Util.format(infoProperties["hardwareAcceleratedType"])}'
             android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility='@{Build.VERSION.SDK_INT >= 29 &amp;&amp; !((Collection)infoProperties["hardwareAcceleratedType"]).isEmpty()?View.VISIBLE:View.GONE}'
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["hardwareAcceleratedType"])}'
             tools:text="1" />
 
         <TextView
@@ -190,15 +192,15 @@
             android:layout_marginTop="@dimen/listitem_padding"
             android:text="@string/text_supported_hdr_types"
             android:textAppearance="?attr/textAppearanceCaption"
-            android:visibility='@{infoProperties["supportedHdrType"] == null || ((Collection)infoProperties["supportedHdrType"]).isEmpty?View.GONE:View.VISIBLE}' />
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["supportedHdrType"])}' />
 
         <TextView
             android:id="@+id/tv_value_supported_hdr_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text='@{((Collection)infoProperties["supportedHdrType"]).toString().replace("[","").replace("]","")}'
+            android:text='@{Util.format(infoProperties["supportedHdrType"])}'
             android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility='@{infoProperties["supportedHdrType"] == null || ((Collection)infoProperties["supportedHdrType"]).isEmpty?View.GONE:View.VISIBLE}'
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["supportedHdrType"])}'
             tools:text="@string/text_supported" />
 
     </LinearLayout>

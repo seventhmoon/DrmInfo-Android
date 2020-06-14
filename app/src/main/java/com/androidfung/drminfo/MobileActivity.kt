@@ -4,19 +4,22 @@ import android.app.ActivityManager
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityManagerCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
 import com.androidfung.drminfo.ui.mobile.*
-import com.google.android.gms.ads.*
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.android.gms.ads.AdListener as AdListener1
+import com.google.android.gms.ads.AdListener
+
 
 @Keep
 class MobileActivity : AppCompatActivity() {
@@ -30,8 +33,7 @@ class MobileActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.handler = MyHandlers()
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(findViewById(R.id.toolbar))
 
         val infoViewModel: InfoViewModel by viewModels()
         infoViewModel.getProperties().observe(this, Observer(binding::setInfoProperties))
@@ -63,13 +65,9 @@ class MobileActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
 
     private fun loadAdMobBannerAd(adView: AdView, bannerAdHolder: ViewGroup) {
-        adView.adListener = object : AdListener1() {
+        adView.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
                 Log.i("Ads", "onAdLoaded")
@@ -107,8 +105,7 @@ class MobileActivity : AppCompatActivity() {
             }
         }
 
-        val adRequest = AdRequest.Builder().build()
-        adView.loadAd(adRequest)
+        adView.loadAd(AdRequest.Builder().build())
     }
 
     companion object {

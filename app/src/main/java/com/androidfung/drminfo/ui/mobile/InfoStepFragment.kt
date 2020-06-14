@@ -14,7 +14,13 @@ import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.GuidanceStylist.Guidance
 import androidx.leanback.widget.GuidedAction
-import com.androidfung.drminfo.Constants
+import com.androidfung.drminfo.Constants.CLEARKEY_UUID
+import com.androidfung.drminfo.Constants.MARLIN_UUID
+import com.androidfung.drminfo.Constants.PLAYREADY_UUID
+import com.androidfung.drminfo.Constants.PRIMETIME_UUID
+import com.androidfung.drminfo.Constants.VERIMATRIX_UUID
+import com.androidfung.drminfo.Constants.WIDEVINE_UUID
+import com.androidfung.drminfo.Constants.WISEPLAY_UUID
 import com.androidfung.drminfo.R
 
 class InfoStepFragment : GuidedStepSupportFragment() {
@@ -170,22 +176,25 @@ class InfoStepFragment : GuidedStepSupportFragment() {
 //                            .description(getString(R.string.text_supported))
 //                            .build()
 //                })
+        val cryptoSchemes = mapOf(CLEARKEY_UUID to getString(R.string.text_clearkey_name),
+                WIDEVINE_UUID to getString(R.string.text_widevine_name),
+                PLAYREADY_UUID to getString(R.string.text_playready_name),
+                VERIMATRIX_UUID to getString(R.string.text_verimatrix_name),
+                MARLIN_UUID to getString(R.string.text_marlin_name),
+                PRIMETIME_UUID to getString(R.string.text_primetime_name),
+                WISEPLAY_UUID to getString(R.string.text_wiseplay_name)
+        )
 
-
-        val uuids = arrayOf(Constants.CLEARKEY_UUID, Constants.WIDEVINE_UUID, Constants.PLAYREADY_UUID, Constants.VERIMATRIX_UUID, Constants.MARLIN_UUID, Constants.PRIMETIME_UUID, Constants.WISEPLAY_UUID)
-        val titles = intArrayOf(R.string.text_clearkey_name, R.string.text_widevine_name, R.string.text_playready_name, R.string.text_verimatrix_name, R.string.text_marlin_name, R.string.text_primetime_name, R.string.text_wiseplay_name)
-        val names = titles.map { getString(it) }
-
-        actions.addAll(uuids.zip(names).map {
-            val supported = MediaDrm.isCryptoSchemeSupported(it.first)
+        actions.addAll(cryptoSchemes.map {
+            val supported = MediaDrm.isCryptoSchemeSupported(it.key)
             val subActions = ArrayList<GuidedAction>()
 
             if (supported) {
                 try {
-                    val mediaDrm = MediaDrm(it.first)
+                    val mediaDrm = MediaDrm(it.key)
                     subActions.addAll(getMediaDrmSubActions(mediaDrm))
 
-                    if (Constants.WIDEVINE_UUID === it.first) {
+                    if (WIDEVINE_UUID === it.key) {
                         subActions.addAll(getWidevineSubActions(mediaDrm))
                     }
 
@@ -198,7 +207,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
             GuidedAction.Builder(activity)
                     .infoOnly(infoOnly)
                     .subActions(if (infoOnly) null else subActions)
-                    .title(it.second)
+                    .title(it.value)
                     .description(if (supported) getString(R.string.text_supported) else getString(R.string.text_not_supported))
                     .build()
         })

@@ -33,7 +33,7 @@
     <string name="text_hdr_type">HDR Type</string>
     <string name="text_wide_color">Wide Color Gamut</string>
     <string name="text_abi">Supported ABI</string>
-    <string name="text_hw_decode_type">Supported HW Decode</string>
+    <string name="text_hw_decode_type">Supported Hardware Decoder</string>
     <string name="text_supported_hdr_types">Supported HDR Types</string>
 
 <!-- HDCP -->
