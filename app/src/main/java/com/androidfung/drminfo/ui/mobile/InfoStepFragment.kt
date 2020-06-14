@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Display
-import android.view.Display.HdrCapabilities.*
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.leanback.app.GuidedStepSupportFragment
@@ -22,6 +21,7 @@ import com.androidfung.drminfo.Constants.VERIMATRIX_UUID
 import com.androidfung.drminfo.Constants.WIDEVINE_UUID
 import com.androidfung.drminfo.Constants.WISEPLAY_UUID
 import com.androidfung.drminfo.R
+import com.androidfung.drminfo.Util
 
 class InfoStepFragment : GuidedStepSupportFragment() {
     override fun onCreateGuidance(savedInstanceState: Bundle?): Guidance {
@@ -214,13 +214,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
     }
 
     private fun convertHdrTypeToString(hdrType: Int): String? {
-        return when (hdrType) {
-            HDR_TYPE_DOLBY_VISION -> getString(R.string.hdr_type_dolby_vision)
-            HDR_TYPE_HDR10 -> getString(R.string.hdr_type_hdr10)
-            HDR_TYPE_HDR10_PLUS -> getString(R.string.hdr_type_hdr10_plus)
-            HDR_TYPE_HLG -> getString(R.string.hdr_type_hlg)
-            else -> null
-        }
+        return Util.convertHdrTypeToStringRes(hdrType)?.let(this@InfoStepFragment::getString)
     }
 
     companion object {

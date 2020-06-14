@@ -2,12 +2,13 @@ package com.androidfung.drminfo
 
 import android.media.MediaDrm
 import android.util.Base64
+import android.view.Display.HdrCapabilities
 import android.view.View
 import java.util.*
 
 object Util {
     @JvmStatic
-    fun toHdcpLevelRes(maxHdcpLevel: Int): Int {
+    fun convertHdcpLevelToIntRes(maxHdcpLevel: Int): Int {
         return when (maxHdcpLevel) {
             MediaDrm.HDCP_LEVEL_UNKNOWN -> R.string.message_hdcp_level_unknown
             MediaDrm.HDCP_NONE -> R.string.message_hdcp_none
@@ -18,6 +19,17 @@ object Util {
             MediaDrm.HDCP_V2 -> R.string.message_hdcp_level_2
             MediaDrm.HDCP_V2_3 -> R.string.message_hdcp_level_2_3
             else -> R.string.message_hdcp_level_unknown
+        }
+    }
+
+    @JvmStatic
+    fun convertHdrTypeToStringRes(hdrType: Int): Int? {
+        return when (hdrType) {
+            HdrCapabilities.HDR_TYPE_DOLBY_VISION -> R.string.hdr_type_dolby_vision
+            HdrCapabilities.HDR_TYPE_HDR10 -> R.string.hdr_type_hdr10
+            HdrCapabilities.HDR_TYPE_HDR10_PLUS -> R.string.hdr_type_hdr10_plus
+            HdrCapabilities.HDR_TYPE_HLG -> R.string.hdr_type_hlg
+            else -> null
         }
     }
 
@@ -36,7 +48,7 @@ object Util {
             View.GONE
         } else if (input is Collection<*> && input.isEmpty()) {
             View.GONE
-        } else if (input is String && input.isBlank()){
+        } else if (input is String && input.isBlank()) {
             View.GONE
         } else if (input == null) View.GONE
         else View.VISIBLE

@@ -15,12 +15,12 @@
     <string name="text_version">Version</string>
 
     <string name="text_device_information">Device Information</string>
-<!--    <string name="title_activity_main">MainActivity</string>-->
+    <!--    <string name="title_activity_main">MainActivity</string>-->
 
-<!--    <string name="label_cts_profile_match">CTS Profile Match</string>-->
+    <!--    <string name="label_cts_profile_match">CTS Profile Match</string>-->
     <string name="text_on_android_tv">on Android TV</string>
     <string name="text_build">Build</string>
-<!--    <string name="text_webview_version">WebView Version</string>-->
+    <!--    <string name="text_webview_version">WebView Version</string>-->
     <string name="text_max_security_level">Max Security Level</string>
     <string name="text_hardware">Hardware</string>
     <string name="text_type">Build Type</string>
@@ -36,7 +36,7 @@
     <string name="text_hw_decode_type">Supported Hardware Decoder</string>
     <string name="text_supported_hdr_types">Supported HDR Types</string>
 
-<!-- HDCP -->
+    <!-- HDCP -->
     <string name="message_hdcp_level_1" translatable="false">HDCP 1</string>
     <string name="message_hdcp_level_2" translatable="false">HDCP 2</string>
     <string name="message_hdcp_level_2_1" translatable="false">HDCP 2.1</string>
