@@ -5,6 +5,8 @@ import android.media.MediaCodecList
 import android.media.MediaDrm
 import android.media.UnsupportedSchemeException
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.util.Log
 import android.view.Display
@@ -38,14 +40,13 @@ class InfoStepFragment : GuidedStepSupportFragment() {
 //                R.string.text_type, R.string.text_fingerprint, R.string.text_sdk_level)
 //        val descriptions = arrayOf(Build.BRAND, Build.PRODUCT, Build.MODEL,
 //                Build.DISPLAY, Build.TYPE, Build.FINGERPRINT, Build.VERSION.SDK_INT.toString())
-
         val basicInfo = arrayOf(R.string.text_brand to Build.BRAND,
                 R.string.text_product to Build.PRODUCT,
                 R.string.text_model to Build.MODEL,
                 R.string.text_display to Build.DISPLAY,
                 R.string.text_type to Build.TYPE,
                 R.string.text_fingerprint to Build.FINGERPRINT,
-                R.string.text_sdk_level to Build.VERSION.SDK_INT.toString())
+                R.string.text_sdk_level to SDK_INT.toString())
 
         actions += basicInfo.filter { it.second.isNotBlank() }
                 .map {
@@ -56,32 +57,32 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                             .build()
                 }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            actions.add(GuidedAction.Builder(activity)
+        if (SDK_INT >= VERSION_CODES.LOLLIPOP) {
+            actions += GuidedAction.Builder(activity)
                     .infoOnly(true)
                     .title(getString(R.string.text_abi))
                     .description(Build.SUPPORTED_ABIS.joinToString())
-                    .build())
+                    .build()
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (SDK_INT >= VERSION_CODES.N) {
             val displayManager = DisplayManagerCompat.getInstance(requireActivity())
             val display = displayManager.getDisplay(Display.DEFAULT_DISPLAY)
 
-            if (display != null) {
-                val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
+            display?.let {
+                val supportedHdrType = it.hdrCapabilities.supportedHdrTypes
 
                 if (supportedHdrType.isNotEmpty()) {
-                    GuidedAction.Builder(activity)
+                    actions += GuidedAction.Builder(activity)
                             .infoOnly(true)
                             .title(R.string.text_supported_hdr_types)
-                            .description(supportedHdrType.joinToString(transform = this@InfoStepFragment::convertHdrTypeToString))
+                            .description(supportedHdrType.map(this@InfoStepFragment::convertHdrTypeToString).sorted().joinToString())
                             .build()
                 }
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (SDK_INT >= VERSION_CODES.Q) {
             val supportedHardwareAcceleratedDecodeType = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
                     .filter { it.isHardwareAccelerated }
                     .filterNot { it.isEncoder }
@@ -90,7 +91,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                     .toSortedSet()
 
             if (supportedHardwareAcceleratedDecodeType.isNotEmpty()) {
-                actions.add(GuidedAction.Builder(activity)
+                actions += GuidedAction.Builder(activity)
                         .infoOnly(false)
                         .title(getString(R.string.text_hw_decode_type))
                         .subActions(supportedHardwareAcceleratedDecodeType.map {
@@ -99,7 +100,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                                     .title(it)
                                     .build()
                         })
-                        .build())
+                        .build()
             }
         }
 
@@ -177,35 +178,27 @@ class InfoStepFragment : GuidedStepSupportFragment() {
     private fun convertHdrTypeToString(hdrType: Int) =
             getString(Util.convertHdrTypeToStringRes(hdrType))
 
+    private fun getPropertyString(mediaDrm: MediaDrm, key: String): String? =
+            try {
+                mediaDrm.getPropertyString(key)
+            } catch (ex: IllegalStateException) {
+                Log.d(TAG, ex.toString())
+                null
+            } catch (ex: IllegalArgumentException) {
+                Log.d(TAG, ex.toString())
+                null
+            }
 
-    private fun getPropertyString(mediaDrm: MediaDrm, key: String): String? {
-        return try {
-            mediaDrm.getPropertyString(key)
-        } catch (ex: IllegalStateException) {
-            Log.d(TAG, ex.toString())
-            null
-        } catch (ex: IllegalArgumentException) {
-            Log.d(TAG, ex.toString())
-            null
-        }
-    }
-
-    private fun getSubActions(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>): List<GuidedAction> {
-        val drmStringValue = drmStringKeys.map {
-            getPropertyString(mediaDrm, it)
-        }
-
-        return drmStringNames.zip(drmStringValue)
-                .filterNot {
-                    it.second.isNullOrBlank()
-                }.map {
-                    GuidedAction.Builder(activity)
-                            .infoOnly(true)
-                            .title(it.first)
-                            .description(it.second)
-                            .build()
-                }
-    }
+    private fun getSubActions(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>) =
+            drmStringNames.zip(drmStringKeys.map { getPropertyString(mediaDrm, it) })
+                    .filterNot { it.second.isNullOrBlank() }
+                    .map {
+                        GuidedAction.Builder(activity)
+                                .infoOnly(true)
+                                .title(it.first)
+                                .description(it.second)
+                                .build()
+                    }
 
     private fun getMediaDrmSubActions(mediaDrm: MediaDrm): List<GuidedAction> {
         val drmStringKeys = resources.getStringArray(R.array.mediadrm_string_property_keys)

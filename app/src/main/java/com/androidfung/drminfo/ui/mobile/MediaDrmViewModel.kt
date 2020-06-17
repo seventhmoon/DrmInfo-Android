@@ -4,6 +4,7 @@ import android.app.Application
 import android.media.MediaDrm
 import android.media.UnsupportedSchemeException
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import androidx.collection.SimpleArrayMap
 import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
@@ -39,7 +40,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application)
             map.put(key, getPropertyString(key))
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        if (SDK_INT >= Build.VERSION_CODES.P) {
             with(getApplication<Application>().resources) {
                 map.put(getString(R.string.mediadrm_key_maxNumberOfSessions), mediaDrm.maxSessionCount.toString())
                 map.put(getString(R.string.mediadrm_key_maxHdcpLevel), getString(Util.convertHdcpLevelToIntRes(mediaDrm.maxHdcpLevel)))
@@ -74,7 +75,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application)
 
     @Suppress("DEPRECATION")
     override fun onCleared() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        if (SDK_INT >= Build.VERSION_CODES.P) {
             mediaDrm?.close()
         } else {
             mediaDrm?.release()

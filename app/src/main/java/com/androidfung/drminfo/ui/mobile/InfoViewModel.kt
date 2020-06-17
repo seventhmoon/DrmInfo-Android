@@ -34,7 +34,7 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
             display?.let {
                 val supportedHdrType = it.hdrCapabilities.supportedHdrTypes
                 if (supportedHdrType.isNotEmpty()) {
-                    map["supportedHdrType"] = supportedHdrType.map(this::convertHdrTypeToString)
+                    map["supportedHdrType"] = supportedHdrType.map(this::convertHdrTypeToString).sorted()
                 }
             }
         }
