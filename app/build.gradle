@@ -2,9 +2,9 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'com.google.android.gms.strict-version-matcher-plugin'
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
     compileSdkVersion 30
@@ -14,8 +14,8 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 252
-        versionName '1.1.5.200612'
+        versionCode 257
+        versionName '1.1.5.200621'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -65,7 +65,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation platform('com.google.firebase:firebase-bom:25.4.1')
+    implementation platform('com.google.firebase:firebase-bom:25.5.0')
 
     implementation 'androidx.activity:activity-ktx:1.1.0'
     implementation 'androidx.annotation:annotation:1.1.0'
@@ -89,7 +89,7 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-ads'
     implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-perf'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
@@ -102,7 +102,7 @@ dependencies {
 
     annotationProcessor 'androidx.lifecycle:lifecycle-common-java8:2.2.0'
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.5'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.9'
 }
 
 // ADD THIS AT THE BOTTOM
