@@ -12,6 +12,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.androidfung.drminfo.Util
+import java.text.DecimalFormat
 
 class InfoViewModel(application: Application) : AndroidViewModel(application) {
     private val properties: MutableLiveData<ObservableArrayMap<String, Any>> by lazy {
@@ -27,14 +28,24 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
             map["abis"] = Build.SUPPORTED_ABIS
         }
 
-        if (SDK_INT >= Build.VERSION_CODES.N) {
+        if (SDK_INT >= Build.VERSION_CODES.M) {
             val displayManager = DisplayManagerCompat.getInstance(getApplication())
             val display = displayManager.getDisplay(DEFAULT_DISPLAY)
 
             display?.let {
-                val supportedHdrType = it.hdrCapabilities.supportedHdrTypes
-                if (supportedHdrType.isNotEmpty()) {
-                    map["supportedHdrType"] = supportedHdrType.map(this::convertHdrTypeToString).sorted()
+                val supportedRefreshRate = it.supportedModes.map { mode ->
+                    mode.refreshRate
+                }.toSortedSet()
+
+                if (supportedRefreshRate.size > 1) {
+                    map["supportedRefreshRate"] = supportedRefreshRate.map(DecimalFormat("0.##")::format)
+                }
+
+                if (SDK_INT >= Build.VERSION_CODES.N) {
+                    val supportedHdrType = it.hdrCapabilities.supportedHdrTypes
+                    if (supportedHdrType.isNotEmpty()) {
+                        map["supportedHdrType"] = supportedHdrType.map(this::convertHdrTypeToString).sorted()
+                    }
                 }
             }
         }
