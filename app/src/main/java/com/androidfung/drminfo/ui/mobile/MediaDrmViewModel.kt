@@ -2,7 +2,7 @@ package com.androidfung.drminfo.ui.mobile
 
 import android.app.Application
 import android.media.MediaDrm
-import android.media.UnsupportedSchemeException
+import android.media.MediaDrmException
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import androidx.collection.SimpleArrayMap
@@ -23,13 +23,13 @@ abstract class MediaDrmViewModel protected constructor(application: Application)
     }
 
     protected fun getPropertyString(key: String): String? {
-        try {
+        return try {
             return mediaDrm?.getPropertyString(key)
-        } catch (ignored: IllegalArgumentException) {
-        } catch (ignored: IllegalStateException) {
-        } catch (ignored: NoSuchMethodError) {
+        } catch (e: RuntimeException) {
+            null
+        } catch (e: MediaDrmException) {
+            null
         }
-        return null
     }
 
     protected open fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm): SimpleArrayMap<String, Any> {
@@ -62,9 +62,8 @@ abstract class MediaDrmViewModel protected constructor(application: Application)
                     map.putAll(obtainPropertiesFromMediaDrm(it))
                 }
             }
-        } catch (ignored: UnsupportedSchemeException) {
-        } catch (ignored: IllegalArgumentException) {
-        } catch (ignored: IllegalStateException) {
+        } catch (ignored: MediaDrmException) {
+        } catch (ignored: RuntimeException) {
         }
         it.value = map
     }

@@ -1,5 +1,4 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -94,7 +93,7 @@
             android:layout_height="wrap_content"
             android:text="@{Build.DISPLAY}"
             android:textAppearance="?attr/textAppearanceBody2"
-            app:onLongClick="@{handler::onLongClick}"
+            android:onLongClick="@{handler::onLongClick}"
             tools:text="PPR1" />
 
         <TextView
@@ -127,7 +126,7 @@
             android:layout_height="wrap_content"
             android:text="@{Build.FINGERPRINT}"
             android:textAppearance="?attr/textAppearanceBody2"
-            app:onLongClick="@{handler::onLongClick}"
+            android:onLongClick="@{handler::onLongClick}"
             tools:text="google/sdk_gphone_x86_64/generic_x86_64_arm64:10/RSR1.200417.003/6415074:user/release-keys" />
 
         <TextView
@@ -164,7 +163,7 @@
             android:text='@{(Build.VERSION.SDK_INT &lt; 21)?"-":Util.format(Build.SUPPORTED_ABIS)}'
             android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{Build.VERSION.SDK_INT >= 21?View.VISIBLE:View.GONE}"
-            app:onLongClick="@{handler::onLongClick}"
+            android:onLongClick="@{handler::onLongClick}"
             tools:text="1" />
 
         <TextView
@@ -183,7 +182,7 @@
             android:text='@{Util.format(infoProperties["hardwareAcceleratedType"])}'
             android:textAppearance="?attr/textAppearanceBody2"
             android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["hardwareAcceleratedType"])}'
-            app:onLongClick="@{handler::onLongClick}"
+            android:onLongClick="@{handler::onLongClick}"
             tools:text="1" />
 
         <TextView
