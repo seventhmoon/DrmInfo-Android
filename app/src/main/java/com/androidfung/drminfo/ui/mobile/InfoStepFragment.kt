@@ -50,31 +50,32 @@ class InfoStepFragment : GuidedStepSupportFragment() {
 
         actions += GuidedAction.Builder(activity)
                 .infoOnly(true)
-                .title(getString(R.string.text_model))
+                .title(R.string.text_model)
                 .description(Build.MODEL)
                 .build()
 
         actions += GuidedAction.Builder(activity)
                 .infoOnly(true)
-                .title(getString(R.string.text_display))
+                .title(R.string.text_display)
                 .description(Build.DISPLAY)
                 .build()
 
         actions += GuidedAction.Builder(activity)
                 .infoOnly(true)
-                .title(getString(R.string.text_type))
+                .title(R.string.text_type)
                 .description(Build.TYPE)
                 .build()
 
         actions += GuidedAction.Builder(activity)
                 .infoOnly(true)
-                .title(getString(R.string.text_fingerprint))
+                .multilineDescription(true)
+                .title(R.string.text_fingerprint)
                 .description(Build.FINGERPRINT)
                 .build()
 
         actions += GuidedAction.Builder(activity)
                 .infoOnly(true)
-                .title(getString(R.string.text_sdk_level))
+                .title(R.string.text_sdk_level)
                 .description(SDK_INT.toString())
                 .build()
 
@@ -82,6 +83,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
         if (SDK_INT >= VERSION_CODES.LOLLIPOP) {
             actions += GuidedAction.Builder(activity)
                     .infoOnly(true)
+                    .multilineDescription(true)
                     .title(R.string.text_abi)
                     .description(Build.SUPPORTED_ABIS.joinToString())
                     .build()
@@ -116,16 +118,13 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                 actions += GuidedAction.Builder(activity)
                         .infoOnly(false)
                         .title(R.string.text_hw_decode_type)
-                        .subActions(supportedHardwareAcceleratedDecodeType.map {
-                            GuidedAction.Builder(activity)
-                                    .infoOnly(true)
-                                    .title(it)
-                                    .build()
-                        })
+                        .multilineDescription(true)
+                        .description(supportedHardwareAcceleratedDecodeType.joinToString())
                         .build()
             }
         }
 
+        //MediaDrm Section
         val cryptoSchemes = arrayOf(CLEARKEY_UUID, WIDEVINE_UUID, PLAYREADY_UUID, VERIMATRIX_UUID, MARLIN_UUID, PRIMETIME_UUID, WISEPLAY_UUID)
 
         actions += cryptoSchemes.map {
