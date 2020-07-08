@@ -45,6 +45,7 @@ object Util {
         Constants.MARLIN_UUID -> R.string.text_marlin_name
         Constants.PRIMETIME_UUID -> R.string.text_primetime_name
         Constants.WISEPLAY_UUID -> R.string.text_wiseplay_name
+        Constants.DIVX_UUID -> R.string.text_wiseplay_name
         else -> R.string.text_undefined_name
     }
 

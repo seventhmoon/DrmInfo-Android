@@ -1,6 +1,5 @@
 package com.androidfung.drminfo.ui.mobile
 
-import android.annotation.SuppressLint
 import android.media.MediaCodecList
 import android.media.MediaDrm
 import android.media.MediaDrmException
@@ -15,6 +14,7 @@ import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.GuidanceStylist.Guidance
 import androidx.leanback.widget.GuidedAction
 import com.androidfung.drminfo.Constants.CLEARKEY_UUID
+import com.androidfung.drminfo.Constants.DIVX_UUID
 import com.androidfung.drminfo.Constants.MARLIN_UUID
 import com.androidfung.drminfo.Constants.PLAYREADY_UUID
 import com.androidfung.drminfo.Constants.PRIMETIME_UUID
@@ -33,7 +33,6 @@ class InfoStepFragment : GuidedStepSupportFragment() {
         return Guidance(title, description, null, icon)
     }
 
-    @SuppressLint("ObsoleteSdkInt")
     override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
         //info section here
         actions += GuidedAction.Builder(activity)
@@ -110,8 +109,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
             val supportedHardwareAcceleratedDecodeType = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
                     .filter { it.isHardwareAccelerated }
                     .filterNot { it.isEncoder }
-                    .map { it.supportedTypes.toList() }
-                    .flatten()
+                    .flatMap { it.supportedTypes.asIterable() }
                     .toSortedSet()
 
             if (supportedHardwareAcceleratedDecodeType.isNotEmpty()) {
@@ -125,7 +123,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
         }
 
         //MediaDrm Section
-        val cryptoSchemes = arrayOf(CLEARKEY_UUID, WIDEVINE_UUID, PLAYREADY_UUID, VERIMATRIX_UUID, MARLIN_UUID, PRIMETIME_UUID, WISEPLAY_UUID)
+        val cryptoSchemes = arrayOf(CLEARKEY_UUID, WIDEVINE_UUID, PLAYREADY_UUID, VERIMATRIX_UUID, MARLIN_UUID, PRIMETIME_UUID, WISEPLAY_UUID, DIVX_UUID)
 
         actions += cryptoSchemes.map {
             val supported = isCryptoSchemeSupported(it)
@@ -203,6 +201,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
             getSubActions(widevineDrm, R.array.widevine_string_property_keys, R.array.widevine_string_property_names)
 
     companion object {
+        @JvmStatic
         private val TAG = InfoStepFragment::class.java.simpleName
     }
 }
