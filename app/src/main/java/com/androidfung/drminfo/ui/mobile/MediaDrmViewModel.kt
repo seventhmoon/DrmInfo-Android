@@ -5,7 +5,7 @@ import android.media.MediaDrm
 import android.media.MediaDrmException
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
-import androidx.collection.SimpleArrayMap
+import androidx.collection.ArrayMap
 import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -32,23 +32,21 @@ abstract class MediaDrmViewModel protected constructor(application: Application)
         }
     }
 
-    protected open fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm): SimpleArrayMap<String, Any> {
-        val map = SimpleArrayMap<String, Any>()
-        val mediaDrmKeys = getApplication<Application>().resources.getStringArray(R.array.mediadrm_string_property_keys)
+    protected open fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm): ArrayMap<String, Any> {
+        with(getApplication<Application>().resources) {
+            val map = ArrayMap<String, Any>()
+            val mediaDrmKeys = getStringArray(R.array.mediadrm_string_property_keys)
 
-        mediaDrmKeys.forEach { key ->
-            map.put(key, getPropertyString(key))
-        }
+            map += mediaDrmKeys.associateWith { getPropertyString(it) }
 
-        if (SDK_INT >= Build.VERSION_CODES.P) {
-            with(getApplication<Application>().resources) {
-                map.put(getString(R.string.mediadrm_key_maxNumberOfSessions), mediaDrm.maxSessionCount.toString())
-                map.put(getString(R.string.mediadrm_key_maxHdcpLevel), getString(Util.convertHdcpLevelToIntRes(mediaDrm.maxHdcpLevel)))
-                map.put(getString(R.string.mediadrm_key_hdcpLevel), getString(Util.convertHdcpLevelToIntRes(mediaDrm.connectedHdcpLevel)))
+            if (SDK_INT >= Build.VERSION_CODES.P) {
+                map[getString(R.string.mediadrm_key_maxNumberOfSessions)] = mediaDrm.maxSessionCount.toString()
+                map[getString(R.string.mediadrm_key_maxHdcpLevel)] = getString(Util.convertHdcpLevelToIntRes(mediaDrm.maxHdcpLevel))
+                map[getString(R.string.mediadrm_key_hdcpLevel)] = getString(Util.convertHdcpLevelToIntRes(mediaDrm.connectedHdcpLevel))
             }
-        }
 
-        return map
+            return map
+        }
     }
 
     private fun prepareProperties(it: MutableLiveData<ObservableArrayMap<String, Any>>) {
@@ -59,7 +57,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application)
                 mediaDrm = MediaDrm(uuid)
 
                 mediaDrm?.let {
-                    map.putAll(obtainPropertiesFromMediaDrm(it))
+                    map += obtainPropertiesFromMediaDrm(it)
                 }
             }
         } catch (ignored: MediaDrmException) {
