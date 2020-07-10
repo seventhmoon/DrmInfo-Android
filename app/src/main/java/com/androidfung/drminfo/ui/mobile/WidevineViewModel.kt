@@ -18,6 +18,7 @@ class WidevineViewModel(application: Application) : MediaDrmViewModel(applicatio
     }
 
     companion object {
+        @JvmStatic
         private val TAG = WidevineViewModel::class.java.simpleName
     }
 

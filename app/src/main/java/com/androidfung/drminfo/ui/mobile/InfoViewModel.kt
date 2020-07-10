@@ -30,17 +30,17 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
 
         if (SDK_INT >= Build.VERSION_CODES.M) {
             val displayManager = DisplayManagerCompat.getInstance(getApplication())
-            val display = displayManager.getDisplay(DEFAULT_DISPLAY)
+            val defaultDisplay = displayManager.getDisplay(DEFAULT_DISPLAY)
 
-            display?.let {
-                val supportedRefreshRate = it.supportedModes.map { mode -> mode.refreshRate }.toSortedSet()
+            defaultDisplay?.let { display ->
+                val supportedRefreshRate = display.supportedModes.map { mode -> mode.refreshRate }.toSortedSet()
 
                 if (supportedRefreshRate.size > 1) {
                     map["supportedRefreshRate"] = supportedRefreshRate.map(DecimalFormat("0.##")::format)
                 }
 
                 if (SDK_INT >= Build.VERSION_CODES.N) {
-                    val supportedHdrType = it.hdrCapabilities.supportedHdrTypes
+                    val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
                     if (supportedHdrType.isNotEmpty()) {
                         map["supportedHdrType"] = supportedHdrType.map(this::convertHdrTypeToString).sorted()
                     }

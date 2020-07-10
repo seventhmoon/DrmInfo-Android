@@ -90,10 +90,10 @@ class InfoStepFragment : GuidedStepSupportFragment() {
 
         if (SDK_INT >= VERSION_CODES.N) {
             val displayManager = DisplayManagerCompat.getInstance(requireActivity())
-            val display = displayManager.getDisplay(Display.DEFAULT_DISPLAY)
+            val defaultDisplay = displayManager.getDisplay(Display.DEFAULT_DISPLAY)
 
-            display?.let {
-                val supportedHdrType = it.hdrCapabilities.supportedHdrTypes
+            defaultDisplay?.let { display ->
+                val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
 
                 if (supportedHdrType.isNotEmpty()) {
                     actions += GuidedAction.Builder(activity)
@@ -142,12 +142,10 @@ class InfoStepFragment : GuidedStepSupportFragment() {
     private fun getSubActions(uuid: UUID): List<GuidedAction>? {
         return try {
             val mediaDrm = MediaDrm(uuid)
-            if (WIDEVINE_UUID === uuid) {
-                getMediaDrmSubActions(mediaDrm) + getWidevineSubActions(mediaDrm)
-            } else {
-                getMediaDrmSubActions(mediaDrm)
+            when (uuid) {
+                WIDEVINE_UUID -> getMediaDrmSubActions(mediaDrm) + getWidevineSubActions(mediaDrm)
+                else -> getMediaDrmSubActions(mediaDrm)
             }
-
         } catch (e: MediaDrmException) {
             e.printStackTrace()
             null
@@ -182,12 +180,12 @@ class InfoStepFragment : GuidedStepSupportFragment() {
 
     private fun getSubActions(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>) =
             drmStringNames.zip(drmStringKeys.map { getPropertyString(mediaDrm, it) })
-                    .filterNot { it.second.isNullOrBlank() }
-                    .map {
+                    .filterNot { (_, desc) -> desc.isNullOrBlank() }
+                    .map { (name, desc) ->
                         GuidedAction.Builder(activity)
                                 .infoOnly(true)
-                                .title(it.first)
-                                .description(it.second)
+                                .title(name)
+                                .description(desc)
                                 .build()
                     }
 
