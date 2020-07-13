@@ -37,7 +37,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application)
             val map = ArrayMap<String, Any>()
             val mediaDrmKeys = getStringArray(R.array.mediadrm_string_property_keys)
 
-            map += mediaDrmKeys.associateWith { getPropertyString(it) }
+            map += mediaDrmKeys.associateWith { key -> getPropertyString(key) }
 
             if (SDK_INT >= Build.VERSION_CODES.P) {
                 map[getString(R.string.mediadrm_key_maxNumberOfSessions)] = mediaDrm.maxSessionCount.toString()

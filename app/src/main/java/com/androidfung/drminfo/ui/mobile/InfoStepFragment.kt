@@ -107,9 +107,8 @@ class InfoStepFragment : GuidedStepSupportFragment() {
 
         if (SDK_INT >= VERSION_CODES.Q) {
             val supportedHardwareAcceleratedDecodeType = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
-                    .filter { it.isHardwareAccelerated }
-                    .filterNot { it.isEncoder }
-                    .flatMap { it.supportedTypes.asIterable() }
+                    .filter { codec -> codec.isHardwareAccelerated && !codec.isEncoder }
+                    .flatMap { codec -> codec.supportedTypes.asIterable() }
                     .toSortedSet()
 
             if (supportedHardwareAcceleratedDecodeType.isNotEmpty()) {
@@ -125,15 +124,15 @@ class InfoStepFragment : GuidedStepSupportFragment() {
         //MediaDrm Section
         val cryptoSchemes = arrayOf(CLEARKEY_UUID, WIDEVINE_UUID, PLAYREADY_UUID, VERIMATRIX_UUID, MARLIN_UUID, PRIMETIME_UUID, WISEPLAY_UUID, DIVX_UUID)
 
-        actions += cryptoSchemes.map {
-            val supported = isCryptoSchemeSupported(it)
-            val subActions = if (supported) getSubActions(it) else null
+        actions += cryptoSchemes.map { uuid ->
+            val supported = isCryptoSchemeSupported(uuid)
+            val subActions = if (supported) getSubActions(uuid) else null
             val infoOnly = subActions.isNullOrEmpty()
 
             GuidedAction.Builder(activity)
                     .infoOnly(infoOnly)
                     .subActions(if (infoOnly) null else subActions)
-                    .title(Util.convertCryptoSchemeToStringRes(it))
+                    .title(Util.convertCryptoSchemeToStringRes(uuid))
                     .description(if (supported) R.string.text_supported else R.string.text_not_supported)
                     .build()
         }
@@ -178,8 +177,13 @@ class InfoStepFragment : GuidedStepSupportFragment() {
         }
     }
 
+    private fun getPrpoerties(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>) =
+            drmStringKeys.zip(drmStringNames)
+                    .map { (key, name) -> key to Pair(name, getPropertyString(mediaDrm, key)) }
+                    .toMap()
+
     private fun getSubActions(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>) =
-            drmStringNames.zip(drmStringKeys.map { getPropertyString(mediaDrm, it) })
+            getPrpoerties(mediaDrm, drmStringKeys, drmStringNames).values
                     .filterNot { (_, desc) -> desc.isNullOrBlank() }
                     .map { (name, desc) ->
                         GuidedAction.Builder(activity)

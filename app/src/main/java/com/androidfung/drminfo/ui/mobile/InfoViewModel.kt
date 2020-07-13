@@ -34,10 +34,7 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
 
             defaultDisplay?.let { display ->
                 val supportedRefreshRate = display.supportedModes.map { mode -> mode.refreshRate }.toSortedSet()
-
-                if (supportedRefreshRate.size > 1) {
-                    map["supportedRefreshRate"] = supportedRefreshRate.map(DecimalFormat("0.##")::format)
-                }
+                map["supportedRefreshRate"] = supportedRefreshRate.map(DecimalFormat("0.##")::format)
 
                 if (SDK_INT >= Build.VERSION_CODES.N) {
                     val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
@@ -50,9 +47,8 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
 
         if (SDK_INT >= Build.VERSION_CODES.Q) {
             map["hardwareAcceleratedType"] = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
-                    .filterNot { it.isEncoder }
-                    .filter { it.isHardwareAccelerated }
-                    .flatMap { it.supportedTypes.asIterable() }
+                    .filter { codec -> codec.isHardwareAccelerated && !codec.isEncoder }
+                    .flatMap { codec -> codec.supportedTypes.asIterable() }
                     .toSortedSet()
         }
 

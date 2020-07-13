@@ -12,7 +12,7 @@ class WidevineViewModel(application: Application) : MediaDrmViewModel(applicatio
         val map = super.obtainPropertiesFromMediaDrm(mediaDrm)
         val wvKeys = getApplication<Application>().resources.getStringArray(R.array.widevine_string_property_keys)
 
-        map += wvKeys.associateWith { getPropertyString(it) }
+        map += wvKeys.associateWith { key -> getPropertyString(key) }
 
         return map
     }
