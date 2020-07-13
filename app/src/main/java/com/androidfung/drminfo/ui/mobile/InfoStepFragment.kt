@@ -134,7 +134,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                     .infoOnly(infoOnly)
                     .subActions(if (infoOnly) null else subActions)
                     .title(Util.convertCryptoSchemeToStringRes(it))
-                    .description(if (supported) getString(R.string.text_supported) else getString(R.string.text_not_supported))
+                    .description(if (supported) R.string.text_supported else R.string.text_not_supported)
                     .build()
         }
     }
