@@ -8,14 +8,14 @@ apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion '30.0.0'
+    buildToolsVersion '30.0.1'
 
     defaultConfig {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 257
-        versionName '1.1.5.200621'
+        versionCode 267
+        versionName '1.1.6.200713'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -65,7 +65,6 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation platform('com.google.firebase:firebase-bom:25.5.0')
 
     implementation 'androidx.activity:activity-ktx:1.1.0'
     implementation 'androidx.annotation:annotation:1.1.0'
@@ -85,12 +84,12 @@ dependencies {
     implementation "androidx.vectordrawable:vectordrawable:1.1.0"
 
     implementation 'com.google.android:flexbox:1.1.1'
-    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'com.google.android.material:material:1.2.0-rc01'
 
-    implementation 'com.google.firebase:firebase-ads'
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx'
-    implementation 'com.google.firebase:firebase-perf'
+    implementation 'com.google.firebase:firebase-ads:19.2.0'
+    implementation 'com.google.firebase:firebase-analytics-ktx:17.4.4'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:17.1.1'
+    implementation 'com.google.firebase:firebase-perf:19.0.7'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
