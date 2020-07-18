@@ -10,25 +10,22 @@ import com.google.android.material.snackbar.Snackbar
 
 class MyHandlers {
     private fun showSnackbar(view: View, label: String, text: String): Boolean {
-        val snackbar = Snackbar.make(view, text, Snackbar.LENGTH_LONG).setAction(R.string.label_copy) { v: View ->
-            copyToClipboard(v, label, text)
-        }.apply {
-            show()
-        }
+        val snackbar = Snackbar.make(view, text, Snackbar.LENGTH_LONG)
+                .setAction(R.string.label_copy) { copyToClipboard(it, label, text) }
+                .apply {
+                    show()
+                }
         return snackbar.isShownOrQueued
     }
 
-    fun onLongClick(v: View): Boolean {
-        val label = v.id.toString()
-        var text = v.toString()
-        if (v is TextView) {
-            text = v.text.toString()
-        }
-        return showSnackbar(v, label, text)
+    fun onLongClick(view: View): Boolean {
+        val label = view.id.toString()
+        val text = if (view is TextView) view.text.toString() else view.toString()
+        return showSnackbar(view, label, text)
     }
 
-    private fun copyToClipboard(v : View, label: String, text: String){
-        val clipboard = v.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    private fun copyToClipboard(view: View, label: String, text: String) {
+        val clipboard = view.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(label, text)
         clipboard.setPrimaryClip(clip)
     }

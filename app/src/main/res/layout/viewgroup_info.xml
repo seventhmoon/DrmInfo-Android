@@ -1,5 +1,4 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -11,6 +10,8 @@
         <import type="android.os.Build" />
 
         <import type="java.util.Collection" />
+
+        <import type="com.androidfung.drminfo.Util" />
 
         <variable
             name="infoProperties"
@@ -31,9 +32,7 @@
             android:id="@+id/tv_label_brand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:layout_marginTop="@dimen/listitem_padding"
-
             android:text="@string/text_brand"
             android:textAppearance="?attr/textAppearanceCaption" />
 
@@ -44,6 +43,7 @@
             android:text="@{Build.BRAND}"
             android:textAppearance="?attr/textAppearanceBody2"
             tools:text="Google" />
+
         <TextView
             android:id="@+id/tv_label_model"
             android:layout_width="wrap_content"
@@ -91,9 +91,9 @@
             android:id="@+id/tv_value_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onLongClick="@{handler::onLongClick}"
             android:text="@{Build.DISPLAY}"
             android:textAppearance="?attr/textAppearanceBody2"
+            android:onLongClick="@{handler::onLongClick}"
             tools:text="PPR1" />
 
         <TextView
@@ -116,25 +116,25 @@
             android:id="@+id/tv_label_fingerprint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_fingerprint"
             android:layout_marginTop="@dimen/listitem_padding"
+            android:text="@string/text_fingerprint"
             android:textAppearance="?attr/textAppearanceCaption" />
 
         <TextView
             android:id="@+id/tv_value_fingerprint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onLongClick="@{handler::onLongClick}"
             android:text="@{Build.FINGERPRINT}"
             android:textAppearance="?attr/textAppearanceBody2"
+            android:onLongClick="@{handler::onLongClick}"
             tools:text="google/sdk_gphone_x86_64/generic_x86_64_arm64:10/RSR1.200417.003/6415074:user/release-keys" />
 
         <TextView
             android:id="@+id/tv_label_sdklevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_sdk_level"
             android:layout_marginTop="@dimen/listitem_padding"
+            android:text="@string/text_sdk_level"
             android:textAppearance="?attr/textAppearanceCaption" />
 
         <TextView
@@ -151,8 +151,8 @@
             android:id="@+id/tv_label_abis"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_abi"
             android:layout_marginTop="@dimen/listitem_padding"
+            android:text="@string/text_abi"
             android:textAppearance="?attr/textAppearanceCaption"
             android:visibility="@{Build.VERSION.SDK_INT >= 21?View.VISIBLE:View.GONE}" />
 
@@ -160,10 +160,10 @@
             android:id="@+id/tv_value_abis"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onLongClick="@{handler::onLongClick}"
-            android:text='@{(Build.VERSION.SDK_INT &lt; 21)?"-":java.util.Arrays.toString(Build.SUPPORTED_ABIS).replace("[","").replace("]","")}'
+            android:text='@{(Build.VERSION.SDK_INT &lt; 21)?"-":Util.format(Build.SUPPORTED_ABIS)}'
             android:textAppearance="?attr/textAppearanceBody2"
             android:visibility="@{Build.VERSION.SDK_INT >= 21?View.VISIBLE:View.GONE}"
+            android:onLongClick="@{handler::onLongClick}"
             tools:text="1" />
 
         <TextView
@@ -173,53 +173,17 @@
             android:layout_marginTop="@dimen/listitem_padding"
             android:text="@string/text_hw_decode_type"
             android:textAppearance="?attr/textAppearanceCaption"
-            android:visibility='@{Build.VERSION.SDK_INT >= 29 &amp;&amp; !((Collection)infoProperties["hardwareAcceleratedType"]).isEmpty()?View.VISIBLE:View.GONE}' />
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["hardwareAcceleratedType"])}' />
 
         <TextView
             android:id="@+id/tv_value_hw_decode_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onLongClick="@{handler::onLongClick}"
-            android:text='@{infoProperties["hardwareAcceleratedType"].toString().replace("[","").replace("]","")}'
+            android:text='@{Util.format(infoProperties["hardwareAcceleratedType"])}'
             android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility='@{Build.VERSION.SDK_INT >= 29 &amp;&amp; !((Collection)infoProperties["hardwareAcceleratedType"]).isEmpty()?View.VISIBLE:View.GONE}'
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["hardwareAcceleratedType"])}'
+            android:onLongClick="@{handler::onLongClick}"
             tools:text="1" />
-
-<!--        <TextView-->
-<!--            android:id="@+id/tv_label_widecg"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="@dimen/listitem_padding"-->
-<!--            android:text="@string/text_wide_color"-->
-<!--            android:textAppearance="?attr/textAppearanceCaption"-->
-<!--            android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}" />-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/tv_value_widecg"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@{(@bool/is_widecg)?@string/text_supported:@string/text_not_supported}"-->
-<!--            android:textAppearance="?attr/textAppearanceBody2"-->
-<!--            android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}"-->
-<!--            tools:text="@string/text_supported" />-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/tv_label_hdr"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="@dimen/listitem_padding"-->
-<!--            android:text="@string/text_hdr"-->
-<!--            android:textAppearance="?attr/textAppearanceCaption"-->
-<!--            android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}" />-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/tv_value_hdr"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@{(@bool/is_highdr)?@string/text_supported:@string/text_not_supported}"-->
-<!--            android:textAppearance="?attr/textAppearanceBody2"-->
-<!--            android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}"-->
-<!--            tools:text="@string/text_supported" />-->
 
         <TextView
             android:id="@+id/tv_label_supported_hdr_type"
@@ -228,49 +192,34 @@
             android:layout_marginTop="@dimen/listitem_padding"
             android:text="@string/text_supported_hdr_types"
             android:textAppearance="?attr/textAppearanceCaption"
-            android:visibility='@{((Collection)infoProperties["supportedHdrType"]).isEmpty?View.GONE:View.VISIBLE}' />
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["supportedHdrType"])}' />
 
         <TextView
             android:id="@+id/tv_value_supported_hdr_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text='@{((Collection)infoProperties["supportedHdrType"]).toString().replace("[","").replace("]","")}'
+            android:text='@{Util.format(infoProperties["supportedHdrType"])}'
             android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility='@{((Collection)infoProperties["supportedHdrType"]).isEmpty?View.GONE:View.VISIBLE}'
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["supportedHdrType"])}'
             tools:text="@string/text_supported" />
 
-        <!--        &lt;!&ndash;        <TextView&ndash;&gt;-->
-        <!--        &lt;!&ndash;            android:id="@+id/tv_label_hdr_type"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            android:layout_width="wrap_content"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            android:layout_height="0dp"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            android:layout_marginTop="8dp"&ndash;&gt;-->
-        <!--        &lt;!&ndash;&ndash;&gt;-->
-        <!--        &lt;!&ndash;            android:text="@string/text_hdr_type"&ndash;&gt;-->
-        <!--        &lt;!&ndash;android:textAppearance="?attr/textAppearanceCaption"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            app:layout_constrainedHeight="true"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            app:layout_constraintEnd_toStartOf="@+id/tv_value_hdr_type"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            app:layout_constraintTop_toBottomOf="@+id/tv_label_hdr"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            />&ndash;&gt;-->
+        <TextView
+            android:id="@+id/tv_label_supported_refresh_rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/listitem_padding"
+            android:text="@string/text_supported_refresh_rate"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["supportedRefreshRate"])}' />
 
-        <!--        &lt;!&ndash;        <TextView&ndash;&gt;-->
-        <!--        &lt;!&ndash;            android:id="@+id/tv_value_hdr_type"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            android:layout_width="wrap_content"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            android:layout_marginTop="8dp"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            android:text='@{infoProperties["supportedHdrTypes"].toString().replace("{","").replace("}","").replace(", ", "\n")}'&ndash;&gt;-->
-        <!--        &lt;!&ndash;            &ndash;&gt;-->
-        <!--        &lt;!&ndash;android:textAppearance="?attr/textAppearanceCaption"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            android:visibility="@{Build.VERSION.SDK_INT >= 26?View.VISIBLE:View.GONE}"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            app:layout_constrainedHeight="true"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            app:layout_constraintStart_toEndOf="@+id/tv_label_hdr_type"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            app:layout_constraintTop_toBottomOf="@+id/tv_value_hdr"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
-        <!--        &lt;!&ndash;            tools:text="True" />&ndash;&gt;-->
+        <TextView
+            android:id="@+id/tv_value_supported_refresh_rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{Util.format(infoProperties["supportedRefreshRate"])}'
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["supportedRefreshRate"])}'
+            tools:text="@string/text_supported" />
 
     </LinearLayout>
 </layout>
