@@ -5,6 +5,8 @@ import android.media.MediaDrm
 import android.media.MediaDrmException
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
+import androidx.annotation.ArrayRes
+import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
@@ -33,23 +35,27 @@ abstract class MediaDrmViewModel protected constructor(application: Application)
     }
 
     protected open fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm): ArrayMap<String, Any> {
-        with(getApplication<Application>().resources) {
-            val map = ArrayMap<String, Any>()
-            val mediaDrmKeys = getStringArray(R.array.mediadrm_string_property_keys)
+        val map = ArrayMap<String, Any>()
+        val mediaDrmKeys = getStringArray(R.array.mediadrm_string_property_keys)
 
-            map += mediaDrmKeys.associateWith { key -> getPropertyString(key) }
+        map += mediaDrmKeys.associateWith { key -> getPropertyString(key) }
 
-            if (SDK_INT >= Build.VERSION_CODES.P) {
-                map[getString(R.string.mediadrm_key_maxNumberOfSessions)] = mediaDrm.maxSessionCount.toString()
-                map[getString(R.string.mediadrm_key_maxHdcpLevel)] = getString(Util.convertHdcpLevelToIntRes(mediaDrm.maxHdcpLevel))
-                map[getString(R.string.mediadrm_key_hdcpLevel)] = getString(Util.convertHdcpLevelToIntRes(mediaDrm.connectedHdcpLevel))
-            }
-
-            return map
+        if (SDK_INT >= Build.VERSION_CODES.P) {
+            map[getString(R.string.mediadrm_key_maxNumberOfSessions)] = mediaDrm.maxSessionCount.toString()
+            map[getString(R.string.mediadrm_key_maxHdcpLevel)] = getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel))
+            map[getString(R.string.mediadrm_key_hdcpLevel)] = getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel))
         }
+
+        return map
     }
 
-    private fun prepareProperties(it: MutableLiveData<ObservableArrayMap<String, Any>>) {
+    protected open fun AndroidViewModel.getString(@StringRes resId: Int) =
+            this.getApplication<Application>().resources.getString(resId)
+
+    protected open fun AndroidViewModel.getStringArray(@ArrayRes resId: Int): Array<String> =
+            this.getApplication<Application>().resources.getStringArray(resId)
+
+    private fun prepareProperties(mutableLiveData: MutableLiveData<ObservableArrayMap<String, Any>>) {
         val map = ObservableArrayMap<String, Any>()
 
         try {
@@ -63,18 +69,19 @@ abstract class MediaDrmViewModel protected constructor(application: Application)
         } catch (ignored: MediaDrmException) {
         } catch (ignored: RuntimeException) {
         }
-        it.value = map
+
+        mutableLiveData.value = map
     }
 
     fun getProperties(): LiveData<ObservableArrayMap<String, Any>> {
         return properties
     }
 
-    @Suppress("DEPRECATION")
     override fun onCleared() {
         if (SDK_INT >= Build.VERSION_CODES.P) {
             mediaDrm?.close()
         } else {
+            @Suppress("DEPRECATION")
             mediaDrm?.release()
         }
     }

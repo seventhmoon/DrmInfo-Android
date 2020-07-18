@@ -25,7 +25,7 @@ import com.androidfung.drminfo.R
 import com.androidfung.drminfo.Util
 import java.util.*
 
-class InfoStepFragment : GuidedStepSupportFragment() {
+open class InfoStepFragment : GuidedStepSupportFragment() {
     override fun onCreateGuidance(savedInstanceState: Bundle?): Guidance {
         val title = getString(R.string.app_name)
         val description = getString(R.string.text_on_android_tv)
@@ -77,7 +77,6 @@ class InfoStepFragment : GuidedStepSupportFragment() {
                 .title(R.string.text_sdk_level)
                 .description(SDK_INT.toString())
                 .build()
-
 
         if (SDK_INT >= VERSION_CODES.LOLLIPOP) {
             actions += GuidedAction.Builder(activity)
@@ -167,9 +166,9 @@ class InfoStepFragment : GuidedStepSupportFragment() {
     private fun convertHdrTypeToString(hdrType: Int) =
             getString(Util.convertHdrTypeToStringRes(hdrType))
 
-    private fun getPropertyString(mediaDrm: MediaDrm, key: String): String? {
+    protected open fun MediaDrm.getPropertyStringOrNull(key: String): String? {
         return try {
-            mediaDrm.getPropertyString(key)
+            this.getPropertyString(key)
         } catch (e: RuntimeException) {
             null
         } catch (e: MediaDrmException) {
@@ -179,7 +178,7 @@ class InfoStepFragment : GuidedStepSupportFragment() {
 
     private fun getPrpoerties(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>) =
             drmStringKeys.zip(drmStringNames)
-                    .map { (key, name) -> key to Pair(name, getPropertyString(mediaDrm, key)) }
+                    .map { (key, name) -> key to Pair(name, mediaDrm.getPropertyStringOrNull(key)) }
                     .toMap()
 
     private fun getSubActions(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>) =

@@ -8,7 +8,7 @@ import java.util.*
 
 object Util {
     @JvmStatic
-    fun convertHdcpLevelToIntRes(maxHdcpLevel: Int) = when (maxHdcpLevel) {
+    fun convertHdcpLevelToStringRes(maxHdcpLevel: Int) = when (maxHdcpLevel) {
         MediaDrm.HDCP_LEVEL_UNKNOWN -> R.string.message_hdcp_level_unknown
         MediaDrm.HDCP_NONE -> R.string.message_hdcp_none
         MediaDrm.HDCP_NO_DIGITAL_OUTPUT -> R.string.message_hdcp_no_digital_output
@@ -51,10 +51,10 @@ object Util {
 
     @JvmStatic
     fun goneIfNullOrEmpty(input: Any?) = when {
-        input is Array<*> && input.isEmpty() ||
-                input is Collection<*> && input.isEmpty() ||
-                input is String && input.isBlank() ||
-                input == null -> View.GONE
+        input is Array<*> && input.isEmpty() -> View.GONE
+        input is Collection<*> && input.isEmpty() -> View.GONE
+        input is String && input.isBlank() -> View.GONE
+        input == null -> View.GONE
         else -> View.VISIBLE
     }
 
