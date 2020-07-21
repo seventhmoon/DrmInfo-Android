@@ -1,7 +1,6 @@
 package com.androidfung.drminfo
 
 import android.media.MediaDrm
-import android.util.Base64
 import android.view.Display.HdrCapabilities
 import android.view.View
 import java.util.*
@@ -45,7 +44,7 @@ object Util {
         Constants.MARLIN_UUID -> R.string.text_marlin_name
         Constants.PRIMETIME_UUID -> R.string.text_primetime_name
         Constants.WISEPLAY_UUID -> R.string.text_wiseplay_name
-        Constants.DIVX_UUID -> R.string.text_wiseplay_name
+        Constants.DIVX_UUID -> R.string.text_divx_name
         else -> R.string.text_undefined_name
     }
 
@@ -56,11 +55,6 @@ object Util {
         input is String && input.isBlank() -> View.GONE
         input == null -> View.GONE
         else -> View.VISIBLE
-    }
-
-    @JvmStatic
-    fun formatByteArray(input: ByteArray): String {
-        return Base64.encodeToString(input, Base64.DEFAULT).toUpperCase(Locale.ROOT).trim()
     }
 
 }
