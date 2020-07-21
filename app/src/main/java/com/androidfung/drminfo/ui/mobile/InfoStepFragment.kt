@@ -166,7 +166,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
     private fun convertHdrTypeToString(hdrType: Int) =
             getString(Util.convertHdrTypeToStringRes(hdrType))
 
-    protected open fun MediaDrm.getPropertyStringOrNull(key: String): String? {
+    private fun MediaDrm.getPropertyStringOrNull(key: String): String? {
         return try {
             this.getPropertyString(key)
         } catch (e: RuntimeException) {
