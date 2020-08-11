@@ -11,10 +11,11 @@ import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.androidfung.drminfo.Util
 import java.text.DecimalFormat
 
-class InfoViewModel(application: Application) : AndroidViewModel(application) {
+class InfoViewModel(application: Application, private val state: SavedStateHandle) : AndroidViewModel(application) {
     private val properties: MutableLiveData<ObservableArrayMap<String, Any>> by lazy {
         MutableLiveData<ObservableArrayMap<String, Any>>().also(::prepareProperties)
     }
@@ -46,10 +47,15 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         if (SDK_INT >= Build.VERSION_CODES.Q) {
-            map["hardwareAcceleratedType"] = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
-                    .filter { codec -> codec.isHardwareAccelerated && !codec.isEncoder }
-                    .flatMap { codec -> codec.supportedTypes.asIterable() }
-                    .toSortedSet()
+            val savedHardwareAcceleratedType = state.get<Set<String>>("hardwareAcceleratedType")
+
+            map["hardwareAcceleratedType"] = savedHardwareAcceleratedType
+                    ?: MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+                            .filter { codec -> codec.isHardwareAccelerated && !codec.isEncoder }
+                            .flatMap { codec -> codec.supportedTypes.asIterable() }
+                            .toSortedSet()
+
+            state.set("hardwareAcceleratedType", map["hardwareAcceleratedType"])
         }
 
         it.value = map

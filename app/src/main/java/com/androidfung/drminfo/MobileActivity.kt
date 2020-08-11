@@ -1,7 +1,5 @@
 package com.androidfung.drminfo
 
-import android.app.ActivityManager
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,7 +7,6 @@ import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityManagerCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
@@ -52,10 +49,7 @@ class MobileActivity : AppCompatActivity() {
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
-        val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val lowRam = ActivityManagerCompat.isLowRamDevice(activityManager)
-
-        if (!lowRam && !BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
             val adView = findViewById<AdView>(R.id.adView)
             if (bannerAdHolder != null && adView != null) {

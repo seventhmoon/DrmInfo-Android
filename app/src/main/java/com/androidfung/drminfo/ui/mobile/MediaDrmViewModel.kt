@@ -10,11 +10,12 @@ import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.Util
 import java.util.*
 
-abstract class MediaDrmViewModel protected constructor(application: Application) : AndroidViewModel(application) {
+abstract class MediaDrmViewModel protected constructor(application: Application, private val state: SavedStateHandle) : AndroidViewModel(application) {
     private var mediaDrm: MediaDrm? = null
     protected lateinit var uuid: UUID
 
@@ -57,7 +58,8 @@ abstract class MediaDrmViewModel protected constructor(application: Application)
                 mediaDrm = MediaDrm(uuid)
 
                 mediaDrm?.let {
-                    map += obtainPropertiesFromMediaDrm(it)
+                    val properties = obtainPropertiesFromMediaDrm(it)
+                    map += properties
                 }
             }
         } catch (ignored: MediaDrmException) {
