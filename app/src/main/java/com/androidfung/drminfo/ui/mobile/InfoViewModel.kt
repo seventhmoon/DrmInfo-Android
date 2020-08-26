@@ -47,15 +47,10 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
         }
 
         if (SDK_INT >= Build.VERSION_CODES.Q) {
-            val savedHardwareAcceleratedType = state.get<Set<String>>("hardwareAcceleratedType")
-
-            map["hardwareAcceleratedType"] = savedHardwareAcceleratedType
-                    ?: MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
-                            .filter { codec -> codec.isHardwareAccelerated && !codec.isEncoder }
-                            .flatMap { codec -> codec.supportedTypes.asIterable() }
-                            .toSortedSet()
-
-            state.set("hardwareAcceleratedType", map["hardwareAcceleratedType"])
+            map["hardwareAcceleratedType"] = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+                    .filter { codec -> codec.isHardwareAccelerated && !codec.isEncoder }
+                    .flatMap { codec -> codec.supportedTypes.asIterable() }
+                    .toSortedSet()
         }
 
         it.value = map

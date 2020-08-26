@@ -60,6 +60,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
                 mediaDrm?.let {
                     val properties = obtainPropertiesFromMediaDrm(it)
                     map += properties
+
                 }
             }
         } catch (ignored: MediaDrmException) {

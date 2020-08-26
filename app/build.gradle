@@ -14,8 +14,8 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 275
-        versionName '1.1.6.200826'
+        versionCode 257
+        versionName '1.1.5.200621'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -101,6 +101,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
+
 }
 
 // ADD THIS AT THE BOTTOM
