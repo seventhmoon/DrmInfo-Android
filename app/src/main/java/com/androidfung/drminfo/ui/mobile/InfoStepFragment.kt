@@ -138,6 +138,14 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
     }
 
     private fun getSubActions(uuid: UUID): List<GuidedAction>? {
+        // Closeable is not implemented in older version of Android
+//        MediaDrm(uuid).use { mediaDrm ->
+//            return when (uuid){
+//                WIDEVINE_UUID -> getMediaDrmSubActions(mediaDrm) + getWidevineSubActions(mediaDrm)
+//                else -> getMediaDrmSubActions(mediaDrm)
+//            }
+//        }
+
         return try {
             val mediaDrm = MediaDrm(uuid)
             when (uuid) {
@@ -166,7 +174,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
     private fun convertHdrTypeToString(hdrType: Int) =
             getString(Util.convertHdrTypeToStringRes(hdrType))
 
-    protected open fun MediaDrm.getPropertyStringOrNull(key: String): String? {
+    private fun MediaDrm.getPropertyStringOrNull(key: String): String? {
         return try {
             this.getPropertyString(key)
         } catch (e: RuntimeException) {

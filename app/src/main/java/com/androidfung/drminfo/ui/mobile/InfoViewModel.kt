@@ -11,10 +11,11 @@ import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.androidfung.drminfo.Util
 import java.text.DecimalFormat
 
-class InfoViewModel(application: Application) : AndroidViewModel(application) {
+class InfoViewModel(application: Application, private val state: SavedStateHandle) : AndroidViewModel(application) {
     private val properties: MutableLiveData<ObservableArrayMap<String, Any>> by lazy {
         MutableLiveData<ObservableArrayMap<String, Any>>().also(::prepareProperties)
     }
