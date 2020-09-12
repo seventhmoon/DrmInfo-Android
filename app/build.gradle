@@ -1,10 +1,12 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.google.android.gms.strict-version-matcher-plugin'
-apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: 'com.google.firebase.firebase-perf'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+    id 'com.google.android.gms.strict-version-matcher-plugin'
+    id 'com.google.firebase.crashlytics'
+    id 'com.google.firebase.firebase-perf'
+}
 
 android {
     compileSdkVersion 30
@@ -14,8 +16,8 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 275
-        versionName '1.1.6.200826'
+        versionCode 278
+        versionName '1.1.6.200912'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -85,9 +87,9 @@ dependencies {
     implementation "androidx.vectordrawable:vectordrawable:1.1.0"
 
     implementation 'com.google.android:flexbox:1.1.1'
-    implementation 'com.google.android.material:material:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
 
-    implementation 'com.google.firebase:firebase-ads:19.3.0'
+    implementation 'com.google.firebase:firebase-ads:19.4.0'
     implementation 'com.google.firebase:firebase-analytics-ktx:17.5.0'
     implementation 'com.google.firebase:firebase-crashlytics-ktx:17.2.1'
     implementation 'com.google.firebase:firebase-perf:19.0.8'
@@ -97,8 +99,8 @@ dependencies {
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation 'junit:junit:4.13'
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
 }
