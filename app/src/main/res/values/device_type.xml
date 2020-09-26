@@ -7,4 +7,9 @@
     <string name="text_android_non_tv">Android non-TV</string>
     <string name="text_android_unknown">Unknown</string>
     <string name="text_default_launcher">Default Launcher</string>
+    <string name="text_safetynet">SafetyNet Attestation Result</string>
+    <string name="text_cts_profile_match">CTS Profile Match</string>
+    <string name="text_true">True</string>
+    <string name="text_false">False</string>
+    <string name="text_not_available">N/A</string>
 </resources>

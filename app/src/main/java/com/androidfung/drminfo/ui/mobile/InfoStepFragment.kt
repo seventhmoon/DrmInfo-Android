@@ -7,12 +7,15 @@ import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.util.Base64
+import android.util.Log
 import android.view.Display
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.GuidanceStylist.Guidance
 import androidx.leanback.widget.GuidedAction
+import com.androidfung.drminfo.*
 import com.androidfung.drminfo.Constants.CLEARKEY_UUID
 import com.androidfung.drminfo.Constants.DIVX_UUID
 import com.androidfung.drminfo.Constants.MARLIN_UUID
@@ -21,27 +24,18 @@ import com.androidfung.drminfo.Constants.PRIMETIME_UUID
 import com.androidfung.drminfo.Constants.VERIMATRIX_UUID
 import com.androidfung.drminfo.Constants.WIDEVINE_UUID
 import com.androidfung.drminfo.Constants.WISEPLAY_UUID
-import com.androidfung.drminfo.DeviceTypes
 import com.androidfung.drminfo.DeviceTypes.getDefaultLauncher
-import com.androidfung.drminfo.R
-import com.androidfung.drminfo.Util
+import com.google.android.gms.safetynet.SafetyNet
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import java.security.SecureRandom
 import java.util.*
 
 open class InfoStepFragment : GuidedStepSupportFragment() {
     override fun onCreateGuidance(savedInstanceState: Bundle?): Guidance {
         val title = getString(R.string.app_name)
-        val description = "${Build.MANUFACTURER}  ${Build.MODEL}"
+        val description = "${Build.MANUFACTURER} ${Build.MODEL}"
         val icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_launcher, null)
-//        val packageManager = requireActivity().packageManager
-//
-//        val deviceTypeText = when (DeviceTypes.obtainDeviceType(packageManager)) {
-//            DeviceTypes.ANDROID_TV, DeviceTypes.ANDROID_TV_WITH_WATSON -> getString(R.string.text_android_tv)
-//            DeviceTypes.ANDROID_TV_OPERATOR_DEVICE, DeviceTypes.ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER -> getString(R.string.text_android_tv_operator_tier)
-//            DeviceTypes.GOOGLE_TV -> getString(R.string.text_google_tv)
-//            DeviceTypes.ANDROID_OTHER_TV -> getString(R.string.text_android_unknown)
-//            DeviceTypes.ANDROID_NON_TV -> getString(R.string.text_android_non_tv)
-//            else -> getString(R.string.text_android_unknown)
-//        }
 
         return Guidance(title, description, null, icon)
     }
@@ -150,11 +144,6 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
                 .description(deviceTypeText)
                 .build()
 
-//        val pm = requireActivity().packageManager
-//        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME).addCategory(Intent.CATEGORY_DEFAULT)
-//        val resolveInfo = pm.resolveActivity(intent, 0)
-//        resolveInfo?.let {
-//            val applicationLabel = pm.getApplicationLabel(it.activityInfo.applicationInfo)
         val packageName = packageManager.getDefaultLauncher()
         packageName?.let {
             actions += GuidedAction.Builder(activity)
@@ -163,8 +152,40 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
                     .description(packageName)
                     .build()
         }
-//
-//        }
+
+        val safetyNetAction = GuidedAction.Builder(requireActivity())
+                .infoOnly(true)
+                .title(R.string.text_cts_profile_match)
+                .description("N/A")
+                .build()
+
+        actions += safetyNetAction
+
+        val nonce = byteArrayOf(32)
+        val random = SecureRandom()
+        random.nextBytes(nonce)
+
+        SafetyNet.getClient(requireActivity()).attest(nonce, API_KEY)
+                .addOnSuccessListener(requireActivity()) {
+
+                    Log.d("***", it.jwsResult)
+                    val result = it.jwsResult.split(".")
+                    if (result.size == 3) {
+                        val payload = result[1]
+                        val decodedPayload = String(Base64.decode(payload, Base64.DEFAULT))
+                        val returnedPayload = Json { ignoreUnknownKeys = true }.decodeFromString<JwtResult>(decodedPayload)
+
+                        safetyNetAction.description = if (returnedPayload.ctsProfileMatch) getString(R.string.text_true) else getString(R.string.text_false)
+//                        Log.d("***", decodedPayload)
+                    } else {
+                        actions.remove(safetyNetAction)
+                    }
+
+                }.addOnFailureListener(requireActivity()) {
+                    safetyNetAction.description = it.message
+                    actions.remove(safetyNetAction)
+                }
+
 
         //MediaDrm Section
         val cryptoSchemes = arrayOf(CLEARKEY_UUID, WIDEVINE_UUID, PLAYREADY_UUID, VERIMATRIX_UUID, MARLIN_UUID, PRIMETIME_UUID, WISEPLAY_UUID, DIVX_UUID)
@@ -258,5 +279,6 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
     companion object {
         @JvmStatic
         private val TAG = InfoStepFragment::class.java.simpleName
+        private const val API_KEY = BuildConfig.API_KEY
     }
 }
