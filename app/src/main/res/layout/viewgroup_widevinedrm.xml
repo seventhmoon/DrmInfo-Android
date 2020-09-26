@@ -9,6 +9,8 @@
 
         <import type="android.text.TextUtils" />
 
+        <import type="com.androidfung.drminfo.Util" />
+
         <variable
             name="properties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />

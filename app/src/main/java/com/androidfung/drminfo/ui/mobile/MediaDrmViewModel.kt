@@ -19,7 +19,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
     private var mediaDrm: MediaDrm? = null
     protected lateinit var uuid: UUID
 
-    protected val properties: MutableLiveData<ObservableArrayMap<String, Any>> by lazy {
+    private val properties: MutableLiveData<ObservableArrayMap<String, Any>> by lazy {
         MutableLiveData<ObservableArrayMap<String, Any>>().also(::prepareProperties)
     }
 
@@ -45,7 +45,6 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
                 map[getString(R.string.mediadrm_key_maxHdcpLevel)] = getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel))
                 map[getString(R.string.mediadrm_key_hdcpLevel)] = getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel))
             }
-
             return map
         }
     }

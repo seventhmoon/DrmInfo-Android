@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_device_type">Device Type</string>
+    <string name="text_android_tv">Android TV</string>
+    <string name="text_android_tv_operator_tier">Android TV (Operator Tier)</string>
+    <string name="text_google_tv">Google TV</string>
+    <string name="text_android_non_tv">Android non-TV</string>
+    <string name="text_android_unknown">Unknown</string>
+    <string name="text_default_launcher">Default Launcher</string>
+</resources>

@@ -21,6 +21,8 @@ import com.androidfung.drminfo.Constants.PRIMETIME_UUID
 import com.androidfung.drminfo.Constants.VERIMATRIX_UUID
 import com.androidfung.drminfo.Constants.WIDEVINE_UUID
 import com.androidfung.drminfo.Constants.WISEPLAY_UUID
+import com.androidfung.drminfo.DeviceTypes
+import com.androidfung.drminfo.DeviceTypes.getDefaultLauncher
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.Util
 import java.util.*
@@ -28,8 +30,19 @@ import java.util.*
 open class InfoStepFragment : GuidedStepSupportFragment() {
     override fun onCreateGuidance(savedInstanceState: Bundle?): Guidance {
         val title = getString(R.string.app_name)
-        val description = getString(R.string.text_on_android_tv)
+        val description = "${Build.MANUFACTURER}  ${Build.MODEL}"
         val icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_launcher, null)
+//        val packageManager = requireActivity().packageManager
+//
+//        val deviceTypeText = when (DeviceTypes.obtainDeviceType(packageManager)) {
+//            DeviceTypes.ANDROID_TV, DeviceTypes.ANDROID_TV_WITH_WATSON -> getString(R.string.text_android_tv)
+//            DeviceTypes.ANDROID_TV_OPERATOR_DEVICE, DeviceTypes.ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER -> getString(R.string.text_android_tv_operator_tier)
+//            DeviceTypes.GOOGLE_TV -> getString(R.string.text_google_tv)
+//            DeviceTypes.ANDROID_OTHER_TV -> getString(R.string.text_android_unknown)
+//            DeviceTypes.ANDROID_NON_TV -> getString(R.string.text_android_non_tv)
+//            else -> getString(R.string.text_android_unknown)
+//        }
+
         return Guidance(title, description, null, icon)
     }
 
@@ -49,8 +62,8 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 
         actions += GuidedAction.Builder(activity)
                 .infoOnly(true)
-                .title(R.string.text_model)
-                .description(Build.MODEL)
+                .title(R.string.text_hardware)
+                .description(Build.HARDWARE)
                 .build()
 
         actions += GuidedAction.Builder(activity)
@@ -119,6 +132,39 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
                         .build()
             }
         }
+
+        val packageManager = requireActivity().packageManager
+
+        val deviceTypeText = when (DeviceTypes.obtainDeviceType(packageManager)) {
+            DeviceTypes.ANDROID_TV, DeviceTypes.ANDROID_TV_WITH_WATSON -> getString(R.string.text_android_tv)
+            DeviceTypes.ANDROID_TV_OPERATOR_DEVICE, DeviceTypes.ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER -> getString(R.string.text_android_tv_operator_tier)
+            DeviceTypes.GOOGLE_TV -> getString(R.string.text_google_tv)
+            DeviceTypes.ANDROID_OTHER_TV -> getString(R.string.text_android_unknown)
+            DeviceTypes.ANDROID_NON_TV -> getString(R.string.text_android_non_tv)
+            else -> getString(R.string.text_android_unknown)
+        }
+
+        actions += GuidedAction.Builder(activity)
+                .infoOnly(true)
+                .title(R.string.text_device_type)
+                .description(deviceTypeText)
+                .build()
+
+//        val pm = requireActivity().packageManager
+//        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME).addCategory(Intent.CATEGORY_DEFAULT)
+//        val resolveInfo = pm.resolveActivity(intent, 0)
+//        resolveInfo?.let {
+//            val applicationLabel = pm.getApplicationLabel(it.activityInfo.applicationInfo)
+        val packageName = packageManager.getDefaultLauncher()
+        packageName?.let {
+            actions += GuidedAction.Builder(activity)
+                    .infoOnly(true)
+                    .title(R.string.text_default_launcher)
+                    .description(packageName)
+                    .build()
+        }
+//
+//        }
 
         //MediaDrm Section
         val cryptoSchemes = arrayOf(CLEARKEY_UUID, WIDEVINE_UUID, PLAYREADY_UUID, VERIMATRIX_UUID, MARLIN_UUID, PRIMETIME_UUID, WISEPLAY_UUID, DIVX_UUID)

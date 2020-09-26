@@ -9,6 +9,8 @@
 
         <import type="android.text.TextUtils" />
 
+        <import type="com.androidfung.drminfo.Util" />
+
         <variable
             name="properties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
@@ -32,7 +34,7 @@
             android:singleLine="true"
             android:text="@string/mediadrm_string_property_name_vendor"
             android:textAppearance="?attr/textAppearanceCaption"
-            android:visibility="@{properties[(@string/mediadrm_string_property_key_vendor)] != null ? View.VISIBLE : View.GONE}"
+            android:visibility="@{Util.goneIfNullOrEmpty(properties[(@string/mediadrm_string_property_key_vendor)])}"
             app:layout_constraintEnd_toStartOf="@+id/textView4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -45,7 +47,7 @@
             android:text='@{properties[(@string/mediadrm_string_property_key_vendor)] ?? "-"}'
             android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility="@{properties[(@string/mediadrm_string_property_key_vendor)] != null ? View.VISIBLE : View.GONE}"
+            android:visibility="@{Util.goneIfNullOrEmpty(properties[(@string/mediadrm_string_property_key_vendor)])}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView"
             app:layout_constraintTop_toTopOf="parent"
@@ -59,7 +61,7 @@
             android:singleLine="true"
             android:text="@string/mediadrm_string_property_name_version"
             android:textAppearance="?attr/textAppearanceCaption"
-            android:visibility="@{properties[(@string/mediadrm_string_property_key_version)] != null ? View.VISIBLE : View.GONE}"
+            android:visibility="@{Util.goneIfNullOrEmpty(properties[(@string/mediadrm_string_property_key_version)])}"
             tools:text="Version" />
 
         <TextView
@@ -69,7 +71,7 @@
             android:text='@{properties[(@string/mediadrm_string_property_key_version)] ?? "-"}'
             android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility="@{properties[(@string/mediadrm_string_property_key_version)] != null ? View.VISIBLE : View.GONE}"
+            android:visibility="@{Util.goneIfNullOrEmpty(properties[(@string/mediadrm_string_property_key_version)])}"
             tools:text="1" />
 
         <TextView
@@ -79,7 +81,7 @@
             android:layout_marginTop="@dimen/listitem_padding"
             android:text="@string/mediadrm_string_property_name_algorithms"
             android:textAppearance="?attr/textAppearanceCaption"
-            android:visibility="@{TextUtils.isEmpty((String) properties[(@string/mediadrm_string_property_key_algorithms)]) ? View.GONE : View.VISIBLE}"
+            android:visibility="@{Util.goneIfNullOrEmpty(properties[(@string/mediadrm_string_property_key_algorithms)])}"
             tools:text="Algorithm" />
 
         <TextView
@@ -90,30 +92,30 @@
             android:text='@{properties[(@string/mediadrm_string_property_key_algorithms)] ?? "-"}'
             android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility="@{TextUtils.isEmpty((String) properties[(@string/mediadrm_string_property_key_algorithms)]) ? View.GONE : View.VISIBLE}"
+            android:visibility="@{Util.goneIfNullOrEmpty(properties[(@string/mediadrm_string_property_key_algorithms)])}"
             tools:text="AES................" />
 
-        <TextView
-            android:id="@+id/tvDeviceUniqueIdLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/listitem_padding"
-            android:singleLine="true"
-            android:text="@string/mediadrm_bytearray_property_name_deviceuniqueid"
-            android:textAppearance="?attr/textAppearanceCaption"
-            android:visibility="gone"
-            tools:text="Device Unique ID" />
+        <!--        <TextView-->
+        <!--            android:id="@+id/tvDeviceUniqueIdLabel"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="@dimen/listitem_padding"-->
+        <!--            android:singleLine="true"-->
+        <!--            android:text="@string/mediadrm_bytearray_property_name_deviceuniqueid"-->
+        <!--            android:textAppearance="?attr/textAppearanceCaption"-->
+        <!--            android:visibility="gone"-->
+        <!--            tools:text="Device Unique ID" />-->
 
-        <TextView
-            android:id="@+id/tvDeviceUniqueIdValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onLongClick="@{handler::onLongClick}"
-            android:text='@{properties[(@string/mediadrm_bytearray_property_key_deviceuniqueid)] ?? "-"}'
-            android:textAlignment="viewEnd"
-            android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility="gone"
-            tools:text="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+        <!--        <TextView-->
+        <!--            android:id="@+id/tvDeviceUniqueIdValue"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:onLongClick="@{handler::onLongClick}"-->
+        <!--            android:text='@{properties[(@string/mediadrm_bytearray_property_key_deviceuniqueid)] ?? "-"}'-->
+        <!--            android:textAlignment="viewEnd"-->
+        <!--            android:textAppearance="?attr/textAppearanceBody2"-->
+        <!--            android:visibility="gone"-->
+        <!--            tools:text="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />-->
 
         <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
     </LinearLayout>
