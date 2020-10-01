@@ -5,6 +5,7 @@
     <string name="text_android_tv_operator_tier">Android TV (Operator Tier)</string>
     <string name="text_google_tv">Google TV</string>
     <string name="text_android_non_tv">Android non-TV</string>
+    <string name="text_fire_tv">Fire TV</string>
     <string name="text_android_unknown">Unknown</string>
     <string name="text_default_launcher">Default Launcher</string>
     <string name="text_safetynet">SafetyNet Attestation Result</string>
