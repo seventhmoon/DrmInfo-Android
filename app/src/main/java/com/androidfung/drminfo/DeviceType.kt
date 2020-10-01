@@ -22,6 +22,7 @@ object DeviceTypes {
     const val ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER = 22
     const val GOOGLE_TV = 31
     const val ANDROID_NON_TV = 41
+    const val FIRE_TV = 51
     const val ANDROID_OTHER_TV = 91
 
     private const val PACKAGE_LEANBACK_LAUNCHER = "com.google.android.leanbacklauncher"
@@ -31,25 +32,32 @@ object DeviceTypes {
     private const val FEATURE_OPERATOR_TIER = "com.google.android.tv.operator_tier"
     private const val FEATURE_CUSTOM_LAUNCHER = "com.google.android.tv.custom_launcher"
     private const val FEATURE_AMATI_EXPERIENCE = "com.google.android.feature.AMATI_EXPERIENCE"
+    private const val FEATURE_AMAZON_FIRE_TV = "amazon.hardware.fire_tv"
+    private const val FEATURE_TV = "android.hardware.type.television"
 
     fun obtainDeviceType(packageManager: PackageManager): Int {
         with(packageManager) {
-            return if (hasSystemFeature(PackageManager.FEATURE_LEANBACK)) {
-                if (hasSystemFeature(FEATURE_OPERATOR_TIER)) {
-                    if (hasSystemFeature(FEATURE_CUSTOM_LAUNCHER)) {
-                        ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER
-                    } else ANDROID_TV_OPERATOR_DEVICE
-                } else {
-                    when {
-                        hasSystemFeature(FEATURE_AMATI_EXPERIENCE) &&
-                                hasPackageInstalled(PACKAGE_LAUNCHER_X) -> GOOGLE_TV
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-                                hasPackageInstalled(PACKAGE_WATSON_LAUNCHER) -> ANDROID_TV_WITH_WATSON
-                        hasPackageInstalled(PACKAGE_LEANBACK_LAUNCHER) -> ANDROID_TV
-                        else -> ANDROID_OTHER_TV
+            return when {
+                hasSystemFeature(FEATURE_AMAZON_FIRE_TV) -> FIRE_TV
+                hasSystemFeature(PackageManager.FEATURE_LEANBACK) -> {
+                    if (hasSystemFeature(FEATURE_OPERATOR_TIER)) {
+                        if (hasSystemFeature(FEATURE_CUSTOM_LAUNCHER)) {
+                            ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER
+                        } else ANDROID_TV_OPERATOR_DEVICE
+                    } else {
+                        when {
+                            hasSystemFeature(FEATURE_AMATI_EXPERIENCE) &&
+                                    hasPackageInstalled(PACKAGE_LAUNCHER_X) -> GOOGLE_TV
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                                    hasPackageInstalled(PACKAGE_WATSON_LAUNCHER) -> ANDROID_TV_WITH_WATSON
+                            hasPackageInstalled(PACKAGE_LEANBACK_LAUNCHER) -> ANDROID_TV
+                            else -> ANDROID_OTHER_TV
+                        }
                     }
                 }
-            } else ANDROID_NON_TV
+                hasSystemFeature(FEATURE_TV) -> ANDROID_OTHER_TV
+                else -> ANDROID_NON_TV
+            }
         }
     }
 

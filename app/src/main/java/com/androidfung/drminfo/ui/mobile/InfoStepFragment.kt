@@ -8,7 +8,6 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.util.Base64
-import android.util.Log
 import android.view.Display
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.hardware.display.DisplayManagerCompat
@@ -26,7 +25,7 @@ import com.androidfung.drminfo.Constants.WIDEVINE_UUID
 import com.androidfung.drminfo.Constants.WISEPLAY_UUID
 import com.androidfung.drminfo.DeviceTypes.getDefaultLauncher
 import com.google.android.gms.safetynet.SafetyNet
-import kotlinx.serialization.decodeFromString
+
 import kotlinx.serialization.json.Json
 import java.security.SecureRandom
 import java.util.*
@@ -129,19 +128,12 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 
         val packageManager = requireActivity().packageManager
 
-        val deviceTypeText = when (DeviceTypes.obtainDeviceType(packageManager)) {
-            DeviceTypes.ANDROID_TV, DeviceTypes.ANDROID_TV_WITH_WATSON -> getString(R.string.text_android_tv)
-            DeviceTypes.ANDROID_TV_OPERATOR_DEVICE, DeviceTypes.ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER -> getString(R.string.text_android_tv_operator_tier)
-            DeviceTypes.GOOGLE_TV -> getString(R.string.text_google_tv)
-            DeviceTypes.ANDROID_OTHER_TV -> getString(R.string.text_android_unknown)
-            DeviceTypes.ANDROID_NON_TV -> getString(R.string.text_android_non_tv)
-            else -> getString(R.string.text_android_unknown)
-        }
+        val deviceTypeTextRes = Util.convertDeviceTypeToStringRes(DeviceTypes.obtainDeviceType(packageManager))
 
         actions += GuidedAction.Builder(activity)
                 .infoOnly(true)
                 .title(R.string.text_device_type)
-                .description(deviceTypeText)
+                .description(deviceTypeTextRes)
                 .build()
 
         val packageName = packageManager.getDefaultLauncher()
@@ -168,15 +160,22 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         SafetyNet.getClient(requireActivity()).attest(nonce, API_KEY)
                 .addOnSuccessListener(requireActivity()) {
 
-                    Log.d("***", it.jwsResult)
+//                    Log.d("***", it.jwsResult)
                     val result = it.jwsResult.split(".")
                     if (result.size == 3) {
+//                        try {
                         val payload = result[1]
                         val decodedPayload = String(Base64.decode(payload, Base64.DEFAULT))
-                        val returnedPayload = Json { ignoreUnknownKeys = true }.decodeFromString<JwtResult>(decodedPayload)
+//                            val returnedPayload = Json { ignoreUnknownKeys = true }.decodeFromString<JwtResult>(decodedPayload)
+//                            val returnedPayload = Gson().fromJson(decodedPayload, JwtResult::class.java)
+                        val returnedPayload = Json { ignoreUnknownKeys = true }.decodeFromString(JwtResult.serializer(), decodedPayload)
 
                         safetyNetAction.description = if (returnedPayload.ctsProfileMatch) getString(R.string.text_true) else getString(R.string.text_false)
 //                        Log.d("***", decodedPayload)
+//                        }catch (ex : java.lang.Exception){
+//                            actions.remove(safetyNetAction)
+//                            Log.e(TAG, ex.toString())
+//                        }
                     } else {
                         actions.remove(safetyNetAction)
                     }
@@ -189,23 +188,41 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 
         //MediaDrm Section
         val cryptoSchemes = arrayOf(CLEARKEY_UUID, WIDEVINE_UUID, PLAYREADY_UUID, VERIMATRIX_UUID, MARLIN_UUID, PRIMETIME_UUID, WISEPLAY_UUID, DIVX_UUID)
+        if (SDK_INT >= VERSION_CODES.R) {
+            val supportedCryptoScheme = MediaDrm.getSupportedCryptoSchemes()
+//            Log.d(TAG, "supportedCryptoScheme: ${supportedCryptoScheme.joinToString()}")
+//            val matchedCryptoSchemes = cryptoSchemes.intersect(supportedCryptoScheme)
+//            Log.d(TAG, "matchedCryptoSchemes: ${matchedCryptoSchemes.joinToString()}")
+//            Log.d(TAG, "playready: $PLAYREADY_UUID" )
 
-        actions += cryptoSchemes.map { uuid ->
+//            val drmList = supportedCryptoScheme.map { MediaDrm(it).getPropertyString(MediaDrm.PROPERTY_DESCRIPTION) }.toSortedSet()
+            actions += GuidedAction.Builder(requireActivity())
+                    .infoOnly(true)
+                    .title("Supported Crypto Schemes")
+//                    .description(drmList.joinToString())
+                    .description(supportedCryptoScheme.joinToString())
+                    .multilineDescription(true)
+                    .build()
+        }
+
+        cryptoSchemes.forEach { uuid ->
             val supported = isCryptoSchemeSupported(uuid)
             val subActions = if (supported) getSubActions(uuid) else null
             val infoOnly = subActions.isNullOrEmpty()
 
-            GuidedAction.Builder(activity)
-                    .infoOnly(infoOnly)
-                    .subActions(if (infoOnly) null else subActions)
-                    .title(Util.convertCryptoSchemeToStringRes(uuid))
-                    .description(if (supported) R.string.text_supported else R.string.text_not_supported)
-                    .build()
+            if (supported) {
+                actions += GuidedAction.Builder(activity)
+                        .infoOnly(infoOnly)
+                        .subActions(if (infoOnly) null else subActions)
+                        .title(Util.convertCryptoSchemeToStringRes(uuid))
+                        .description(if (supported) R.string.text_supported else R.string.text_not_supported)
+                        .build()
+            }
         }
     }
 
     private fun getSubActions(uuid: UUID): List<GuidedAction>? {
-        // Closeable is not implemented in older version of Android
+        // MediaDrm did not implemented Closeable in older version of Android
 //        MediaDrm(uuid).use { mediaDrm ->
 //            return when (uuid){
 //                WIDEVINE_UUID -> getMediaDrmSubActions(mediaDrm) + getWidevineSubActions(mediaDrm)
@@ -216,7 +233,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         return try {
             val mediaDrm = MediaDrm(uuid)
             when (uuid) {
-                WIDEVINE_UUID -> getMediaDrmSubActions(mediaDrm) + getWidevineSubActions(mediaDrm)
+                WIDEVINE_UUID -> getWidevineSubActions(mediaDrm)
                 else -> getMediaDrmSubActions(mediaDrm)
             }
         } catch (e: MediaDrmException) {
@@ -256,25 +273,51 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
                     .map { (key, name) -> key to Pair(name, mediaDrm.getPropertyStringOrNull(key)) }
                     .toMap()
 
-    private fun getSubActions(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>) =
-            getPrpoerties(mediaDrm, drmStringKeys, drmStringNames).values
-                    .filterNot { (_, desc) -> desc.isNullOrBlank() }
-                    .map { (name, desc) ->
-                        GuidedAction.Builder(activity)
-                                .infoOnly(true)
-                                .title(name)
-                                .description(desc)
-                                .build()
-                    }
+    private fun getSubActions(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>): List<GuidedAction> {
+        val actions = ArrayList<GuidedAction>()
 
-    private fun getSubActions(mediaDrm: MediaDrm, keyResId: Int, namesResId: Int) =
-            getSubActions(mediaDrm, resources.getStringArray(keyResId), resources.getStringArray(namesResId))
+        actions += getPrpoerties(mediaDrm, drmStringKeys, drmStringNames).values
+                .filterNot { (_, desc) -> desc.isNullOrBlank() }
+                .map { (name, desc) ->
+                    GuidedAction.Builder(activity)
+                            .infoOnly(true)
+                            .title(name)
+                            .description(desc)
+                            .build()
+                }
+
+
+        if (SDK_INT >= VERSION_CODES.P) {
+            try {
+                actions += GuidedAction.Builder(requireActivity())
+                        .infoOnly(true)
+                        .title(R.string.widevine_string_property_name_maxHdcpLevel)
+                        .description(getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel)))
+                        .build()
+
+                actions += GuidedAction.Builder(requireActivity())
+                        .infoOnly(true)
+                        .title(R.string.widevine_string_property_name_hdcpLevel)
+                        .description(getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel)))
+                        .build()
+
+            } catch (ignored: Exception) {
+            }
+
+        }
+
+        return actions
+    }
+
+//    private fun getSubActions(mediaDrm: MediaDrm, keyResId: Int, namesResId: Int) =
+//            getSubActions(mediaDrm, resources.getStringArray(keyResId), resources.getStringArray(namesResId))
 
     private fun getMediaDrmSubActions(mediaDrm: MediaDrm) =
-            getSubActions(mediaDrm, R.array.mediadrm_string_property_keys, R.array.mediadrm_string_property_names)
+            getSubActions(mediaDrm, resources.getStringArray(R.array.mediadrm_string_property_keys), resources.getStringArray(R.array.mediadrm_string_property_names))
 
     private fun getWidevineSubActions(widevineDrm: MediaDrm) =
-            getSubActions(widevineDrm, R.array.widevine_string_property_keys, R.array.widevine_string_property_names)
+            getSubActions(widevineDrm, resources.getStringArray(R.array.mediadrm_string_property_keys) + resources.getStringArray(R.array.widevine_string_property_keys),
+                    resources.getStringArray(R.array.mediadrm_string_property_names) + resources.getStringArray(R.array.widevine_string_property_names))
 
     companion object {
         @JvmStatic
