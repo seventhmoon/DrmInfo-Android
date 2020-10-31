@@ -17,7 +17,6 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.analytics.FirebaseAnalytics
 
-
 @Keep
 class MobileActivity : AppCompatActivity() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
@@ -58,7 +57,6 @@ class MobileActivity : AppCompatActivity() {
             }
         }
     }
-
 
     private fun loadAdMobBannerAd(adView: AdView, bannerAdHolder: ViewGroup) {
         adView.adListener = object : AdListener() {

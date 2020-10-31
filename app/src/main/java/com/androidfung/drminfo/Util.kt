@@ -29,13 +29,13 @@ object Util {
     }
 
     @JvmStatic
-    fun convertDeviceTypeToStringRes(type: Int) = when (type) {
-        DeviceTypes.ANDROID_TV, DeviceTypes.ANDROID_TV_WITH_WATSON -> R.string.text_android_tv
-        DeviceTypes.ANDROID_TV_OPERATOR_DEVICE, DeviceTypes.ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER -> R.string.text_android_tv_operator_tier
-        DeviceTypes.GOOGLE_TV -> R.string.text_google_tv
-        DeviceTypes.ANDROID_OTHER_TV -> R.string.text_android_unknown
-        DeviceTypes.ANDROID_NON_TV -> R.string.text_android_non_tv
-        DeviceTypes.FIRE_TV -> R.string.text_fire_tv
+    fun convertTvDeviceTypeToStringRes(type: Int) = when (type) {
+        TvDeviceTypes.ANDROID_TV, TvDeviceTypes.ANDROID_TV_WITH_WATSON -> R.string.text_android_tv
+        TvDeviceTypes.ANDROID_TV_OPERATOR_DEVICE, TvDeviceTypes.ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER -> R.string.text_android_tv_operator_tier
+        TvDeviceTypes.GOOGLE_TV -> R.string.text_google_tv
+        TvDeviceTypes.ANDROID_OTHER_TV -> R.string.text_android_unknown
+        TvDeviceTypes.ANDROID_NON_TV -> R.string.text_android_non_tv
+        TvDeviceTypes.FIRE_TV -> R.string.text_fire_tv
         else -> R.string.text_android_unknown
     }
 

@@ -68,46 +68,6 @@
             tools:text="{SECURITY_LEVEL}" />
 
         <TextView
-            android:id="@+id/tv_label_maxhdcplevel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/listitem_padding"
-            android:singleLine="true"
-            android:text="@string/widevine_string_property_name_maxHdcpLevel"
-            android:textAppearance="?attr/textAppearanceCaption"
-            android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_maxHdcpLevel)]) ? View.GONE : View.VISIBLE}" />
-
-        <TextView
-            android:id="@+id/tv_value_maxhdcplevel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text='@{properties[(@string/widevine_string_property_key_maxHdcpLevel)] ?? "-"}'
-            android:textAlignment="viewEnd"
-            android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_maxHdcpLevel)]) ? View.GONE : View.VISIBLE}"
-            tools:text="{MAX_HDCP_LEVEL}" />
-
-        <TextView
-            android:id="@+id/tv_label_hdcplevel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/listitem_padding"
-            android:singleLine="true"
-            android:text="@string/widevine_string_property_name_hdcpLevel"
-            android:textAppearance="?attr/textAppearanceCaption"
-            android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_hdcpLevel)]) ? View.GONE : View.VISIBLE}" />
-
-        <TextView
-            android:id="@+id/tv_value_hdcplevel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text='@{properties[(@string/widevine_string_property_key_hdcpLevel)] ?? "-"}'
-            android:textAlignment="viewEnd"
-            android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_hdcpLevel)]) ? View.GONE : View.VISIBLE}"
-            tools:text="{MAX_HDCP_LEVEL}" />
-
-        <TextView
             android:id="@+id/tv_label_maxnumberofsessions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

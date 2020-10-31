@@ -14,7 +14,7 @@ import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.GuidanceStylist.Guidance
 import androidx.leanback.widget.GuidedAction
-import com.androidfung.drminfo.*
+import com.androidfung.drminfo.BuildConfig
 import com.androidfung.drminfo.Constants.CLEARKEY_UUID
 import com.androidfung.drminfo.Constants.DIVX_UUID
 import com.androidfung.drminfo.Constants.MARLIN_UUID
@@ -23,10 +23,11 @@ import com.androidfung.drminfo.Constants.PRIMETIME_UUID
 import com.androidfung.drminfo.Constants.VERIMATRIX_UUID
 import com.androidfung.drminfo.Constants.WIDEVINE_UUID
 import com.androidfung.drminfo.Constants.WISEPLAY_UUID
-import com.androidfung.drminfo.DeviceTypes.getDefaultLauncher
+import com.androidfung.drminfo.R
+import com.androidfung.drminfo.TvDeviceTypes.getDefaultLauncher
+import com.androidfung.drminfo.TvDeviceTypes.obtainDeviceType
+import com.androidfung.drminfo.Util
 import com.google.android.gms.safetynet.SafetyNet
-
-import kotlinx.serialization.json.Json
 import java.security.SecureRandom
 import java.util.*
 
@@ -127,8 +128,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         }
 
         val packageManager = requireActivity().packageManager
-
-        val deviceTypeTextRes = Util.convertDeviceTypeToStringRes(DeviceTypes.obtainDeviceType(packageManager))
+        val deviceTypeTextRes = Util.convertTvDeviceTypeToStringRes(packageManager.obtainDeviceType())
 
         actions += GuidedAction.Builder(activity)
                 .infoOnly(true)
@@ -160,17 +160,17 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         SafetyNet.getClient(requireActivity()).attest(nonce, API_KEY)
                 .addOnSuccessListener(requireActivity()) {
 
-//                    Log.d("***", it.jwsResult)
                     val result = it.jwsResult.split(".")
                     if (result.size == 3) {
-//                        try {
                         val payload = result[1]
                         val decodedPayload = String(Base64.decode(payload, Base64.DEFAULT))
 //                            val returnedPayload = Json { ignoreUnknownKeys = true }.decodeFromString<JwtResult>(decodedPayload)
 //                            val returnedPayload = Gson().fromJson(decodedPayload, JwtResult::class.java)
-                        val returnedPayload = Json { ignoreUnknownKeys = true }.decodeFromString(JwtResult.serializer(), decodedPayload)
+//                        val returnedPayload = Json { ignoreUnknownKeys = true }.decodeFromString(JwtResult.serializer(), decodedPayload)
 
-                        safetyNetAction.description = if (returnedPayload.ctsProfileMatch) getString(R.string.text_true) else getString(R.string.text_false)
+                        //"ctsProfileMatch":true
+                        safetyNetAction.description = if (decodedPayload.contains("\"ctsProfileMatch\":true")) getString(R.string.text_true) else getString(R.string.text_false)
+//                        safetyNetAction.description = if (returnedPayload.ctsProfileMatch) getString(R.string.text_true) else getString(R.string.text_false)
 //                        Log.d("***", decodedPayload)
 //                        }catch (ex : java.lang.Exception){
 //                            actions.remove(safetyNetAction)
@@ -321,7 +321,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 
     companion object {
         @JvmStatic
-        private val TAG = InfoStepFragment::class.java.simpleName
-        private const val API_KEY = BuildConfig.API_KEY
+        private val TAG: String = InfoStepFragment::class.java.simpleName
+        private const val API_KEY: String = BuildConfig.API_KEY
     }
 }

@@ -75,25 +75,65 @@
             tools:text="1" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/tv_label_maxhdcplevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/listitem_padding"
-            android:text="@string/mediadrm_string_property_name_algorithms"
+            android:singleLine="true"
+            android:text="@string/widevine_string_property_name_maxHdcpLevel"
             android:textAppearance="?attr/textAppearanceCaption"
-            android:visibility="@{Util.goneIfNullOrEmpty(properties[(@string/mediadrm_string_property_key_algorithms)])}"
-            tools:text="Algorithm" />
+            android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_maxHdcpLevel)]) ? View.GONE : View.VISIBLE}" />
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/tv_value_maxhdcplevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onLongClick="@{handler::onLongClick}"
-            android:text='@{properties[(@string/mediadrm_string_property_key_algorithms)] ?? "-"}'
+            android:text='@{properties[(@string/widevine_string_property_key_maxHdcpLevel)] ?? "-"}'
             android:textAlignment="viewEnd"
             android:textAppearance="?attr/textAppearanceBody2"
-            android:visibility="@{Util.goneIfNullOrEmpty(properties[(@string/mediadrm_string_property_key_algorithms)])}"
-            tools:text="AES................" />
+            android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_maxHdcpLevel)]) ? View.GONE : View.VISIBLE}"
+            tools:text="{MAX_HDCP_LEVEL}" />
+
+        <TextView
+            android:id="@+id/tv_label_hdcplevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/listitem_padding"
+            android:singleLine="true"
+            android:text="@string/widevine_string_property_name_hdcpLevel"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_hdcpLevel)]) ? View.GONE : View.VISIBLE}" />
+
+        <TextView
+            android:id="@+id/tv_value_hdcplevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{properties[(@string/widevine_string_property_key_hdcpLevel)] ?? "-"}'
+            android:textAlignment="viewEnd"
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:visibility="@{TextUtils.isEmpty((String) properties[(@string/widevine_string_property_key_hdcpLevel)]) ? View.GONE : View.VISIBLE}"
+            tools:text="{MAX_HDCP_LEVEL}" />
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/textView3"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="@dimen/listitem_padding"-->
+        <!--            android:text="@string/mediadrm_string_property_name_algorithms"-->
+        <!--            android:textAppearance="?attr/textAppearanceCaption"-->
+        <!--            android:visibility="@{Util.goneIfNullOrEmpty(properties[(@string/mediadrm_string_property_key_algorithms)])}"-->
+        <!--            tools:text="Algorithm" />-->
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/textView6"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:onLongClick="@{handler::onLongClick}"-->
+        <!--            android:text='@{properties[(@string/mediadrm_string_property_key_algorithms)] ?? "-"}'-->
+        <!--            android:textAlignment="viewEnd"-->
+        <!--            android:textAppearance="?attr/textAppearanceBody2"-->
+        <!--            android:visibility="@{Util.goneIfNullOrEmpty(properties[(@string/mediadrm_string_property_key_algorithms)])}"-->
+        <!--            tools:text="AES................" />-->
 
         <!--        <TextView-->
         <!--            android:id="@+id/tvDeviceUniqueIdLabel"-->
