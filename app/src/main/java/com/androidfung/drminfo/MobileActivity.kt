@@ -16,6 +16,9 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 
 @Keep
 class MobileActivity : AppCompatActivity() {
@@ -46,31 +49,55 @@ class MobileActivity : AppCompatActivity() {
         val wiseplayViewModel: WiseplayViewModel by viewModels()
         wiseplayViewModel.getProperties().observe(this, Observer(binding::setWiseplayProperties))
 
+        // Firebase Analytics
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
-        if (!BuildConfig.DEBUG) {
+        // Firebase Remote Config
+        val remoteConfig = Firebase.remoteConfig
+        val configSettings = remoteConfigSettings {
+            minimumFetchIntervalInSeconds = 3600
+        }
+        remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+        remoteConfig.fetchAndActivate()
+
+        val adEnabled = remoteConfig.getBoolean("ad_enabled")
+
+//        if (adEnabled && !BuildConfig.DEBUG) {
+        if (adEnabled) {
+            Log.d(TAG, "Ad Disabled")
+
             val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
             val adView = findViewById<AdView>(R.id.adView)
-            if (bannerAdHolder != null && adView != null) {
+
+            adView?.let {
                 MobileAds.initialize(this) {}
-                loadAdMobBannerAd(adView, bannerAdHolder)
+                loadAdMobBannerAd(it, bannerAdHolder)
             }
+
+//            if (bannerAdHolder != null && adView != null) {
+//                MobileAds.initialize(this) {}
+//                loadAdMobBannerAd(adView, bannerAdHolder)
+//            }
+        } else {
+            Log.d(TAG, "Ad Disabled")
         }
+
     }
 
-    private fun loadAdMobBannerAd(adView: AdView, bannerAdHolder: ViewGroup) {
+    private fun loadAdMobBannerAd(adView: AdView, bannerAdHolder: ViewGroup? = null) {
         adView.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
                 Log.i("Ads", "onAdLoaded")
-                bannerAdHolder.visibility = View.VISIBLE
+                bannerAdHolder?.visibility = View.VISIBLE
                 adView.visibility = View.VISIBLE
             }
 
             override fun onAdFailedToLoad(errorCode: Int) {
                 // Code to be executed when an ad request fails.
                 Log.i("Ads", "onAdFailedToLoad")
-                bannerAdHolder.visibility = View.GONE
+                bannerAdHolder?.visibility = View.GONE
                 adView.visibility = View.GONE
             }
 

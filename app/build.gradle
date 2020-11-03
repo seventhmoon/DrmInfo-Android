@@ -17,8 +17,8 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 295
-        versionName '1.1.7.201031'
+        versionCode 297
+        versionName '1.1.7.201102'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -107,6 +107,7 @@ dependencies {
     implementation "com.google.firebase:firebase-analytics-ktx:18.0.0"
     implementation "com.google.firebase:firebase-crashlytics-ktx:17.2.2"
     implementation "com.google.firebase:firebase-perf-ktx:19.0.9"
+    implementation "com.google.firebase:firebase-config-ktx:20.0.0"
 
 //    implementation 'com.google.code.gson:gson:2.8.6'
 

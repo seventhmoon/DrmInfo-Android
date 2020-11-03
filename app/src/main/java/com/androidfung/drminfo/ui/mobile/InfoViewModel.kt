@@ -4,7 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.media.MediaCodecList
 import android.os.Build
-import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.view.Display.DEFAULT_DISPLAY
 import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.databinding.ObservableArrayMap
@@ -24,12 +25,12 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
     private fun prepareProperties(it: MutableLiveData<ObservableArrayMap<String, Any>>) {
         val map = ObservableArrayMap<String, Any>()
 
-        map["sdkLevel"] = SDK_INT
-        if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        map["sdkLevel"] = VERSION.SDK_INT
+        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             map["abis"] = Build.SUPPORTED_ABIS
         }
 
-        if (SDK_INT >= Build.VERSION_CODES.M) {
+        if (VERSION.SDK_INT >= VERSION_CODES.M) {
             val displayManager = DisplayManagerCompat.getInstance(getApplication())
             val defaultDisplay = displayManager.getDisplay(DEFAULT_DISPLAY)
 
@@ -37,7 +38,7 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
                 val supportedRefreshRate = display.supportedModes.map { mode -> mode.refreshRate }.toSortedSet()
                 map["supportedRefreshRate"] = supportedRefreshRate.map(DecimalFormat("0.##")::format)
 
-                if (SDK_INT >= Build.VERSION_CODES.N) {
+                if (VERSION.SDK_INT >= VERSION_CODES.N) {
                     val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
                     if (supportedHdrType.isNotEmpty()) {
                         map["supportedHdrType"] = supportedHdrType.map(this::convertHdrTypeToString).sorted()
@@ -46,7 +47,7 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
             }
         }
 
-        if (SDK_INT >= Build.VERSION_CODES.Q) {
+        if (VERSION.SDK_INT >= VERSION_CODES.Q) {
             val savedHardwareAcceleratedType = state.get<Set<String>>("hardwareAcceleratedType")
 
             map["hardwareAcceleratedType"] = savedHardwareAcceleratedType
