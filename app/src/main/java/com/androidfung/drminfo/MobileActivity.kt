@@ -1,12 +1,17 @@
 package com.androidfung.drminfo
 
+import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
@@ -20,6 +25,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 
+
 @Keep
 class MobileActivity : AppCompatActivity() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
@@ -32,7 +38,27 @@ class MobileActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.handler = MyHandlers()
 
-        setSupportActionBar(findViewById(R.id.toolbar))
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)?.apply {
+            setSupportActionBar(this)
+        }
+
+        val nestedScrollView = findViewById<NestedScrollView>(R.id.view_nestedscrollview)?.also {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val bound = Rect().apply {
+                    it.getHitRect(this)
+                }
+
+                it.setOnScrollChangeListener { _, _, _, _, _ ->
+                    val infoHeadline = findViewById<TextView>(R.id.tv_info_headline)
+                    if (infoHeadline.getLocalVisibleRect(bound)) {
+                        toolbar?.subtitle = null
+                    } else {
+                        toolbar?.subtitle = "${Build.MANUFACTURER} ${Build.MODEL}"
+                    }
+                }
+            }
+        }
+
 
         val infoViewModel: InfoViewModel by viewModels()
         infoViewModel.getProperties().observe(this, Observer(binding::setInfoProperties))
