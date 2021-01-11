@@ -1,5 +1,6 @@
 package com.androidfung.drminfo.ui.mobile
 
+import android.annotation.SuppressLint
 import android.media.MediaCodecList
 import android.media.MediaDrm
 import android.media.MediaDrmException
@@ -16,16 +17,11 @@ import androidx.leanback.widget.GuidanceStylist.Guidance
 import androidx.leanback.widget.GuidedAction
 import com.androidfung.drminfo.BuildConfig
 import com.androidfung.drminfo.Constants.CLEARKEY_UUID
-import com.androidfung.drminfo.Constants.DIVX_UUID
-import com.androidfung.drminfo.Constants.MARLIN_UUID
 import com.androidfung.drminfo.Constants.PLAYREADY_UUID
-import com.androidfung.drminfo.Constants.PRIMETIME_UUID
-import com.androidfung.drminfo.Constants.VERIMATRIX_UUID
 import com.androidfung.drminfo.Constants.WIDEVINE_UUID
 import com.androidfung.drminfo.Constants.WISEPLAY_UUID
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.TvDeviceTypes.getDefaultLauncher
-import com.androidfung.drminfo.TvDeviceTypes.obtainDeviceType
 import com.androidfung.drminfo.Util
 import com.google.android.gms.safetynet.SafetyNet
 import com.google.firebase.ktx.Firebase
@@ -46,8 +42,10 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         return Guidance(title, description, null, icon)
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
 
+        // Setup Firebase Remote Config
         val remoteConfig = Firebase.remoteConfig
         val configSettings = remoteConfigSettings {
             minimumFetchIntervalInSeconds = 3600
@@ -56,7 +54,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
         remoteConfig.fetchAndActivate()
 
-        //info section here
+        // info section here
         actions += GuidedAction.Builder(activity)
                 .infoOnly(true)
                 .title(R.string.text_brand)
@@ -109,6 +107,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
                     .build()
         }
 
+        // Display Related
         if (VERSION.SDK_INT >= VERSION_CODES.N) {
             val displayManager = DisplayManagerCompat.getInstance(requireActivity())
             val defaultDisplay = displayManager.getDisplay(Display.DEFAULT_DISPLAY)
@@ -126,6 +125,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
             }
         }
 
+        // Codec Related
         if (VERSION.SDK_INT >= VERSION_CODES.Q) {
             val supportedHardwareAcceleratedDecodeType = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
                     .filter { codec -> codec.isHardwareAccelerated && !codec.isEncoder }
@@ -143,13 +143,13 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         }
 
         val packageManager = requireActivity().packageManager
-        val deviceTypeTextRes = Util.convertTvDeviceTypeToStringRes(packageManager.obtainDeviceType())
-
-        actions += GuidedAction.Builder(activity)
-                .infoOnly(true)
-                .title(R.string.text_device_type)
-                .description(deviceTypeTextRes)
-                .build()
+//        val deviceTypeTextRes = Util.convertTvDeviceTypeToStringRes(packageManager.obtainDeviceType())
+//
+//        actions += GuidedAction.Builder(activity)
+//                .infoOnly(true)
+//                .title(R.string.text_device_type)
+//                .description(deviceTypeTextRes)
+//                .build()
 
         val packageName = packageManager.getDefaultLauncher()
         packageName?.let {
@@ -205,19 +205,16 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         }
 
         //MediaDrm Section
-        val cryptoSchemes = arrayOf(CLEARKEY_UUID, WIDEVINE_UUID, PLAYREADY_UUID, VERIMATRIX_UUID, MARLIN_UUID, PRIMETIME_UUID, WISEPLAY_UUID, DIVX_UUID)
+//        val cryptoSchemes = arrayOf(CLEARKEY_UUID, WIDEVINE_UUID, PLAYREADY_UUID, VERIMATRIX_UUID, MARLIN_UUID, PRIMETIME_UUID, WISEPLAY_UUID, DIVX_UUID)
+        val cryptoSchemes = arrayOf(CLEARKEY_UUID, WIDEVINE_UUID, PLAYREADY_UUID, WISEPLAY_UUID)
+
+        // MediaDrm.getSupportedCryptoSchemes() only available on R+
         if (VERSION.SDK_INT >= VERSION_CODES.R) {
             val supportedCryptoScheme = MediaDrm.getSupportedCryptoSchemes()
-//            Log.d(TAG, "supportedCryptoScheme: ${supportedCryptoScheme.joinToString()}")
-//            val matchedCryptoSchemes = cryptoSchemes.intersect(supportedCryptoScheme)
-//            Log.d(TAG, "matchedCryptoSchemes: ${matchedCryptoSchemes.joinToString()}")
-//            Log.d(TAG, "playready: $PLAYREADY_UUID" )
 
-//            val drmList = supportedCryptoScheme.map { MediaDrm(it).getPropertyString(MediaDrm.PROPERTY_DESCRIPTION) }.toSortedSet()
             actions += GuidedAction.Builder(requireActivity())
                     .infoOnly(true)
                     .title("Supported Crypto Schemes")
-//                    .description(drmList.joinToString())
                     .description(supportedCryptoScheme.joinToString())
                     .multilineDescription(true)
                     .build()
@@ -286,18 +283,39 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         }
     }
 
-    private fun getPrpoerties(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>) =
-            drmStringKeys.zip(drmStringNames)
-                    .map { (key, name) -> key to Pair(name, mediaDrm.getPropertyStringOrNull(key)) }
-                    .toMap()
 
-    private fun getSubActions(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>): List<GuidedAction> {
+    private fun getPrpoerties(mediaDrm: MediaDrm,
+                              drmStringKeys: Array<String> = resources.getStringArray(R.array.mediadrm_string_property_keys),
+                              drmStringNames: Array<String> = resources.getStringArray(R.array.mediadrm_string_property_names)) =
+            drmStringKeys.zip(drmStringNames)
+                    .associate { (key, name) -> key to (name to mediaDrm.getPropertyStringOrNull(key)) }
+
+
+//    private fun getPrpoerties(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>): Map<String, Pair<String, String?>> {
+//        val map = ArrayMap<String, Pair<String, String?>>()
+//        map += drmStringKeys.zip(drmStringNames)
+//                .associate { (key, name) -> key to (name to mediaDrm.getPropertyStringOrNull(key)) }
+//
+////        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+////            map[getString(R.string.mediadrm_key_maxNumberOfSessions)] = getString(R.string.widevine_string_property_name_maxNumberOfSessions) to mediaDrm.maxSessionCount.toString()
+////            map[getString(R.string.mediadrm_key_numberOfOpenSessions)] = getString(R.string.widevine_string_property_name_numberOfOpenSessions) to mediaDrm.openSessionCount.toString()
+////            map[getString(R.string.mediadrm_key_maxHdcpLevel)] = getString(R.string.widevine_string_property_name_maxHdcpLevel) to getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel))
+////            map[getString(R.string.mediadrm_key_hdcpLevel)] = getString(R.string.widevine_string_property_name_hdcpLevel) to getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel))
+////        }
+//
+//        return map
+//    }
+
+
+    private fun getSubActions(mediaDrm: MediaDrm,
+                              drmStringKeys: Array<String> = resources.getStringArray(R.array.mediadrm_string_property_keys),
+                              drmStringNames: Array<String> = resources.getStringArray(R.array.mediadrm_string_property_names)): List<GuidedAction> {
         val actions = ArrayList<GuidedAction>()
 
-        actions += getPrpoerties(mediaDrm, drmStringKeys, drmStringNames).values
-                .filterNot { (_, desc) -> desc.isNullOrBlank() }
-                .map { (name, desc) ->
-                    GuidedAction.Builder(activity)
+        getPrpoerties(mediaDrm, drmStringKeys, drmStringNames).values
+                .filterNot { (_, desc) -> desc.isNullOrEmpty() }
+                .forEach { (name, desc) ->
+                    actions += GuidedAction.Builder(activity)
                             .infoOnly(true)
                             .title(name)
                             .description(desc)
@@ -330,8 +348,8 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 //    private fun getSubActions(mediaDrm: MediaDrm, keyResId: Int, namesResId: Int) =
 //            getSubActions(mediaDrm, resources.getStringArray(keyResId), resources.getStringArray(namesResId))
 
-    private fun getMediaDrmSubActions(mediaDrm: MediaDrm) =
-            getSubActions(mediaDrm, resources.getStringArray(R.array.mediadrm_string_property_keys), resources.getStringArray(R.array.mediadrm_string_property_names))
+    private fun getMediaDrmSubActions(mediaDrm: MediaDrm) = getSubActions(mediaDrm)
+//    getSubActions(mediaDrm, resources.getStringArray(R.array.mediadrm_string_property_keys), resources.getStringArray(R.array.mediadrm_string_property_names))
 
     private fun getWidevineSubActions(widevineDrm: MediaDrm) =
             getSubActions(widevineDrm, resources.getStringArray(R.array.mediadrm_string_property_keys) + resources.getStringArray(R.array.widevine_string_property_keys),
