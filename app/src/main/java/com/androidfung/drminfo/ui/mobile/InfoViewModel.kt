@@ -26,10 +26,13 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
         val map = ObservableArrayMap<String, Any>()
 
         map["sdkLevel"] = VERSION.SDK_INT
+
+        // Supported Arch
         if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             map["abis"] = Build.SUPPORTED_ABIS
         }
 
+        // Display Related
         if (VERSION.SDK_INT >= VERSION_CODES.M) {
             val displayManager = DisplayManagerCompat.getInstance(getApplication())
             val defaultDisplay = displayManager.getDisplay(DEFAULT_DISPLAY)
@@ -47,16 +50,12 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
             }
         }
 
+        // Codec Related
         if (VERSION.SDK_INT >= VERSION_CODES.Q) {
-            val savedHardwareAcceleratedType = state.get<Set<String>>("hardwareAcceleratedType")
-
-            map["hardwareAcceleratedType"] = savedHardwareAcceleratedType
-                    ?: MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
-                            .filter { codec -> codec.isHardwareAccelerated && !codec.isEncoder }
-                            .flatMap { codec -> codec.supportedTypes.asIterable() }
-                            .toSortedSet()
-
-            state.set("hardwareAcceleratedType", map["hardwareAcceleratedType"])
+            map["hardwareAcceleratedType"] = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+                    .filter { codec -> codec.isHardwareAccelerated && !codec.isEncoder }
+                    .flatMap { codec -> codec.supportedTypes.asIterable() }
+                    .toSortedSet()
         }
 
         it.value = map

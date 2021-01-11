@@ -2,13 +2,13 @@ package com.androidfung.drminfo
 
 import android.os.Bundle
 import androidx.annotation.Keep
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.leanback.app.GuidedStepSupportFragment
 import com.androidfung.drminfo.ui.mobile.InfoStepFragment
 import com.google.firebase.analytics.FirebaseAnalytics
 
 @Keep
-class TvActivity : FragmentActivity() {
+class TvActivity : AppCompatActivity() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {

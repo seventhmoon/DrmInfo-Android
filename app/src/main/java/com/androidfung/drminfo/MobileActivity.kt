@@ -61,27 +61,27 @@ class MobileActivity : AppCompatActivity() {
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
         remoteConfig.fetchAndActivate()
 
-        val adEnabled = remoteConfig.getBoolean("ad_enabled")
+//        val adEnabled = remoteConfig.getBoolean("ad_enabled")
 
 //        if (adEnabled && !BuildConfig.DEBUG) {
-        if (adEnabled) {
-            Log.d(TAG, "Ad Disabled")
+//        if (adEnabled) {
+//            Log.d(TAG, "Ad Disabled")
 
-            val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
-            val adView = findViewById<AdView>(R.id.adView)
+        val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
+        val adView = findViewById<AdView>(R.id.adView)
 
-            adView?.let {
-                MobileAds.initialize(this) {}
-                loadAdMobBannerAd(it, bannerAdHolder)
-            }
+        adView?.let {
+            MobileAds.initialize(this) {}
+            loadAdMobBannerAd(it, bannerAdHolder)
+        }
 
 //            if (bannerAdHolder != null && adView != null) {
 //                MobileAds.initialize(this) {}
 //                loadAdMobBannerAd(adView, bannerAdHolder)
 //            }
-        } else {
-            Log.d(TAG, "Ad Disabled")
-        }
+//        } else {
+//            Log.d(TAG, "Ad Disabled")
+//        }
 
     }
 
