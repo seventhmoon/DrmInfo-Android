@@ -35,9 +35,7 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
         // Display Related
         if (VERSION.SDK_INT >= VERSION_CODES.M) {
             val displayManager = DisplayManagerCompat.getInstance(getApplication())
-            val defaultDisplay = displayManager.getDisplay(DEFAULT_DISPLAY)
-
-            defaultDisplay?.let { display ->
+            displayManager.getDisplay(DEFAULT_DISPLAY)?.also { display ->
                 val supportedRefreshRate = display.supportedModes.map { mode -> mode.refreshRate }.toSortedSet()
                 map["supportedRefreshRate"] = supportedRefreshRate.map(DecimalFormat("0.##")::format)
 

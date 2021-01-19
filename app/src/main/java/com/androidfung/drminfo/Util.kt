@@ -66,9 +66,9 @@ object Util {
 
     @JvmStatic
     fun goneIfNullOrEmpty(input: Any?) = when {
+        input is Collection<*> && input.isEmpty() -> View.GONE
         input is Map<*, *> && input.isEmpty() -> View.GONE
         input is Array<*> && input.isEmpty() -> View.GONE
-        input is Collection<*> && input.isEmpty() -> View.GONE
         input is String && input.isBlank() -> View.GONE
         input == null -> View.GONE
         else -> View.VISIBLE

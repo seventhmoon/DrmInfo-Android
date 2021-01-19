@@ -42,13 +42,13 @@ class MobileActivity : AppCompatActivity() {
             setSupportActionBar(this)
         }
 
-        val nestedScrollView = findViewById<NestedScrollView>(R.id.view_nestedscrollview)?.also {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val bound = Rect().apply {
-                    it.getHitRect(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val nestedScrollView = findViewById<NestedScrollView>(R.id.view_nestedscrollview)?.apply {
+                val bound = Rect().also { rect ->
+                    this.getHitRect(rect)
                 }
 
-                it.setOnScrollChangeListener { _, _, _, _, _ ->
+                this.setOnScrollChangeListener { _, _, _, _, _ ->
                     val infoHeadline = findViewById<TextView>(R.id.tv_info_headline)
                     if (infoHeadline.getLocalVisibleRect(bound)) {
                         toolbar?.subtitle = null
