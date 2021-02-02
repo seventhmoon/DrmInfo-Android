@@ -16,8 +16,8 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 308
-        versionName '1.1.7.210115'
+        versionCode 309
+        versionName '1.1.7.210201'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -96,7 +96,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
-    implementation "androidx.transition:transition:1.3.1"
+    implementation "androidx.transition:transition:1.4.0"
 //    implementation "androidx.ui:ui-tooling:$compose_version"
     implementation "androidx.vectordrawable:vectordrawable:1.1.0"
 
@@ -104,11 +104,11 @@ dependencies {
     implementation "com.google.android.material:material:1.3.0-rc01"
     implementation "com.google.android.gms:play-services-safetynet:17.0.0"
 
-    implementation "com.google.firebase:firebase-ads:19.6.0"
-    implementation "com.google.firebase:firebase-analytics-ktx:18.0.1"
-    implementation "com.google.firebase:firebase-crashlytics-ktx:17.3.0"
+    implementation "com.google.firebase:firebase-ads:19.7.0"
+    implementation "com.google.firebase:firebase-analytics-ktx:18.0.2"
+    implementation "com.google.firebase:firebase-crashlytics-ktx:17.3.1"
     implementation "com.google.firebase:firebase-perf-ktx:19.1.0"
-    implementation "com.google.firebase:firebase-config-ktx:20.0.2"
+    implementation "com.google.firebase:firebase-config-ktx:20.0.3"
 
 //    implementation 'com.google.code.gson:gson:2.8.6'
 
