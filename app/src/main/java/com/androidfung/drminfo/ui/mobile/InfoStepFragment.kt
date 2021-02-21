@@ -1,6 +1,5 @@
 package com.androidfung.drminfo.ui.mobile
 
-import android.annotation.SuppressLint
 import android.media.MediaCodecList
 import android.media.MediaDrm
 import android.media.MediaDrmException
@@ -9,6 +8,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.util.Base64
+
 import android.view.Display
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.hardware.display.DisplayManagerCompat
@@ -34,6 +34,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 
 //    private lateinit var remoteConfig : FirebaseRemoteConfig
 
+
     override fun onCreateGuidance(savedInstanceState: Bundle?): Guidance {
         val title = getString(R.string.app_name)
         val description = "${Build.MANUFACTURER} ${Build.MODEL}"
@@ -55,6 +56,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         remoteConfig.fetchAndActivate()
 
         // info section here
+
         actions += GuidedAction.Builder(activity)
                 .infoOnly(true)
                 .title(R.string.text_brand)

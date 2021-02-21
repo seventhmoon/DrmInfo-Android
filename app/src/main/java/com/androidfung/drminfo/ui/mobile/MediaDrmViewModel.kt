@@ -26,6 +26,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
     }
 
     private fun getPropertyString(key: String): String? {
+
         return try {
             return mediaDrm?.getPropertyString(key)
         } catch (e: RuntimeException) {
@@ -38,12 +39,12 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
     protected open fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm): ArrayMap<String, Any> {
         with(getApplication<Application>().resources) {
             val map = ArrayMap<String, Any>()
-
             map += stringPropertyKeys.associateWith { key -> getPropertyString(key) }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 map[getString(R.string.mediadrm_key_maxNumberOfSessions)] = mediaDrm.maxSessionCount.toString()
                 map[getString(R.string.mediadrm_key_numberOfOpenSessions)] = mediaDrm.openSessionCount.toString()
+
                 map[getString(R.string.mediadrm_key_maxHdcpLevel)] = getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel))
                 map[getString(R.string.mediadrm_key_hdcpLevel)] = getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel))
             }
@@ -61,8 +62,6 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
                 mediaDrm?.let {
                     val properties = obtainPropertiesFromMediaDrm(it)
                     map += properties
-
-//                        Log.d(TAG, uuid.toString())
                 }
             }
         } catch (ignored: MediaDrmException) {
@@ -77,7 +76,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
     }
 
     override fun onCleared() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        if (SDK_INT >= Build.VERSION_CODES.P) {
             mediaDrm?.close()
         } else {
             @Suppress("DEPRECATION")
