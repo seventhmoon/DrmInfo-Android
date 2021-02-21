@@ -2,18 +2,20 @@ package com.androidfung.drminfo.ui.mobile
 
 import android.app.Application
 import android.media.MediaDrm
-import android.media.UnsupportedSchemeException
+import android.media.MediaDrmException
 import android.os.Build
-import androidx.collection.SimpleArrayMap
+import android.os.Build.VERSION.SDK_INT
+import androidx.collection.ArrayMap
 import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.Util
-import java.util.UUID
+import java.util.*
 
-abstract class MediaDrmViewModel protected constructor(application: Application) : AndroidViewModel(application) {
+abstract class MediaDrmViewModel protected constructor(application: Application, private val state: SavedStateHandle) : AndroidViewModel(application) {
     private var mediaDrm: MediaDrm? = null
     protected lateinit var uuid: UUID
 
@@ -22,61 +24,61 @@ abstract class MediaDrmViewModel protected constructor(application: Application)
     }
 
     protected fun getPropertyString(key: String): String? {
-        try {
+        return try {
             return mediaDrm?.getPropertyString(key)
-        } catch (ignored: IllegalArgumentException) {
-        } catch (ignored: IllegalStateException) {
-        } catch (ignored: NoSuchMethodError) {
+        } catch (e: RuntimeException) {
+            null
+        } catch (e: MediaDrmException) {
+            null
         }
-        return null
     }
 
-    protected open fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm): SimpleArrayMap<String, Any> {
-        val map = SimpleArrayMap<String, Any>()
-        val mediaDrmKeys = getApplication<Application>().resources.getStringArray(R.array.mediadrm_string_property_keys)
+    protected open fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm): ArrayMap<String, Any> {
+        with(getApplication<Application>().resources) {
+            val map = ArrayMap<String, Any>()
+            val mediaDrmKeys = getStringArray(R.array.mediadrm_string_property_keys)
 
-        mediaDrmKeys.forEach {
-            map.put(it, getPropertyString(it))
-        }
+            map += mediaDrmKeys.associateWith { key -> getPropertyString(key) }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            with(getApplication<Application>().resources) {
-                map.put(getString(R.string.mediadrm_key_maxNumberOfSessions), mediaDrm.maxSessionCount.toString())
-                map.put(getString(R.string.mediadrm_key_maxHdcpLevel), getString(Util.toHdcpLevelRes(mediaDrm.maxHdcpLevel)))
-                map.put(getString(R.string.mediadrm_key_hdcpLevel), getString(Util.toHdcpLevelRes(mediaDrm.connectedHdcpLevel)))
+            if (SDK_INT >= Build.VERSION_CODES.P) {
+                map[getString(R.string.mediadrm_key_maxNumberOfSessions)] = mediaDrm.maxSessionCount.toString()
+                map[getString(R.string.mediadrm_key_maxHdcpLevel)] = getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel))
+                map[getString(R.string.mediadrm_key_hdcpLevel)] = getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel))
             }
-        }
 
-        return map
+            return map
+        }
     }
 
-    private fun prepareProperties(it: MutableLiveData<ObservableArrayMap<String, Any>>) {
+    private fun prepareProperties(mutableLiveData: MutableLiveData<ObservableArrayMap<String, Any>>) {
         val map = ObservableArrayMap<String, Any>()
 
         try {
             if (MediaDrm.isCryptoSchemeSupported(uuid)) {
                 mediaDrm = MediaDrm(uuid)
 
-                if (mediaDrm != null) {
-                    map.putAll(obtainPropertiesFromMediaDrm(mediaDrm!!))
+                mediaDrm?.let {
+                    val properties = obtainPropertiesFromMediaDrm(it)
+                    map += properties
+
                 }
             }
-        } catch (ignored: UnsupportedSchemeException) {
-        } catch (ignored: IllegalArgumentException) {
-        } catch (ignored: IllegalStateException) {
+        } catch (ignored: MediaDrmException) {
+        } catch (ignored: RuntimeException) {
         }
-        it.value = map
+
+        mutableLiveData.value = map
     }
 
     fun getProperties(): LiveData<ObservableArrayMap<String, Any>> {
         return properties
     }
 
-    @Suppress("DEPRECATION")
     override fun onCleared() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        if (SDK_INT >= Build.VERSION_CODES.P) {
             mediaDrm?.close()
         } else {
+            @Suppress("DEPRECATION")
             mediaDrm?.release()
         }
     }

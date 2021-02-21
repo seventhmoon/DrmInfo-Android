@@ -16,7 +16,7 @@
     android:layout_marginBottom="@dimen/card_vertical_margin"
     android:minWidth="@dimen/box_min_width"
     android:minHeight="@dimen/box_min_height"
-    android:visibility="invisible"
+    android:visibility="gone"
     app:cardUseCompatPadding="true"
     app:layout_flexGrow="1">
 
