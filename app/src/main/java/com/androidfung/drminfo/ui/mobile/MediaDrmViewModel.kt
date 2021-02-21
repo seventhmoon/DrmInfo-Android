@@ -4,7 +4,6 @@ import android.app.Application
 import android.media.MediaDrm
 import android.media.MediaDrmException
 import android.os.Build
-import android.os.Build.VERSION.SDK_INT
 import androidx.collection.ArrayMap
 import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
@@ -18,12 +17,16 @@ import java.util.*
 abstract class MediaDrmViewModel protected constructor(application: Application, private val state: SavedStateHandle) : AndroidViewModel(application) {
     private var mediaDrm: MediaDrm? = null
     protected lateinit var uuid: UUID
+    protected open val stringPropertyKeys: Array<String> by lazy {
+        getApplication<Application>().resources.getStringArray(R.array.mediadrm_string_property_keys)
+    }
 
-    protected val properties: MutableLiveData<ObservableArrayMap<String, Any>> by lazy {
+    private val properties: MutableLiveData<ObservableArrayMap<String, Any>> by lazy {
         MutableLiveData<ObservableArrayMap<String, Any>>().also(::prepareProperties)
     }
 
-    protected fun getPropertyString(key: String): String? {
+    private fun getPropertyString(key: String): String? {
+
         return try {
             return mediaDrm?.getPropertyString(key)
         } catch (e: RuntimeException) {
@@ -36,12 +39,12 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
     protected open fun obtainPropertiesFromMediaDrm(mediaDrm: MediaDrm): ArrayMap<String, Any> {
         with(getApplication<Application>().resources) {
             val map = ArrayMap<String, Any>()
-            val mediaDrmKeys = getStringArray(R.array.mediadrm_string_property_keys)
+            map += stringPropertyKeys.associateWith { key -> getPropertyString(key) }
 
-            map += mediaDrmKeys.associateWith { key -> getPropertyString(key) }
-
-            if (SDK_INT >= Build.VERSION_CODES.P) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 map[getString(R.string.mediadrm_key_maxNumberOfSessions)] = mediaDrm.maxSessionCount.toString()
+                map[getString(R.string.mediadrm_key_numberOfOpenSessions)] = mediaDrm.openSessionCount.toString()
+
                 map[getString(R.string.mediadrm_key_maxHdcpLevel)] = getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel))
                 map[getString(R.string.mediadrm_key_hdcpLevel)] = getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel))
             }
@@ -56,11 +59,9 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
         try {
             if (MediaDrm.isCryptoSchemeSupported(uuid)) {
                 mediaDrm = MediaDrm(uuid)
-
                 mediaDrm?.let {
                     val properties = obtainPropertiesFromMediaDrm(it)
                     map += properties
-
                 }
             }
         } catch (ignored: MediaDrmException) {
@@ -82,6 +83,14 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
             mediaDrm?.release()
         }
     }
+
+//    private fun AndroidViewModel.getResources() : Resources {
+//        return getApplication<Application>().resources
+//    }
+//
+//    private fun AndroidViewModel.getString(resId : Int): String {
+//        return getResources().getString(resId)
+//    }
 
     companion object {
         @JvmStatic

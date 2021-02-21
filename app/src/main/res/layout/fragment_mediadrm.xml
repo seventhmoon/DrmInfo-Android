@@ -8,13 +8,15 @@
 
         <import type="android.view.View" />
 
+        <import type="com.androidfung.drminfo.Util" />
+
         <variable
             name="properties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
 
         <variable
             name="handler"
-            type="com.androidfung.drminfo.ui.mobile.MyHandlers"/>
+            type="com.androidfung.drminfo.ui.mobile.MyHandlers" />
 
     </data>
 
@@ -28,7 +30,7 @@
         android:layout_marginBottom="@dimen/card_vertical_margin"
         android:minWidth="@dimen/box_min_width"
         android:minHeight="@dimen/box_min_height"
-        android:visibility="@{(properties == null  || properties.isEmpty()) ? View.GONE : View.VISIBLE}"
+        android:visibility="@{Util.goneIfNullOrEmpty(properties)}"
         app:cardUseCompatPadding="true"
         app:contentPadding="@dimen/card_padding"
         app:layout_flexGrow="1">

@@ -1,12 +1,17 @@
 package com.androidfung.drminfo
 
+import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
@@ -16,6 +21,9 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 
 
 @Keep
@@ -30,7 +38,27 @@ class MobileActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.handler = MyHandlers()
 
-        setSupportActionBar(findViewById(R.id.toolbar))
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)?.apply {
+            setSupportActionBar(this)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val nestedScrollView = findViewById<NestedScrollView>(R.id.view_nestedscrollview)?.apply {
+                val bound = Rect().also { rect ->
+                    this.getHitRect(rect)
+                }
+
+                this.setOnScrollChangeListener { _, _, _, _, _ ->
+                    val infoHeadline = findViewById<TextView>(R.id.tv_info_headline)
+                    if (infoHeadline.getLocalVisibleRect(bound)) {
+                        toolbar?.subtitle = null
+                    } else {
+                        toolbar?.subtitle = "${Build.MANUFACTURER} ${Build.MODEL}"
+                    }
+                }
+            }
+        }
+
 
         val infoViewModel: InfoViewModel by viewModels()
         infoViewModel.getProperties().observe(this, Observer(binding::setInfoProperties))
@@ -47,32 +75,55 @@ class MobileActivity : AppCompatActivity() {
         val wiseplayViewModel: WiseplayViewModel by viewModels()
         wiseplayViewModel.getProperties().observe(this, Observer(binding::setWiseplayProperties))
 
+        // Firebase Analytics
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
-        if (!BuildConfig.DEBUG) {
-            val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
-            val adView = findViewById<AdView>(R.id.adView)
-            if (bannerAdHolder != null && adView != null) {
-                MobileAds.initialize(this) {}
-                loadAdMobBannerAd(adView, bannerAdHolder)
-            }
+        // Firebase Remote Config
+        val remoteConfig = Firebase.remoteConfig
+        val configSettings = remoteConfigSettings {
+            minimumFetchIntervalInSeconds = 3600
         }
+        remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+        remoteConfig.fetchAndActivate()
+
+//        val adEnabled = remoteConfig.getBoolean("ad_enabled")
+
+//        if (adEnabled && !BuildConfig.DEBUG) {
+//        if (adEnabled) {
+//            Log.d(TAG, "Ad Disabled")
+
+        val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
+        val adView = findViewById<AdView>(R.id.adView)
+
+        adView?.let {
+            MobileAds.initialize(this) {}
+            loadAdMobBannerAd(it, bannerAdHolder)
+        }
+
+//            if (bannerAdHolder != null && adView != null) {
+//                MobileAds.initialize(this) {}
+//                loadAdMobBannerAd(adView, bannerAdHolder)
+//            }
+//        } else {
+//            Log.d(TAG, "Ad Disabled")
+//        }
+
     }
 
-
-    private fun loadAdMobBannerAd(adView: AdView, bannerAdHolder: ViewGroup) {
+    private fun loadAdMobBannerAd(adView: AdView, bannerAdHolder: ViewGroup? = null) {
         adView.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
                 Log.i("Ads", "onAdLoaded")
-                bannerAdHolder.visibility = View.VISIBLE
+                bannerAdHolder?.visibility = View.VISIBLE
                 adView.visibility = View.VISIBLE
             }
 
             override fun onAdFailedToLoad(errorCode: Int) {
                 // Code to be executed when an ad request fails.
                 Log.i("Ads", "onAdFailedToLoad")
-                bannerAdHolder.visibility = View.GONE
+                bannerAdHolder?.visibility = View.GONE
                 adView.visibility = View.GONE
             }
 

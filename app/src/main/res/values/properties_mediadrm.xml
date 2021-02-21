@@ -13,7 +13,8 @@
     <string name="mediadrm_key_maxHdcpLevel" translatable="false">maxHdcpLevel</string>
     <string name="mediadrm_key_hdcpLevel" translatable="false">hdcpLevel</string>
     <string name="mediadrm_key_maxNumberOfSessions" translatable="false">maxNumberOfSessions</string>
-
+    <string name="mediadrm_key_numberOfOpenSessions" translatable="false">numberOfOpenSessions</string>
+    <!--    <string name="widevine_string_property_name_numberOfOpenSessions">Number of Open Sessions</string>-->
 
     <string-array name="mediadrm_string_property_keys">
         <item>@string/mediadrm_string_property_key_vendor</item>

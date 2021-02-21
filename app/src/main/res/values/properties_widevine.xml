@@ -3,25 +3,33 @@
 
     <string name="widevine_string_property_key_securityLevel" translatable="false">securityLevel</string>
     <string name="widevine_string_property_key_systemId" translatable="false">systemId</string>
-    <string name="widevine_string_property_key_privacyMode" translatable="false">privacyMode</string>
-    <string name="widevine_string_property_key_sessionSharing" translatable="false">sessionSharing</string>
+    <!--    <string name="widevine_string_property_key_privacyMode" translatable="false">privacyMode</string>-->
+    <!--    <string name="widevine_string_property_key_sessionSharing" translatable="false">sessionSharing</string>-->
     <string name="widevine_string_property_key_usageReportingSupport" translatable="false">usageReportingSupport</string>
     <string name="widevine_string_property_key_hdcpLevel" translatable="false">hdcpLevel</string>
     <string name="widevine_string_property_key_maxHdcpLevel" translatable="false">maxHdcpLevel</string>
-    <string name="widevine_string_property_key_maxNumberOfSessions" translatable="false">maxNumberOfSessions</string>
-    <string name="widevine_string_property_key_oemCryptoApiVersion" translatable="false">oemCryptoApiVersion</string>
-    <string name="widevine_string_property_key_CurrentSRMVersion" translatable="false">CurrentSRMVersion</string>
-    <string name="widevine_string_property_key_SRMUpdateSupport" translatable="false">SRMUpdateSupport</string>
+
 
     <string name="widevine_string_property_name_securityLevel">Security Level</string>
     <string name="widevine_string_property_name_systemId">System ID</string>
-    <string name="widevine_string_property_name_privacyMode">Privacy Mode</string>
-    <string name="widevine_string_property_name_sessionSharing">Session Sharing</string>
+    <!--    <string name="widevine_string_property_name_privacyMode">Privacy Mode</string>-->
+    <!--    <string name="widevine_string_property_name_sessionSharing">Session Sharing</string>-->
     <string name="widevine_string_property_name_usageReportingSupport">Usage Reporting Support</string>
     <string name="widevine_string_property_name_hdcpLevel">Current HDCP Level</string>
     <string name="widevine_string_property_name_maxHdcpLevel">Max HDCP Level Supported</string>
+
+    <!-- Not exist in this API level, for Data Binding -->
+    <string name="widevine_string_property_key_maxNumberOfSessions" translatable="false">maxNumberOfSessions</string>
     <string name="widevine_string_property_name_maxNumberOfSessions">Max Number of Sessions</string>
+
+    <string name="widevine_string_property_key_numberOfOpenSessions" translatable="false">numberOfOpenSessions</string>
+    <string name="widevine_string_property_name_numberOfOpenSessions">Number of Open Sessions</string>
+
+    <string name="widevine_string_property_key_oemCryptoApiVersion" translatable="false">oemCryptoApiVersion</string>
     <string name="widevine_string_property_name_oemCryptoApiVersion">OEM Crypto API Version</string>
+
+    <string name="widevine_string_property_key_CurrentSRMVersion" translatable="false">CurrentSRMVersion</string>
+    <string name="widevine_string_property_key_SRMUpdateSupport" translatable="false">SRMUpdateSupport</string>
     <string name="widevine_string_property_name_CurrentSRMVersion">SRM Version</string>
     <string name="widevine_string_property_name_SRMUpdateSupport">SRM Update Support</string>
 
@@ -30,8 +38,8 @@
         <item>@string/widevine_string_property_key_systemId</item>
         <item>@string/widevine_string_property_key_maxHdcpLevel</item>
         <item>@string/widevine_string_property_key_hdcpLevel</item>
-        <item>@string/widevine_string_property_key_maxNumberOfSessions</item>
-        <item>@string/widevine_string_property_key_oemCryptoApiVersion</item>
+        <!--        <item>@string/widevine_string_property_key_maxNumberOfSessions</item>-->
+        <!--        <item>@string/widevine_string_property_key_oemCryptoApiVersion</item>-->
     </string-array>
 
     <string-array name="widevine_string_property_names" tools:ignore="InconsistentArrays">
@@ -39,27 +47,25 @@
         <item>@string/widevine_string_property_name_systemId</item>
         <item>@string/widevine_string_property_name_maxHdcpLevel</item>
         <item>@string/widevine_string_property_name_hdcpLevel</item>
-        <item>@string/widevine_string_property_name_maxNumberOfSessions</item>
-        <item>@string/widevine_string_property_name_oemCryptoApiVersion</item>
+        <!--        <item>@string/widevine_string_property_name_maxNumberOfSessions</item>-->
+        <!--        <item>@string/widevine_string_property_name_oemCryptoApiVersion</item>-->
     </string-array>
 
     <string name="widevine_bytearray_property_key_provisioningUniqueId" translatable="false">provisioningUniqueId</string>
     <string name="widevine_bytearray_property_name_provisioningUniqueId">Provisioning Unique Id</string>
     <string name="widevine_bytearray_property_key_serviceCertificate" translatable="false">serviceCertificate</string>
-
     <string name="widevine_bytearray_property_name_serviceCertificate">Service Certificate</string>
-    <string name="widevine_bytearray_property_key_provisioningServiceCertificate" translatable="false">provisioningServiceCertificate</string>
-    <string name="widevine_bytearray_property_name_provisioningServiceCertificate">Provisioning Service Certificate</string>
+
 
     <string-array name="widevine_bytearray_property_keys" tools:ignore="InconsistentArrays">
         <item>@string/widevine_bytearray_property_key_provisioningUniqueId</item>
         <item>@string/widevine_bytearray_property_key_serviceCertificate</item>
-        <item>@string/widevine_bytearray_property_key_provisioningServiceCertificate</item>
+        <!--        <item>@string/widevine_bytearray_property_key_provisioningServiceCertificate</item>-->
     </string-array>
 
     <string-array name="widevine_bytearray_property_names" tools:ignore="InconsistentArrays">
         <item>@string/widevine_bytearray_property_name_provisioningUniqueId</item>
         <item>@string/widevine_bytearray_property_name_serviceCertificate</item>
-        <item>@string/widevine_bytearray_property_name_provisioningServiceCertificate</item>
+        <!--        <item>@string/widevine_bytearray_property_name_provisioningServiceCertificate</item>-->
     </string-array>
 </resources>
