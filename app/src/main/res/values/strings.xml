@@ -60,6 +60,10 @@
     <string name="hdr_type_hdr10_plus" translatable="false">HDR10+</string>
     <string name="hdr_type_hlg" translatable="false">HLG</string>
     <string name="hdr_type_unknown" translatable="false">Unknown</string>
+    <!--    <string name="title_activity_compose">My Compose App</string>-->
+    <string name="title_activity_mobile_compose">My Compose App</string>
+    <string name="text_device">Device</string>
+
 
 
     <!--    val hdrMap = mapOf<Int, String>(HDR_TYPE_DOLBY_VISION to "Dolby Vision", HDR_TYPE_HDR10 to "HDR 10", HDR_TYPE_HDR10_PLUS to "HDR 10+", HDR_TYPE_HLG to "HLG")-->
