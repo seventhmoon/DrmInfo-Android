@@ -4,12 +4,14 @@ import android.app.Application
 import androidx.lifecycle.SavedStateHandle
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
+import com.androidfung.drminfo.Util
 
 class WidevineViewModel(application: Application, state: SavedStateHandle) : MediaDrmViewModel(application, state) {
 
     override val stringPropertyKeys: Array<String> by lazy {
         getApplication<Application>().resources.getStringArray(R.array.mediadrm_string_property_keys) +
                 getApplication<Application>().resources.getStringArray(R.array.widevine_string_property_keys)
+
     }
 
     companion object {

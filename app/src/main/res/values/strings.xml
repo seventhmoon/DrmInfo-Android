@@ -65,6 +65,7 @@
     <string name="text_device">Device</string>
 
 
+
     <!--    val hdrMap = mapOf<Int, String>(HDR_TYPE_DOLBY_VISION to "Dolby Vision", HDR_TYPE_HDR10 to "HDR 10", HDR_TYPE_HDR10_PLUS to "HDR 10+", HDR_TYPE_HLG to "HLG")-->
 
 
