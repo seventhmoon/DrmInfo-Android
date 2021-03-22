@@ -9,6 +9,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import android.view.Display
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.hardware.display.DisplayManagerCompat
@@ -21,8 +22,9 @@ import com.androidfung.drminfo.Constants.PLAYREADY_UUID
 import com.androidfung.drminfo.Constants.WIDEVINE_UUID
 import com.androidfung.drminfo.Constants.WISEPLAY_UUID
 import com.androidfung.drminfo.R
-import com.androidfung.drminfo.TvDeviceTypes.getDefaultLauncher
 import com.androidfung.drminfo.Util
+import com.androidfung.drminfo.Util.getDefaultLauncher
+import com.androidfung.drminfo.Util.isLowRamDevice
 import com.google.android.gms.safetynet.SafetyNet
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -96,16 +98,26 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
                 .infoOnly(true)
                 .title(R.string.text_sdk_level)
                 .description(VERSION.SDK_INT.toString())
-                .build()
+            .build()
 
         if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             actions += GuidedAction.Builder(activity)
-                    .infoOnly(true)
-                    .multilineDescription(true)
-                    .title(R.string.text_abi)
-                    .description(Build.SUPPORTED_ABIS.joinToString())
-                    .build()
+                .infoOnly(true)
+                .multilineDescription(true)
+                .title(R.string.text_abi)
+                .description(Build.SUPPORTED_ABIS.joinToString())
+                .build()
         }
+
+        actions += GuidedAction.Builder(activity)
+            .infoOnly(true)
+            .title(R.string.text_low_ram_device)
+            .description(
+                if (isLowRamDevice(requireContext())) getString(R.string.text_true) else getString(
+                    R.string.text_false
+                )
+            )
+            .build()
 
         // Display Related
         if (VERSION.SDK_INT >= VERSION_CODES.N) {
@@ -113,14 +125,26 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
             val defaultDisplay = displayManager.getDisplay(Display.DEFAULT_DISPLAY)
 
             defaultDisplay?.let { display ->
+
+                display.supportedModes.firstOrNull()?.let {
+                    actions += GuidedAction.Builder(activity)
+                        .infoOnly(true)
+                        .title(R.string.text_physical_width_and_height)
+                        .description("${it.physicalWidth}x${it.physicalHeight}")
+                        .build()
+                }
+
                 val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
 
                 if (supportedHdrType.isNotEmpty()) {
                     actions += GuidedAction.Builder(activity)
-                            .infoOnly(true)
-                            .title(R.string.text_supported_hdr_types)
-                            .description(supportedHdrType.map(this@InfoStepFragment::convertHdrTypeToString).sorted().joinToString())
-                            .build()
+                        .infoOnly(true)
+                        .title(R.string.text_supported_hdr_types)
+                        .description(
+                            supportedHdrType.map(this@InfoStepFragment::convertHdrTypeToString)
+                                .sorted().joinToString()
+                        )
+                        .build()
                 }
             }
         }
@@ -327,17 +351,18 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
             try {
                 actions += GuidedAction.Builder(requireActivity())
                         .infoOnly(true)
-                        .title(R.string.widevine_string_property_name_maxHdcpLevel)
-                        .description(getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel)))
-                        .build()
+                    .title(R.string.widevine_string_property_name_maxHdcpLevel)
+                    .description(getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel)))
+                    .build()
 
                 actions += GuidedAction.Builder(requireActivity())
-                        .infoOnly(true)
-                        .title(R.string.widevine_string_property_name_hdcpLevel)
-                        .description(getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel)))
-                        .build()
+                    .infoOnly(true)
+                    .title(R.string.widevine_string_property_name_hdcpLevel)
+                    .description(getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel)))
+                    .build()
 
-            } catch (ignored: Exception) {
+            } catch (e: Exception) {
+                Log.e(TAG, e.toString())
             }
 
         }

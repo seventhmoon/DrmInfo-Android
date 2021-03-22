@@ -1,10 +1,28 @@
 package com.androidfung.drminfo
 
+import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.MediaDrm
+import android.view.Display
 import android.view.Display.HdrCapabilities
 import android.view.View
 import androidx.annotation.StringRes
+import androidx.core.app.ActivityManagerCompat
+import androidx.core.hardware.display.DisplayManagerCompat
+import androidx.core.view.DisplayCompat
 import java.util.*
+
+
+//Make sure you have the following declared in Manifest when running on Android 11+
+//<queries>
+//<package android:name="com.google.android.tvlauncher" />
+//<package android:name="com.google.android.leanbacklauncher" />
+//<package android:name="com.google.android.apps.tv.launcherx" />
+//</queries>
+
 
 object Util {
     @JvmStatic
@@ -72,6 +90,35 @@ object Util {
         input is String && input.isBlank() -> View.GONE
         input == null -> View.GONE
         else -> View.VISIBLE
+    }
+
+    @SuppressLint("QueryPermissionsNeeded")
+    fun PackageManager.hasPackageInstalled(packageName: String): Boolean {
+        return getInstalledApplications(0).any { it.packageName == packageName }
+    }
+
+    fun PackageManager.getDefaultLauncher(): String? {
+        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+            .addCategory(Intent.CATEGORY_DEFAULT)
+        val resolveInfo = resolveActivity(intent, 0)
+        return resolveInfo?.activityInfo?.packageName
+    }
+
+    fun isUhdDevice(context: Context): Boolean {
+        val displayManager = DisplayManagerCompat.getInstance(context)
+
+        displayManager.getDisplay(Display.DEFAULT_DISPLAY)?.let { display ->
+            return DisplayCompat.getSupportedModes(context, display)
+                .any {
+                    it.physicalHeight >= TvDeviceTypes.DISPLAY_SIZE_4K_HEIGHT && it.physicalWidth >= TvDeviceTypes.DISPLAY_SIZE_4K_WIDTH
+                }
+        }
+        return false
+    }
+
+    fun isLowRamDevice(context: Context): Boolean {
+        val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        return ActivityManagerCompat.isLowRamDevice(am)
     }
 
 }

@@ -1,17 +1,11 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.androidfung.drminfo
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.IntDef
-
-//Make sure you have the following declared in Manifest when running on Android 11+
-//<queries>
-//<package android:name="com.google.android.tvlauncher" />
-//<package android:name="com.google.android.leanbacklauncher" />
-//<package android:name="com.google.android.apps.tv.launcherx" />
-//</queries>
+import com.androidfung.drminfo.Util.getDefaultLauncher
 
 /**
  * @author chofung@google.com
@@ -19,8 +13,8 @@ import androidx.annotation.IntDef
 object TvDeviceTypes {
 
     @IntDef(ANDROID_NON_TV, ANDROID_OTHER_TV, FIRE_TV, ANDROID_TV_WITH_WATSON,
-            ANDROID_TV, ANDROID_TV_OPERATOR_DEVICE, ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER,
-            GOOGLE_TV)
+        ANDROID_TV, ANDROID_TV_OPERATOR_DEVICE, ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER,
+        GOOGLE_TV)
     @Retention(AnnotationRetention.SOURCE)
     annotation class TvDeviceType
 
@@ -35,19 +29,23 @@ object TvDeviceTypes {
     const val ANDROID_TV = LEANBACK
     const val ANDROID_TV_WITH_WATSON = ANDROID_TV + WATSON
     const val ANDROID_TV_OPERATOR_DEVICE = ANDROID_TV + OPERATOR_DEVICE
-    const val ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER = ANDROID_TV_OPERATOR_DEVICE + CUSTOM_LAUNCHER
+    const val ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER =
+        ANDROID_TV_OPERATOR_DEVICE + CUSTOM_LAUNCHER
     const val GOOGLE_TV = ANDROID_TV + AMATI
     const val FIRE_TV = 0b10000000
 
-    private const val PACKAGE_LEANBACK_LAUNCHER = "com.google.android.leanbacklauncher"
-    private const val PACKAGE_WATSON_LAUNCHER = "com.google.android.tvlauncher"
-    private const val PACKAGE_LAUNCHER_X = "com.google.android.apps.tv.launcherx"
+    const val PACKAGE_LEANBACK_LAUNCHER = "com.google.android.leanbacklauncher"
+    const val PACKAGE_WATSON_LAUNCHER = "com.google.android.tvlauncher"
+    const val PACKAGE_LAUNCHER_X = "com.google.android.apps.tv.launcherx"
 
-    private const val FEATURE_OPERATOR_TIER = "com.google.android.tv.operator_tier"
-    private const val FEATURE_CUSTOM_LAUNCHER = "com.google.android.tv.custom_launcher"
-    private const val FEATURE_AMATI_EXPERIENCE = "com.google.android.feature.AMATI_EXPERIENCE"
-    private const val FEATURE_AMAZON_FIRE_TV = "amazon.hardware.fire_tv"
-    private const val FEATURE_TV = "android.hardware.type.television"
+    const val FEATURE_OPERATOR_TIER = "com.google.android.tv.operator_tier"
+    const val FEATURE_CUSTOM_LAUNCHER = "com.google.android.tv.custom_launcher"
+    const val FEATURE_AMATI_EXPERIENCE = "com.google.android.feature.AMATI_EXPERIENCE"
+    const val FEATURE_AMAZON_FIRE_TV = "amazon.hardware.fire_tv"
+    const val FEATURE_TV = "android.hardware.type.television"
+
+    const val DISPLAY_SIZE_4K_WIDTH = 3840
+    const val DISPLAY_SIZE_4K_HEIGHT = 2160
 
     @TvDeviceType
     fun PackageManager.obtainDeviceType(): Int {
@@ -73,16 +71,5 @@ object TvDeviceTypes {
         }
     }
 
-    @SuppressLint("QueryPermissionsNeeded")
-    fun PackageManager.hasPackageInstalled(packageName: String): Boolean {
-        return getInstalledApplications(0)
-                .find { it.packageName == packageName } != null
-    }
-
-    fun PackageManager.getDefaultLauncher(): String? {
-        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME).addCategory(Intent.CATEGORY_DEFAULT)
-        val resolveInfo = resolveActivity(intent, 0)
-        return resolveInfo?.activityInfo?.packageName
-    }
 
 }
