@@ -73,8 +73,7 @@ object TvDeviceTypes {
 
     @SuppressLint("QueryPermissionsNeeded")
     fun PackageManager.hasPackageInstalled(packageName: String): Boolean {
-        return getInstalledApplications(0)
-                .find { it.packageName == packageName } != null
+        return packageName in getInstalledApplications(0).map { it.packageName }
     }
 
     fun PackageManager.getDefaultLauncher(): String? {
