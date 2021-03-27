@@ -1,16 +1,8 @@
 package com.androidfung.drminfo
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.annotation.IntDef
-
-//Make sure you have the following declared in Manifest when running on Android 11+
-//<queries>
-//<package android:name="com.google.android.tvlauncher" />
-//<package android:name="com.google.android.leanbacklauncher" />
-//<package android:name="com.google.android.apps.tv.launcherx" />
-//</queries>
 
 /**
  * @author chofung@google.com
@@ -69,11 +61,6 @@ object TvDeviceTypes {
             hasSystemFeature(FEATURE_TV) -> ANDROID_OTHER_TV
             else -> ANDROID_NON_TV
         }
-    }
-
-    @SuppressLint("QueryPermissionsNeeded")
-    fun PackageManager.hasPackageInstalled(packageName: String): Boolean {
-        return packageName in getInstalledApplications(0).map { it.packageName }
     }
 
     fun PackageManager.getDefaultLauncher(): String? {
