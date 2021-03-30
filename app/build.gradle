@@ -13,10 +13,10 @@ android {
 
     defaultConfig {
         applicationId 'com.androidfung.drminfo'
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 30
-        versionCode 308
-        versionName '1.1.7.210115'
+        versionCode 322
+        versionName '1.1.7.210330'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -63,7 +63,14 @@ android {
 
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
-        kotlinCompilerVersion kotlin_version
+//        kotlinCompilerVersion kotlin_version
+    }
+
+    signingConfigs {
+        config {
+            enableV3Signing(true)
+            enableV4Signing(true)
+        }
     }
 
     lintOptions {
@@ -77,24 +84,21 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation "androidx.activity:activity-ktx:1.2.1"
-    implementation "androidx.annotation:annotation:1.2.0-rc01"
-    implementation "androidx.appcompat:appcompat:1.3.0-beta01"
-    implementation "androidx.appcompat:appcompat-resources:1.3.0-beta01"
+    implementation "androidx.activity:activity-ktx:1.2.2"
+    implementation "androidx.annotation:annotation:1.2.0"
+    implementation "androidx.appcompat:appcompat:1.2.0"
+    implementation "androidx.appcompat:appcompat-resources:1.2.0"
 //    implementation "androidx.compose.ui:ui:$compose_version"
 //    implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.constraintlayout:constraintlayout:2.0.4"
     implementation "androidx.collection:collection-ktx:1.1.0"
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
     implementation "androidx.core:core-ktx:1.3.2"
-    implementation "androidx.fragment:fragment-ktx:1.3.1"
+    implementation "androidx.fragment:fragment-ktx:1.3.2"
     implementation "androidx.leanback:leanback:1.1.0-beta01"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
-//    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-process:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+//    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
     implementation "androidx.transition:transition:1.4.0"
 //    implementation "androidx.ui:ui-tooling:$compose_version"
     implementation "androidx.vectordrawable:vectordrawable:1.1.0"
@@ -105,7 +109,7 @@ dependencies {
 
     implementation "com.google.firebase:firebase-ads:19.8.0"
     implementation "com.google.firebase:firebase-analytics-ktx:18.0.2"
-    implementation "com.google.firebase:firebase-crashlytics-ktx:17.4.0"
+    implementation "com.google.firebase:firebase-crashlytics-ktx:17.4.1"
     implementation "com.google.firebase:firebase-perf-ktx:19.1.1"
     implementation "com.google.firebase:firebase-config-ktx:20.0.4"
 
