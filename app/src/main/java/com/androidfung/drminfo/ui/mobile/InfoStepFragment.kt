@@ -10,6 +10,7 @@ import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+
 import android.view.Display
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.hardware.display.DisplayManagerCompat
@@ -22,6 +23,7 @@ import com.androidfung.drminfo.Constants.PLAYREADY_UUID
 import com.androidfung.drminfo.Constants.WIDEVINE_UUID
 import com.androidfung.drminfo.Constants.WISEPLAY_UUID
 import com.androidfung.drminfo.R
+import com.androidfung.drminfo.TvDeviceTypes.getDefaultLauncher
 import com.androidfung.drminfo.Util
 import com.androidfung.drminfo.Util.getDefaultLauncher
 import com.androidfung.drminfo.Util.isLowRamDevice
@@ -98,7 +100,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
                 .infoOnly(true)
                 .title(R.string.text_sdk_level)
                 .description(VERSION.SDK_INT.toString())
-            .build()
+                .build()
 
         if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             actions += GuidedAction.Builder(activity)
@@ -118,6 +120,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
                 )
             )
             .build()
+
 
         // Display Related
         if (VERSION.SDK_INT >= VERSION_CODES.N) {
@@ -350,7 +353,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         if (VERSION.SDK_INT >= VERSION_CODES.P) {
             try {
                 actions += GuidedAction.Builder(requireActivity())
-                        .infoOnly(true)
+                    .infoOnly(true)
                     .title(R.string.widevine_string_property_name_maxHdcpLevel)
                     .description(getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel)))
                     .build()
@@ -363,6 +366,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 
             } catch (e: Exception) {
                 Log.e(TAG, e.toString())
+
             }
 
         }

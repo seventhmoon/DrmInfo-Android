@@ -7,6 +7,7 @@ import android.os.Build
 import androidx.annotation.IntDef
 import com.androidfung.drminfo.Util.getDefaultLauncher
 
+
 /**
  * @author chofung@google.com
  */
@@ -15,6 +16,7 @@ object TvDeviceTypes {
     @IntDef(ANDROID_NON_TV, ANDROID_OTHER_TV, FIRE_TV, ANDROID_TV_WITH_WATSON,
         ANDROID_TV, ANDROID_TV_OPERATOR_DEVICE, ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER,
         GOOGLE_TV)
+
     @Retention(AnnotationRetention.SOURCE)
     annotation class TvDeviceType
 
@@ -34,42 +36,41 @@ object TvDeviceTypes {
     const val GOOGLE_TV = ANDROID_TV + AMATI
     const val FIRE_TV = 0b10000000
 
-    const val PACKAGE_LEANBACK_LAUNCHER = "com.google.android.leanbacklauncher"
-    const val PACKAGE_WATSON_LAUNCHER = "com.google.android.tvlauncher"
-    const val PACKAGE_LAUNCHER_X = "com.google.android.apps.tv.launcherx"
+    private const val PACKAGE_LEANBACK_LAUNCHER = "com.google.android.leanbacklauncher"
+    private const val PACKAGE_WATSON_LAUNCHER = "com.google.android.tvlauncher"
+    private const val PACKAGE_LAUNCHER_X = "com.google.android.apps.tv.launcherx"
 
-    const val FEATURE_OPERATOR_TIER = "com.google.android.tv.operator_tier"
-    const val FEATURE_CUSTOM_LAUNCHER = "com.google.android.tv.custom_launcher"
-    const val FEATURE_AMATI_EXPERIENCE = "com.google.android.feature.AMATI_EXPERIENCE"
-    const val FEATURE_AMAZON_FIRE_TV = "amazon.hardware.fire_tv"
-    const val FEATURE_TV = "android.hardware.type.television"
+    private const val FEATURE_OPERATOR_TIER = "com.google.android.tv.operator_tier"
+    private const val FEATURE_CUSTOM_LAUNCHER = "com.google.android.tv.custom_launcher"
+    private const val FEATIRE_CUSTOM_LAUNCHER_ELIGIBLE = "com.google.android.tv.custom_launcher_eligible"
+    private const val FEATURE_AMATI_EXPERIENCE = "com.google.android.feature.AMATI_EXPERIENCE"
+    private const val FEATURE_AMAZON_FIRE_TV = "amazon.hardware.fire_tv"
+    private const val FEATURE_TV = "android.hardware.type.television"
 
     const val DISPLAY_SIZE_4K_WIDTH = 3840
     const val DISPLAY_SIZE_4K_HEIGHT = 2160
+
 
     @TvDeviceType
     fun PackageManager.obtainDeviceType(): Int {
         return when {
             hasSystemFeature(FEATURE_AMAZON_FIRE_TV) -> FIRE_TV
             hasSystemFeature(PackageManager.FEATURE_LEANBACK) -> {
-                if (hasSystemFeature(FEATURE_OPERATOR_TIER)) {
-                    if (hasSystemFeature(FEATURE_CUSTOM_LAUNCHER)) ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER
-                    else ANDROID_TV_OPERATOR_DEVICE
-                } else {
-                    when {
-                        hasSystemFeature(FEATURE_AMATI_EXPERIENCE) &&
-                                getDefaultLauncher() == PACKAGE_LAUNCHER_X -> GOOGLE_TV
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-                                getDefaultLauncher() == PACKAGE_WATSON_LAUNCHER -> ANDROID_TV_WITH_WATSON
-                        getDefaultLauncher() == PACKAGE_LEANBACK_LAUNCHER -> ANDROID_TV
-                        else -> ANDROID_OTHER_TV
+
+                when {
+                    hasSystemFeature(FEATURE_OPERATOR_TIER) -> {
+                        if (hasSystemFeature(FEATURE_CUSTOM_LAUNCHER)) ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER
+                        else ANDROID_TV_OPERATOR_DEVICE
                     }
+                    hasSystemFeature(FEATURE_AMATI_EXPERIENCE) &&
+                            getDefaultLauncher() == PACKAGE_LAUNCHER_X -> GOOGLE_TV
+                    getDefaultLauncher() == PACKAGE_WATSON_LAUNCHER -> ANDROID_TV_WITH_WATSON
+                    getDefaultLauncher() == PACKAGE_LEANBACK_LAUNCHER -> ANDROID_TV
+                    else -> ANDROID_OTHER_TV
                 }
             }
             hasSystemFeature(FEATURE_TV) -> ANDROID_OTHER_TV
             else -> ANDROID_NON_TV
         }
     }
-
-
 }
