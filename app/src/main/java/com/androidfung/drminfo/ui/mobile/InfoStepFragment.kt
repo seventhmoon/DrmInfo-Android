@@ -1,5 +1,6 @@
 package com.androidfung.drminfo.ui.mobile
 
+import android.annotation.SuppressLint
 import android.media.MediaCodecList
 import android.media.MediaDrm
 import android.media.MediaDrmException
@@ -81,6 +82,20 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
                 .description(Build.DISPLAY)
                 .build()
 
+        if (VERSION.SDK_INT >= VERSION_CODES.S) {
+            actions += GuidedAction.Builder(activity)
+                .infoOnly(true)
+                .title(R.string.text_soc_manufacturer)
+                .description( Build.SOC_MANUFACTURER)
+                .build()
+
+            actions += GuidedAction.Builder(activity)
+                .infoOnly(true)
+                .title(R.string.text_soc_model)
+                .description(Build.SOC_MODEL)
+                .build()
+        }
+
         actions += GuidedAction.Builder(activity)
                 .infoOnly(true)
                 .title(R.string.text_type)
@@ -121,7 +136,10 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
                     actions += GuidedAction.Builder(activity)
                             .infoOnly(true)
                             .title(R.string.text_supported_hdr_types)
-                            .description(supportedHdrType.map(this@InfoStepFragment::convertHdrTypeToString).sorted().joinToString())
+                            .description(supportedHdrType
+                                .map(this@InfoStepFragment::convertHdrTypeToString)
+                                .sorted()
+                                .joinToString())
                             .build()
                 }
             }

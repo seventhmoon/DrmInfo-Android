@@ -80,6 +80,46 @@
             tools:text="sailfish" />
 
         <TextView
+            android:id="@+id/tv_label_soc_manufacturer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/listitem_padding"
+            android:text="@string/text_soc_manufacturer"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["socManufacturer"])}'
+            />
+
+        <TextView
+            android:id="@+id/tv_value_soc_manufacturer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text='@{infoProperties["socManufacturer"]}'
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["socManufacturer"])}'
+            tools:text="QCOM" />
+
+        <TextView
+            android:id="@+id/tv_label_soc_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/listitem_padding"
+            android:text="@string/text_soc_model"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["socModel"])}'
+            />
+
+        <TextView
+            android:id="@+id/tv_value_soc_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text='@{infoProperties["socModel"]}'
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["socModel"])}'
+            tools:text="808" />
+
+        <TextView
             android:id="@+id/tv_label_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -145,6 +185,26 @@
             android:singleLine="true"
             android:text="@{String.valueOf(Build.VERSION.SDK_INT)}"
             android:textAppearance="?attr/textAppearanceBody2"
+            tools:text="1" />
+
+        <TextView
+            android:id="@+id/tv_label_release_or_codename"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/listitem_padding"
+            android:text="@string/text_release_or_codename"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["releaseOrCodename"])}'
+            />
+
+        <TextView
+            android:id="@+id/tv_value_release_or_codename"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{infoProperties["releaseOrCodename"]}'
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["releaseOrCodename"])}'
+            android:onLongClick="@{handler::onLongClick}"
             tools:text="1" />
 
         <TextView

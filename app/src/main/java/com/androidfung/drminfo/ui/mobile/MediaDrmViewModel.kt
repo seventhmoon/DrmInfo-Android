@@ -76,7 +76,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
     }
 
     override fun onCleared() {
-        if (SDK_INT >= Build.VERSION_CODES.P) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             mediaDrm?.close()
         } else {
             @Suppress("DEPRECATION")

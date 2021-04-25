@@ -3,11 +3,14 @@ package com.androidfung.drminfo.ui.mobile
 import android.annotation.SuppressLint
 import android.app.Application
 import android.media.MediaCodecList
+import android.nfc.Tag
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import android.util.Log
 import android.view.Display.DEFAULT_DISPLAY
 import androidx.core.hardware.display.DisplayManagerCompat
+import androidx.core.os.BuildCompat
 import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -32,8 +35,10 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
             map["abis"] = Build.SUPPORTED_ABIS
         }
 
-        // Display Related
         if (VERSION.SDK_INT >= VERSION_CODES.M) {
+            map["securityPatch"] = Build.VERSION.SECURITY_PATCH
+
+            // Display Related
             val displayManager = DisplayManagerCompat.getInstance(getApplication())
             displayManager.getDisplay(DEFAULT_DISPLAY)?.also { display ->
                 val supportedRefreshRate = display.supportedModes.map { mode -> mode.refreshRate }.toSortedSet()
@@ -54,6 +59,15 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
                     .filter { codec -> codec.isHardwareAccelerated && !codec.isEncoder }
                     .flatMap { codec -> codec.supportedTypes.asIterable() }
                     .toSortedSet()
+        }
+
+        if (VERSION.SDK_INT >= VERSION_CODES.R) {
+            map["releaseOrCodename"] = Build.VERSION.RELEASE_OR_CODENAME
+        }
+
+        if (BuildCompat.isAtLeastS()) {
+            map["socManufacturer"] = Build.SOC_MANUFACTURER
+            map["socModel"] = Build.SOC_MODEL
         }
 
         it.value = map

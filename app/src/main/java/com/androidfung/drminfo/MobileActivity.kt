@@ -16,15 +16,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
 import com.androidfung.drminfo.ui.mobile.*
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
-
 
 @Keep
 class MobileActivity : AppCompatActivity() {
@@ -120,7 +116,8 @@ class MobileActivity : AppCompatActivity() {
                 adView.visibility = View.VISIBLE
             }
 
-            override fun onAdFailedToLoad(errorCode: Int) {
+            override fun onAdFailedToLoad(eror: LoadAdError) {
+//                super.onAdFailedToLoad(error)
                 // Code to be executed when an ad request fails.
                 Log.i("Ads", "onAdFailedToLoad")
                 bannerAdHolder?.visibility = View.GONE
@@ -131,11 +128,6 @@ class MobileActivity : AppCompatActivity() {
                 // Code to be executed when an ad opens an overlay that
                 // covers the screen.
                 Log.i("Ads", "onAdOpened")
-            }
-
-            override fun onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-                Log.i("Ads", "onAdLeftApplication")
             }
 
             override fun onAdClosed() {
