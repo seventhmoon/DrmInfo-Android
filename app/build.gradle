@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId 'com.androidfung.drminfo'
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode 326
         versionName '1.1.7.210423'
