@@ -39,20 +39,21 @@ class MobileActivity : AppCompatActivity() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            @Suppress("UNUSED_VARIABLE") val nestedScrollView = findViewById<NestedScrollView>(R.id.view_nestedscrollview)?.apply {
-                val bound = Rect().also { rect ->
-                    this.getHitRect(rect)
-                }
+            @Suppress("UNUSED_VARIABLE") val nestedScrollView =
+                findViewById<NestedScrollView>(R.id.view_nestedscrollview)?.apply {
+                    val bound = Rect().also { rect ->
+                        this.getHitRect(rect)
+                    }
 
-                this.setOnScrollChangeListener { _, _, _, _, _ ->
-                    val infoHeadline = findViewById<TextView>(R.id.tv_info_headline)
-                    if (infoHeadline.getLocalVisibleRect(bound)) {
-                        toolbar?.subtitle = null
-                    } else {
-                        toolbar?.subtitle = "${Build.MANUFACTURER} ${Build.MODEL}"
+                    this.setOnScrollChangeListener { _, _, _, _, _ ->
+                        val infoHeadline = findViewById<TextView>(R.id.tv_info_headline)
+                        if (infoHeadline.getLocalVisibleRect(bound)) {
+                            toolbar?.subtitle = null
+                        } else {
+                            toolbar?.subtitle = "${Build.MANUFACTURER} ${Build.MODEL}"
+                        }
                     }
                 }
-            }
         }
 
 
@@ -83,12 +84,6 @@ class MobileActivity : AppCompatActivity() {
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
         remoteConfig.fetchAndActivate()
 
-//        val adEnabled = remoteConfig.getBoolean("ad_enabled")
-
-//        if (adEnabled && !BuildConfig.DEBUG) {
-//        if (adEnabled) {
-//            Log.d(TAG, "Ad Disabled")
-
         val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
         val adView = findViewById<AdView>(R.id.adView)
 
@@ -96,14 +91,6 @@ class MobileActivity : AppCompatActivity() {
             MobileAds.initialize(this) {}
             loadAdMobBannerAd(it, bannerAdHolder)
         }
-
-//            if (bannerAdHolder != null && adView != null) {
-//                MobileAds.initialize(this) {}
-//                loadAdMobBannerAd(adView, bannerAdHolder)
-//            }
-//        } else {
-//            Log.d(TAG, "Ad Disabled")
-//        }
 
     }
 
