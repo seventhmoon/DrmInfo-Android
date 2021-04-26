@@ -1,12 +1,24 @@
 package com.androidfung.drminfo
 
+import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.MediaDrm
+import android.view.Display
 import android.view.Display.HdrCapabilities
 import android.view.View
 import androidx.annotation.StringRes
+import androidx.core.app.ActivityManagerCompat
+import androidx.core.hardware.display.DisplayManagerCompat
+import androidx.core.view.DisplayCompat
 import java.util.*
 
 object Util {
+    const val DISPLAY_SIZE_4K_WIDTH = 3840
+    const val DISPLAY_SIZE_4K_HEIGHT = 2160
+
     @JvmStatic
     @StringRes
     fun convertHdcpLevelToStringRes(maxHdcpLevel: Int) = when (maxHdcpLevel) {
@@ -72,6 +84,35 @@ object Util {
         input is String && input.isBlank() -> View.GONE
         input == null -> View.GONE
         else -> View.VISIBLE
+    }
+
+    @SuppressLint("QueryPermissionsNeeded")
+    fun PackageManager.hasPackageInstalled(packageName: String): Boolean {
+        return getInstalledApplications(0).any { it.packageName == packageName }
+    }
+
+    fun PackageManager.getDefaultLauncher(): String? {
+        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+            .addCategory(Intent.CATEGORY_DEFAULT)
+        val resolveInfo = resolveActivity(intent, 0)
+        return resolveInfo?.activityInfo?.packageName
+    }
+
+    fun isUhdDevice(context: Context): Boolean {
+        val displayManager = DisplayManagerCompat.getInstance(context)
+
+        displayManager.getDisplay(Display.DEFAULT_DISPLAY)?.let { display ->
+            return DisplayCompat.getSupportedModes(context, display)
+                .any {
+                    it.physicalHeight >= DISPLAY_SIZE_4K_HEIGHT && it.physicalWidth >= DISPLAY_SIZE_4K_WIDTH
+                }
+        }
+        return false
+    }
+
+    fun isLowRamDevice(context: Context): Boolean {
+        val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        return ActivityManagerCompat.isLowRamDevice(am)
     }
 
 }

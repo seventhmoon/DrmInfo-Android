@@ -39,7 +39,7 @@ class MobileActivity : AppCompatActivity() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val nestedScrollView = findViewById<NestedScrollView>(R.id.view_nestedscrollview)?.apply {
+            @Suppress("UNUSED_VARIABLE") val nestedScrollView = findViewById<NestedScrollView>(R.id.view_nestedscrollview)?.apply {
                 val bound = Rect().also { rect ->
                     this.getHitRect(rect)
                 }

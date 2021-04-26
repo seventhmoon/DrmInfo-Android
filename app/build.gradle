@@ -17,8 +17,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
 //        targetSdkVersion("S")
-        versionCode 308
-        versionName '1.1.7.210115'
+        versionCode 327
+        versionName '1.1.8.21426'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -49,7 +49,14 @@ android {
 //        compose = true
         dataBinding = true
     }
-    
+
+    signingConfigs {
+        config {
+            enableV3Signing(true)
+            enableV4Signing(true)
+        }
+    }
+
     compileOptions {
         // Flag to enable support for the new language APIs
         coreLibraryDesugaringEnabled false
@@ -102,6 +109,7 @@ dependencies {
     implementation "androidx.vectordrawable:vectordrawable:1.1.0"
 
     implementation "com.google.android:flexbox:1.1.1"
+//    implementation 'com.google.android:flexbox:2.0.1'
     implementation "com.google.android.material:material:1.3.0"
     implementation "com.google.android.gms:play-services-safetynet:17.0.0"
 

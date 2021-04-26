@@ -13,6 +13,7 @@ import android.util.Base64
 import android.view.Display
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.hardware.display.DisplayManagerCompat
+import androidx.core.os.BuildCompat
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.GuidanceStylist.Guidance
 import androidx.leanback.widget.GuidedAction
@@ -24,6 +25,7 @@ import com.androidfung.drminfo.Constants.WISEPLAY_UUID
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.TvDeviceTypes.getDefaultLauncher
 import com.androidfung.drminfo.Util
+import com.androidfung.drminfo.Util.isLowRamDevice
 import com.google.android.gms.safetynet.SafetyNet
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -59,34 +61,34 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         // info section here
 
         actions += GuidedAction.Builder(activity)
-                .infoOnly(true)
-                .title(R.string.text_brand)
-                .description(Build.BRAND)
-                .build()
+            .infoOnly(true)
+            .title(R.string.text_brand)
+            .description(Build.BRAND)
+            .build()
 
         actions += GuidedAction.Builder(activity)
-                .infoOnly(true)
-                .title(R.string.text_product)
-                .description(Build.PRODUCT)
-                .build()
+            .infoOnly(true)
+            .title(R.string.text_product)
+            .description(Build.PRODUCT)
+            .build()
 
         actions += GuidedAction.Builder(activity)
-                .infoOnly(true)
-                .title(R.string.text_hardware)
-                .description(Build.HARDWARE)
-                .build()
+            .infoOnly(true)
+            .title(R.string.text_hardware)
+            .description(Build.HARDWARE)
+            .build()
 
         actions += GuidedAction.Builder(activity)
-                .infoOnly(true)
-                .title(R.string.text_display)
-                .description(Build.DISPLAY)
-                .build()
+            .infoOnly(true)
+            .title(R.string.text_display)
+            .description(Build.DISPLAY)
+            .build()
 
-        if (VERSION.SDK_INT >= VERSION_CODES.S) {
+        if (BuildCompat.isAtLeastS()) {
             actions += GuidedAction.Builder(activity)
                 .infoOnly(true)
                 .title(R.string.text_soc_manufacturer)
-                .description( Build.SOC_MANUFACTURER)
+                .description(Build.SOC_MANUFACTURER)
                 .build()
 
             actions += GuidedAction.Builder(activity)
@@ -97,32 +99,42 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         }
 
         actions += GuidedAction.Builder(activity)
-                .infoOnly(true)
-                .title(R.string.text_type)
-                .description(Build.TYPE)
-                .build()
+            .infoOnly(true)
+            .title(R.string.text_type)
+            .description(Build.TYPE)
+            .build()
 
         actions += GuidedAction.Builder(activity)
-                .infoOnly(true)
-                .multilineDescription(true)
-                .title(R.string.text_fingerprint)
-                .description(Build.FINGERPRINT)
-                .build()
+            .infoOnly(true)
+            .multilineDescription(true)
+            .title(R.string.text_fingerprint)
+            .description(Build.FINGERPRINT)
+            .build()
 
         actions += GuidedAction.Builder(activity)
-                .infoOnly(true)
-                .title(R.string.text_sdk_level)
-                .description(VERSION.SDK_INT.toString())
-                .build()
+            .infoOnly(true)
+            .title(R.string.text_sdk_level)
+            .description(VERSION.SDK_INT.toString())
+            .build()
 
         if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             actions += GuidedAction.Builder(activity)
-                    .infoOnly(true)
-                    .multilineDescription(true)
-                    .title(R.string.text_abi)
-                    .description(Build.SUPPORTED_ABIS.joinToString())
-                    .build()
+                .infoOnly(true)
+                .multilineDescription(true)
+                .title(R.string.text_abi)
+                .description(Build.SUPPORTED_ABIS.joinToString())
+                .build()
         }
+
+        actions += GuidedAction.Builder(activity)
+            .infoOnly(true)
+            .title(R.string.text_low_ram_device)
+            .description(
+                if (isLowRamDevice(requireContext())) getString(R.string.text_true) else getString(
+                    R.string.text_false
+                )
+            )
+            .build()
 
         // Display Related
         if (VERSION.SDK_INT >= VERSION_CODES.N) {
@@ -130,35 +142,46 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
             val defaultDisplay = displayManager.getDisplay(Display.DEFAULT_DISPLAY)
 
             defaultDisplay?.let { display ->
+                display.supportedModes.firstOrNull()?.let {
+                    actions += GuidedAction.Builder(activity)
+                        .infoOnly(true)
+                        .title(R.string.text_physical_width_and_height)
+                        .description("${it.physicalWidth}x${it.physicalHeight}")
+                        .build()
+                }
+
                 val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
 
                 if (supportedHdrType.isNotEmpty()) {
                     actions += GuidedAction.Builder(activity)
-                            .infoOnly(true)
-                            .title(R.string.text_supported_hdr_types)
-                            .description(supportedHdrType
+                        .infoOnly(true)
+                        .title(R.string.text_supported_hdr_types)
+                        .description(
+                            supportedHdrType
                                 .map(this@InfoStepFragment::convertHdrTypeToString)
                                 .sorted()
-                                .joinToString())
-                            .build()
+                                .joinToString()
+                        )
+                        .build()
                 }
             }
         }
 
         // Codec Related
         if (VERSION.SDK_INT >= VERSION_CODES.Q) {
-            val supportedHardwareAcceleratedDecodeType = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+            val supportedHardwareAcceleratedDecodeType =
+                MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
                     .filter { codec -> codec.isHardwareAccelerated && !codec.isEncoder }
                     .flatMap { codec -> codec.supportedTypes.asIterable() }
                     .toSortedSet()
 
             if (supportedHardwareAcceleratedDecodeType.isNotEmpty()) {
                 actions += GuidedAction.Builder(activity)
-                        .infoOnly(false)
-                        .title(R.string.text_hw_decode_type)
-                        .multilineDescription(true)
-                        .description(supportedHardwareAcceleratedDecodeType.joinToString())
-                        .build()
+                    .infoOnly(false)
+                    .title(R.string.text_hw_decode_type)
+                    .multilineDescription(true)
+                    .description(supportedHardwareAcceleratedDecodeType.joinToString())
+                    .build()
             }
         }
 
@@ -174,20 +197,20 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         val packageName = packageManager.getDefaultLauncher()
         packageName?.let {
             actions += GuidedAction.Builder(activity)
-                    .infoOnly(true)
-                    .title(R.string.text_default_launcher)
-                    .description(packageName)
-                    .build()
+                .infoOnly(true)
+                .title(R.string.text_default_launcher)
+                .description(packageName)
+                .build()
         }
 
         val safetyNetEnabled = remoteConfig.getBoolean("safetynet_enabled")
 
         if (safetyNetEnabled) {
             val safetyNetAction = GuidedAction.Builder(requireActivity())
-                    .infoOnly(true)
-                    .title(R.string.text_cts_profile_match)
-                    .description("N/A")
-                    .build()
+                .infoOnly(true)
+                .title(R.string.text_cts_profile_match)
+                .description("N/A")
+                .build()
 
             actions += safetyNetAction
 
@@ -196,32 +219,35 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
             random.nextBytes(nonce)
 
             SafetyNet.getClient(requireActivity()).attest(nonce, API_KEY)
-                    .addOnSuccessListener(requireActivity()) {
+                .addOnSuccessListener(requireActivity()) {
 
-                        val result = it.jwsResult.split(".")
-                        if (result.size == 3) {
-                            val payload = result[1]
-                            val decodedPayload = String(Base64.decode(payload, Base64.DEFAULT))
+                    val result = it.jwsResult.split(".")
+                    if (result.size == 3) {
+                        val payload = result[1]
+                        val decodedPayload = String(Base64.decode(payload, Base64.DEFAULT))
 //                            val returnedPayload = Json { ignoreUnknownKeys = true }.decodeFromString<JwtResult>(decodedPayload)
 //                            val returnedPayload = Gson().fromJson(decodedPayload, JwtResult::class.java)
 //                        val returnedPayload = Json { ignoreUnknownKeys = true }.decodeFromString(JwtResult.serializer(), decodedPayload)
 
-                            //"ctsProfileMatch":true
-                            safetyNetAction.description = if (decodedPayload.contains("\"ctsProfileMatch\":true")) getString(R.string.text_true) else getString(R.string.text_false)
+                        //"ctsProfileMatch":true
+                        safetyNetAction.description =
+                            if (decodedPayload.contains("\"ctsProfileMatch\":true")) getString(R.string.text_true) else getString(
+                                R.string.text_false
+                            )
 //                        safetyNetAction.description = if (returnedPayload.ctsProfileMatch) getString(R.string.text_true) else getString(R.string.text_false)
 //                        Log.d("***", decodedPayload)
 //                        }catch (ex : java.lang.Exception){
 //                            actions.remove(safetyNetAction)
 //                            Log.e(TAG, ex.toString())
 //                        }
-                        } else {
-                            actions.remove(safetyNetAction)
-                        }
-
-                    }.addOnFailureListener(requireActivity()) {
-                        safetyNetAction.description = it.message
+                    } else {
                         actions.remove(safetyNetAction)
                     }
+
+                }.addOnFailureListener(requireActivity()) {
+                    safetyNetAction.description = it.message
+                    actions.remove(safetyNetAction)
+                }
         }
 
         //MediaDrm Section
@@ -233,11 +259,11 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
             val supportedCryptoScheme = MediaDrm.getSupportedCryptoSchemes()
 
             actions += GuidedAction.Builder(requireActivity())
-                    .infoOnly(true)
-                    .title("Supported Crypto Schemes")
-                    .description(supportedCryptoScheme.joinToString())
-                    .multilineDescription(true)
-                    .build()
+                .infoOnly(true)
+                .title("Supported Crypto Schemes")
+                .description(supportedCryptoScheme.joinToString())
+                .multilineDescription(true)
+                .build()
         }
 
         cryptoSchemes.forEach { uuid ->
@@ -247,11 +273,11 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 
             if (supported) {
                 actions += GuidedAction.Builder(activity)
-                        .infoOnly(infoOnly)
-                        .subActions(if (infoOnly) null else subActions)
-                        .title(Util.convertCryptoSchemeToStringRes(uuid))
-                        .description(if (supported) R.string.text_supported else R.string.text_not_supported)
-                        .build()
+                    .infoOnly(infoOnly)
+                    .subActions(if (infoOnly) null else subActions)
+                    .title(Util.convertCryptoSchemeToStringRes(uuid))
+                    .description(if (supported) R.string.text_supported else R.string.text_not_supported)
+                    .build()
             }
         }
     }
@@ -291,7 +317,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
     }
 
     private fun convertHdrTypeToString(hdrType: Int) =
-            getString(Util.convertHdrTypeToStringRes(hdrType))
+        getString(Util.convertHdrTypeToStringRes(hdrType))
 
     private fun MediaDrm.getPropertyStringOrNull(key: String): String? {
         return try {
@@ -304,11 +330,13 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
     }
 
 
-    private fun getPrpoerties(mediaDrm: MediaDrm,
-                              drmStringKeys: Array<String> = resources.getStringArray(R.array.mediadrm_string_property_keys),
-                              drmStringNames: Array<String> = resources.getStringArray(R.array.mediadrm_string_property_names)) =
-            drmStringKeys.zip(drmStringNames)
-                    .associate { (key, name) -> key to (name to mediaDrm.getPropertyStringOrNull(key)) }
+    private fun getPrpoerties(
+        mediaDrm: MediaDrm,
+        drmStringKeys: Array<String> = resources.getStringArray(R.array.mediadrm_string_property_keys),
+        drmStringNames: Array<String> = resources.getStringArray(R.array.mediadrm_string_property_names)
+    ) =
+        drmStringKeys.zip(drmStringNames)
+            .associate { (key, name) -> key to (name to mediaDrm.getPropertyStringOrNull(key)) }
 
 
 //    private fun getPrpoerties(mediaDrm: MediaDrm, drmStringKeys: Array<String>, drmStringNames: Array<String>): Map<String, Pair<String, String?>> {
@@ -327,35 +355,37 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 //    }
 
 
-    private fun getSubActions(mediaDrm: MediaDrm,
-                              drmStringKeys: Array<String> = resources.getStringArray(R.array.mediadrm_string_property_keys),
-                              drmStringNames: Array<String> = resources.getStringArray(R.array.mediadrm_string_property_names)): List<GuidedAction> {
+    private fun getSubActions(
+        mediaDrm: MediaDrm,
+        drmStringKeys: Array<String> = resources.getStringArray(R.array.mediadrm_string_property_keys),
+        drmStringNames: Array<String> = resources.getStringArray(R.array.mediadrm_string_property_names)
+    ): List<GuidedAction> {
         val actions = ArrayList<GuidedAction>()
 
         getPrpoerties(mediaDrm, drmStringKeys, drmStringNames).values
-                .filterNot { (_, desc) -> desc.isNullOrEmpty() }
-                .forEach { (name, desc) ->
-                    actions += GuidedAction.Builder(activity)
-                            .infoOnly(true)
-                            .title(name)
-                            .description(desc)
-                            .build()
-                }
+            .filterNot { (_, desc) -> desc.isNullOrEmpty() }
+            .forEach { (name, desc) ->
+                actions += GuidedAction.Builder(activity)
+                    .infoOnly(true)
+                    .title(name)
+                    .description(desc)
+                    .build()
+            }
 
 
         if (VERSION.SDK_INT >= VERSION_CODES.P) {
             try {
                 actions += GuidedAction.Builder(requireActivity())
-                        .infoOnly(true)
-                        .title(R.string.widevine_string_property_name_maxHdcpLevel)
-                        .description(getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel)))
-                        .build()
+                    .infoOnly(true)
+                    .title(R.string.widevine_string_property_name_maxHdcpLevel)
+                    .description(getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel)))
+                    .build()
 
                 actions += GuidedAction.Builder(requireActivity())
-                        .infoOnly(true)
-                        .title(R.string.widevine_string_property_name_hdcpLevel)
-                        .description(getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel)))
-                        .build()
+                    .infoOnly(true)
+                    .title(R.string.widevine_string_property_name_hdcpLevel)
+                    .description(getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel)))
+                    .build()
 
             } catch (ignored: Exception) {
             }
@@ -372,8 +402,15 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 //    getSubActions(mediaDrm, resources.getStringArray(R.array.mediadrm_string_property_keys), resources.getStringArray(R.array.mediadrm_string_property_names))
 
     private fun getWidevineSubActions(widevineDrm: MediaDrm) =
-            getSubActions(widevineDrm, resources.getStringArray(R.array.mediadrm_string_property_keys) + resources.getStringArray(R.array.widevine_string_property_keys),
-                    resources.getStringArray(R.array.mediadrm_string_property_names) + resources.getStringArray(R.array.widevine_string_property_names))
+        getSubActions(
+            widevineDrm,
+            resources.getStringArray(R.array.mediadrm_string_property_keys) + resources.getStringArray(
+                R.array.widevine_string_property_keys
+            ),
+            resources.getStringArray(R.array.mediadrm_string_property_names) + resources.getStringArray(
+                R.array.widevine_string_property_names
+            )
+        )
 
     companion object {
         @JvmStatic
