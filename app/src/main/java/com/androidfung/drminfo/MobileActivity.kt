@@ -1,11 +1,11 @@
 package com.androidfung.drminfo
 
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.Keep
@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
 import com.androidfung.drminfo.ui.mobile.*
 import com.google.android.gms.ads.*
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -100,6 +101,23 @@ class MobileActivity : AppCompatActivity() {
             loadAdMobBannerAd(it, bannerAdHolder)
         }
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        return when (item.itemId) {
+            R.id.license -> {
+                startActivity(Intent(this, OssLicensesMenuActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun loadAdMobBannerAd(adView: AdView, bannerAdHolder: ViewGroup? = null) {
