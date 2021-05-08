@@ -365,9 +365,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 
             } catch (e: Exception) {
                 Log.e(TAG, e.toString())
-
             }
-
         }
 
         return actions

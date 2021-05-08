@@ -14,9 +14,10 @@ class TvActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (null == savedInstanceState) {
+        savedInstanceState?.let {
             GuidedStepSupportFragment.addAsRoot(this, InfoStepFragment(), android.R.id.content)
         }
+
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
     }
