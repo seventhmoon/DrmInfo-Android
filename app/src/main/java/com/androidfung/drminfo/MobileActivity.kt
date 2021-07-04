@@ -47,11 +47,11 @@ class MobileActivity : AppCompatActivity() {
 
                     this.setOnScrollChangeListener { _, _, _, _, _ ->
                         val infoHeadline = findViewById<TextView>(R.id.tv_info_headline)
-                        if (infoHeadline.getLocalVisibleRect(bound)) {
-                            toolbar?.subtitle = null
-                        } else {
-                            toolbar?.subtitle = "${Build.MANUFACTURER} ${Build.MODEL}"
-                        }
+                        val infoHeadlineVisible = infoHeadline.getLocalVisibleRect(bound)
+                        toolbar?.subtitle =
+                            if (infoHeadlineVisible) null
+                            else "${Build.MANUFACTURER} ${Build.MODEL}"
+
                     }
                 }
         }
@@ -76,13 +76,14 @@ class MobileActivity : AppCompatActivity() {
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         // Firebase Remote Config
-        val remoteConfig = Firebase.remoteConfig
-        val configSettings = remoteConfigSettings {
-            minimumFetchIntervalInSeconds = 3600
+        val remoteConfig = Firebase.remoteConfig.apply {
+            val configSettings = remoteConfigSettings {
+                minimumFetchIntervalInSeconds = 3600
+            }
+            setConfigSettingsAsync(configSettings)
+            setDefaultsAsync(R.xml.remote_config_defaults)
+            fetchAndActivate()
         }
-        remoteConfig.setConfigSettingsAsync(configSettings)
-        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
-        remoteConfig.fetchAndActivate()
 
         val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
         val adView = findViewById<AdView>(R.id.adView)

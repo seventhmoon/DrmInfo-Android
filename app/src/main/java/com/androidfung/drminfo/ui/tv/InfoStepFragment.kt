@@ -1,28 +1,29 @@
 package com.androidfung.drminfo.ui.tv
 
+//import android.util.Base64
+//import com.androidfung.drminfo.BuildConfig
+//import com.google.android.gms.safetynet.SafetyNet
+//import java.security.SecureRandom
 import android.annotation.SuppressLint
 import android.media.MediaCodecList
 import android.media.MediaDrm
 import android.media.MediaDrmException
 import android.os.Build
 import android.os.Bundle
-//import android.util.Base64
 import android.view.Display
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.leanback.app.GuidedStepSupportFragment
 import androidx.leanback.widget.GuidanceStylist
 import androidx.leanback.widget.GuidedAction
-//import com.androidfung.drminfo.BuildConfig
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.TvDeviceTypes.getDefaultLauncher
+import com.androidfung.drminfo.TvDeviceTypes.obtainDeviceType
 import com.androidfung.drminfo.Util
-//import com.google.android.gms.safetynet.SafetyNet
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
-//import java.security.SecureRandom
 import java.util.*
 
 open class InfoStepFragment : GuidedStepSupportFragment() {
@@ -42,13 +43,14 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
     override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
 
         // Setup Firebase Remote Config
-        val remoteConfig = Firebase.remoteConfig
-        val configSettings = remoteConfigSettings {
-            minimumFetchIntervalInSeconds = 3600
+        val remoteConfig = Firebase.remoteConfig.apply {
+            val configSettings = remoteConfigSettings {
+                minimumFetchIntervalInSeconds = 3600
+            }
+            setConfigSettingsAsync(configSettings)
+            setDefaultsAsync(R.xml.remote_config_defaults)
+            fetchAndActivate()
         }
-        remoteConfig.setConfigSettingsAsync(configSettings)
-        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
-        remoteConfig.fetchAndActivate()
 
         // info section here
 
@@ -186,13 +188,14 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         }
 
         val packageManager = requireActivity().packageManager
-//        val deviceTypeTextRes = Util.convertTvDeviceTypeToStringRes(packageManager.obtainDeviceType())
-//
-//        actions += GuidedAction.Builder(activity)
-//                .infoOnly(true)
-//                .title(R.string.text_device_type)
-//                .description(deviceTypeTextRes)
-//                .build()
+        val deviceTypeTextRes =
+            Util.convertTvDeviceTypeToStringRes(packageManager.obtainDeviceType())
+
+        actions += GuidedAction.Builder(activity)
+            .infoOnly(true)
+            .title(R.string.text_device_type)
+            .description(deviceTypeTextRes)
+            .build()
 
         val packageName = packageManager.getDefaultLauncher()
         packageName?.let {
@@ -202,6 +205,13 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
                 .description(packageName)
                 .build()
         }
+
+//        val amati = packageManager.hasSystemFeature(FEATURE_AMATI_EXPERIENCE)
+//        actions += GuidedAction.Builder(activity)
+//            .infoOnly(true)
+//            .title(R.string.text_amati_experience)
+//            .description(amati)
+//            .build()
 
 //        val safetyNetEnabled = remoteConfig.getBoolean("safetynet_enabled")
 //
