@@ -1,36 +1,28 @@
-package com.androidfung.drminfo.ui.mobile
+package com.androidfung.drminfo.ui.tv
 
 import android.annotation.SuppressLint
 import android.media.MediaCodecList
 import android.media.MediaDrm
 import android.media.MediaDrmException
 import android.os.Build
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
-import android.util.Base64
-
+//import android.util.Base64
 import android.view.Display
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.hardware.display.DisplayManagerCompat
-import androidx.core.os.BuildCompat
 import androidx.leanback.app.GuidedStepSupportFragment
-import androidx.leanback.widget.GuidanceStylist.Guidance
+import androidx.leanback.widget.GuidanceStylist
 import androidx.leanback.widget.GuidedAction
-import com.androidfung.drminfo.BuildConfig
-import com.androidfung.drminfo.Constants.CLEARKEY_UUID
-import com.androidfung.drminfo.Constants.PLAYREADY_UUID
-import com.androidfung.drminfo.Constants.WIDEVINE_UUID
-import com.androidfung.drminfo.Constants.WISEPLAY_UUID
+//import com.androidfung.drminfo.BuildConfig
+import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.TvDeviceTypes.getDefaultLauncher
 import com.androidfung.drminfo.Util
-import com.androidfung.drminfo.Util.isLowRamDevice
-import com.google.android.gms.safetynet.SafetyNet
+//import com.google.android.gms.safetynet.SafetyNet
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
-import java.security.SecureRandom
+//import java.security.SecureRandom
 import java.util.*
 
 open class InfoStepFragment : GuidedStepSupportFragment() {
@@ -38,12 +30,12 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 //    private lateinit var remoteConfig : FirebaseRemoteConfig
 
 
-    override fun onCreateGuidance(savedInstanceState: Bundle?): Guidance {
+    override fun onCreateGuidance(savedInstanceState: Bundle?): GuidanceStylist.Guidance {
         val title = getString(R.string.app_name)
         val description = "${Build.MANUFACTURER} ${Build.MODEL}"
         val icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_launcher, null)
 
-        return Guidance(title, description, null, icon)
+        return GuidanceStylist.Guidance(title, description, null, icon)
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -84,19 +76,19 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
             .description(Build.DISPLAY)
             .build()
 
-        if (BuildCompat.isAtLeastS()) {
-            actions += GuidedAction.Builder(activity)
-                .infoOnly(true)
-                .title(R.string.text_soc_manufacturer)
-                .description(Build.SOC_MANUFACTURER)
-                .build()
-
-            actions += GuidedAction.Builder(activity)
-                .infoOnly(true)
-                .title(R.string.text_soc_model)
-                .description(Build.SOC_MODEL)
-                .build()
-        }
+//        if (BuildCompat.isAtLeastS()) {
+//            actions += GuidedAction.Builder(activity)
+//                .infoOnly(true)
+//                .title(R.string.text_soc_manufacturer)
+//                .description(Build.SOC_MANUFACTURER)
+//                .build()
+//
+//            actions += GuidedAction.Builder(activity)
+//                .infoOnly(true)
+//                .title(R.string.text_soc_model)
+//                .description(Build.SOC_MODEL)
+//                .build()
+//        }
 
         actions += GuidedAction.Builder(activity)
             .infoOnly(true)
@@ -114,10 +106,10 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         actions += GuidedAction.Builder(activity)
             .infoOnly(true)
             .title(R.string.text_sdk_level)
-            .description(VERSION.SDK_INT.toString())
+            .description(Build.VERSION.SDK_INT.toString())
             .build()
 
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             actions += GuidedAction.Builder(activity)
                 .infoOnly(true)
                 .multilineDescription(true)
@@ -130,14 +122,14 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
             .infoOnly(true)
             .title(R.string.text_low_ram_device)
             .description(
-                if (isLowRamDevice(requireContext())) getString(R.string.text_true) else getString(
+                if (Util.isLowRamDevice(requireContext())) getString(R.string.text_true) else getString(
                     R.string.text_false
                 )
             )
             .build()
 
         // Display Related
-        if (VERSION.SDK_INT >= VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val displayManager = DisplayManagerCompat.getInstance(requireActivity())
             val defaultDisplay = displayManager.getDisplay(Display.DEFAULT_DISPLAY)
 
@@ -167,8 +159,16 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
             }
         }
 
+//        if (BuildCompat.isAtLeastS()) {
+//            actions += GuidedAction.Builder(activity)
+//                .infoOnly(false)
+//                .title(getString(R.string.text_media_performance_class))
+//                .description(Build.VERSION.MEDIA_PERFORMANCE_CLASS.toString())
+//                .build()
+//        }
+
         // Codec Related
-        if (VERSION.SDK_INT >= VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val supportedHardwareAcceleratedDecodeType =
                 MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
                     .filter { codec -> codec.isHardwareAccelerated && !codec.isEncoder }
@@ -203,59 +203,64 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
                 .build()
         }
 
-        val safetyNetEnabled = remoteConfig.getBoolean("safetynet_enabled")
-
-        if (safetyNetEnabled) {
-            val safetyNetAction = GuidedAction.Builder(requireActivity())
-                .infoOnly(true)
-                .title(R.string.text_cts_profile_match)
-                .description("N/A")
-                .build()
-
-            actions += safetyNetAction
-
-            val nonce = byteArrayOf(32)
-            val random = SecureRandom()
-            random.nextBytes(nonce)
-
-            SafetyNet.getClient(requireActivity()).attest(nonce, API_KEY)
-                .addOnSuccessListener(requireActivity()) {
-
-                    val result = it.jwsResult.split(".")
-                    if (result.size == 3) {
-                        val payload = result[1]
-                        val decodedPayload = String(Base64.decode(payload, Base64.DEFAULT))
-//                            val returnedPayload = Json { ignoreUnknownKeys = true }.decodeFromString<JwtResult>(decodedPayload)
-//                            val returnedPayload = Gson().fromJson(decodedPayload, JwtResult::class.java)
-//                        val returnedPayload = Json { ignoreUnknownKeys = true }.decodeFromString(JwtResult.serializer(), decodedPayload)
-
-                        //"ctsProfileMatch":true
-                        safetyNetAction.description =
-                            if (decodedPayload.contains("\"ctsProfileMatch\":true")) getString(R.string.text_true) else getString(
-                                R.string.text_false
-                            )
-//                        safetyNetAction.description = if (returnedPayload.ctsProfileMatch) getString(R.string.text_true) else getString(R.string.text_false)
-//                        Log.d("***", decodedPayload)
-//                        }catch (ex : java.lang.Exception){
-//                            actions.remove(safetyNetAction)
-//                            Log.e(TAG, ex.toString())
-//                        }
-                    } else {
-                        actions.remove(safetyNetAction)
-                    }
-
-                }.addOnFailureListener(requireActivity()) {
-                    safetyNetAction.description = it.message
-                    actions.remove(safetyNetAction)
-                }
-        }
+//        val safetyNetEnabled = remoteConfig.getBoolean("safetynet_enabled")
+//
+//        if (safetyNetEnabled) {
+//            val safetyNetAction = GuidedAction.Builder(requireActivity())
+//                .infoOnly(true)
+//                .title(R.string.text_cts_profile_match)
+//                .description("N/A")
+//                .build()
+//
+//            actions += safetyNetAction
+//
+//            val nonce = byteArrayOf(32)
+//            val random = SecureRandom()
+//            random.nextBytes(nonce)
+//
+//            SafetyNet.getClient(requireActivity()).attest(nonce, API_KEY)
+//                .addOnSuccessListener(requireActivity()) {
+//
+//                    val result = it.jwsResult.split(".")
+//                    if (result.size == 3) {
+//                        val payload = result[1]
+//                        val decodedPayload = String(Base64.decode(payload, Base64.DEFAULT))
+////                            val returnedPayload = Json { ignoreUnknownKeys = true }.decodeFromString<JwtResult>(decodedPayload)
+////                            val returnedPayload = Gson().fromJson(decodedPayload, JwtResult::class.java)
+////                        val returnedPayload = Json { ignoreUnknownKeys = true }.decodeFromString(JwtResult.serializer(), decodedPayload)
+//
+//                        //"ctsProfileMatch":true
+//                        safetyNetAction.description =
+//                            if (decodedPayload.contains("\"ctsProfileMatch\":true")) getString(R.string.text_true) else getString(
+//                                R.string.text_false
+//                            )
+////                        safetyNetAction.description = if (returnedPayload.ctsProfileMatch) getString(R.string.text_true) else getString(R.string.text_false)
+////                        Log.d("***", decodedPayload)
+////                        }catch (ex : java.lang.Exception){
+////                            actions.remove(safetyNetAction)
+////                            Log.e(TAG, ex.toString())
+////                        }
+//                    } else {
+//                        actions.remove(safetyNetAction)
+//                    }
+//
+//                }.addOnFailureListener(requireActivity()) {
+//                    safetyNetAction.description = it.message
+//                    actions.remove(safetyNetAction)
+//                }
+//        }
 
         //MediaDrm Section
 //        val cryptoSchemes = arrayOf(CLEARKEY_UUID, WIDEVINE_UUID, PLAYREADY_UUID, VERIMATRIX_UUID, MARLIN_UUID, PRIMETIME_UUID, WISEPLAY_UUID, DIVX_UUID)
-        val cryptoSchemes = arrayOf(CLEARKEY_UUID, WIDEVINE_UUID, PLAYREADY_UUID, WISEPLAY_UUID)
+        val cryptoSchemes = arrayOf(
+            Constants.CLEARKEY_UUID,
+            Constants.WIDEVINE_UUID,
+            Constants.PLAYREADY_UUID,
+            Constants.WISEPLAY_UUID
+        )
 
         // MediaDrm.getSupportedCryptoSchemes() only available on R+
-        if (VERSION.SDK_INT >= VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val supportedCryptoScheme = MediaDrm.getSupportedCryptoSchemes()
 
             actions += GuidedAction.Builder(requireActivity())
@@ -294,7 +299,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         return try {
             val mediaDrm = MediaDrm(uuid)
             when (uuid) {
-                WIDEVINE_UUID -> getWidevineSubActions(mediaDrm)
+                Constants.WIDEVINE_UUID -> getWidevineSubActions(mediaDrm)
                 else -> getMediaDrmSubActions(mediaDrm)
             }
         } catch (e: MediaDrmException) {
@@ -373,7 +378,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
             }
 
 
-        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             try {
                 actions += GuidedAction.Builder(requireActivity())
                     .infoOnly(true)
@@ -415,6 +420,6 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
     companion object {
         @JvmStatic
         private val TAG: String = InfoStepFragment::class.java.simpleName
-        private const val API_KEY: String = BuildConfig.API_KEY
+//        private const val API_KEY: String = BuildConfig.API_KEY
     }
 }

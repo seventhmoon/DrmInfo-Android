@@ -68,6 +68,8 @@
     <string name="text_release_or_codename">Release or Codename</string>
     <string name="text_low_ram_device">Low RAM Device</string>
     <string name="text_physical_width_and_height">Dimension</string>
+    <string name="text_media_performance_class">Media Performance Class</string>
+    <string name="title_activity_compose">ComposeActivity</string>
 
 
     <!--    val hdrMap = mapOf<Int, String>(HDR_TYPE_DOLBY_VISION to "Dolby Vision", HDR_TYPE_HDR10 to "HDR 10", HDR_TYPE_HDR10_PLUS to "HDR 10+", HDR_TYPE_HLG to "HLG")-->

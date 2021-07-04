@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.leanback.app.GuidedStepSupportFragment
-import com.androidfung.drminfo.ui.mobile.InfoStepFragment
+import com.androidfung.drminfo.ui.tv.InfoStepFragment
 import com.google.firebase.analytics.FirebaseAnalytics
 
 @Keep
