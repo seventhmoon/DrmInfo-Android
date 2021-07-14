@@ -22,5 +22,5 @@ object Constants {
     @JvmField
     val FAIRPLAY_UUID = UUID(-0x6b317904f800b0bdL, -0x52476c2d0569735eL)
     @JvmField
-    val WISEPLAY_UUID = UUID(0x3d5e6d359b9a41e8L, -0x47bc22c3918d3bd4L)
+    val WISEPLAY_UUID = UUID(0X3D5E6D359B9A41E8L, -0x47bc22c3918d3bd4L)
 }
