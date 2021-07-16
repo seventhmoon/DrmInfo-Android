@@ -1,25 +1,24 @@
 package com.androidfung.drminfo
 
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.WindowCompat
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
 import com.androidfung.drminfo.ui.mobile.*
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -33,6 +32,7 @@ class MobileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_mobile)
         binding.lifecycleOwner = this
@@ -101,14 +101,23 @@ class MobileActivity : AppCompatActivity() {
             loadAdMobBannerAd(it, bannerAdHolder)
         }
 
-//            if (bannerAdHolder != null && adView != null) {
-//                MobileAds.initialize(this) {}
-//                loadAdMobBannerAd(adView, bannerAdHolder)
-//            }
-//        } else {
-//            Log.d(TAG, "Ad Disabled")
-//        }
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        return when (item.itemId) {
+            R.id.license -> {
+                startActivity(Intent(this, OssLicensesMenuActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun loadAdMobBannerAd(adView: AdView, bannerAdHolder: ViewGroup? = null) {
@@ -120,9 +129,9 @@ class MobileActivity : AppCompatActivity() {
                 adView.visibility = View.VISIBLE
             }
 
-            override fun onAdFailedToLoad(errorCode: Int) {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
                 // Code to be executed when an ad request fails.
-                Log.i("Ads", "onAdFailedToLoad")
+                Log.i("Ads", "onAdFailedToLoad: ${adError.message}")
                 bannerAdHolder?.visibility = View.GONE
                 adView.visibility = View.GONE
             }
@@ -131,11 +140,6 @@ class MobileActivity : AppCompatActivity() {
                 // Code to be executed when an ad opens an overlay that
                 // covers the screen.
                 Log.i("Ads", "onAdOpened")
-            }
-
-            override fun onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-                Log.i("Ads", "onAdLeftApplication")
             }
 
             override fun onAdClosed() {

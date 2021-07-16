@@ -5,6 +5,7 @@ plugins {
     id 'com.google.android.gms.strict-version-matcher-plugin'
     id 'com.google.firebase.crashlytics'
     id 'com.google.firebase.firebase-perf'
+    id 'com.google.android.gms.oss-licenses-plugin'
 }
 
 android {
@@ -15,8 +16,8 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 326
-        versionName '1.1.7.210423'
+        versionCode 330
+        versionName '1.1.7.210508'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -84,7 +85,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation "androidx.activity:activity-ktx:1.2.2"
+    implementation "androidx.activity:activity-ktx:1.2.3"
     implementation "androidx.annotation:annotation:1.2.0"
     implementation "androidx.appcompat:appcompat:1.2.0"
     implementation "androidx.appcompat:appcompat-resources:1.2.0"
@@ -93,7 +94,8 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:2.0.4"
     implementation "androidx.collection:collection-ktx:1.1.0"
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
-    implementation "androidx.core:core-ktx:1.5.0-rc01"
+    implementation "androidx.core:core-ktx:1.5.0-rc02"
+
     implementation "androidx.fragment:fragment-ktx:1.3.3"
     implementation "androidx.leanback:leanback:1.1.0-rc01"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
@@ -104,10 +106,11 @@ dependencies {
     implementation "androidx.vectordrawable:vectordrawable:1.1.0"
 
     implementation "com.google.android:flexbox:1.1.1"
-    implementation "com.google.android.material:material:1.3.0"
+    implementation "com.google.android.material:material:1.4.0-beta01"
+    implementation "com.google.android.gms:play-services-oss-licenses:17.0.0"
     implementation "com.google.android.gms:play-services-safetynet:17.0.0"
 
-    implementation "com.google.firebase:firebase-ads:20.0.0"
+    implementation "com.google.firebase:firebase-ads:20.1.0"
     implementation "com.google.firebase:firebase-analytics-ktx:18.0.3"
     implementation "com.google.firebase:firebase-crashlytics-ktx:17.4.1"
     implementation "com.google.firebase:firebase-perf-ktx:19.1.1"

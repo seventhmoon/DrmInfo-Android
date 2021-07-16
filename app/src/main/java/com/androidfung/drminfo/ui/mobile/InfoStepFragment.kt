@@ -23,7 +23,6 @@ import com.androidfung.drminfo.Constants.PLAYREADY_UUID
 import com.androidfung.drminfo.Constants.WIDEVINE_UUID
 import com.androidfung.drminfo.Constants.WISEPLAY_UUID
 import com.androidfung.drminfo.R
-import com.androidfung.drminfo.TvDeviceTypes.getDefaultLauncher
 import com.androidfung.drminfo.Util
 import com.androidfung.drminfo.Util.getDefaultLauncher
 import com.androidfung.drminfo.Util.isLowRamDevice
@@ -368,7 +367,6 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
                 Log.e(TAG, e.toString())
 
             }
-
         }
 
         return actions
