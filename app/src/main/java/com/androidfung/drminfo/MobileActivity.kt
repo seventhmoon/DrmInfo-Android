@@ -60,7 +60,6 @@ class MobileActivity : AppCompatActivity() {
                 }
         }
 
-
         val infoViewModel: InfoViewModel by viewModels()
         infoViewModel.getProperties().observe(this, Observer(binding::setInfoProperties))
 
