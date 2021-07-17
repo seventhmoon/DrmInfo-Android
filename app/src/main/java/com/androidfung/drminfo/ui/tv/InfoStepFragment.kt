@@ -1,9 +1,5 @@
 package com.androidfung.drminfo.ui.tv
 
-//import android.util.Base64
-//import com.androidfung.drminfo.BuildConfig
-//import com.google.android.gms.safetynet.SafetyNet
-//import java.security.SecureRandom
 import android.annotation.SuppressLint
 import android.media.MediaCodecList
 import android.media.MediaDrm
