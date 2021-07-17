@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.SavedStateHandle
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
-import com.androidfung.drminfo.Util
 
 class WidevineViewModel(application: Application, state: SavedStateHandle) : MediaDrmViewModel(application, state) {
 

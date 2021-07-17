@@ -158,12 +158,13 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
         }
 
 //        if (BuildCompat.isAtLeastS()) {
-//            actions += GuidedAction.Builder(activity)
-//                .infoOnly(false)
-//                .title(getString(R.string.text_media_performance_class))
-//                .description(Build.VERSION.MEDIA_PERFORMANCE_CLASS.toString())
-//                .build()
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            actions += GuidedAction.Builder(activity)
+                .infoOnly(false)
+                .title(getString(R.string.text_media_performance_class))
+                .description(Build.VERSION.MEDIA_PERFORMANCE_CLASS.toString())
+                .build()
+        }
 
         // Codec Related
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

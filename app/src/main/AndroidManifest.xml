@@ -44,17 +44,17 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:targetApi="lollipop">
-        <activity
-            android:name=".ComposeActivity"
-            android:exported="true"
-            android:label="@string/title_activity_compose"
-            android:theme="@style/AppTheme.NoActionBar">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
+        <!--        <activity-->
+        <!--            android:name=".ComposeActivity"-->
+        <!--            android:exported="true"-->
+        <!--            android:label="@string/title_activity_compose"-->
+        <!--            android:theme="@style/AppTheme.NoActionBar">-->
+        <!--            &lt;!&ndash;            <intent-filter>&ndash;&gt;-->
+        <!--            &lt;!&ndash;                <action android:name="android.intent.action.MAIN" />&ndash;&gt;-->
 
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
-        </activity>
+        <!--            &lt;!&ndash;                <category android:name="android.intent.category.LAUNCHER" />&ndash;&gt;-->
+        <!--            &lt;!&ndash;            </intent-filter>&ndash;&gt;-->
+        <!--        </activity>-->
 
         <uses-library
             android:name="org.apache.http.legacy"

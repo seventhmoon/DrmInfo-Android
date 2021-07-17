@@ -33,7 +33,7 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
         }
 
         if (VERSION.SDK_INT >= VERSION_CODES.M) {
-            map["securityPatch"] = Build.VERSION.SECURITY_PATCH
+            map["securityPatch"] = VERSION.SECURITY_PATCH
 
             // Display Related
             val displayManager = DisplayManagerCompat.getInstance(getApplication())
@@ -60,14 +60,14 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
         }
 
         if (VERSION.SDK_INT >= VERSION_CODES.R) {
-            map["releaseOrCodename"] = Build.VERSION.RELEASE_OR_CODENAME
+            map["releaseOrCodename"] = VERSION.RELEASE_OR_CODENAME
         }
 
 //        if (BuildCompat.isAtLeastS()) {
         if (VERSION.SDK_INT >= VERSION_CODES.S) {
             map["socManufacturer"] = Build.SOC_MANUFACTURER
             map["socModel"] = Build.SOC_MODEL
-            map["mediaPerformanceClass"] = Build.VERSION.MEDIA_PERFORMANCE_CLASS
+            map["mediaPerformanceClass"] = VERSION.MEDIA_PERFORMANCE_CLASS
         }
 
         it.value = map
