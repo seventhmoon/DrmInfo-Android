@@ -64,10 +64,11 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
         }
 
 //        if (BuildCompat.isAtLeastS()) {
-//            map["socManufacturer"] = Build.SOC_MANUFACTURER
-//            map["socModel"] = Build.SOC_MODEL
-//            map["mediaPerformanceClass"] = Build.VERSION.MEDIA_PERFORMANCE_CLASS
-//        }
+        if (VERSION.SDK_INT >= VERSION_CODES.S) {
+            map["socManufacturer"] = Build.SOC_MANUFACTURER
+            map["socModel"] = Build.SOC_MODEL
+            map["mediaPerformanceClass"] = Build.VERSION.MEDIA_PERFORMANCE_CLASS
+        }
 
         it.value = map
     }

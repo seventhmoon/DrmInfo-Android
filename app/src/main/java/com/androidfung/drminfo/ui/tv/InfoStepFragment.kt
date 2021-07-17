@@ -21,9 +21,9 @@ import com.androidfung.drminfo.R
 import com.androidfung.drminfo.TvDeviceTypes.getDefaultLauncher
 import com.androidfung.drminfo.TvDeviceTypes.obtainDeviceType
 import com.androidfung.drminfo.Util
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.remoteconfig.ktx.remoteConfig
-import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+//import com.google.firebase.ktx.Firebase
+//import com.google.firebase.remoteconfig.ktx.remoteConfig
+//import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import java.util.*
 
 open class InfoStepFragment : GuidedStepSupportFragment() {
@@ -43,14 +43,14 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
     override fun onCreateActions(actions: MutableList<GuidedAction>, savedInstanceState: Bundle?) {
 
         // Setup Firebase Remote Config
-        val remoteConfig = Firebase.remoteConfig.apply {
-            val configSettings = remoteConfigSettings {
-                minimumFetchIntervalInSeconds = 3600
-            }
-            setConfigSettingsAsync(configSettings)
-            setDefaultsAsync(R.xml.remote_config_defaults)
-            fetchAndActivate()
-        }
+//        val remoteConfig = Firebase.remoteConfig.apply {
+//            val configSettings = remoteConfigSettings {
+//                minimumFetchIntervalInSeconds = 3600
+//            }
+//            setConfigSettingsAsync(configSettings)
+//            setDefaultsAsync(R.xml.remote_config_defaults)
+//            fetchAndActivate()
+//        }
 
         // info section here
 
@@ -78,19 +78,19 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
             .description(Build.DISPLAY)
             .build()
 
-//        if (BuildCompat.isAtLeastS()) {
-//            actions += GuidedAction.Builder(activity)
-//                .infoOnly(true)
-//                .title(R.string.text_soc_manufacturer)
-//                .description(Build.SOC_MANUFACTURER)
-//                .build()
-//
-//            actions += GuidedAction.Builder(activity)
-//                .infoOnly(true)
-//                .title(R.string.text_soc_model)
-//                .description(Build.SOC_MODEL)
-//                .build()
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            actions += GuidedAction.Builder(activity)
+                .infoOnly(true)
+                .title(R.string.text_soc_manufacturer)
+                .description(Build.SOC_MANUFACTURER)
+                .build()
+
+            actions += GuidedAction.Builder(activity)
+                .infoOnly(true)
+                .title(R.string.text_soc_model)
+                .description(Build.SOC_MODEL)
+                .build()
+        }
 
         actions += GuidedAction.Builder(activity)
             .infoOnly(true)

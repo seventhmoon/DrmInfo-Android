@@ -17,10 +17,14 @@ import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
 import com.androidfung.drminfo.ui.mobile.*
 import com.google.android.gms.ads.*
+import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.remoteconfig.ktx.remoteConfig
-import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
+
+//import com.google.firebase.ktx.Firebase
+//import com.google.firebase.remoteconfig.ktx.remoteConfig
+//import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 
 @Keep
 class MobileActivity : AppCompatActivity() {
@@ -75,15 +79,21 @@ class MobileActivity : AppCompatActivity() {
         // Firebase Analytics
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
-        // Firebase Remote Config
-        val remoteConfig = Firebase.remoteConfig.apply {
-            val configSettings = remoteConfigSettings {
-                minimumFetchIntervalInSeconds = 3600
-            }
-            setConfigSettingsAsync(configSettings)
-            setDefaultsAsync(R.xml.remote_config_defaults)
-            fetchAndActivate()
-        }
+//        // Firebase Remote Config
+//        val remoteConfig = Firebase.remoteConfig.apply {
+//            val configSettings = remoteConfigSettings {
+//                minimumFetchIntervalInSeconds = 3600
+//            }
+//            setConfigSettingsAsync(configSettings)
+//            setDefaultsAsync(R.xml.remote_config_defaults)
+//            fetchAndActivate()
+//        }
+
+        FirebaseApp.initializeApp(this)
+        val firebaseAppCheck = FirebaseAppCheck.getInstance()
+        firebaseAppCheck.installAppCheckProviderFactory(
+            SafetyNetAppCheckProviderFactory.getInstance()
+        )
 
         val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
         val adView = findViewById<AdView>(R.id.adView)
