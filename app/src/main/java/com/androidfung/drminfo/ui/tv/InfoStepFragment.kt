@@ -157,7 +157,6 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
             }
         }
 
-//        if (BuildCompat.isAtLeastS()) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             actions += GuidedAction.Builder(activity)
                 .infoOnly(false)

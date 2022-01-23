@@ -63,7 +63,6 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
             map["releaseOrCodename"] = VERSION.RELEASE_OR_CODENAME
         }
 
-//        if (BuildCompat.isAtLeastS()) {
         if (VERSION.SDK_INT >= VERSION_CODES.S) {
             map["socManufacturer"] = Build.SOC_MANUFACTURER
             map["socModel"] = Build.SOC_MODEL

@@ -114,5 +114,4 @@ object Util {
         val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         return ActivityManagerCompat.isLowRamDevice(am)
     }
-
 }
