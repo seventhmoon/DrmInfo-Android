@@ -16,12 +16,12 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 361
+        versionCode 362
         versionName '1.1.9.220123'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
-        resConfig "en"
+        resConfigs 'en'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -73,13 +73,7 @@ android {
         kotlinCompilerVersion kotlin_version
     }
 
-    lintOptions {
-        abortOnError false
-        textReport true
-        textOutput 'stdout'
-        checkReleaseBuilds false
-    }
-//    composeOptions {
+    //    composeOptions {
 //        kotlinCompilerExtensionVersion compose_version
 //        kotlinCompilerVersion '1.5.21'
 //    }
@@ -87,6 +81,12 @@ android {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
+    }
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+        textOutput file('stdout')
+        textReport true
     }
 }
 
