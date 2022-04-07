@@ -16,8 +16,8 @@ import androidx.core.view.DisplayCompat
 import java.util.*
 
 object Util {
-    const val DISPLAY_SIZE_4K_WIDTH = 3840
-    const val DISPLAY_SIZE_4K_HEIGHT = 2160
+    private const val DISPLAY_SIZE_4K_WIDTH = 3840
+    private const val DISPLAY_SIZE_4K_HEIGHT = 2160
 
     @JvmStatic
     @StringRes

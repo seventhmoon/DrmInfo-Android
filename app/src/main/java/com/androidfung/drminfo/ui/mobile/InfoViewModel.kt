@@ -66,7 +66,9 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
         if (VERSION.SDK_INT >= VERSION_CODES.S) {
             map["socManufacturer"] = Build.SOC_MANUFACTURER
             map["socModel"] = Build.SOC_MODEL
-            map["mediaPerformanceClass"] = VERSION.MEDIA_PERFORMANCE_CLASS
+
+            val mediaPrefClass = VERSION.MEDIA_PERFORMANCE_CLASS
+            if (mediaPrefClass > 0) map["mediaPerformanceClass"] = mediaPrefClass.toString()
         }
 
         it.value = map

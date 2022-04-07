@@ -208,6 +208,24 @@
             tools:text="1" />
 
         <TextView
+            android:id="@+id/tv_label_media_perf_class"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/listitem_padding"
+            android:text="@string/text_media_performance_class"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["mediaPerformanceClass"])}' />
+
+        <TextView
+            android:id="@+id/tv_value_media_perf_class"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{infoProperties["mediaPerformanceClass"]}'
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["mediaPerformanceClass"])}'
+            tools:text="31" />
+
+        <TextView
             android:id="@+id/tv_label_abis"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -26,6 +26,11 @@
     <string name="widevine_bytearray_property_key_provisioningServiceCertificate" translatable="false">provisioningServiceCertificate</string>
     <string name="widevine_bytearray_property_name_provisioningServiceCertificate">Provisioning Service Certificate</string>
 
+    <string name="widevine_string_property_key_resourceRatingTier" translatable="false">resourceRatingTier</string>
+    <string name="widevine_string_property_key_oemCryptoBuildInformation" translatable="false">oemCryptoBuildInformation</string>
+    <string name="widevine_string_property_name_resourceRatingTier" translatable="false">Resource Rating Tier</string>
+    <string name="widevine_string_property_name_oemCryptoBuildInformation" translatable="false">OEM Crypto Build</string>
+
     <string-array name="widevine_string_property_keys" tools:ignore="InconsistentArrays">
         <item>@string/widevine_string_property_key_securityLevel</item>
         <item>@string/widevine_string_property_key_systemId</item>
@@ -34,6 +39,8 @@
         <item>@string/widevine_string_property_key_maxNumberOfSessions</item>
         <item>@string/widevine_string_property_key_numberOfOpenSessions</item>
         <item>@string/widevine_string_property_key_oemCryptoApiVersion</item>
+        <item>@string/widevine_string_property_key_resourceRatingTier</item>
+        <item>@string/widevine_string_property_key_oemCryptoBuildInformation</item>
     </string-array>
 
     <string-array name="widevine_string_property_names" tools:ignore="InconsistentArrays">
@@ -44,5 +51,7 @@
         <item>@string/widevine_string_property_name_maxNumberOfSessions</item>
         <item>@string/widevine_string_property_name_numberOfOpenSessions</item>
         <item>@string/widevine_string_property_name_oemCryptoApiVersion</item>
+        <item>@string/widevine_string_property_name_resourceRatingTier</item>
+        <item>@string/widevine_string_property_name_oemCryptoBuildInformation</item>
     </string-array>
 </resources>

@@ -13,7 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.window.layout.WindowInfoTracker
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
 import com.androidfung.drminfo.ui.mobile.*
 import com.google.android.gms.ads.*
@@ -21,6 +25,9 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 //import com.google.firebase.ktx.Firebase
 //import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -102,6 +109,17 @@ class MobileActivity : AppCompatActivity() {
             loadAdMobBannerAd(it, bannerAdHolder)
         }
 
+        // Create a new coroutine since repeatOnLifecycle is a suspend function
+        lifecycleScope.launch(Dispatchers.Main) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                WindowInfoTracker.getOrCreate(this@MobileActivity)
+                    .windowLayoutInfo(this@MobileActivity)
+                    .collect {
+                        //todo
+                        Log.d("***", it.displayFeatures.joinToString())
+                    }
+            }
+        }
     }
 
     private fun loadAdMobBannerAd(adView: AdView, bannerAdHolder: ViewGroup? = null) {
@@ -140,6 +158,11 @@ class MobileActivity : AppCompatActivity() {
         }
 
         adView.loadAd(AdRequest.Builder().build())
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+//            val granted = PermissionChecker.checkSelfPermission(this, READ_PHONE_STATE) == PermissionChecker.PERMISSION_GRANTED
+//            Log.d("***", "granted: $granted")
+//        }
     }
 
     companion object {

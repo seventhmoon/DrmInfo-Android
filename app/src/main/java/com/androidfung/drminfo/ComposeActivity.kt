@@ -20,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.hardware.display.DisplayManagerCompat
 import com.androidfung.drminfo.Util.convertHdrTypeToStringRes
-import com.androidfung.drminfo.ui.theme.DrmInfoAndroidTheme
 import java.text.DecimalFormat
 
 //val fontFamily = FontFamily(
@@ -36,7 +35,7 @@ class ComposeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            DrmInfoAndroidTheme {
+            MaterialTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
 //                    Greeting("Android")
@@ -57,18 +56,19 @@ class ComposeActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
+//
+//@Composable
+//fun Greeting(name: String) {
+//    Text(text = "Hello $name!")
+//}
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    DrmInfoAndroidTheme {
-        Greeting("Android")
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    DrmInfoAndroidTheme {
+//        Greeting("Android")
+//    }
+//}
 
 @Preview(showBackground = true)
 @Composable
