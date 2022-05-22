@@ -71,6 +71,8 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
             if (mediaPrefClass > 0) map["mediaPerformanceClass"] = mediaPrefClass.toString()
         }
 
+
+
         it.value = map
     }
 

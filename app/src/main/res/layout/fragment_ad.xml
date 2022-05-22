@@ -18,7 +18,7 @@
     android:minHeight="@dimen/box_min_height"
     android:visibility="gone"
     app:cardUseCompatPadding="true"
-    app:layout_flexGrow="1">
+    >
 
     <include
         layout="@layout/adview_bannerad" />

@@ -10,16 +10,25 @@
     <!--<dimen name="native_ad_min_height">132dp</dimen>-->
 
     <string name="ad_app_id" translatable="false">ca-app-pub-9890667024752973~1133604110</string>
-    <string name="ad_unit_id_medium_rect" translatable="false">ca-app-pub-9890667024752973/2293431713</string>
+
+    <string name="ad_unit_id_250x250" translatable="false">ca-app-pub-9890667024752973/6567469046</string>
+
+    <string name="ad_unit_id_300x250" translatable="false">ca-app-pub-9890667024752973/2293431713</string>
 
     <!-- BILLBOARD -->
-    <string name="ad_unit_id_billboard" translatable="false">ca-app-pub-9890667024752973/9262313550</string>
+    <string name="ad_unit_id_970x90" translatable="false">ca-app-pub-9890667024752973/9262313550</string>
 
     <!-- 336x280 -->
     <string name="ad_unit_id_336x280" translatable="false">ca-app-pub-9890667024752973/3782756164</string>
 
     <!-- 300x600 -->
     <string name="ad_unit_id_300x600" translatable="false">ca-app-pub-9890667024752973/7367612109</string>
+
+    <!-- 160x600 -->
+    <string name="ad_unit_id_160x600" translatable="false">ca-app-pub-9890667024752973/3793730579</string>
+
+    <!-- 300x900 -->
+    <string name="ad_unit_id_300x900" translatable="false">ca-app-pub-9890667024752973/7276484471</string>
 
     <!-- app open -->
     <string name="ad_unit_id_appopen" translatable="false">ca-app-pub-9890667024752973/6583648089</string>
@@ -30,8 +39,13 @@
     <dimen name="native_ad_min_height">250dp</dimen>
 
 
+    <string name="adsize_small_rect" translatable="false">250x250</string>
     <string name="adsize_medium_rect" translatable="false">300x250</string>
     <string name="adsize_large_rect" translatable="false">336x280</string>
-    <string name="adsize" translatable="false">@string/adsize_medium_rect</string>
-    <string name="ad_unit_id" translatable="false">@string/ad_unit_id_medium_rect</string>
+    <string name="adsize_160x600" translatable="false">160x600</string>
+    <string name="adsize_300x600" translatable="false">300x600</string>
+    <string name="adsize_300x900" translatable="false">300x900</string>
+
+    <string name="adsize" translatable="false">@string/adsize_small_rect</string>
+    <string name="ad_unit_id" translatable="false">@string/ad_unit_id_250x250</string>
 </resources>

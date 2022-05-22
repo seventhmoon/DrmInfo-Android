@@ -33,7 +33,6 @@
         android:visibility="@{Util.goneIfNullOrEmpty(properties)}"
         app:cardUseCompatPadding="true"
         app:contentPadding="@dimen/card_padding"
-        app:layout_flexGrow="1"
         tools:context=".MobileActivity">
 
 

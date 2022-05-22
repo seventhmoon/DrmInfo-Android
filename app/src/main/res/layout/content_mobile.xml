@@ -6,7 +6,9 @@
     tools:context=".MobileActivity">
 
     <data>
+
         <import type="android.view.View" />
+
         <import type="android.os.Build" />
 
         <variable
@@ -29,7 +31,9 @@
             name="wiseplayProperties"
             type="androidx.databinding.ObservableMap&lt;String, Object&gt;" />
 
-        <variable name="handler" type="com.androidfung.drminfo.ui.mobile.MyHandlers"/>
+        <variable
+            name="handler"
+            type="com.androidfung.drminfo.ui.mobile.MyHandlers" />
 
     </data>
 
@@ -41,48 +45,126 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:ignore="PrivateResource">
 
-        <com.google.android.flexbox.FlexboxLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:descendantFocusability="blocksDescendants"
             android:animateLayoutChanges="true"
-            android:paddingBottom="16dp"
-            app:alignItems="stretch"
-            app:flexWrap="wrap"
-            app:justifyContent="center">
+            android:descendantFocusability="blocksDescendants"
+            android:paddingBottom="16dp">
 
             <include
+                android:id="@+id/container_info"
                 layout="@layout/fragment_info"
-                bind:infoProperties="@{infoProperties}"
-                bind:handler="@{handler}"/>
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                bind:handler="@{handler}"
+                bind:infoProperties="@{infoProperties}" />
 
             <include
+                android:id="@+id/container_clearkey"
                 layout="@layout/fragment_mediadrm"
-                bind:properties="@{clearkeyProperties}"
-                bind:handler="@{handler}" />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/container_info"
+                bind:handler="@{handler}"
+                bind:properties="@{clearkeyProperties}" />
 
             <include
+                android:id="@+id/container_widevine"
                 layout="@layout/fragment_widevine"
-                bind:properties="@{widevineProperties}"
-                bind:handler="@{handler}" />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/container_clearkey"
+                bind:handler="@{handler}"
+                bind:properties="@{widevineProperties}" />
 
             <include
+                android:id="@+id/container_playready"
                 layout="@layout/fragment_mediadrm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/container_widevine"
                 bind:handler="@{handler}"
                 bind:properties="@{playreadyProperties}" />
 
             <include
+                android:id="@+id/container_wiseplay"
                 layout="@layout/fragment_mediadrm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/container_playready"
                 bind:handler="@{handler}"
                 bind:properties="@{wiseplayProperties}" />
 
             <include
-                layout="@layout/fragment_ad"/>
+                android:id="@+id/container_ad"
+                layout="@layout/fragment_ad"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/container_wiseplay" />
 
-        </com.google.android.flexbox.FlexboxLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--        -->
+        <!--        <com.google.android.flexbox.FlexboxLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+        <!--            android:layout_marginTop="@dimen/activity_vertical_margin"-->
+        <!--            android:layout_marginEnd="@dimen/activity_horizontal_margin"-->
+        <!--            android:layout_marginBottom="@dimen/activity_vertical_margin"-->
+        <!--            android:descendantFocusability="blocksDescendants"-->
+        <!--            android:animateLayoutChanges="true"-->
+        <!--            android:paddingBottom="16dp"-->
+        <!--            app:alignItems="stretch"-->
+        <!--            app:flexWrap="wrap"-->
+        <!--            app:justifyContent="center">-->
+
+        <!--            <include-->
+        <!--                layout="@layout/fragment_info"-->
+        <!--                bind:infoProperties="@{infoProperties}"-->
+        <!--                bind:handler="@{handler}"/>-->
+
+        <!--            <include-->
+        <!--                layout="@layout/fragment_mediadrm"-->
+        <!--                bind:properties="@{clearkeyProperties}"-->
+        <!--                bind:handler="@{handler}" />-->
+
+        <!--            <include-->
+        <!--                layout="@layout/fragment_widevine"-->
+        <!--                bind:properties="@{widevineProperties}"-->
+        <!--                bind:handler="@{handler}" />-->
+
+        <!--            <include-->
+        <!--                layout="@layout/fragment_mediadrm"-->
+        <!--                bind:handler="@{handler}"-->
+        <!--                bind:properties="@{playreadyProperties}" />-->
+
+        <!--            <include-->
+        <!--                layout="@layout/fragment_mediadrm"-->
+        <!--                bind:handler="@{handler}"-->
+        <!--                bind:properties="@{wiseplayProperties}" />-->
+
+        <!--            <include-->
+        <!--                layout="@layout/fragment_ad"/>-->
+
+        <!--        </com.google.android.flexbox.FlexboxLayout>-->
     </androidx.core.widget.NestedScrollView>
 </layout>

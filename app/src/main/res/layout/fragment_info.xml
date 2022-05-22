@@ -34,7 +34,6 @@
         app:cardUseCompatPadding="true"
         app:contentPadding="@dimen/card_padding"
         app:layout_constrainedWidth="true"
-        app:layout_flexGrow="1"
         tools:context="com.androidfung.drminfo.MobileActivity">
 
         <!--        Keep using ConstraintLayout or the text will corrupt the width-->

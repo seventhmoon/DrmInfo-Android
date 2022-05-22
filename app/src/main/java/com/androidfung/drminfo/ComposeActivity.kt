@@ -19,6 +19,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.hardware.display.DisplayManagerCompat
+import androidx.window.layout.WindowInfoTracker
+import androidx.window.layout.WindowMetricsCalculator
 import com.androidfung.drminfo.Util.convertHdrTypeToStringRes
 import java.text.DecimalFormat
 
@@ -31,8 +33,18 @@ import java.text.DecimalFormat
 //)
 
 class ComposeActivity : ComponentActivity() {
+    private lateinit var windowInfoTracker: WindowInfoTracker
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        windowInfoTracker = WindowInfoTracker.getOrCreate(this)
+        val windowMetricsCalculator = WindowMetricsCalculator.getOrCreate()
+        val currentWindowMetrics =
+            windowMetricsCalculator.computeCurrentWindowMetrics(this).bounds.flattenToString()
+        val maxWindowMetrics =
+            windowMetricsCalculator.computeMaximumWindowMetrics(this).bounds.flattenToString()
 
         setContent {
             MaterialTheme {
