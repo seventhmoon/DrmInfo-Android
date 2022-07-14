@@ -2,9 +2,9 @@
 
 buildscript {
     ext {
-        compose_version = "1.1.0-rc01"
-        kotlin_version = "1.6.10"
-        lifecycle_version = "2.4.0"
+        compose_version = "1.2.0-rc03"
+        kotlin_version = "1.7.0"
+        lifecycle_version = "2.5.0"
         arch_version = "2.1.0"
     }
 
@@ -14,11 +14,11 @@ buildscript {
     }
 
     dependencies {
-        classpath ('com.android.tools.build:gradle:7.1.0')
-        classpath ("com.google.gms:google-services:4.3.10") // google-services plugin
-        classpath ("com.google.android.gms:strict-version-matcher-plugin:1.2.2")
+        classpath ('com.android.tools.build:gradle:7.2.1')
+        classpath ("com.google.gms:google-services:4.3.13") // google-services plugin
+        classpath ("com.google.android.gms:strict-version-matcher-plugin:1.2.4")
         classpath ("com.google.firebase:perf-plugin:1.4.1")  // Performance Monitoring plugin
-        classpath ("com.google.firebase:firebase-crashlytics-gradle:2.8.1")
+        classpath ("com.google.firebase:firebase-crashlytics-gradle:2.9.1")
         classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
 //        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
     }
