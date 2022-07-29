@@ -17,10 +17,10 @@ import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
 import com.androidfung.drminfo.ui.mobile.*
 import com.google.android.gms.ads.*
-import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.appcheck.FirebaseAppCheck
-import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
+
+//import com.google.firebase.appcheck.FirebaseAppCheck
+//import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 
 //import com.google.firebase.ktx.Firebase
 //import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -88,11 +88,11 @@ class MobileActivity : AppCompatActivity() {
 //            fetchAndActivate()
 //        }
 
-        FirebaseApp.initializeApp(this)
-        val firebaseAppCheck = FirebaseAppCheck.getInstance()
-        firebaseAppCheck.installAppCheckProviderFactory(
-            SafetyNetAppCheckProviderFactory.getInstance()
-        )
+//        FirebaseApp.initializeApp(this)
+//        val firebaseAppCheck = FirebaseAppCheck.getInstance()
+//        firebaseAppCheck.installAppCheckProviderFactory(
+//            SafetyNetAppCheckProviderFactory.getInstance()
+//        )
 
         val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
         val adView = findViewById<AdView>(R.id.adView)
