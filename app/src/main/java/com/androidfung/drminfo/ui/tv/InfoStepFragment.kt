@@ -14,9 +14,9 @@ import androidx.leanback.widget.GuidanceStylist
 import androidx.leanback.widget.GuidedAction
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
-import com.androidfung.drminfo.TvDeviceTypes.getDefaultLauncher
 import com.androidfung.drminfo.TvDeviceTypes.obtainDeviceType
 import com.androidfung.drminfo.Util
+import com.androidfung.drminfo.Util.getDefaultLauncher
 //import com.google.firebase.ktx.Firebase
 //import com.google.firebase.remoteconfig.ktx.remoteConfig
 //import com.google.firebase.remoteconfig.ktx.remoteConfigSettings

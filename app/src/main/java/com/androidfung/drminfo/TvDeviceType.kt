@@ -1,8 +1,8 @@
 package com.androidfung.drminfo
 
-import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.annotation.IntDef
+import com.androidfung.drminfo.Util.getDefaultLauncher
 
 /**
  * @author chofung@google.com
@@ -70,11 +70,14 @@ object TvDeviceTypes {
         }
     }
 
-    fun PackageManager.getDefaultLauncher(): String? {
-        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
-            .addCategory(Intent.CATEGORY_DEFAULT)
-        val resolveInfo = resolveActivity(intent, 0)
-        return resolveInfo?.activityInfo?.packageName
-    }
+//    fun PackageManager.getDefaultLauncher(): String? {
+//        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+//            .addCategory(Intent.CATEGORY_DEFAULT)
+//        val resolveInfo =
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+//                resolveActivity(intent, PackageManager.ResolveInfoFlags.of(0L))
+//            else resolveActivity(intent, 0)
+//        return resolveInfo?.activityInfo?.packageName
+//    }
 
 }

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaDrm
+import android.os.Build
 import android.view.Display
 import android.view.Display.HdrCapabilities
 import android.view.View
@@ -88,13 +89,20 @@ object Util {
 
     @SuppressLint("QueryPermissionsNeeded")
     fun PackageManager.hasPackageInstalled(packageName: String): Boolean {
-        return getInstalledApplications(0).any { it.packageName == packageName }
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getInstalledApplications(PackageManager.ApplicationInfoFlags.of(0L)).any { it.packageName == packageName }
+        } else {
+            getInstalledApplications(0).any { it.packageName == packageName }
+        }
     }
 
     fun PackageManager.getDefaultLauncher(): String? {
         val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
             .addCategory(Intent.CATEGORY_DEFAULT)
-        val resolveInfo = resolveActivity(intent, 0)
+        val resolveInfo =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                resolveActivity(intent, PackageManager.ResolveInfoFlags.of(0L))
+            else resolveActivity(intent, 0)
         return resolveInfo?.activityInfo?.packageName
     }
 
