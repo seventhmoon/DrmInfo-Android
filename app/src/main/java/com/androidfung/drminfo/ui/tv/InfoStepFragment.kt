@@ -132,13 +132,20 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
             val defaultDisplay = displayManager.getDisplay(Display.DEFAULT_DISPLAY)
 
             defaultDisplay?.let { display ->
-                display.supportedModes.firstOrNull()?.let {
+                display.mode?.let {
                     actions += GuidedAction.Builder(activity)
                         .infoOnly(true)
                         .title(R.string.text_physical_width_and_height)
                         .description("${it.physicalWidth}x${it.physicalHeight}")
                         .build()
                 }
+//                display.supportedModes.firstOrNull()?.let {
+//                    actions += GuidedAction.Builder(activity)
+//                        .infoOnly(true)
+//                        .title(R.string.text_physical_width_and_height)
+//                        .description("${it.physicalWidth}x${it.physicalHeight}")
+//                        .build()
+//                }
 
                 val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
 
@@ -425,7 +432,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 
     companion object {
         @JvmStatic
-        private val TAG: String = InfoStepFragment::class.java.simpleName
+        private val TAG: String by lazy { InfoStepFragment::class.java.simpleName }
 //        private const val API_KEY: String = BuildConfig.API_KEY
     }
 }
