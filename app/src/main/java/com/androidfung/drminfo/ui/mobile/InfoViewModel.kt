@@ -2,6 +2,7 @@ package com.androidfung.drminfo.ui.mobile
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.res.Configuration
 import android.media.MediaCodecList
 import android.os.Build
 import android.os.Build.VERSION
@@ -41,6 +42,10 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
                 val supportedRefreshRate = display.supportedModes.map { mode -> mode.refreshRate }.toSortedSet()
                 map["supportedRefreshRate"] = supportedRefreshRate.map(DecimalFormat("0.##")::format)
 
+//                if (VERSION.SDK_INT >= VERSION_CODES.O) {
+//                    map["wideColorGamut"] = display.isWideColorGamut
+//                }
+
                 if (VERSION.SDK_INT >= VERSION_CODES.N) {
                     val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
                     if (supportedHdrType.isNotEmpty()) {
@@ -48,6 +53,10 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
                     }
                 }
             }
+        }
+
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            map["wideColorGamut"] = getApplication<Application?>().resources.configuration.isScreenWideColorGamut
         }
 
         // Codec Related

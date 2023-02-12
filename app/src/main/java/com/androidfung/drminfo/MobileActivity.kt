@@ -77,7 +77,6 @@ class MobileActivity : AppCompatActivity() {
 
         // Firebase Analytics
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
-
 //        // Firebase Remote Config
 //        val remoteConfig = Firebase.remoteConfig.apply {
 //            val configSettings = remoteConfigSettings {

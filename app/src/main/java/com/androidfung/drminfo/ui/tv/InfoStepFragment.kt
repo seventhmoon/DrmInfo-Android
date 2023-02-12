@@ -1,6 +1,7 @@
 package com.androidfung.drminfo.ui.tv
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.media.MediaCodecList
 import android.media.MediaDrm
 import android.media.MediaDrmException
@@ -162,6 +163,14 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
                         .build()
                 }
             }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            actions += GuidedAction.Builder(activity)
+                .infoOnly(false)
+                .title(getString(R.string.text_wide_color))
+                .description(resources.configuration.isScreenWideColorGamut.toString())
+                .build()
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

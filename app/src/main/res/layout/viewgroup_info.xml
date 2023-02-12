@@ -281,6 +281,26 @@
             android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["supportedHdrType"])}'
             tools:text="@string/text_supported" />
 
+<!--        wideColorGamut-->
+
+        <TextView
+            android:id="@+id/tv_label_wide_color_gamut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/listitem_padding"
+            android:text="@string/text_wide_color"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["wideColorGamut"])}' />
+
+        <TextView
+            android:id="@+id/tv_value_wide_color_gamut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{Util.format(infoProperties["wideColorGamut"])}'
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["wideColorGamut"])}'
+            tools:text="@string/text_supported" />
+
         <TextView
             android:id="@+id/tv_label_supported_refresh_rate"
             android:layout_width="wrap_content"

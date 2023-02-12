@@ -16,8 +16,8 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 24
         targetSdkVersion 33
-        versionCode 398
-        versionName '1.1.11.230112'
+        versionCode 403
+        versionName '1.1.11.230208'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -58,19 +58,16 @@ android {
     compileOptions {
         // Flag to enable support for the new language APIs
         coreLibraryDesugaringEnabled false
-        // Sets Java compatibility to Java 8
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
         jvmTarget = '11'
-//        useIR = true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion "1.3.2"
-//        kotlinCompilerVersion kotlin_version
+        kotlinCompilerExtensionVersion "1.4.2"
     }
 
     packagingOptions {
@@ -93,8 +90,8 @@ dependencies {
     implementation "androidx.activity:activity-ktx:1.6.1"
     implementation 'androidx.activity:activity-compose:1.6.1'
     implementation "androidx.annotation:annotation:1.5.0"
-    implementation "androidx.appcompat:appcompat:1.6.0"
-    implementation "androidx.appcompat:appcompat-resources:1.6.0"
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "androidx.appcompat:appcompat-resources:1.6.1"
     implementation "androidx.compose.ui:ui:1.3.3"
     implementation "androidx.compose.material:material:1.3.1"
     implementation "androidx.compose.material3:material3:1.0.1"
@@ -112,19 +109,15 @@ dependencies {
     implementation "androidx.vectordrawable:vectordrawable:1.1.0"
     implementation "androidx.window:window:1.0.0"
 
-//    constraints {
-//        implementation('androidx.work:work-runtime:2.7.1')
-//    }
-
-    implementation "com.google.android.gms:play-services-ads:21.4.0"
-    implementation "com.google.android.material:material:1.7.0"
+    implementation "com.google.android.gms:play-services-ads:21.5.0"
+    implementation "com.google.android.material:material:1.8.0"
 
     implementation "com.google.firebase:firebase-analytics-ktx:21.2.0"
-    implementation "com.google.firebase:firebase-crashlytics-ktx:18.3.2"
-    implementation "com.google.firebase:firebase-perf-ktx:20.3.0"
+    implementation "com.google.firebase:firebase-crashlytics-ktx:18.3.3"
+    implementation "com.google.firebase:firebase-perf-ktx:20.3.1"
 //    implementation "com.google.firebase:firebase-config-ktx:21.0.1"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.21"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.10"
 
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     testImplementation "junit:junit:4.13.2"
@@ -133,7 +126,7 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.3.3"
 
-    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.0"
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.2"
     debugImplementation "androidx.compose.ui:ui-tooling:1.3.3"
 }
 
