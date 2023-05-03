@@ -56,7 +56,7 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
         }
 
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            map["wideColorGamut"] = getApplication<Application?>().resources.configuration.isScreenWideColorGamut
+            map["wideColorGamut"] = getApplication<Application>().resources.configuration.isScreenWideColorGamut
         }
 
         // Codec Related
@@ -72,6 +72,10 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
             map["releaseOrCodename"] = VERSION.RELEASE_OR_CODENAME
         }
 
+        if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU){
+            map["releaseOrPreviewDisplay"] = VERSION.RELEASE_OR_PREVIEW_DISPLAY
+        }
+
         if (VERSION.SDK_INT >= VERSION_CODES.S) {
             map["socManufacturer"] = Build.SOC_MANUFACTURER
             map["socModel"] = Build.SOC_MODEL
@@ -79,8 +83,6 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
             val mediaPrefClass = VERSION.MEDIA_PERFORMANCE_CLASS
             if (mediaPrefClass > 0) map["mediaPerformanceClass"] = mediaPrefClass.toString()
         }
-
-
 
         it.value = map
     }

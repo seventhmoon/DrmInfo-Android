@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--    <string-array name="widevine_string_property_keys" tools:ignore="InconsistentArrays">-->
+    <!--        <item>@string/widevine_string_property_key_securityLevel</item>-->
+    <!--                <item>@string/widevine_string_property_key_systemId</item>-->
+    <!--        &lt;!&ndash;        <item>@string/widevine_string_property_key_maxHdcpLevel</item>&ndash;&gt;-->
+    <!--        &lt;!&ndash;        <item>@string/widevine_string_property_key_hdcpLevel</item>&ndash;&gt;-->
+    <!--                <item>@string/widevine_string_property_key_maxNumberOfSessions</item>-->
+    <!--                <item>@string/widevine_string_property_key_oemCryptoApiVersion</item>-->
+    <!--    </string-array>-->
+
+    <!--    <string-array name="widevine_string_property_names" tools:ignore="InconsistentArrays">-->
+    <!--        <item>@string/widevine_string_property_name_securityLevel</item>-->
+    <!--                <item>@string/widevine_string_property_name_systemId</item>-->
+    <!--        &lt;!&ndash;        <item>@string/widevine_string_property_name_maxHdcpLevel</item>&ndash;&gt;-->
+    <!--        &lt;!&ndash;        <item>@string/widevine_string_property_name_hdcpLevel</item>&ndash;&gt;-->
+    <!--                <item>@string/widevine_string_property_name_maxNumberOfSessions</item>-->
+    <!--                <item>@string/widevine_string_property_name_oemCryptoApiVersion</item>-->
+    <!--    </string-array>-->
+
+    <string name="widevine_string_property_key_CurrentSRMVersion" translatable="false">CurrentSRMVersion</string>
+    <string name="widevine_string_property_key_SRMUpdateSupport" translatable="false">SRMUpdateSupport</string>
+    <string name="widevine_string_property_name_CurrentSRMVersion">SRM Version</string>
+    <string name="widevine_string_property_name_SRMUpdateSupport">SRM Update Support</string>
+
+    <string name="widevine_bytearray_property_key_provisioningServiceCertificate" translatable="false">provisioningServiceCertificate</string>
+    <string name="widevine_bytearray_property_name_provisioningServiceCertificate">Provisioning Service Certificate</string>
+
+    <string name="widevine_string_property_key_resourceRatingTier" translatable="false">resourceRatingTier</string>
+    <string name="widevine_string_property_key_oemCryptoBuildInformation" translatable="false">oemCryptoBuildInformation</string>
+    <string name="widevine_string_property_key_analogOutputCapabilities" translatable="false">analogOutputCapabilities</string>
+
+    <string name="widevine_string_property_name_resourceRatingTier" translatable="false">Resource Rating Tier</string>
+    <string name="widevine_string_property_name_oemCryptoBuildInformation" translatable="false">OEM Crypto Build</string>
+    <string name="widevine_string_property_name_analogOutputCapabilities" translatable="false">Analog Output Capabilities</string>
+
+    <string name="widevine_string_property_key_watermarkingSupport" translatable="false">watermarkingSupport</string>
+    <string name="widevine_string_property_key_provisioningModel" translatable="false">provisioningModel</string>
+
+    <string name="widevine_string_property_name_watermarkingSupport" translatable="false">Watermarking Support</string>
+    <string name="widevine_string_property_name_provisioningModel" translatable="false">Provisioning Model</string>
+
+    <string-array name="widevine_string_property_keys" tools:ignore="InconsistentArrays">
+        <item>@string/widevine_string_property_key_securityLevel</item>
+        <item>@string/widevine_string_property_key_systemId</item>
+        <!--        <item>@string/widevine_string_property_key_maxHdcpLevel</item>-->
+        <!--        <item>@string/widevine_string_property_key_hdcpLevel</item>-->
+        <item>@string/widevine_string_property_key_maxNumberOfSessions</item>
+        <item>@string/widevine_string_property_key_numberOfOpenSessions</item>
+        <item>@string/widevine_string_property_key_oemCryptoApiVersion</item>
+        <item>@string/widevine_string_property_key_resourceRatingTier</item>
+        <item>@string/widevine_string_property_key_oemCryptoBuildInformation</item>
+        <item>@string/widevine_string_property_key_analogOutputCapabilities</item>
+        <item>@string/widevine_string_property_key_watermarkingSupport</item>
+        <item>@string/widevine_string_property_key_provisioningModel</item>
+    </string-array>
+
+    <string-array name="widevine_string_property_names" tools:ignore="InconsistentArrays">
+        <item>@string/widevine_string_property_name_securityLevel</item>
+        <item>@string/widevine_string_property_name_systemId</item>
+        <!--        <item>@string/widevine_string_property_name_maxHdcpLevel</item>-->
+        <!--        <item>@string/widevine_string_property_name_hdcpLevel</item>-->
+        <item>@string/widevine_string_property_name_maxNumberOfSessions</item>
+        <item>@string/widevine_string_property_name_numberOfOpenSessions</item>
+        <item>@string/widevine_string_property_name_oemCryptoApiVersion</item>
+        <item>@string/widevine_string_property_name_resourceRatingTier</item>
+        <item>@string/widevine_string_property_name_watermarkingSupport</item>
+        <item>@string/widevine_string_property_name_provisioningModel</item>
+    </string-array>
+</resources>
