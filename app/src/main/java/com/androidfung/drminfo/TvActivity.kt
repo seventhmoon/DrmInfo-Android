@@ -23,11 +23,6 @@ class TvActivity : AppCompatActivity() {
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
-//        FirebaseApp.initializeApp(this)
-//        val firebaseAppCheck = FirebaseAppCheck.getInstance()
-//        firebaseAppCheck.installAppCheckProviderFactory(
-//            SafetyNetAppCheckProviderFactory.getInstance()
-//        )
     }
 
     companion object {

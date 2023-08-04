@@ -148,7 +148,9 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 //                        .build()
 //                }
 
-                val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
+//                val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
+                val supportedHdrType =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) display.mode.supportedHdrTypes else display.hdrCapabilities.supportedHdrTypes
 
                 if (supportedHdrType.isNotEmpty()) {
                     actions += GuidedAction.Builder(activity)

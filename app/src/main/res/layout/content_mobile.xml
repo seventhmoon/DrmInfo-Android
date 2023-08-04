@@ -56,25 +56,40 @@
             android:descendantFocusability="blocksDescendants"
             android:paddingBottom="16dp">
 
+            <androidx.constraintlayout.helper.widget.Flow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="container_info,container_clearkey,container_playready,container_widevine,container_wiseplay,container_ad"
+                app:flow_firstVerticalStyle="spread"
+                app:flow_horizontalAlign="start"
+                app:flow_horizontalBias="0"
+                app:flow_horizontalStyle="packed"
+                app:flow_maxElementsWrap="@integer/col_count"
+                app:layout_constraintVertical_chainStyle="spread"
+                app:flow_verticalAlign="top"
+                app:flow_verticalBias="0"
+                app:flow_verticalGap="8dp"
+                app:flow_wrapMode="chain"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <include
                 android:id="@+id/container_info"
                 layout="@layout/fragment_info"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+
+
                 bind:handler="@{handler}"
                 bind:infoProperties="@{infoProperties}" />
+
 
             <include
                 android:id="@+id/container_clearkey"
                 layout="@layout/fragment_mediadrm"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/container_info"
+
+
                 bind:handler="@{handler}"
                 bind:properties="@{clearkeyProperties}" />
 
@@ -83,20 +98,19 @@
                 layout="@layout/fragment_widevine"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/container_clearkey"
+
+
                 bind:handler="@{handler}"
                 bind:properties="@{widevineProperties}" />
+
 
             <include
                 android:id="@+id/container_playready"
                 layout="@layout/fragment_mediadrm"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/container_widevine"
+
+
                 bind:handler="@{handler}"
                 bind:properties="@{playreadyProperties}" />
 
@@ -105,9 +119,8 @@
                 layout="@layout/fragment_mediadrm"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/container_playready"
+
+
                 bind:handler="@{handler}"
                 bind:properties="@{wiseplayProperties}" />
 
@@ -115,10 +128,7 @@
                 android:id="@+id/container_ad"
                 layout="@layout/fragment_ad"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/container_wiseplay" />
+                android:layout_height="wrap_content" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

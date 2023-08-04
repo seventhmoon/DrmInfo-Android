@@ -9,23 +9,21 @@ plugins {
 }
 
 android {
-    compileSdk 33
-    buildToolsVersion '33.0.1'
+    namespace 'com.androidfung.drminfo'
+    compileSdk 34
 
     defaultConfig {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 24
-        targetSdkVersion 33
-        versionCode 413
-        versionName '1.1.11.230511'
+        targetSdkVersion 34
+        versionCode 421
+        versionName '1.1.13-230804'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
         resConfigs 'en'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-//        buildConfigField("String", "API_KEY", "\"AIzaSyCj2e4iUMxwxqJ8H87-VbcVhD1A0fDbljk\"")
     }
 
     buildTypes {
@@ -67,7 +65,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion "1.4.7"
+        kotlinCompilerExtensionVersion "1.4.8"
     }
 
     packagingOptions {
@@ -81,44 +79,43 @@ android {
         textOutput file('stdout')
         textReport true
     }
-    namespace 'com.androidfung.drminfo'
+
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation platform('com.google.firebase:firebase-bom:32.0.0')
+    implementation platform('com.google.firebase:firebase-bom:32.2.2')
 
-    implementation "androidx.activity:activity-ktx:1.7.1"
-    implementation 'androidx.activity:activity-compose:1.7.1'
+    implementation "androidx.activity:activity-ktx:1.7.2"
+    implementation 'androidx.activity:activity-compose:1.7.2'
     implementation "androidx.annotation:annotation:1.6.0"
     implementation "androidx.appcompat:appcompat:1.6.1"
     implementation "androidx.appcompat:appcompat-resources:1.6.1"
     implementation "androidx.compose.ui:ui:1.4.3"
     implementation "androidx.compose.material:material:1.4.3"
-    implementation "androidx.compose.material3:material3:1.1.0"
+    implementation "androidx.compose.material3:material3:1.1.1"
     implementation "androidx.compose.ui:ui-tooling-preview:1.4.3"
     implementation "androidx.collection:collection-ktx:1.2.0"
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
     implementation "androidx.core:core-ktx:1.10.1"
-    implementation "androidx.fragment:fragment-ktx:1.5.7"
+    implementation "androidx.fragment:fragment-ktx:1.6.1"
     implementation "androidx.leanback:leanback:1.1.0-rc02"
     implementation "androidx.lifecycle:lifecycle-common-java8:2.6.1"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
     implementation "androidx.transition:transition:1.4.1"
     implementation "androidx.vectordrawable:vectordrawable:1.1.0"
-    implementation "androidx.window:window:1.0.0"
+    implementation "androidx.window:window:1.1.0"
 
-    implementation "com.google.android.gms:play-services-ads:22.0.0"
+    implementation "com.google.android.gms:play-services-ads:22.2.0"
     implementation "com.google.android.material:material:1.9.0"
 
     implementation "com.google.firebase:firebase-analytics-ktx"
     implementation "com.google.firebase:firebase-crashlytics-ktx"
     implementation "com.google.firebase:firebase-perf-ktx"
-//    implementation "com.google.firebase:firebase-config-ktx:21.0.1"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.21"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
 
     testImplementation "androidx.arch.core:core-testing:2.2.0"
     testImplementation "junit:junit:4.13.2"

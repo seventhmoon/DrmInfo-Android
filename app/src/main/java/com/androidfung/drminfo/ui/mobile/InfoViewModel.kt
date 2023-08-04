@@ -47,9 +47,12 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
 //                }
 
                 if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                    val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
+
+                    val supportedHdrType =
+                        if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) display.mode.supportedHdrTypes else display.hdrCapabilities.supportedHdrTypes
                     if (supportedHdrType.isNotEmpty()) {
-                        map["supportedHdrType"] = supportedHdrType.map(this::convertHdrTypeToString).sorted()
+                        map["supportedHdrType"] =
+                            supportedHdrType.map(this::convertHdrTypeToString).sorted()
                     }
                 }
             }

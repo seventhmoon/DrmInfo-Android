@@ -19,13 +19,6 @@ import com.androidfung.drminfo.ui.mobile.*
 import com.google.android.gms.ads.*
 import com.google.firebase.analytics.FirebaseAnalytics
 
-//import com.google.firebase.appcheck.FirebaseAppCheck
-//import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
-
-//import com.google.firebase.ktx.Firebase
-//import com.google.firebase.remoteconfig.ktx.remoteConfig
-//import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
-
 @Keep
 class MobileActivity : AppCompatActivity() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
@@ -77,62 +70,18 @@ class MobileActivity : AppCompatActivity() {
 
         // Firebase Analytics
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
-//        // Firebase Remote Config
-//        val remoteConfig = Firebase.remoteConfig.apply {
-//            val configSettings = remoteConfigSettings {
-//                minimumFetchIntervalInSeconds = 3600
-//            }
-//            setConfigSettingsAsync(configSettings)
-//            setDefaultsAsync(R.xml.remote_config_defaults)
-//            fetchAndActivate()
-//        }
-
-//        FirebaseApp.initializeApp(this)
-//        val firebaseAppCheck = FirebaseAppCheck.getInstance()
-//        firebaseAppCheck.installAppCheckProviderFactory(
-//            SafetyNetAppCheckProviderFactory.getInstance()
-//        )
 
         val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
         val adView = findViewById<AdView>(R.id.adView)
 
-//        val adView =  AdView(this)
-//        val adUnitId = getString(R.string.ad_unit_id)
-//        adView.adUnitId= adUnitId
-//        bannerAdHolder.addView(adView)
-
         adView?.let {
             MobileAds.initialize(this) {}
             loadAdMobBannerAd(it, bannerAdHolder)
-//            loadAdMobBannerAd(adView, bannerAdHolder)
         }
 
-        // Create a new coroutine since repeatOnLifecycle is a suspend function
-//        lifecycleScope.launch(Dispatchers.Main) {
-//            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                WindowInfoTracker.getOrCreate(this@MobileActivity)
-//                    .windowLayoutInfo(this@MobileActivity)
-//                    .collect {
-//                        //todo
-//                        Log.d("***", it.displayFeatures.joinToString())
-//                    }
-//            }
-//        }
     }
 
     private fun loadAdMobBannerAd(adView: AdView, bannerAdHolder: ViewGroup? = null) {
-//        bannerAdHolder?.let {
-//
-//            val screenDensity = resources.displayMetrics.density
-////            val adWidth = (bannerAdHolder.measuredWidth / screenDensity).toInt()
-//            val adWidth = resources.displayMetrics.run { widthPixels / density }.toInt() - 32
-//
-//            val adSize = AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(this, adWidth )
-////            val adSize = AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(this,  320)
-//            Log.d(TAG, "adSize screenDensity: $screenDensity, adWidth: $adWidth")
-//            adView.adSize = adSize
-//        }
-
         adView.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
