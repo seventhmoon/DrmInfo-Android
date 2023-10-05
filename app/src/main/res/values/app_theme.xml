@@ -10,9 +10,15 @@
 
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
+
+<!--        &lt;!&ndash; Transparent system bars for edge-to-edge. &ndash;&gt;-->
+<!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
+<!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
+<!--        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>-->
     </style>
 
     <style name="AppTheme.Leanback" parent="Theme.AppCompat.Leanback" />
+
 
 <!--    <style name="AppTheme.Widget.AppCompat.Toolbar.Title" parent="TextAppearance.Material3.ActionBar.Title">-->
 <!--&lt;!&ndash;    <style name="AppTheme.Widget.AppCompat.Toolbar.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">&ndash;&gt;-->
@@ -25,8 +31,8 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.Material3.DynamicColors.DayNight" />
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.Material3.DynamicColors.DayNight" />
+<!--    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.Material3.DynamicColors.DayNight" />-->
+<!--    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.Material3.DynamicColors.DayNight" />-->
 
 <!--    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
 <!--    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->

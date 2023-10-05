@@ -19,7 +19,6 @@ import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
 import com.androidfung.drminfo.ui.mobile.*
 import com.google.android.gms.ads.*
-import com.google.android.material.color.DynamicColors
 import com.google.firebase.analytics.FirebaseAnalytics
 
 @Keep
