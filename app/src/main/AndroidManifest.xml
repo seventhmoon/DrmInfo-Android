@@ -11,7 +11,21 @@
     <uses-feature
         android:name="android.software.leanback"
         android:required="false" />
-
+<!--    <uses-feature-->
+<!--        android:name="android.hardware.type.automotive"-->
+<!--        android:required="false" />-->
+<!--    <uses-feature-->
+<!--        android:name="android.hardware.wifi"-->
+<!--        android:required="false"/>-->
+<!--    <uses-feature-->
+<!--        android:name="android.hardware.screen.portrait"-->
+<!--        android:required="false"/>-->
+<!--    <uses-feature-->
+<!--        android:name="android.hardware.screen.landscape"-->
+<!--        android:required="false"/>-->
+<!--    <meta-data-->
+<!--        android:name="distractionOptimized"-->
+<!--        android:value="true"/>-->
 <!--    <uses-permission android:name="android.permission.WAKE_LOCK" />-->
 
     <queries>
@@ -26,6 +40,7 @@
     </queries>
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:banner="@drawable/leanback_launcher"
         android:fullBackupContent="@xml/backup_descriptor"

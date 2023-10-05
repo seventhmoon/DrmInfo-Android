@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +19,7 @@ import androidx.lifecycle.Observer
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
 import com.androidfung.drminfo.ui.mobile.*
 import com.google.android.gms.ads.*
+import com.google.android.material.color.DynamicColors
 import com.google.firebase.analytics.FirebaseAnalytics
 
 @Keep
@@ -25,6 +28,7 @@ class MobileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMobileBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_mobile)
