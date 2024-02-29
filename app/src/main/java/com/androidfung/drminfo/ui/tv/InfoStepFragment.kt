@@ -149,7 +149,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 //                }
 
 //                val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
-                val supportedHdrType =
+                @Suppress("DEPRECATION") val supportedHdrType =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) display.mode.supportedHdrTypes else display.hdrCapabilities.supportedHdrTypes
 
                 if (supportedHdrType.isNotEmpty()) {

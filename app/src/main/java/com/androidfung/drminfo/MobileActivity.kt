@@ -16,6 +16,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import com.androidfung.drminfo.Util.getQprNumber
 import com.androidfung.drminfo.databinding.ActivityMobileBinding
 import com.androidfung.drminfo.ui.mobile.*
 import com.google.android.gms.ads.*
@@ -82,6 +83,7 @@ class MobileActivity : AppCompatActivity() {
             loadAdMobBannerAd(it, bannerAdHolder)
         }
 
+        Log.d(TAG, "QPR: " + getQprNumber())
     }
 
     private fun loadAdMobBannerAd(adView: AdView, bannerAdHolder: ViewGroup? = null) {

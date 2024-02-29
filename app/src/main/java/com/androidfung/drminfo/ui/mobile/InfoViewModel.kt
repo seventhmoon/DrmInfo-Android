@@ -47,8 +47,7 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
 //                }
 
                 if (VERSION.SDK_INT >= VERSION_CODES.N) {
-
-                    val supportedHdrType =
+                    @Suppress("DEPRECATION") val supportedHdrType =
                         if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) display.mode.supportedHdrTypes else display.hdrCapabilities.supportedHdrTypes
                     if (supportedHdrType.isNotEmpty()) {
                         map["supportedHdrType"] =

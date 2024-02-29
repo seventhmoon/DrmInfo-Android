@@ -122,4 +122,17 @@ object Util {
         val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         return ActivityManagerCompat.isLowRamDevice(am)
     }
+
+
+    fun getQprNumber(): Int {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return 0
+        else {
+            when (Build.ID.substring(1, 2)) {
+                "P", "D" -> return 0
+                "Q" -> return Build.ID.substring(2, 3).toInt()
+            }
+        }
+        return -1
+    }
+
 }
