@@ -27,6 +27,7 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
         val map = ObservableArrayMap<String, Any>()
 
         map["sdkLevel"] = VERSION.SDK_INT
+        map["release"] = VERSION.RELEASE
 
         // Supported Arch
         if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
@@ -48,7 +49,7 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
 
                 if (VERSION.SDK_INT >= VERSION_CODES.N) {
                     @Suppress("DEPRECATION") val supportedHdrType =
-                        if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) display.mode.supportedHdrTypes else display.hdrCapabilities.supportedHdrTypes
+                        if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) display.mode.supportedHdrTypes else display.hdrCapabilities?.supportedHdrTypes ?: intArrayOf()
                     if (supportedHdrType.isNotEmpty()) {
                         map["supportedHdrType"] =
                             supportedHdrType.map(this::convertHdrTypeToString).sorted()
@@ -84,6 +85,10 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
 
             val mediaPrefClass = VERSION.MEDIA_PERFORMANCE_CLASS
             if (mediaPrefClass > 0) map["mediaPerformanceClass"] = mediaPrefClass.toString()
+        }
+
+        if (VERSION.SDK_INT >= VERSION_CODES.BAKLAVA) {
+            map["sdkLevelFull"] = VERSION.SDK_INT_FULL
         }
 
         it.value = map

@@ -8,6 +8,7 @@
     <string name="text_product">Product</string>
     <string name="text_version">Version</string>
     <string name="text_sdk_level">SDK Level</string>
+    <string name="text_sdk_level_full">SDK Level Full</string>
     <string name="text_device_information">Device Information</string>
     <!--    <string name="title_activity_main">MainActivity</string>-->
 

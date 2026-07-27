@@ -188,6 +188,26 @@
             tools:text="1" />
 
         <TextView
+            android:id="@+id/tv_label_sdklevelFull"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/listitem_padding"
+            android:text="@string/text_sdk_level_full"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["sdkLevelFull"])}'/>
+
+        <TextView
+            android:id="@+id/tv_value_sdklevelFull"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:text="@{String.valueOf(Build.VERSION.SDK_INT_FULL)}"
+            android:textAppearance="?attr/textAppearanceBody2"
+            tools:text="1"
+            android:visibility='@{Util.goneIfNullOrEmpty(infoProperties["sdkLevelFull"])}'/>
+
+        <TextView
             android:id="@+id/tv_label_release_or_codename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

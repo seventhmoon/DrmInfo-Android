@@ -19,7 +19,7 @@ class MyMobileAndroidUnitTest {
 
         val scenario = ActivityScenario.launch(MobileActivity::class.java)
         scenario.onActivity {
-            onView(withId(R.id.tv_headline)).check(matches(isDisplayed()))
+            onView(withId(R.id.tv_info_headline)).check(matches(isDisplayed()))
 
         }
 

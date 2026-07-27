@@ -1,7 +1,6 @@
 package com.androidfung.drminfo.ui.tv
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.media.MediaCodecList
 import android.media.MediaDrm
 import android.media.MediaDrmException
@@ -108,6 +107,12 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
             .description(Build.VERSION.SDK_INT.toString())
             .build()
 
+        actions += GuidedAction.Builder(activity)
+            .infoOnly(true)
+            .title(R.string.text_sdk_level_full)
+            .description(Build.VERSION.SDK_INT_FULL.toString())
+            .build()
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             actions += GuidedAction.Builder(activity)
                 .infoOnly(true)
@@ -150,7 +155,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 
 //                val supportedHdrType = display.hdrCapabilities.supportedHdrTypes
                 @Suppress("DEPRECATION") val supportedHdrType =
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) display.mode.supportedHdrTypes else display.hdrCapabilities.supportedHdrTypes
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) display.mode.supportedHdrTypes else display.hdrCapabilities?.supportedHdrTypes ?: intArrayOf()
 
                 if (supportedHdrType.isNotEmpty()) {
                     actions += GuidedAction.Builder(activity)
