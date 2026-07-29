@@ -78,12 +78,12 @@ object Util {
     }
 
     @JvmStatic
-    fun goneIfNullOrEmpty(input: Any?) = when {
-        input is Collection<*> && input.isEmpty() -> View.GONE
-        input is Map<*, *> && input.isEmpty() -> View.GONE
-        input is Array<*> && input.isEmpty() -> View.GONE
-        input is String && input.isBlank() -> View.GONE
-        input == null -> View.GONE
+    fun goneIfNullOrEmpty(input: Any?) = when (input) {
+        is Collection<*> if input.isEmpty() -> View.GONE
+        is Map<*, *> if input.isEmpty() -> View.GONE
+        is Array<*> if input.isEmpty() -> View.GONE
+        is String if input.isBlank() -> View.GONE
+        null -> View.GONE
         else -> View.VISIBLE
     }
 
@@ -125,12 +125,9 @@ object Util {
 
 
     fun getQprNumber(): Int {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return 0
-        else {
-            when (Build.ID.substring(1, 2)) {
-                "P", "D" -> return 0
-                "Q" -> return Build.ID.substring(2, 3).toInt()
-            }
+        when (Build.ID.substring(1, 2)) {
+            "P", "D" -> return 0
+            "Q" -> return Build.ID.substring(2, 3).toInt()
         }
         return -1
     }

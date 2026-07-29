@@ -1,6 +1,7 @@
 plugins {
     alias libs.plugins.android.application
     alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.compose
     alias libs.plugins.kotlin.kapt
     alias libs.plugins.google.gms.google.services
     alias libs.plugins.google.android.gms.strict.version.matcher.plugin
@@ -17,8 +18,8 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 28
         targetSdk = 37
-        versionCode 480
-        versionName '1.1.19-260617'
+        versionCode 482
+        versionName '1.2.0-260727'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -44,7 +45,7 @@ android {
 
     buildFeatures {
         dataBinding true
-        compose false
+        compose true
     }
 
     signingConfigs {
@@ -86,7 +87,17 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation platform(libs.firebase.bom)
-//    implementation platform('androidx.compose:compose-bom:2025.12.01')
+    implementation platform(libs.androidx.compose.bom)
+
+    implementation (libs.androidx.compose.ui)
+    implementation (libs.androidx.compose.ui.graphics)
+    implementation (libs.androidx.compose.ui.tooling.preview)
+    implementation (libs.androidx.compose.material3)
+    implementation (libs.androidx.compose.runtime.livedata)
+    implementation (libs.androidx.activity.compose)
+    implementation (libs.androidx.lifecycle.runtime.compose)
+
+    debugImplementation (libs.androidx.compose.ui.tooling)
 
     implementation (libs.androidx.activity.ktx)
     implementation (libs.androidx.annotation)
@@ -104,7 +115,8 @@ dependencies {
     implementation (libs.androidx.vectordrawable)
     implementation (libs.androidx.window)
 
-    implementation (libs.play.services.ads)
+    // implementation (libs.play.services.ads)
+    implementation (libs.ads.mobile.sdk)
     implementation (libs.material)
     implementation (libs.user.messaging.platform)
 

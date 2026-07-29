@@ -7,6 +7,7 @@ import android.media.MediaDrmException
 import android.os.Build
 import android.os.Bundle
 import android.view.Display
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.leanback.app.GuidedStepSupportFragment
@@ -26,6 +27,20 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
 
 //    private lateinit var remoteConfig : FirebaseRemoteConfig
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (isSubActionsExpanded) {
+                    collapseSubActions()
+                } else {
+                    isEnabled = false
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                    isEnabled = true
+                }
+            }
+        })
+    }
 
     override fun onCreateGuidance(savedInstanceState: Bundle?): GuidanceStylist.Guidance {
         val title = getString(R.string.app_name)
@@ -310,7 +325,7 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
                     .infoOnly(infoOnly)
                     .subActions(if (infoOnly) null else subActions)
                     .title(Util.convertCryptoSchemeToStringRes(uuid))
-                    .description(if (supported) R.string.text_supported else R.string.text_not_supported)
+                    .description(R.string.text_supported)
                     .build()
             }
         }
@@ -343,9 +358,9 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
     private fun isCryptoSchemeSupported(uuid: UUID): Boolean {
         return try {
             MediaDrm.isCryptoSchemeSupported(uuid)
-        } catch (e: RuntimeException) {
+        } catch (_: RuntimeException) {
             false
-        } catch (e: MediaDrmException) {
+        } catch (_: MediaDrmException) {
             false
         }
     }
@@ -356,9 +371,9 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
     private fun MediaDrm.getPropertyStringOrNull(key: String): String? {
         return try {
             this.getPropertyString(key)
-        } catch (e: RuntimeException) {
+        } catch (_: RuntimeException) {
             null
-        } catch (e: MediaDrmException) {
+        } catch (_: MediaDrmException) {
             null
         }
     }
@@ -407,23 +422,20 @@ open class InfoStepFragment : GuidedStepSupportFragment() {
             }
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            try {
-                actions += GuidedAction.Builder(requireActivity())
-                    .infoOnly(true)
-                    .title(R.string.widevine_string_property_name_maxHdcpLevel)
-                    .description(getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel)))
-                    .build()
+        try {
+            actions += GuidedAction.Builder(requireActivity())
+                .infoOnly(true)
+                .title(R.string.widevine_string_property_name_maxHdcpLevel)
+                .description(getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel)))
+                .build()
 
-                actions += GuidedAction.Builder(requireActivity())
-                    .infoOnly(true)
-                    .title(R.string.widevine_string_property_name_hdcpLevel)
-                    .description(getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel)))
-                    .build()
+            actions += GuidedAction.Builder(requireActivity())
+                .infoOnly(true)
+                .title(R.string.widevine_string_property_name_hdcpLevel)
+                .description(getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel)))
+                .build()
 
-            } catch (ignored: Exception) {
-            }
-
+        } catch (_: Exception) {
         }
 
         return actions

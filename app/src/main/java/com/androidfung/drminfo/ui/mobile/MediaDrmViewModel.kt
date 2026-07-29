@@ -29,9 +29,9 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
 
         return try {
             return mediaDrm?.getPropertyString(key)
-        } catch (e: RuntimeException) {
+        } catch (_: RuntimeException) {
             null
-        } catch (e: MediaDrmException) {
+        } catch (_: MediaDrmException) {
             null
         }
     }
@@ -41,13 +41,11 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
             val map = ArrayMap<String, Any>()
             map += stringPropertyKeys.associateWith { key -> getPropertyString(key) }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                map[getString(R.string.mediadrm_key_maxNumberOfSessions)] = mediaDrm.maxSessionCount.toString()
-                map[getString(R.string.mediadrm_key_numberOfOpenSessions)] = mediaDrm.openSessionCount.toString()
+            map[getString(R.string.mediadrm_key_maxNumberOfSessions)] = mediaDrm.maxSessionCount.toString()
+            map[getString(R.string.mediadrm_key_numberOfOpenSessions)] = mediaDrm.openSessionCount.toString()
 
-                map[getString(R.string.mediadrm_key_maxHdcpLevel)] = getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel))
-                map[getString(R.string.mediadrm_key_hdcpLevel)] = getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel))
-            }
+            map[getString(R.string.mediadrm_key_maxHdcpLevel)] = getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel))
+            map[getString(R.string.mediadrm_key_hdcpLevel)] = getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel))
 
             return map
         }
@@ -64,8 +62,8 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
                     map += properties
                 }
             }
-        } catch (ignored: MediaDrmException) {
-        } catch (ignored: RuntimeException) {
+        } catch (_: MediaDrmException) {
+        } catch (_: RuntimeException) {
         }
 
         mutableLiveData.value = map
@@ -76,12 +74,7 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
     }
 
     override fun onCleared() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            mediaDrm?.close()
-        } else {
-            @Suppress("DEPRECATION")
-            mediaDrm?.release()
-        }
+        mediaDrm?.close()
     }
 
 //    private fun AndroidViewModel.getResources() : Resources {
