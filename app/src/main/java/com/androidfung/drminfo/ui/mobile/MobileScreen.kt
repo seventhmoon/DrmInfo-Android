@@ -3,33 +3,27 @@ package com.androidfung.drminfo.ui.mobile
 import android.os.Build
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.key
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -37,12 +31,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.integerResource
@@ -75,7 +72,6 @@ fun MobileScreen(
     val scrollState = rememberScrollState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    // Determine subtitle visibility based on headline visibility / scroll
     val showSubtitle by remember {
         derivedStateOf { scrollState.value > 100 }
     }
@@ -124,6 +120,32 @@ fun MobileScreen(
         ) {
             val columnsCount = integerResource(R.integer.col_count)
 
+            val activeCardEntries = remember(
+                infoProperties,
+                clearkeyProperties,
+                widevineProperties,
+                playreadyProperties,
+                wiseplayProperties
+            ) {
+                buildList<Pair<Int, @Composable () -> Unit>> {
+                    // Pair(estimatedHeightDp, Composable)
+                    add(500 to { InfoCard(properties = infoProperties, modifier = Modifier.fillMaxWidth()) })
+                    if (!clearkeyProperties.isNullOrEmpty()) {
+                        add(160 to { MediaDrmCard(properties = clearkeyProperties, modifier = Modifier.fillMaxWidth()) })
+                    }
+                    if (!widevineProperties.isNullOrEmpty()) {
+                        add(280 to { WidevineCard(properties = widevineProperties, modifier = Modifier.fillMaxWidth()) })
+                    }
+                    if (!playreadyProperties.isNullOrEmpty()) {
+                        add(160 to { MediaDrmCard(properties = playreadyProperties, modifier = Modifier.fillMaxWidth()) })
+                    }
+                    if (!wiseplayProperties.isNullOrEmpty()) {
+                        add(160 to { MediaDrmCard(properties = wiseplayProperties, modifier = Modifier.fillMaxWidth()) })
+                    }
+                    add(280 to { AdCard(modifier = Modifier.fillMaxWidth()) })
+                }
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -135,84 +157,34 @@ fun MobileScreen(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        InfoCard(properties = infoProperties, modifier = Modifier.fillMaxWidth())
-
-                        if (!clearkeyProperties.isNullOrEmpty()) {
-                            MediaDrmCard(properties = clearkeyProperties, modifier = Modifier.fillMaxWidth())
-                        }
-
-                        if (!widevineProperties.isNullOrEmpty()) {
-                            WidevineCard(properties = widevineProperties, modifier = Modifier.fillMaxWidth())
-                        }
-
-                        if (!playreadyProperties.isNullOrEmpty()) {
-                            MediaDrmCard(properties = playreadyProperties, modifier = Modifier.fillMaxWidth())
-                        }
-
-                        if (!wiseplayProperties.isNullOrEmpty()) {
-                            MediaDrmCard(properties = wiseplayProperties, modifier = Modifier.fillMaxWidth())
-                        }
-
-                        AdCard(modifier = Modifier.fillMaxWidth())
+                        activeCardEntries.forEach { (_, cardComposable) -> cardComposable() }
                     }
                 } else {
+                    // Shortest-Column Dynamic Allocation Algorithm
+                    val allocatedColumns = remember(activeCardEntries, columnsCount) {
+                        val cols = List(columnsCount) { mutableListOf<@Composable () -> Unit>() }
+                        val colHeights = IntArray(columnsCount)
+
+                        activeCardEntries.forEach { (heightDp, cardComposable) ->
+                            val shortestCol = colHeights.indices.minByOrNull { colHeights[it] } ?: 0
+                            cols[shortestCol].add(cardComposable)
+                            colHeights[shortestCol] += heightDp
+                        }
+                        cols
+                    }
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        // Column 1
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .widthIn(min = dimensionResource(id = R.dimen.box_min_width)),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            InfoCard(properties = infoProperties, modifier = Modifier.fillMaxWidth())
-
-                            if (!playreadyProperties.isNullOrEmpty()) {
-                                MediaDrmCard(properties = playreadyProperties, modifier = Modifier.fillMaxWidth())
-                            }
-
-                            if (columnsCount == 2) {
-                                if (!wiseplayProperties.isNullOrEmpty()) {
-                                    MediaDrmCard(properties = wiseplayProperties, modifier = Modifier.fillMaxWidth())
-                                }
-                            }
-                        }
-
-                        // Column 2
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .widthIn(min = dimensionResource(id = R.dimen.box_min_width)),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            if (!clearkeyProperties.isNullOrEmpty()) {
-                                MediaDrmCard(properties = clearkeyProperties, modifier = Modifier.fillMaxWidth())
-                            }
-
-                            if (!widevineProperties.isNullOrEmpty()) {
-                                WidevineCard(properties = widevineProperties, modifier = Modifier.fillMaxWidth())
-                            }
-
-                            if (columnsCount == 2) {
-                                AdCard(modifier = Modifier.fillMaxWidth())
-                            } else {
-                                if (!wiseplayProperties.isNullOrEmpty()) {
-                                    MediaDrmCard(properties = wiseplayProperties, modifier = Modifier.fillMaxWidth())
-                                }
-                            }
-                        }
-
-                        // Column 3 (if 3-column layout)
-                        if (columnsCount >= 3) {
+                        allocatedColumns.forEach { colCards ->
                             Column(
                                 modifier = Modifier
                                     .weight(1f)
                                     .widthIn(min = dimensionResource(id = R.dimen.box_min_width)),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                AdCard(modifier = Modifier.fillMaxWidth())
+                                colCards.forEach { cardComposable -> cardComposable() }
                             }
                         }
                     }
@@ -365,18 +337,6 @@ fun MediaDrmCard(
     val descriptionKey = stringResource(id = R.string.mediadrm_string_property_key_description)
     val description = properties[descriptionKey]?.toString().orEmpty()
 
-    val vendorKey = stringResource(id = R.string.mediadrm_string_property_key_vendor)
-    val vendor = properties[vendorKey]?.toString()
-
-    val versionKey = stringResource(id = R.string.mediadrm_string_property_key_version)
-    val version = properties[versionKey]?.toString()
-
-    val maxHdcpKey = stringResource(id = R.string.widevine_string_property_key_maxHdcpLevel)
-    val maxHdcpLevel = properties[maxHdcpKey]?.toString()
-
-    val hdcpKey = stringResource(id = R.string.widevine_string_property_key_hdcpLevel)
-    val hdcpLevel = properties[hdcpKey]?.toString()
-
     OutlinedCard(
         modifier = modifier
     ) {
@@ -390,33 +350,7 @@ fun MediaDrmCard(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            if (!vendor.isNullOrEmpty()) {
-                LabelValueItem(
-                    label = stringResource(id = R.string.mediadrm_string_property_name_vendor),
-                    value = vendor
-                )
-            }
-
-            if (!version.isNullOrEmpty()) {
-                LabelValueItem(
-                    label = stringResource(id = R.string.mediadrm_string_property_name_version),
-                    value = version
-                )
-            }
-
-            if (!maxHdcpLevel.isNullOrEmpty()) {
-                LabelValueItem(
-                    label = stringResource(id = R.string.widevine_string_property_name_maxHdcpLevel),
-                    value = maxHdcpLevel
-                )
-            }
-
-            if (!hdcpLevel.isNullOrEmpty()) {
-                LabelValueItem(
-                    label = stringResource(id = R.string.widevine_string_property_name_hdcpLevel),
-                    value = hdcpLevel
-                )
-            }
+            MediaDrmCardContent(properties = properties)
         }
     }
 }

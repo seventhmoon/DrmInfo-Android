@@ -1,5 +1,6 @@
 package com.androidfung.drminfo.ui.tv
 
+import android.content.Context
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -26,6 +27,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,18 +39,16 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.tv.material3.LocalContentColor
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.ListItem
+import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import androidx.tv.material3.darkColorScheme
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.Util
-import com.androidfung.drminfo.ui.theme.DrmInfoTheme
 import java.util.UUID
 
 data class TvInfoItem(
@@ -121,105 +121,103 @@ fun TvScreen(
                     )
                 }
 
-            // Right Guided Actions Panel with Slide Transition
-            val mainItems = remember(infoProperties, clearkeyProperties, widevineProperties, playreadyProperties, wiseplayProperties) {
-                buildTvInfoItems(
-                    context = context,
-                    infoProperties = infoProperties,
-                    clearkeyProperties = clearkeyProperties,
-                    widevineProperties = widevineProperties,
-                    playreadyProperties = playreadyProperties,
-                    wiseplayProperties = wiseplayProperties
-                )
-            }
+                // Right Guided Actions Panel with Slide Transition
+                val mainItems = remember(infoProperties, clearkeyProperties, widevineProperties, playreadyProperties, wiseplayProperties) {
+                    buildTvInfoItems(
+                        context = context,
+                        clearkeyProperties = clearkeyProperties,
+                        widevineProperties = widevineProperties,
+                        playreadyProperties = playreadyProperties,
+                        wiseplayProperties = wiseplayProperties
+                    )
+                }
 
-            Box(
-                modifier = Modifier
-                    .weight(0.65f)
-                    .fillMaxHeight()
-            ) {
-                AnimatedContent(
-                    targetState = selectedItemWithSubActions,
-                    transitionSpec = {
-                        if (targetState != null) {
-                            // Slide in from right (forward)
-                            slideInHorizontally { width -> width } + fadeIn() togetherWith
-                                    slideOutHorizontally { width -> -width } + fadeOut()
-                        } else {
-                            // Slide in from left (backwards)
-                            slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                                    slideOutHorizontally { width -> width } + fadeOut()
-                        }
-                    },
-                    label = "LeanbackActionsSlideTransition"
-                ) { activeSubItem ->
-                    if (activeSubItem == null) {
-                        // Main Actions List
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            contentPadding = PaddingValues(vertical = 12.dp)
-                        ) {
-                            items(mainItems) { item ->
-                                val hasSubItems = !item.subItems.isNullOrEmpty()
-
-                                ListItem(
-                                    selected = false,
-                                    onClick = {
-                                        if (hasSubItems) {
-                                            selectedItemWithSubActions = item
-                                        }
-                                    },
-                                    headlineContent = {
-                                        Text(
-                                            text = item.title,
-                                            style = MaterialTheme.typography.titleLarge
-                                        )
-                                    },
-                                    supportingContent = {
-                                        Text(
-                                            text = item.description,
-                                            style = MaterialTheme.typography.bodyLarge
-                                        )
-                                    },
-                                    trailingContent = {
-                                        if (hasSubItems) {
-                                            Icon(
-                                                painter = painterResource(id = R.drawable.ic_chevron_right),
-                                                contentDescription = null,
-                                                modifier = Modifier.size(24.dp)
-                                            )
-                                        }
-                                    },
-                                    modifier = Modifier.fillMaxWidth()
-                                )
+                Box(
+                    modifier = Modifier
+                        .weight(0.65f)
+                        .fillMaxHeight()
+                ) {
+                    AnimatedContent(
+                        targetState = selectedItemWithSubActions,
+                        transitionSpec = {
+                            if (targetState != null) {
+                                slideInHorizontally { width -> width } + fadeIn() togetherWith
+                                        slideOutHorizontally { width -> -width } + fadeOut()
+                            } else {
+                                slideInHorizontally { width -> -width } + fadeIn() togetherWith
+                                        slideOutHorizontally { width -> width } + fadeOut()
                             }
-                        }
-                    } else {
-                        // Sub-Actions List (DRM Properties)
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            contentPadding = PaddingValues(vertical = 12.dp)
-                        ) {
-                            items(activeSubItem.subItems ?: emptyList()) { subItem ->
-                                ListItem(
-                                    selected = false,
-                                    onClick = {},
-                                    headlineContent = {
-                                        Text(
-                                            text = subItem.title,
-                                            style = MaterialTheme.typography.titleLarge
-                                        )
-                                    },
-                                    supportingContent = {
-                                        Text(
-                                            text = subItem.description,
-                                            style = MaterialTheme.typography.bodyLarge
-                                        )
-                                    },
-                                    modifier = Modifier.fillMaxWidth()
-                                )
+                        },
+                        label = "LeanbackActionsSlideTransition"
+                    ) { activeSubItem ->
+                        if (activeSubItem == null) {
+                            // Main Actions List
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                contentPadding = PaddingValues(vertical = 12.dp)
+                            ) {
+                                items(mainItems) { item ->
+                                    val hasSubItems = !item.subItems.isNullOrEmpty()
+
+                                    ListItem(
+                                        selected = false,
+                                        onClick = {
+                                            if (hasSubItems) {
+                                                selectedItemWithSubActions = item
+                                            }
+                                        },
+                                        headlineContent = {
+                                            Text(
+                                                text = item.title,
+                                                style = MaterialTheme.typography.titleLarge
+                                            )
+                                        },
+                                        supportingContent = {
+                                            Text(
+                                                text = item.description,
+                                                style = MaterialTheme.typography.bodyLarge
+                                            )
+                                        },
+                                        trailingContent = {
+                                            if (hasSubItems) {
+                                                Icon(
+                                                    painter = painterResource(id = R.drawable.ic_chevron_right),
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(24.dp)
+                                                )
+                                            }
+                                        },
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+                            }
+                        } else {
+                            // Sub-Actions List (DRM Properties)
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                contentPadding = PaddingValues(vertical = 12.dp)
+                            ) {
+                                items(activeSubItem.subItems ?: emptyList()) { subItem ->
+                                    ListItem(
+                                        selected = false,
+                                        onClick = {},
+                                        headlineContent = {
+                                            Text(
+                                                text = subItem.title,
+                                                style = MaterialTheme.typography.titleLarge
+                                            )
+                                        },
+                                        supportingContent = {
+                                            Text(
+                                                text = subItem.description,
+                                                style = MaterialTheme.typography.bodyLarge
+                                            )
+                                        },
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
                             }
                         }
                     }
@@ -228,54 +226,44 @@ fun TvScreen(
         }
     }
 }
-}
 
 private fun buildTvInfoItems(
-    context: android.content.Context,
-    infoProperties: Map<String, Any>?,
+    context: Context,
     clearkeyProperties: Map<String, Any>?,
     widevineProperties: Map<String, Any>?,
     playreadyProperties: Map<String, Any>?,
     wiseplayProperties: Map<String, Any>?
-): List<TvInfoItem> {
-    val items = mutableListOf<TvInfoItem>()
-
-    // System Items
-    items.add(TvInfoItem(context.getString(R.string.text_brand), Build.BRAND))
-    items.add(TvInfoItem(context.getString(R.string.text_product), Build.PRODUCT))
-    items.add(TvInfoItem(context.getString(R.string.text_hardware), Build.HARDWARE))
-    items.add(TvInfoItem(context.getString(R.string.text_display), Build.DISPLAY))
+): List<TvInfoItem> = buildList {
+    add(TvInfoItem(context.getString(R.string.text_brand), Build.BRAND))
+    add(TvInfoItem(context.getString(R.string.text_product), Build.PRODUCT))
+    add(TvInfoItem(context.getString(R.string.text_hardware), Build.HARDWARE))
+    add(TvInfoItem(context.getString(R.string.text_display), Build.DISPLAY))
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        items.add(TvInfoItem(context.getString(R.string.text_soc_manufacturer), Build.SOC_MANUFACTURER))
-        items.add(TvInfoItem(context.getString(R.string.text_soc_model), Build.SOC_MODEL))
+        add(TvInfoItem(context.getString(R.string.text_soc_manufacturer), Build.SOC_MANUFACTURER))
+        add(TvInfoItem(context.getString(R.string.text_soc_model), Build.SOC_MODEL))
     }
 
-    items.add(TvInfoItem(context.getString(R.string.text_type), Build.TYPE))
-    items.add(TvInfoItem(context.getString(R.string.text_fingerprint), Build.FINGERPRINT))
-    items.add(TvInfoItem(context.getString(R.string.text_sdk_level), Build.VERSION.SDK_INT.toString()))
-    items.add(TvInfoItem(context.getString(R.string.text_sdk_level_full), Build.VERSION.SDK_INT_FULL.toString()))
-    items.add(TvInfoItem(context.getString(R.string.text_abi), Build.SUPPORTED_ABIS.joinToString()))
+    add(TvInfoItem(context.getString(R.string.text_type), Build.TYPE))
+    add(TvInfoItem(context.getString(R.string.text_fingerprint), Build.FINGERPRINT))
+    add(TvInfoItem(context.getString(R.string.text_sdk_level), Build.VERSION.SDK_INT.toString()))
+    add(TvInfoItem(context.getString(R.string.text_sdk_level_full), Build.VERSION.SDK_INT_FULL.toString()))
+    add(TvInfoItem(context.getString(R.string.text_abi), Build.SUPPORTED_ABIS.joinToString()))
 
     // DRM Schemes
-    addDrmSchemeItem(context, items, Constants.CLEARKEY_UUID, clearkeyProperties)
-    addDrmSchemeItem(context, items, Constants.WIDEVINE_UUID, widevineProperties)
-    addDrmSchemeItem(context, items, Constants.PLAYREADY_UUID, playreadyProperties)
-    addDrmSchemeItem(context, items, Constants.WISEPLAY_UUID, wiseplayProperties)
-
-    return items
+    addDrmSchemeItem(context, Constants.CLEARKEY_UUID, clearkeyProperties)
+    addDrmSchemeItem(context, Constants.WIDEVINE_UUID, widevineProperties)
+    addDrmSchemeItem(context, Constants.PLAYREADY_UUID, playreadyProperties)
+    addDrmSchemeItem(context, Constants.WISEPLAY_UUID, wiseplayProperties)
 }
 
-private fun addDrmSchemeItem(
-    context: android.content.Context,
-    items: MutableList<TvInfoItem>,
+private fun MutableList<TvInfoItem>.addDrmSchemeItem(
+    context: Context,
     uuid: UUID,
     properties: Map<String, Any>?
 ) {
-    val title = context.getString(Util.convertCryptoSchemeToStringRes(uuid))
-    val isSupported = !properties.isNullOrEmpty()
-
-    if (isSupported) {
+    if (!properties.isNullOrEmpty()) {
+        val title = context.getString(Util.convertCryptoSchemeToStringRes(uuid))
         val subItems = properties.mapNotNull { (key, value) ->
             val valueStr = value.toString()
             if (valueStr.isNotEmpty()) {
@@ -283,7 +271,7 @@ private fun addDrmSchemeItem(
             } else null
         }
 
-        items.add(
+        add(
             TvInfoItem(
                 title = title,
                 description = context.getString(R.string.text_supported),
