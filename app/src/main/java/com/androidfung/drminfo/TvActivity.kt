@@ -1,28 +1,50 @@
 package com.androidfung.drminfo
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.Keep
-import androidx.appcompat.app.AppCompatActivity
-import androidx.leanback.app.GuidedStepSupportFragment
-import com.androidfung.drminfo.ui.tv.InfoStepFragment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import com.androidfung.drminfo.ui.mobile.ClearKeyViewModel
+import com.androidfung.drminfo.ui.mobile.InfoViewModel
+import com.androidfung.drminfo.ui.mobile.PlayreadyViewModel
+import com.androidfung.drminfo.ui.mobile.WidevineViewModel
+import com.androidfung.drminfo.ui.mobile.WiseplayViewModel
+import com.androidfung.drminfo.ui.tv.TvScreen
 import com.google.firebase.analytics.FirebaseAnalytics
 
-//import com.google.firebase.appcheck.FirebaseAppCheck
-//import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
-
 @Keep
-class TvActivity : AppCompatActivity() {
+class TvActivity : ComponentActivity() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (null == savedInstanceState) {
-            GuidedStepSupportFragment.addAsRoot(this, InfoStepFragment(), android.R.id.content)
-        }
-        // Obtain the FirebaseAnalytics instance.
+        val infoViewModel: InfoViewModel by viewModels()
+        val clearKeyViewModel: ClearKeyViewModel by viewModels()
+        val widevineViewModel: WidevineViewModel by viewModels()
+        val playreadyViewModel: PlayreadyViewModel by viewModels()
+        val wiseplayViewModel: WiseplayViewModel by viewModels()
+
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
+        setContent {
+            val infoProperties by infoViewModel.getProperties().observeAsState()
+            val clearkeyProperties by clearKeyViewModel.getProperties().observeAsState()
+            val widevineProperties by widevineViewModel.getProperties().observeAsState()
+            val playreadyProperties by playreadyViewModel.getProperties().observeAsState()
+            val wiseplayProperties by wiseplayViewModel.getProperties().observeAsState()
+
+            TvScreen(
+                infoProperties = infoProperties,
+                clearkeyProperties = clearkeyProperties,
+                widevineProperties = widevineProperties,
+                playreadyProperties = playreadyProperties,
+                wiseplayProperties = wiseplayProperties
+            )
+        }
     }
 
     companion object {

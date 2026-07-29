@@ -5,13 +5,15 @@ import android.media.MediaDrm
 import android.media.MediaDrmException
 import android.os.Build
 import androidx.collection.ArrayMap
-import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.Util
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 
 abstract class MediaDrmViewModel protected constructor(application: Application, private val state: SavedStateHandle) : AndroidViewModel(application) {
@@ -21,8 +23,12 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
         getApplication<Application>().resources.getStringArray(R.array.mediadrm_string_property_keys)
     }
 
-    private val properties: MutableLiveData<ObservableArrayMap<String, Any>> by lazy {
-        MutableLiveData<ObservableArrayMap<String, Any>>().also(::prepareProperties)
+    private val properties: MutableLiveData<ArrayMap<String, Any>> by lazy {
+        MutableLiveData<ArrayMap<String, Any>>().also { liveData ->
+            viewModelScope.launch(Dispatchers.IO) {
+                prepareProperties(liveData)
+            }
+        }
     }
 
     private fun getPropertyString(key: String): String? {
@@ -51,25 +57,25 @@ abstract class MediaDrmViewModel protected constructor(application: Application,
         }
     }
 
-    private fun prepareProperties(mutableLiveData: MutableLiveData<ObservableArrayMap<String, Any>>) {
-        val map = ObservableArrayMap<String, Any>()
+    private fun prepareProperties(mutableLiveData: MutableLiveData<ArrayMap<String, Any>>) {
+        val map = ArrayMap<String, Any>()
 
         try {
             if (MediaDrm.isCryptoSchemeSupported(uuid)) {
                 mediaDrm = MediaDrm(uuid)
-                mediaDrm?.let {
-                    val properties = obtainPropertiesFromMediaDrm(it)
-                    map += properties
+                mediaDrm?.also { drm ->
+                    val props = obtainPropertiesFromMediaDrm(drm)
+                    map.putAll(props as Map<String, Any>)
                 }
             }
         } catch (_: MediaDrmException) {
         } catch (_: RuntimeException) {
         }
 
-        mutableLiveData.value = map
+        mutableLiveData.postValue(map)
     }
 
-    fun getProperties(): LiveData<ObservableArrayMap<String, Any>> {
+    fun getProperties(): LiveData<ArrayMap<String, Any>> {
         return properties
     }
 

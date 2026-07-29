@@ -8,23 +8,30 @@ import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.view.Display.DEFAULT_DISPLAY
+import androidx.collection.ArrayMap
 import androidx.core.hardware.display.DisplayManagerCompat
-import androidx.databinding.ObservableArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.androidfung.drminfo.Util
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
 class InfoViewModel(application: Application, private val state: SavedStateHandle) : AndroidViewModel(application) {
-    private val properties: MutableLiveData<ObservableArrayMap<String, Any>> by lazy {
-        MutableLiveData<ObservableArrayMap<String, Any>>().also(::prepareProperties)
+    private val properties: MutableLiveData<ArrayMap<String, Any>> by lazy {
+        MutableLiveData<ArrayMap<String, Any>>().also { liveData ->
+            viewModelScope.launch(Dispatchers.Default) {
+                prepareProperties(liveData)
+            }
+        }
     }
 
     @SuppressLint("ObsoleteSdkInt")
-    private fun prepareProperties(it: MutableLiveData<ObservableArrayMap<String, Any>>) {
-        val map = ObservableArrayMap<String, Any>()
+    private fun prepareProperties(it: MutableLiveData<ArrayMap<String, Any>>) {
+        val map = ArrayMap<String, Any>()
 
         map["sdkLevel"] = VERSION.SDK_INT
         map["release"] = VERSION.RELEASE
@@ -91,13 +98,13 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
             map["sdkLevelFull"] = VERSION.SDK_INT_FULL
         }
 
-        it.value = map
+        it.postValue(map)
     }
 
     private fun convertHdrTypeToString(hdrType: Int) =
             getApplication<Application>().getString(Util.convertHdrTypeToStringRes(hdrType))
 
-    fun getProperties(): LiveData<ObservableArrayMap<String, Any>> = properties
+    fun getProperties(): LiveData<ArrayMap<String, Any>> = properties
 
 }
 

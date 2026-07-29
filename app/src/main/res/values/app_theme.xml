@@ -16,7 +16,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="AppTheme.Leanback" parent="Theme.AppCompat.Leanback" />
+    <style name="AppTheme.Leanback" parent="AppTheme.NoActionBar" />
 
 
 <!--    <style name="AppTheme.Widget.AppCompat.Toolbar.Title" parent="TextAppearance.Material3.ActionBar.Title">-->

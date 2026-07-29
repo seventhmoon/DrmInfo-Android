@@ -18,8 +18,8 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 28
         targetSdk = 37
-        versionCode 482
-        versionName '1.2.0-260727'
+        versionCode 484
+        versionName '1.2.1-260729'
 
         multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
@@ -31,20 +31,20 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-//            shrinkResources false
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             versionNameSuffix ".debug"
             debuggable true
             minifyEnabled false
-//            shrinkResources false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
     buildFeatures {
-        dataBinding true
+        dataBinding false
         compose true
     }
 
@@ -85,7 +85,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation platform(libs.firebase.bom)
     implementation platform(libs.androidx.compose.bom)
 
@@ -96,8 +95,7 @@ dependencies {
     implementation (libs.androidx.compose.runtime.livedata)
     implementation (libs.androidx.activity.compose)
     implementation (libs.androidx.lifecycle.runtime.compose)
-
-    debugImplementation (libs.androidx.compose.ui.tooling)
+    implementation (libs.androidx.tv.material)
 
     implementation (libs.androidx.activity.ktx)
     implementation (libs.androidx.annotation)
@@ -105,14 +103,8 @@ dependencies {
     implementation (libs.androidx.appcompat.resources)
     implementation (libs.androidx.collection.ktx)
     implementation (libs.androidx.constraintlayout)
-    implementation (libs.androidx.coordinatorlayout)
     implementation (libs.androidx.core.ktx)
-    implementation (libs.androidx.fragment.ktx)
-    //noinspection GradleDependency
-    implementation (libs.androidx.leanback)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
-    implementation (libs.androidx.transition)
-    implementation (libs.androidx.vectordrawable)
     implementation (libs.androidx.window)
 
     // implementation (libs.play.services.ads)
@@ -124,8 +116,6 @@ dependencies {
     implementation (libs.firebase.crashlytics)
     implementation (libs.firebase.perf)
 
-    implementation (libs.kotlin.stdlib)
-
 //    testImplementation composeBom
     testImplementation (libs.androidx.core.testing)
     testImplementation (libs.junit)
@@ -134,8 +124,8 @@ dependencies {
     androidTestImplementation (libs.androidx.junit)
     androidTestImplementation (libs.androidx.espresso.core)
 
+    debugImplementation (libs.androidx.compose.ui.tooling)
     debugImplementation (libs.leakcanary.android)
-    coreLibraryDesugaring (libs.desugar.jdk.libs)
 }
 
 // ADD THIS AT THE BOTTOM
