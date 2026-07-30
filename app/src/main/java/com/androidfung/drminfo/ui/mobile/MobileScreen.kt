@@ -146,46 +146,36 @@ fun MobileScreen(
                 }
             }
 
+            val allocatedColumns = remember(activeCardEntries, columnsCount) {
+                val cols = List(columnsCount) { mutableListOf<@Composable () -> Unit>() }
+                val colHeights = IntArray(columnsCount)
+
+                activeCardEntries.forEach { (heightDp, cardComposable) ->
+                    val shortestCol = colHeights.indices.minByOrNull { colHeights[it] } ?: 0
+                    cols[shortestCol].add(cardComposable)
+                    colHeights[shortestCol] += heightDp
+                }
+                cols
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .widthIn(max = 1200.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (columnsCount <= 1) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        activeCardEntries.forEach { (_, cardComposable) -> cardComposable() }
-                    }
-                } else {
-                    // Shortest-Column Dynamic Allocation Algorithm
-                    val allocatedColumns = remember(activeCardEntries, columnsCount) {
-                        val cols = List(columnsCount) { mutableListOf<@Composable () -> Unit>() }
-                        val colHeights = IntArray(columnsCount)
-
-                        activeCardEntries.forEach { (heightDp, cardComposable) ->
-                            val shortestCol = colHeights.indices.minByOrNull { colHeights[it] } ?: 0
-                            cols[shortestCol].add(cardComposable)
-                            colHeights[shortestCol] += heightDp
-                        }
-                        cols
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        allocatedColumns.forEach { colCards ->
-                            Column(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .widthIn(min = dimensionResource(id = R.dimen.box_min_width)),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                colCards.forEach { cardComposable -> cardComposable() }
-                            }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    allocatedColumns.forEach { colCards ->
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .widthIn(min = dimensionResource(id = R.dimen.box_min_width)),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            colCards.forEach { cardComposable -> cardComposable() }
                         }
                     }
                 }

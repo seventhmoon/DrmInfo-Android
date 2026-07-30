@@ -39,7 +39,7 @@ object TvDeviceTypes {
 
     private const val FEATURE_OPERATOR_TIER = "com.google.android.tv.operator_tier"
     private const val FEATURE_CUSTOM_LAUNCHER = "com.google.android.tv.custom_launcher"
-    private const val FEATIRE_CUSTOM_LAUNCHER_ELIGIBLE =
+    private const val FEATURE_CUSTOM_LAUNCHER_ELIGIBLE =
         "com.google.android.tv.custom_launcher_eligible"
     private const val FEATURE_AMATI_EXPERIENCE = "com.google.android.feature.AMATI_EXPERIENCE"
     private const val FEATURE_AMAZON_FIRE_TV = "amazon.hardware.fire_tv"
@@ -54,7 +54,7 @@ object TvDeviceTypes {
                 when {
                     hasSystemFeature(FEATURE_OPERATOR_TIER) -> {
                         if (hasSystemFeature(FEATURE_CUSTOM_LAUNCHER) ||
-                            hasSystemFeature(FEATIRE_CUSTOM_LAUNCHER_ELIGIBLE)
+                            hasSystemFeature(FEATURE_CUSTOM_LAUNCHER_ELIGIBLE)
                         ) ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER
                         else ANDROID_TV_OPERATOR_DEVICE
                     }
