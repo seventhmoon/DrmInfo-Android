@@ -1,8 +1,6 @@
 package com.androidfung.drminfo.ui.mobile
 
-import android.annotation.SuppressLint
 import android.app.Application
-import android.content.res.Configuration
 import android.media.MediaCodecList
 import android.os.Build
 import android.os.Build.VERSION
@@ -29,70 +27,52 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
         }
     }
 
-    @SuppressLint("ObsoleteSdkInt")
     private fun prepareProperties(it: MutableLiveData<ArrayMap<String, Any>>) {
         val map = ArrayMap<String, Any>()
 
         map["sdkLevel"] = VERSION.SDK_INT
         map["release"] = VERSION.RELEASE
+        map["abis"] = Build.SUPPORTED_ABIS
+        map["securityPatch"] = VERSION.SECURITY_PATCH
 
-        // Supported Arch
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            map["abis"] = Build.SUPPORTED_ABIS
-        }
+        // Display Related
+        val displayManager = DisplayManagerCompat.getInstance(getApplication())
+        displayManager.getDisplay(DEFAULT_DISPLAY)?.also { display ->
+            val supportedRefreshRate = display.supportedModes.map { mode -> mode.refreshRate }.toSortedSet()
+            map["supportedRefreshRate"] = supportedRefreshRate.map(DecimalFormat("0.##")::format)
 
-        if (VERSION.SDK_INT >= VERSION_CODES.M) {
-            map["securityPatch"] = VERSION.SECURITY_PATCH
+            @Suppress("DEPRECATION")
+            val supportedHdrType = if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                display.mode.supportedHdrTypes
+            } else {
+                display.hdrCapabilities?.supportedHdrTypes ?: intArrayOf()
+            }
 
-            // Display Related
-            val displayManager = DisplayManagerCompat.getInstance(getApplication())
-            displayManager.getDisplay(DEFAULT_DISPLAY)?.also { display ->
-                val supportedRefreshRate = display.supportedModes.map { mode -> mode.refreshRate }.toSortedSet()
-                map["supportedRefreshRate"] = supportedRefreshRate.map(DecimalFormat("0.##")::format)
-
-//                if (VERSION.SDK_INT >= VERSION_CODES.O) {
-//                    map["wideColorGamut"] = display.isWideColorGamut
-//                }
-
-                if (VERSION.SDK_INT >= VERSION_CODES.N) {
-                    @Suppress("DEPRECATION") val supportedHdrType =
-                        if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) display.mode.supportedHdrTypes else display.hdrCapabilities?.supportedHdrTypes ?: intArrayOf()
-                    if (supportedHdrType.isNotEmpty()) {
-                        map["supportedHdrType"] =
-                            supportedHdrType.map(this::convertHdrTypeToString).sorted()
-                    }
-                }
+            if (supportedHdrType.isNotEmpty()) {
+                map["supportedHdrType"] = supportedHdrType.map(this::convertHdrTypeToString).sorted()
             }
         }
 
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            map["wideColorGamut"] = getApplication<Application>().resources.configuration.isScreenWideColorGamut
-        }
+        map["wideColorGamut"] = getApplication<Application>().resources.configuration.isScreenWideColorGamut
 
         // Codec Related
-        if (VERSION.SDK_INT >= VERSION_CODES.Q) {
-            map["hardwareAcceleratedType"] =
-                MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
-                    .filter { codec -> codec.isHardwareAccelerated && !codec.isEncoder }
-                    .flatMap { codec -> codec.supportedTypes.asIterable() }
-                    .toSortedSet()
-        }
+        map["hardwareAcceleratedType"] =
+            MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+                .filter { codec -> codec.isHardwareAccelerated && !codec.isEncoder }
+                .flatMap { codec -> codec.supportedTypes.asIterable() }
+                .toSortedSet()
 
-        if (VERSION.SDK_INT >= VERSION_CODES.R) {
-            map["releaseOrCodename"] = VERSION.RELEASE_OR_CODENAME
-        }
+        map["releaseOrCodename"] = VERSION.RELEASE_OR_CODENAME
 
-        if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU){
+        if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
             map["releaseOrPreviewDisplay"] = VERSION.RELEASE_OR_PREVIEW_DISPLAY
         }
 
-        if (VERSION.SDK_INT >= VERSION_CODES.S) {
-            map["socManufacturer"] = Build.SOC_MANUFACTURER
-            map["socModel"] = Build.SOC_MODEL
+        map["socManufacturer"] = Build.SOC_MANUFACTURER
+        map["socModel"] = Build.SOC_MODEL
 
-            val mediaPrefClass = VERSION.MEDIA_PERFORMANCE_CLASS
-            if (mediaPrefClass > 0) map["mediaPerformanceClass"] = mediaPrefClass.toString()
-        }
+        val mediaPrefClass = VERSION.MEDIA_PERFORMANCE_CLASS
+        if (mediaPrefClass > 0) map["mediaPerformanceClass"] = mediaPrefClass.toString()
 
         if (VERSION.SDK_INT >= VERSION_CODES.BAKLAVA) {
             map["sdkLevelFull"] = VERSION.SDK_INT_FULL
@@ -102,11 +82,7 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
     }
 
     private fun convertHdrTypeToString(hdrType: Int) =
-            getApplication<Application>().getString(Util.convertHdrTypeToStringRes(hdrType))
+        getApplication<Application>().getString(Util.convertHdrTypeToStringRes(hdrType))
 
     fun getProperties(): LiveData<ArrayMap<String, Any>> = properties
-
 }
-
-
-

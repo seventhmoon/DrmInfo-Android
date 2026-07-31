@@ -72,6 +72,12 @@
     <string name="text_media_performance_class">Media Performance Class</string>
     <string name="title_activity_compose">ComposeActivity</string>
 
+    <!-- Camera Feature Combination -->
+    <string name="text_camera_feature_combination">Camera Feature Combination</string>
+    <string name="text_camera_count">Total Cameras</string>
+    <string name="text_camera_setup_compat">CameraDeviceSetup Support</string>
+    <string name="text_camera_formats_and_resolutions">Supported Formats &amp; Max Resolutions</string>
+
 
     <!--    val hdrMap = mapOf<Int, String>(HDR_TYPE_DOLBY_VISION to "Dolby Vision", HDR_TYPE_HDR10 to "HDR 10", HDR_TYPE_HDR10_PLUS to "HDR 10+", HDR_TYPE_HLG to "HLG")-->
 

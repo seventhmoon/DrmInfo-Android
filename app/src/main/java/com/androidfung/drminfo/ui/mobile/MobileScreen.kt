@@ -67,7 +67,8 @@ fun MobileScreen(
     clearkeyProperties: Map<String, Any>?,
     widevineProperties: Map<String, Any>?,
     playreadyProperties: Map<String, Any>?,
-    wiseplayProperties: Map<String, Any>?
+    wiseplayProperties: Map<String, Any>?,
+    cameraProperties: Map<String, Any>? = null
 ) {
     val scrollState = rememberScrollState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -125,11 +126,15 @@ fun MobileScreen(
                 clearkeyProperties,
                 widevineProperties,
                 playreadyProperties,
-                wiseplayProperties
+                wiseplayProperties,
+                cameraProperties
             ) {
                 buildList<Pair<Int, @Composable () -> Unit>> {
                     // Pair(estimatedHeightDp, Composable)
                     add(500 to { InfoCard(properties = infoProperties, modifier = Modifier.fillMaxWidth()) })
+                    if (!cameraProperties.isNullOrEmpty()) {
+                        add(200 to { CameraCard(properties = cameraProperties, modifier = Modifier.fillMaxWidth()) })
+                    }
                     if (!clearkeyProperties.isNullOrEmpty()) {
                         add(160 to { MediaDrmCard(properties = clearkeyProperties, modifier = Modifier.fillMaxWidth()) })
                     }
@@ -313,6 +318,53 @@ fun InfoCard(
                 LabelValueItem(
                     label = stringResource(id = R.string.text_supported_refresh_rate),
                     value = Util.format(supportedRefreshRate)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CameraCard(
+    properties: Map<String, Any>,
+    modifier: Modifier = Modifier
+) {
+    OutlinedCard(
+        modifier = modifier
+    ) {
+        Column(
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.card_padding))
+        ) {
+            Text(
+                text = stringResource(id = R.string.text_camera_feature_combination),
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            val cameraCount = properties["cameraCount"]?.toString()
+            if (!cameraCount.isNullOrEmpty()) {
+                LabelValueItem(
+                    label = stringResource(id = R.string.text_camera_count),
+                    value = cameraCount
+                )
+            }
+
+            val cameraDetails = properties["cameraDetails"] as? List<*>
+            if (!cameraDetails.isNullOrEmpty()) {
+                LabelValueItem(
+                    label = stringResource(id = R.string.text_camera_setup_compat),
+                    value = cameraDetails.joinToString("\n")
+                )
+            }
+
+            val formatDetails = properties["formatDetails"] as? List<*>
+            if (!formatDetails.isNullOrEmpty()) {
+                LabelValueItem(
+                    label = stringResource(id = R.string.text_camera_formats_and_resolutions),
+                    value = formatDetails.joinToString("\n\n")
                 )
             }
         }

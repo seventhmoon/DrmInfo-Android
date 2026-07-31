@@ -1,12 +1,11 @@
 package com.androidfung.drminfo
 
-import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -14,15 +13,11 @@ import org.junit.runner.RunWith
 @SmallTest
 class MyMobileAndroidUnitTest {
 
+    @get:Rule
+    val composeTestRule = createAndroidComposeRule<MobileActivity>()
+
     @Test
     fun basicTest() {
-
-        val scenario = ActivityScenario.launch(MobileActivity::class.java)
-        scenario.onActivity {
-            onView(withId(R.id.tv_info_headline)).check(matches(isDisplayed()))
-
-        }
-
-
+        composeTestRule.onNodeWithText("DRM Info").assertIsDisplayed()
     }
 }
