@@ -47,11 +47,11 @@ abstract class MediaDrmViewModel protected constructor(
             getPropertyString(key)?.let { value -> map[key] = value }
         }
 
-        map[resources.getString(R.string.mediadrm_key_maxNumberOfSessions)] = mediaDrm.maxSessionCount.toString()
-        map[resources.getString(R.string.mediadrm_key_numberOfOpenSessions)] = mediaDrm.openSessionCount.toString()
+        map[resources.getString(R.string.mediadrm_key_maxNumberOfSessions)] = mediaDrm.maxSessionCount
+        map[resources.getString(R.string.mediadrm_key_numberOfOpenSessions)] = mediaDrm.openSessionCount
 
-        map[resources.getString(R.string.mediadrm_key_maxHdcpLevel)] = resources.getString(Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel))
-        map[resources.getString(R.string.mediadrm_key_hdcpLevel)] = resources.getString(Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel))
+        map["maxHdcpLevelRes"] = Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel)
+        map["hdcpLevelRes"] = Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel)
 
         return map
     }

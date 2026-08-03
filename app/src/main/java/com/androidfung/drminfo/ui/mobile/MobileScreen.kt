@@ -24,10 +24,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -38,9 +41,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
+import java.text.DecimalFormat
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -65,6 +72,8 @@ data class DrmPropertyState(
     val properties: Map<String, Any>?
 )
 
+val LocalSnackbarHostState = staticCompositionLocalOf<SnackbarHostState> { error("No SnackbarHostState provided") }
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun MobileScreen(
@@ -78,18 +87,21 @@ fun MobileScreen(
 ) {
     val scrollState = rememberScrollState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val showSubtitle by remember {
         derivedStateOf { scrollState.value > 100 }
     }
 
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = MaterialTheme.colorScheme.background,
-        contentWindowInsets = WindowInsets.safeDrawing,
-        topBar = {
+    CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
+        Scaffold(
+            modifier = Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            containerColor = MaterialTheme.colorScheme.background,
+            contentWindowInsets = WindowInsets.safeDrawing,
+            snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+            topBar = {
             TopAppBar(
                 title = {
                     Column {
@@ -197,6 +209,7 @@ fun MobileScreen(
             }
         }
     }
+}
 }
 
 @Composable
@@ -309,10 +322,19 @@ fun InfoCard(
 
             val supportedHdrType = properties?.get("supportedHdrType")
             if (supportedHdrType != null) {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_supported_hdr_types),
-                    value = Util.format(supportedHdrType)
-                )
+                val hdrTypeNames = when (supportedHdrType) {
+                    is Collection<*> -> supportedHdrType.mapNotNull {
+                        (it as? Int)?.let { id -> stringResource(id = Util.convertHdrTypeToStringRes(id)) }
+                    }.sorted()
+                    is IntArray -> supportedHdrType.map { id -> stringResource(id = Util.convertHdrTypeToStringRes(id)) }.sorted()
+                    else -> emptyList()
+                }
+                if (hdrTypeNames.isNotEmpty()) {
+                    LabelValueItem(
+                        label = stringResource(id = R.string.text_supported_hdr_types),
+                        value = Util.format(hdrTypeNames)
+                    )
+                }
             }
 
             val wideColorGamut = properties?.get("wideColorGamut")
@@ -325,9 +347,14 @@ fun InfoCard(
 
             val supportedRefreshRate = properties?.get("supportedRefreshRate")
             if (supportedRefreshRate != null) {
+                val decimalFormat = remember { DecimalFormat("0.##") }
+                val formattedRates = when (supportedRefreshRate) {
+                    is Collection<*> -> supportedRefreshRate.mapNotNull { (it as? Number)?.let { num -> decimalFormat.format(num) } }
+                    else -> listOf(supportedRefreshRate.toString())
+                }
                 LabelValueItem(
                     label = stringResource(id = R.string.text_supported_refresh_rate),
-                    value = Util.format(supportedRefreshRate)
+                    value = Util.format(formattedRates)
                 )
             }
         }
@@ -484,10 +511,12 @@ private fun MediaDrmCardContent(properties: Map<String, Any>) {
     val version = properties[versionKey]?.toString()
 
     val maxHdcpKey = stringResource(id = R.string.widevine_string_property_key_maxHdcpLevel)
-    val maxHdcpLevel = properties[maxHdcpKey]?.toString()
+    val maxHdcpLevelRes = properties["maxHdcpLevelRes"] as? Int
+    val maxHdcpLevel = if (maxHdcpLevelRes != null) stringResource(id = maxHdcpLevelRes) else properties[maxHdcpKey]?.toString()
 
     val hdcpKey = stringResource(id = R.string.widevine_string_property_key_hdcpLevel)
-    val hdcpLevel = properties[hdcpKey]?.toString()
+    val hdcpLevelRes = properties["hdcpLevelRes"] as? Int
+    val hdcpLevel = if (hdcpLevelRes != null) stringResource(id = hdcpLevelRes) else properties[hdcpKey]?.toString()
 
     if (!vendor.isNullOrEmpty()) {
         LabelValueItem(
@@ -526,8 +555,9 @@ fun LabelValueItem(
     modifier: Modifier = Modifier,
     allowCopy: Boolean = false
 ) {
-    val context = LocalContext.current
-    val handler = remember { MyHandlers() }
+    val clipboardManager = LocalClipboardManager.current
+    val snackbarHostState = LocalSnackbarHostState.current
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = modifier
@@ -537,10 +567,10 @@ fun LabelValueItem(
                     Modifier.combinedClickable(
                         onClick = {},
                         onLongClick = {
-                            val dummyView = View(context).apply {
-                                tag = value
+                            clipboardManager.setText(AnnotatedString(value))
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("$label: $value")
                             }
-                            handler.onLongClick(dummyView)
                         }
                     )
                 } else Modifier
@@ -579,45 +609,50 @@ fun AdCard(
                     .padding(dimensionResource(id = R.dimen.card_padding)),
                 contentAlignment = Alignment.Center
             ) {
-                val adWidthDp = if (maxWidth.value > 0) maxWidth.value.toInt() else 300
+                val screenWidthDp = configuration.screenWidthDp
+                val rawWidthDp = if (maxWidth.value > 0) maxWidth.value.toInt() else 300
+                // Clamp safe ad width so it never exceeds available screen width in current orientation
+                val safeAdWidthDp = minOf(rawWidthDp, screenWidthDp)
 
-                key(configuration.orientation, adWidthDp, retryCount) {
-                    AndroidView(
-                        factory = { ctx ->
-                            com.google.android.libraries.ads.mobile.sdk.banner.AdView(ctx).apply {
-                                val adUnitId = ctx.getString(R.string.ad_unit_id)
-                                val adSize = AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(
-                                    ctx,
-                                    adWidthDp
-                                )
-                                val adRequest = BannerAdRequest.Builder(adUnitId, adSize).build()
+                if (safeAdWidthDp > 0) {
+                    key(configuration.orientation, safeAdWidthDp, retryCount) {
+                        AndroidView(
+                            factory = { ctx ->
+                                com.google.android.libraries.ads.mobile.sdk.banner.AdView(ctx).apply {
+                                    val adUnitId = ctx.getString(R.string.ad_unit_id)
+                                    val adSize = AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(
+                                        ctx,
+                                        safeAdWidthDp
+                                    )
+                                    val adRequest = BannerAdRequest.Builder(adUnitId, adSize).build()
 
-                                loadAd(
-                                    adRequest,
-                                    object : AdLoadCallback<BannerAd> {
-                                        override fun onAdLoaded(ad: BannerAd) {
-                                            Log.i("Ads", "BannerAd loaded successfully with width $adWidthDp dp")
-                                            isAdFailedToLoad = false
-                                            retryCount = 0
-                                        }
+                                    loadAd(
+                                        adRequest,
+                                        object : AdLoadCallback<BannerAd> {
+                                            override fun onAdLoaded(ad: BannerAd) {
+                                                Log.i("Ads", "BannerAd loaded successfully with width $safeAdWidthDp dp")
+                                                isAdFailedToLoad = false
+                                                retryCount = 0
+                                            }
 
-                                        override fun onAdFailedToLoad(adError: LoadAdError) {
-                                            Log.w("Ads", "BannerAd failed to load: $adError (retry attempt $retryCount/$maxRetries)")
-                                            if (retryCount < maxRetries) {
-                                                coroutineScope.launch {
-                                                    val delayMs = (5000L * (1 shl retryCount)).coerceAtMost(30000L) // Exponential backoff: 5s, 10s, 20s
-                                                    delay(delayMs.milliseconds)
-                                                    retryCount++
+                                            override fun onAdFailedToLoad(adError: LoadAdError) {
+                                                Log.w("Ads", "BannerAd failed to load: $adError (retry attempt $retryCount/$maxRetries)")
+                                                if (retryCount < maxRetries) {
+                                                    coroutineScope.launch {
+                                                        val delayMs = (5000L * (1 shl retryCount)).coerceAtMost(30000L) // Exponential backoff: 5s, 10s, 20s
+                                                        delay(delayMs.milliseconds)
+                                                        retryCount++
+                                                    }
+                                                } else {
+                                                    isAdFailedToLoad = true
                                                 }
-                                            } else {
-                                                isAdFailedToLoad = true
                                             }
                                         }
-                                    }
-                                )
+                                    )
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }

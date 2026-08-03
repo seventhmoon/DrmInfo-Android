@@ -13,10 +13,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.androidfung.drminfo.Util
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.DecimalFormat
 
 class InfoViewModel(application: Application, private val state: SavedStateHandle) : AndroidViewModel(application) {
     private val properties: MutableLiveData<ArrayMap<String, Any>> by lazy {
@@ -39,7 +37,9 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
         val displayManager = DisplayManagerCompat.getInstance(getApplication())
         displayManager.getDisplay(DEFAULT_DISPLAY)?.also { display ->
             val supportedRefreshRate = display.supportedModes.map { mode -> mode.refreshRate }.toSortedSet()
-            map["supportedRefreshRate"] = supportedRefreshRate.map(DecimalFormat("0.##")::format)
+            if (supportedRefreshRate.isNotEmpty()) {
+                map["supportedRefreshRate"] = supportedRefreshRate
+            }
 
             @Suppress("DEPRECATION")
             val supportedHdrType = if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -49,7 +49,7 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
             }
 
             if (supportedHdrType.isNotEmpty()) {
-                map["supportedHdrType"] = supportedHdrType.map(this::convertHdrTypeToString).sorted()
+                map["supportedHdrType"] = supportedHdrType.toList()
             }
         }
 
@@ -70,7 +70,7 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
         map["socModel"] = Build.SOC_MODEL
 
         if (VERSION.MEDIA_PERFORMANCE_CLASS > 0) {
-            map["mediaPerformanceClass"] = VERSION.MEDIA_PERFORMANCE_CLASS.toString()
+            map["mediaPerformanceClass"] = VERSION.MEDIA_PERFORMANCE_CLASS
         }
 
         if (VERSION.SDK_INT >= VERSION_CODES.BAKLAVA) {
@@ -79,9 +79,6 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
 
         it.postValue(map)
     }
-
-    private fun convertHdrTypeToString(hdrType: Int) =
-        getApplication<Application>().getString(Util.convertHdrTypeToStringRes(hdrType))
 
     fun getProperties(): LiveData<ArrayMap<String, Any>> = properties
 }
