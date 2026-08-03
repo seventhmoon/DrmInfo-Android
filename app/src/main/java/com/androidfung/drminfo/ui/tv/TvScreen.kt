@@ -239,10 +239,8 @@ private fun buildTvInfoItems(
     add(TvInfoItem(context.getString(R.string.text_hardware), Build.HARDWARE))
     add(TvInfoItem(context.getString(R.string.text_display), Build.DISPLAY))
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        add(TvInfoItem(context.getString(R.string.text_soc_manufacturer), Build.SOC_MANUFACTURER))
-        add(TvInfoItem(context.getString(R.string.text_soc_model), Build.SOC_MODEL))
-    }
+    add(TvInfoItem(context.getString(R.string.text_soc_manufacturer), Build.SOC_MANUFACTURER))
+    add(TvInfoItem(context.getString(R.string.text_soc_model), Build.SOC_MODEL))
 
     add(TvInfoItem(context.getString(R.string.text_type), Build.TYPE))
     add(TvInfoItem(context.getString(R.string.text_fingerprint), Build.FINGERPRINT))

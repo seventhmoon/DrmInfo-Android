@@ -32,10 +32,15 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -68,7 +73,8 @@ fun MobileScreen(
     widevineProperties: Map<String, Any>?,
     playreadyProperties: Map<String, Any>?,
     wiseplayProperties: Map<String, Any>?,
-    cameraProperties: Map<String, Any>? = null
+    cameraProperties: Map<String, Any>? = null,
+    isAdsInitialized: Boolean = false
 ) {
     val scrollState = rememberScrollState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -127,14 +133,16 @@ fun MobileScreen(
                 widevineProperties,
                 playreadyProperties,
                 wiseplayProperties,
-                cameraProperties
+                cameraProperties,
+                isAdsInitialized
             ) {
                 buildList<Pair<Int, @Composable () -> Unit>> {
                     // Pair(estimatedHeightDp, Composable)
                     add(500 to { InfoCard(properties = infoProperties, modifier = Modifier.fillMaxWidth()) })
-                    if (!cameraProperties.isNullOrEmpty()) {
-                        add(200 to { CameraCard(properties = cameraProperties, modifier = Modifier.fillMaxWidth()) })
-                    }
+                    // TODO: Reuse CameraCard later
+                    // if (!cameraProperties.isNullOrEmpty()) {
+                    //     add(200 to { CameraCard(properties = cameraProperties, modifier = Modifier.fillMaxWidth()) })
+                    // }
                     if (!clearkeyProperties.isNullOrEmpty()) {
                         add(160 to { MediaDrmCard(properties = clearkeyProperties, modifier = Modifier.fillMaxWidth()) })
                     }
@@ -147,7 +155,9 @@ fun MobileScreen(
                     if (!wiseplayProperties.isNullOrEmpty()) {
                         add(160 to { MediaDrmCard(properties = wiseplayProperties, modifier = Modifier.fillMaxWidth()) })
                     }
-                    add(280 to { AdCard(modifier = Modifier.fillMaxWidth()) })
+                    if (isAdsInitialized) {
+                        add(280 to { AdCard(modifier = Modifier.fillMaxWidth(), isAdsInitialized = isAdsInitialized) })
+                    }
                 }
             }
 
@@ -549,11 +559,17 @@ fun LabelValueItem(
 }
 
 @Composable
-fun AdCard(modifier: Modifier = Modifier) {
+fun AdCard(
+    modifier: Modifier = Modifier,
+    isAdsInitialized: Boolean = true
+) {
     val configuration = LocalConfiguration.current
+    val coroutineScope = rememberCoroutineScope()
     var isAdFailedToLoad by rememberSaveable(configuration.orientation) { mutableStateOf(false) }
+    var retryCount by rememberSaveable(configuration.orientation) { mutableIntStateOf(0) }
+    val maxRetries = 3
 
-    if (!isAdFailedToLoad) {
+    if (!isAdFailedToLoad && isAdsInitialized) {
         OutlinedCard(
             modifier = modifier
         ) {
@@ -565,7 +581,7 @@ fun AdCard(modifier: Modifier = Modifier) {
             ) {
                 val adWidthDp = if (maxWidth.value > 0) maxWidth.value.toInt() else 300
 
-                key(configuration.orientation, adWidthDp) {
+                key(configuration.orientation, adWidthDp, retryCount) {
                     AndroidView(
                         factory = { ctx ->
                             com.google.android.libraries.ads.mobile.sdk.banner.AdView(ctx).apply {
@@ -582,11 +598,20 @@ fun AdCard(modifier: Modifier = Modifier) {
                                         override fun onAdLoaded(ad: BannerAd) {
                                             Log.i("Ads", "BannerAd loaded successfully with width $adWidthDp dp")
                                             isAdFailedToLoad = false
+                                            retryCount = 0
                                         }
 
                                         override fun onAdFailedToLoad(adError: LoadAdError) {
-                                            Log.i("Ads", "BannerAd failed to load: $adError")
-                                            isAdFailedToLoad = true
+                                            Log.w("Ads", "BannerAd failed to load: $adError (retry attempt $retryCount/$maxRetries)")
+                                            if (retryCount < maxRetries) {
+                                                coroutineScope.launch {
+                                                    val delayMs = (5000L * (1 shl retryCount)).coerceAtMost(30000L) // Exponential backoff: 5s, 10s, 20s
+                                                    delay(delayMs.milliseconds)
+                                                    retryCount++
+                                                }
+                                            } else {
+                                                isAdFailedToLoad = true
+                                            }
                                         }
                                     }
                                 )

@@ -56,11 +56,9 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
         map["wideColorGamut"] = getApplication<Application>().resources.configuration.isScreenWideColorGamut
 
         // Codec Related
-        map["hardwareAcceleratedType"] =
-            MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
-                .filter { codec -> codec.isHardwareAccelerated && !codec.isEncoder }
-                .flatMap { codec -> codec.supportedTypes.asIterable() }
-                .toSortedSet()
+        map["hardwareAcceleratedType"] = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+            .filter { it.isHardwareAccelerated && !it.isEncoder }
+            .flatMapTo(sortedSetOf()) { it.supportedTypes.asIterable() }
 
         map["releaseOrCodename"] = VERSION.RELEASE_OR_CODENAME
 
@@ -71,8 +69,9 @@ class InfoViewModel(application: Application, private val state: SavedStateHandl
         map["socManufacturer"] = Build.SOC_MANUFACTURER
         map["socModel"] = Build.SOC_MODEL
 
-        val mediaPrefClass = VERSION.MEDIA_PERFORMANCE_CLASS
-        if (mediaPrefClass > 0) map["mediaPerformanceClass"] = mediaPrefClass.toString()
+        if (VERSION.MEDIA_PERFORMANCE_CLASS > 0) {
+            map["mediaPerformanceClass"] = VERSION.MEDIA_PERFORMANCE_CLASS.toString()
+        }
 
         if (VERSION.SDK_INT >= VERSION_CODES.BAKLAVA) {
             map["sdkLevelFull"] = VERSION.SDK_INT_FULL
