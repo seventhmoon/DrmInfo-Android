@@ -6,7 +6,6 @@ import androidx.collection.ArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.Util
@@ -15,8 +14,7 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 abstract class MediaDrmViewModel protected constructor(
-    application: Application,
-    private val state: SavedStateHandle
+    application: Application
 ) : AndroidViewModel(application) {
 
     private var mediaDrm: MediaDrm? = null

@@ -1,10 +1,9 @@
 package com.androidfung.drminfo.ui.mobile
 
 import android.app.Application
-import androidx.lifecycle.SavedStateHandle
 import com.androidfung.drminfo.Constants
 
-class ClearKeyViewModel(application: Application, state: SavedStateHandle) : MediaDrmViewModel(application, state) {
+class ClearKeyViewModel(application: Application) : MediaDrmViewModel(application) {
     init {
         uuid = Constants.CLEARKEY_UUID
     }

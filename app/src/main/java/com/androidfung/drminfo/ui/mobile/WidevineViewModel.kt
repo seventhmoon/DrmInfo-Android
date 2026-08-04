@@ -1,11 +1,10 @@
 package com.androidfung.drminfo.ui.mobile
 
 import android.app.Application
-import androidx.lifecycle.SavedStateHandle
 import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
 
-class WidevineViewModel(application: Application, state: SavedStateHandle) : MediaDrmViewModel(application, state) {
+class WidevineViewModel(application: Application) : MediaDrmViewModel(application) {
 
     override val stringPropertyKeys: Array<String> by lazy {
         getApplication<Application>().resources.getStringArray(R.array.mediadrm_string_property_keys) +

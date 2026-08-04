@@ -14,14 +14,13 @@ import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.google.android.libraries.ads.mobile.sdk.MobileAds
 import com.google.android.libraries.ads.mobile.sdk.initialization.InitializationConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class InfoViewModel(application: Application, private val state: SavedStateHandle) : AndroidViewModel(application) {
+class InfoViewModel(application: Application) : AndroidViewModel(application) {
 
     var isAdsInitialized by mutableStateOf(false)
         private set

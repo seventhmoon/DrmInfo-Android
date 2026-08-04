@@ -13,15 +13,13 @@ import androidx.collection.ArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Locale
 
 class CameraViewModel(
-    application: Application,
-    private val state: SavedStateHandle
+    application: Application
 ) : AndroidViewModel(application) {
 
     private val properties: MutableLiveData<ArrayMap<String, Any>> by lazy {
