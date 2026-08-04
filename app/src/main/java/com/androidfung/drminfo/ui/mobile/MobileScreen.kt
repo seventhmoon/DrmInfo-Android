@@ -2,7 +2,6 @@ package com.androidfung.drminfo.ui.mobile
 
 import android.os.Build
 import android.util.Log
-import android.view.View
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,8 +23,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -42,8 +43,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.AnnotatedString
+import android.content.ClipData
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
@@ -66,11 +69,6 @@ import com.google.android.libraries.ads.mobile.sdk.banner.BannerAd
 import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdRequest
 import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
 import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
-
-@Immutable
-data class DrmPropertyState(
-    val properties: Map<String, Any>?
-)
 
 val LocalSnackbarHostState = staticCompositionLocalOf<SnackbarHostState> { error("No SnackbarHostState provided") }
 
@@ -361,6 +359,7 @@ fun InfoCard(
     }
 }
 
+@Suppress("unused")
 @Composable
 fun CameraCard(
     properties: Map<String, Any>,
@@ -555,9 +554,10 @@ fun LabelValueItem(
     modifier: Modifier = Modifier,
     allowCopy: Boolean = false
 ) {
-    val clipboardManager = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
     val snackbarHostState = LocalSnackbarHostState.current
     val coroutineScope = rememberCoroutineScope()
+    val copyActionLabel = stringResource(id = R.string.label_copy)
 
     Column(
         modifier = modifier
@@ -567,9 +567,16 @@ fun LabelValueItem(
                     Modifier.combinedClickable(
                         onClick = {},
                         onLongClick = {
-                            clipboardManager.setText(AnnotatedString(value))
                             coroutineScope.launch {
-                                snackbarHostState.showSnackbar("$label: $value")
+                                val result = snackbarHostState.showSnackbar(
+                                    message = value,
+                                    actionLabel = copyActionLabel,
+                                    duration = SnackbarDuration.Long
+                                )
+                                if (result == SnackbarResult.ActionPerformed) {
+                                    val clipData = ClipData.newPlainText(label, value)
+                                    clipboard.setClipEntry(ClipEntry(clipData))
+                                }
                             }
                         }
                     )
@@ -595,6 +602,7 @@ fun AdCard(
 ) {
     val configuration = LocalConfiguration.current
     val coroutineScope = rememberCoroutineScope()
+    var retryJob by remember { mutableStateOf<Job?>(null) }
     var isAdFailedToLoad by rememberSaveable(configuration.orientation) { mutableStateOf(false) }
     var retryCount by rememberSaveable(configuration.orientation) { mutableIntStateOf(0) }
     val maxRetries = 3
@@ -609,16 +617,13 @@ fun AdCard(
                     .padding(dimensionResource(id = R.dimen.card_padding)),
                 contentAlignment = Alignment.Center
             ) {
-                val screenWidthDp = configuration.screenWidthDp
-                val rawWidthDp = if (maxWidth.value > 0) maxWidth.value.toInt() else 300
-                // Clamp safe ad width so it never exceeds available screen width in current orientation
-                val safeAdWidthDp = minOf(rawWidthDp, screenWidthDp)
+                val safeAdWidthDp = if (maxWidth.value > 0) maxWidth.value.toInt() else 300
 
                 if (safeAdWidthDp > 0) {
                     key(configuration.orientation, safeAdWidthDp, retryCount) {
                         AndroidView(
                             factory = { ctx ->
-                                com.google.android.libraries.ads.mobile.sdk.banner.AdView(ctx).apply {
+                                com.google.android.libraries.ads.mobile.sdk.banner.AdView(ctx.applicationContext).apply {
                                     val adUnitId = ctx.getString(R.string.ad_unit_id)
                                     val adSize = AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(
                                         ctx,
@@ -638,7 +643,8 @@ fun AdCard(
                                             override fun onAdFailedToLoad(adError: LoadAdError) {
                                                 Log.w("Ads", "BannerAd failed to load: $adError (retry attempt $retryCount/$maxRetries)")
                                                 if (retryCount < maxRetries) {
-                                                    coroutineScope.launch {
+                                                    retryJob?.cancel()
+                                                    retryJob = coroutineScope.launch {
                                                         val delayMs = (5000L * (1 shl retryCount)).coerceAtMost(30000L) // Exponential backoff: 5s, 10s, 20s
                                                         delay(delayMs.milliseconds)
                                                         retryCount++
@@ -650,6 +656,11 @@ fun AdCard(
                                         }
                                     )
                                 }
+                            },
+                            onRelease = { adView ->
+                                retryJob?.cancel()
+                                retryJob = null
+                                adView.destroy()
                             }
                         )
                     }

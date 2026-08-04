@@ -5,10 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import com.androidfung.drminfo.Constants
 
 class ClearKeyViewModel(application: Application, state: SavedStateHandle) : MediaDrmViewModel(application, state) {
-    companion object {
-        private val TAG = ClearKeyViewModel::class.java.simpleName
-    }
-
     init {
         uuid = Constants.CLEARKEY_UUID
     }

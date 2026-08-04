@@ -78,9 +78,4 @@ abstract class MediaDrmViewModel protected constructor(
         mediaDrm?.close()
         mediaDrm = null
     }
-
-    companion object {
-        @JvmStatic
-        private val TAG: String = MediaDrmViewModel::class.java.simpleName
-    }
 }
