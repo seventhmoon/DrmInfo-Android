@@ -25,86 +25,100 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
     var isAdsInitialized by mutableStateOf(false)
         private set
 
+    private val _properties = MutableLiveData<ArrayMap<String, Any>>()
+    val properties: LiveData<ArrayMap<String, Any>> = _properties
+
+    init {
+        loadProperties()
+    }
+
     fun initMobileAds(appId: String) {
         if (MobileAds.isInitialized) {
             isAdsInitialized = true
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
-            MobileAds.initialize(
-                getApplication<Application>().applicationContext,
-                InitializationConfig.Builder(appId).build()
-            ) {
-                isAdsInitialized = true
-            }
-            if (MobileAds.isInitialized) {
+            val context = getApplication<Application>().applicationContext
+            val config = InitializationConfig.Builder(appId).build()
+            MobileAds.initialize(context, config) {
                 isAdsInitialized = true
             }
         }
     }
 
-    private val properties: MutableLiveData<ArrayMap<String, Any>> by lazy {
-        MutableLiveData<ArrayMap<String, Any>>().also { liveData ->
-            viewModelScope.launch(Dispatchers.Default) {
-                prepareProperties(liveData)
-            }
+    private fun loadProperties() {
+        viewModelScope.launch(Dispatchers.Default) {
+            _properties.postValue(buildPropertiesMap())
         }
     }
 
-    private fun prepareProperties(it: MutableLiveData<ArrayMap<String, Any>>) {
+    private fun buildPropertiesMap(): ArrayMap<String, Any> {
         val map = ArrayMap<String, Any>()
 
+        // Basic System & Build Information
         map["sdkLevel"] = VERSION.SDK_INT
         map["release"] = VERSION.RELEASE
         map["abis"] = Build.SUPPORTED_ABIS
         map["securityPatch"] = VERSION.SECURITY_PATCH
 
-        // Display Related
-        val displayManager = DisplayManagerCompat.getInstance(getApplication())
-        displayManager.getDisplay(DEFAULT_DISPLAY)?.also { display ->
-            val supportedRefreshRate = display.supportedModes.map { mode -> mode.refreshRate }.toSortedSet()
-            if (supportedRefreshRate.isNotEmpty()) {
-                map["supportedRefreshRate"] = supportedRefreshRate
-            }
-
-            @Suppress("DEPRECATION")
-            val supportedHdrType = if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                display.mode.supportedHdrTypes
-            } else {
-                display.hdrCapabilities?.supportedHdrTypes ?: intArrayOf()
-            }
-
-            if (supportedHdrType.isNotEmpty()) {
-                map["supportedHdrType"] = supportedHdrType.toList()
-            }
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            map["wideColorGamut"] = getApplication<Application>().resources.configuration.isScreenWideColorGamut
         }
 
-        map["wideColorGamut"] = getApplication<Application>().resources.configuration.isScreenWideColorGamut
+        if (VERSION.SDK_INT >= VERSION_CODES.R) {
+            map["releaseOrCodename"] = VERSION.RELEASE_OR_CODENAME
+        }
 
-        // Codec Related
-        map["hardwareAcceleratedType"] = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
-            .filter { it.isHardwareAccelerated && !it.isEncoder }
-            .flatMapTo(sortedSetOf()) { it.supportedTypes.asIterable() }
+        if (VERSION.SDK_INT >= VERSION_CODES.S) {
+            map["socManufacturer"] = Build.SOC_MANUFACTURER
+            map["socModel"] = Build.SOC_MODEL
 
-        map["releaseOrCodename"] = VERSION.RELEASE_OR_CODENAME
+            if (VERSION.MEDIA_PERFORMANCE_CLASS > 0) {
+                map["mediaPerformanceClass"] = VERSION.MEDIA_PERFORMANCE_CLASS
+            }
+        }
 
         if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
             map["releaseOrPreviewDisplay"] = VERSION.RELEASE_OR_PREVIEW_DISPLAY
-        }
-
-        map["socManufacturer"] = Build.SOC_MANUFACTURER
-        map["socModel"] = Build.SOC_MODEL
-
-        if (VERSION.MEDIA_PERFORMANCE_CLASS > 0) {
-            map["mediaPerformanceClass"] = VERSION.MEDIA_PERFORMANCE_CLASS
         }
 
         if (VERSION.SDK_INT >= VERSION_CODES.BAKLAVA) {
             map["sdkLevelFull"] = VERSION.SDK_INT_FULL
         }
 
-        it.postValue(map)
-    }
+        // Display Hardware & Capabilities
+        val displayManager = DisplayManagerCompat.getInstance(getApplication())
+        displayManager.getDisplay(DEFAULT_DISPLAY)?.let { display ->
+            val supportedRefreshRates = display.supportedModes.mapTo(sortedSetOf()) { it.refreshRate }
+            if (supportedRefreshRates.isNotEmpty()) {
+                map["supportedRefreshRate"] = supportedRefreshRates
+            }
 
-    fun getProperties(): LiveData<ArrayMap<String, Any>> = properties
+            @Suppress("DEPRECATION")
+            val supportedHdrTypes = if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                display.mode.supportedHdrTypes
+            } else {
+                display.hdrCapabilities?.supportedHdrTypes
+            }
+
+            if (supportedHdrTypes != null && supportedHdrTypes.isNotEmpty()) {
+                map["supportedHdrType"] = supportedHdrTypes.toList()
+            }
+        }
+
+        // Hardware Codec Support
+        if (VERSION.SDK_INT >= VERSION_CODES.Q) {
+            val hardwareDecoders = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+                .asSequence()
+                .filter { it.isHardwareAccelerated && !it.isEncoder }
+                .flatMap { it.supportedTypes.asSequence() }
+                .toSortedSet()
+
+            if (hardwareDecoders.isNotEmpty()) {
+                map["hardwareAcceleratedType"] = hardwareDecoders
+            }
+        }
+
+        return map
+    }
 }

@@ -34,6 +34,7 @@
         <package android:name="com.google.android.tvlauncher" />
         <package android:name="com.google.android.leanbacklauncher" />
         <package android:name="com.google.android.apps.tv.launcherx" />
+        <package android:name="com.google.android.gms" />
         <intent>
             <action android:name="android.intent.action.MAIN" />
         </intent>

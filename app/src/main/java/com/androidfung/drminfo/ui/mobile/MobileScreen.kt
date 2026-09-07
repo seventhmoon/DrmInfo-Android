@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -62,6 +64,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.androidfung.drminfo.BuildConfig
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.Util
 import com.google.android.libraries.ads.mobile.sdk.banner.AdSize
@@ -80,7 +83,6 @@ fun MobileScreen(
     widevineProperties: Map<String, Any>?,
     playreadyProperties: Map<String, Any>?,
     wiseplayProperties: Map<String, Any>?,
-    cameraProperties: Map<String, Any>? = null,
     isAdsInitialized: Boolean = false
 ) {
     val scrollState = rememberScrollState()
@@ -143,16 +145,11 @@ fun MobileScreen(
                 widevineProperties,
                 playreadyProperties,
                 wiseplayProperties,
-                cameraProperties,
                 isAdsInitialized
             ) {
                 buildList<Pair<Int, @Composable () -> Unit>> {
                     // Pair(estimatedHeightDp, Composable)
                     add(500 to { InfoCard(properties = infoProperties, modifier = Modifier.fillMaxWidth()) })
-                    // TODO: Reuse CameraCard later
-                    // if (!cameraProperties.isNullOrEmpty()) {
-                    //     add(200 to { CameraCard(properties = cameraProperties, modifier = Modifier.fillMaxWidth()) })
-                    // }
                     if (!clearkeyProperties.isNullOrEmpty()) {
                         add(160 to { MediaDrmCard(properties = clearkeyProperties, modifier = Modifier.fillMaxWidth()) })
                     }
@@ -282,7 +279,7 @@ fun InfoCard(
             if (sdkLevelFull != null) {
                 LabelValueItem(
                     label = stringResource(id = R.string.text_sdk_level_full),
-                    value = Build.VERSION.SDK_INT_FULL.toString()
+                    value = sdkLevelFull.toString()
                 )
             }
 
@@ -353,54 +350,6 @@ fun InfoCard(
                 LabelValueItem(
                     label = stringResource(id = R.string.text_supported_refresh_rate),
                     value = Util.format(formattedRates)
-                )
-            }
-        }
-    }
-}
-
-@Suppress("unused")
-@Composable
-fun CameraCard(
-    properties: Map<String, Any>,
-    modifier: Modifier = Modifier
-) {
-    OutlinedCard(
-        modifier = modifier
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.card_padding))
-        ) {
-            Text(
-                text = stringResource(id = R.string.text_camera_feature_combination),
-                style = MaterialTheme.typography.titleLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            val cameraCount = properties["cameraCount"]?.toString()
-            if (!cameraCount.isNullOrEmpty()) {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_camera_count),
-                    value = cameraCount
-                )
-            }
-
-            val cameraDetails = properties["cameraDetails"] as? List<*>
-            if (!cameraDetails.isNullOrEmpty()) {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_camera_setup_compat),
-                    value = cameraDetails.joinToString("\n")
-                )
-            }
-
-            val formatDetails = properties["formatDetails"] as? List<*>
-            if (!formatDetails.isNullOrEmpty()) {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_camera_formats_and_resolutions),
-                    value = formatDetails.joinToString("\n\n")
                 )
             }
         }

@@ -2,6 +2,7 @@ package com.androidfung.drminfo.ui.mobile
 
 import android.app.Application
 import android.media.MediaDrm
+import android.os.Build
 import androidx.collection.ArrayMap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -23,13 +24,15 @@ abstract class MediaDrmViewModel protected constructor(
         getApplication<Application>().resources.getStringArray(R.array.mediadrm_string_property_keys)
     }
 
-    private val properties: MutableLiveData<ArrayMap<String, Any>> by lazy {
+    private val _properties: MutableLiveData<ArrayMap<String, Any>> by lazy {
         MutableLiveData<ArrayMap<String, Any>>().also { liveData ->
             viewModelScope.launch(Dispatchers.IO) {
                 prepareProperties(liveData)
             }
         }
     }
+
+    val properties: LiveData<ArrayMap<String, Any>> get() = _properties
 
     private fun getPropertyString(key: String): String? {
         return runCatching {
@@ -45,11 +48,13 @@ abstract class MediaDrmViewModel protected constructor(
             getPropertyString(key)?.let { value -> map[key] = value }
         }
 
-        map[resources.getString(R.string.mediadrm_key_maxNumberOfSessions)] = mediaDrm.maxSessionCount
-        map[resources.getString(R.string.mediadrm_key_numberOfOpenSessions)] = mediaDrm.openSessionCount
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            map[resources.getString(R.string.mediadrm_key_maxNumberOfSessions)] = mediaDrm.maxSessionCount
+            map[resources.getString(R.string.mediadrm_key_numberOfOpenSessions)] = mediaDrm.openSessionCount
 
-        map["maxHdcpLevelRes"] = Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel)
-        map["hdcpLevelRes"] = Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel)
+            map["maxHdcpLevelRes"] = Util.convertHdcpLevelToStringRes(mediaDrm.maxHdcpLevel)
+            map["hdcpLevelRes"] = Util.convertHdcpLevelToStringRes(mediaDrm.connectedHdcpLevel)
+        }
 
         return map
     }
@@ -70,10 +75,13 @@ abstract class MediaDrmViewModel protected constructor(
         mutableLiveData.postValue(map)
     }
 
-    fun getProperties(): LiveData<ArrayMap<String, Any>> = properties
-
     override fun onCleared() {
-        mediaDrm?.close()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            mediaDrm?.close()
+        } else {
+            @Suppress("DEPRECATION")
+            mediaDrm?.release()
+        }
         mediaDrm = null
     }
 }

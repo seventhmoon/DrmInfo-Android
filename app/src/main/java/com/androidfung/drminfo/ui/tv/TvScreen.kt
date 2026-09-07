@@ -239,13 +239,19 @@ private fun buildTvInfoItems(
     add(TvInfoItem(context.getString(R.string.text_hardware), Build.HARDWARE))
     add(TvInfoItem(context.getString(R.string.text_display), Build.DISPLAY))
 
-    add(TvInfoItem(context.getString(R.string.text_soc_manufacturer), Build.SOC_MANUFACTURER))
-    add(TvInfoItem(context.getString(R.string.text_soc_model), Build.SOC_MODEL))
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        add(TvInfoItem(context.getString(R.string.text_soc_manufacturer), Build.SOC_MANUFACTURER))
+        add(TvInfoItem(context.getString(R.string.text_soc_model), Build.SOC_MODEL))
+    }
 
     add(TvInfoItem(context.getString(R.string.text_type), Build.TYPE))
     add(TvInfoItem(context.getString(R.string.text_fingerprint), Build.FINGERPRINT))
     add(TvInfoItem(context.getString(R.string.text_sdk_level), Build.VERSION.SDK_INT.toString()))
-    add(TvInfoItem(context.getString(R.string.text_sdk_level_full), Build.VERSION.SDK_INT_FULL.toString()))
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+        add(TvInfoItem(context.getString(R.string.text_sdk_level_full), Build.VERSION.SDK_INT_FULL.toString()))
+    }
+
     add(TvInfoItem(context.getString(R.string.text_abi), Build.SUPPORTED_ABIS.joinToString()))
 
     // DRM Schemes
@@ -263,8 +269,8 @@ private fun MutableList<TvInfoItem>.addDrmSchemeItem(
     if (!properties.isNullOrEmpty()) {
         val title = context.getString(Util.convertCryptoSchemeToStringRes(uuid))
         val subItems = properties.mapNotNull { (key, value) ->
-            val valueStr = value.toString()
-            if (valueStr.isNotEmpty()) {
+            val valueStr = (value as Any?)?.toString()
+            if (!valueStr.isNullOrEmpty()) {
                 TvInfoItem(title = key, description = valueStr)
             } else null
         }

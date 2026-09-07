@@ -12,7 +12,6 @@ import androidx.annotation.Keep
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import com.androidfung.drminfo.Util.getQprNumber
-import com.androidfung.drminfo.ui.mobile.CameraViewModel
 import com.androidfung.drminfo.ui.mobile.ClearKeyViewModel
 import com.androidfung.drminfo.ui.mobile.InfoViewModel
 import com.androidfung.drminfo.ui.mobile.MobileScreen
@@ -40,7 +39,6 @@ class MobileActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val infoViewModel: InfoViewModel by viewModels()
-        val cameraViewModel: CameraViewModel by viewModels()
         val clearKeyViewModel: ClearKeyViewModel by viewModels()
         val widevineViewModel: WidevineViewModel by viewModels()
         val playreadyViewModel: PlayreadyViewModel by viewModels()
@@ -53,12 +51,11 @@ class MobileActivity : ComponentActivity() {
 
         setContent {
             DrmInfoTheme {
-                val infoProperties by infoViewModel.getProperties().observeAsState()
-                val cameraProperties by cameraViewModel.getProperties().observeAsState()
-                val clearkeyProperties by clearKeyViewModel.getProperties().observeAsState()
-                val widevineProperties by widevineViewModel.getProperties().observeAsState()
-                val playreadyProperties by playreadyViewModel.getProperties().observeAsState()
-                val wiseplayProperties by wiseplayViewModel.getProperties().observeAsState()
+                val infoProperties by infoViewModel.properties.observeAsState()
+                val clearkeyProperties by clearKeyViewModel.properties.observeAsState()
+                val widevineProperties by widevineViewModel.properties.observeAsState()
+                val playreadyProperties by playreadyViewModel.properties.observeAsState()
+                val wiseplayProperties by wiseplayViewModel.properties.observeAsState()
 
                 MobileScreen(
                     infoProperties = infoProperties,
@@ -66,13 +63,19 @@ class MobileActivity : ComponentActivity() {
                     widevineProperties = widevineProperties,
                     playreadyProperties = playreadyProperties,
                     wiseplayProperties = wiseplayProperties,
-                    cameraProperties = cameraProperties,
                     isAdsInitialized = infoViewModel.isAdsInitialized
                 )
             }
         }
 
         Log.d(TAG, "QPR: " + getQprNumber())
+    }
+
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        if (level >= TRIM_MEMORY_UI_HIDDEN) {
+            // Release heavy UI resources if needed
+        }
     }
 
     companion object {

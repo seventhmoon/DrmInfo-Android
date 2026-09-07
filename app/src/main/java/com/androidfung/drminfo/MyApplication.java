@@ -10,4 +10,13 @@ public class MyApplication extends Application {
         // This is all you need.
         DynamicColors.applyToActivitiesIfAvailable(this);
     }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        // Release global resources if memory is moderate or higher
+        if (level >= TRIM_MEMORY_MODERATE) {
+            // Add global resource cleanup here if needed in the future
+        }
+    }
 }

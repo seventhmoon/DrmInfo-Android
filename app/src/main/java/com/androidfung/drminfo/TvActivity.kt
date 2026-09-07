@@ -31,11 +31,11 @@ class TvActivity : ComponentActivity() {
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         setContent {
-            val infoProperties by infoViewModel.getProperties().observeAsState()
-            val clearkeyProperties by clearKeyViewModel.getProperties().observeAsState()
-            val widevineProperties by widevineViewModel.getProperties().observeAsState()
-            val playreadyProperties by playreadyViewModel.getProperties().observeAsState()
-            val wiseplayProperties by wiseplayViewModel.getProperties().observeAsState()
+            val infoProperties by infoViewModel.properties.observeAsState()
+            val clearkeyProperties by clearKeyViewModel.properties.observeAsState()
+            val widevineProperties by widevineViewModel.properties.observeAsState()
+            val playreadyProperties by playreadyViewModel.properties.observeAsState()
+            val wiseplayProperties by wiseplayViewModel.properties.observeAsState()
 
             TvScreen(
                 infoProperties = infoProperties,
@@ -44,6 +44,13 @@ class TvActivity : ComponentActivity() {
                 playreadyProperties = playreadyProperties,
                 wiseplayProperties = wiseplayProperties
             )
+        }
+    }
+
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        if (level >= TRIM_MEMORY_UI_HIDDEN) {
+            // Release heavy UI resources if needed
         }
     }
 

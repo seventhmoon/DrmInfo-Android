@@ -11,7 +11,6 @@ import android.view.Display
 import android.view.Display.HdrCapabilities
 import android.view.View
 import androidx.annotation.StringRes
-import androidx.core.app.ActivityManagerCompat
 import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.core.view.DisplayCompat
 import java.util.*
@@ -120,7 +119,7 @@ object Util {
 
     fun isLowRamDevice(context: Context): Boolean {
         val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        return ActivityManagerCompat.isLowRamDevice(am)
+        return am.isLowRamDevice
     }
 
 
