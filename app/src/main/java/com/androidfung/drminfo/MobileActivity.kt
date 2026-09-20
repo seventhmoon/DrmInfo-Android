@@ -1,160 +1,90 @@
 package com.androidfung.drminfo
 
-import android.content.Intent
-import android.graphics.Rect
-import android.os.Build
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.Keep
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.core.view.WindowCompat
-import androidx.core.widget.NestedScrollView
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import com.androidfung.drminfo.databinding.ActivityMobileBinding
-import com.androidfung.drminfo.ui.mobile.*
-import com.google.android.gms.ads.*
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.androidfung.drminfo.Util.getQprNumber
+import com.androidfung.drminfo.ui.mobile.ClearKeyViewModel
+import com.androidfung.drminfo.ui.mobile.InfoViewModel
+import com.androidfung.drminfo.ui.mobile.MobileScreen
+import com.androidfung.drminfo.ui.mobile.PlayreadyViewModel
+import com.androidfung.drminfo.ui.mobile.WidevineViewModel
+import com.androidfung.drminfo.ui.mobile.WiseplayViewModel
+import com.androidfung.drminfo.ui.theme.DrmInfoTheme
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.remoteconfig.ktx.remoteConfig
-import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
-
 
 @Keep
-class MobileActivity : AppCompatActivity() {
+class MobileActivity : ComponentActivity() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
-    private lateinit var binding: ActivityMobileBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(
+                Color.TRANSPARENT,
+                Color.TRANSPARENT
+            ),
+            navigationBarStyle = SystemBarStyle.auto(
+                Color.TRANSPARENT,
+                Color.TRANSPARENT
+            )
+        )
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_mobile)
-        binding.lifecycleOwner = this
-        binding.handler = MyHandlers()
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)?.apply {
-            setSupportActionBar(this)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val nestedScrollView = findViewById<NestedScrollView>(R.id.view_nestedscrollview)?.apply {
-                val bound = Rect().also { rect ->
-                    this.getHitRect(rect)
-                }
-
-                this.setOnScrollChangeListener { _, _, _, _, _ ->
-                    val infoHeadline = findViewById<TextView>(R.id.tv_info_headline)
-                    if (infoHeadline.getLocalVisibleRect(bound)) {
-                        toolbar?.subtitle = null
-                    } else {
-                        toolbar?.subtitle = "${Build.MANUFACTURER} ${Build.MODEL}"
-                    }
-                }
-            }
-        }
-
-
         val infoViewModel: InfoViewModel by viewModels()
-        infoViewModel.getProperties().observe(this, Observer(binding::setInfoProperties))
-
         val clearKeyViewModel: ClearKeyViewModel by viewModels()
-        clearKeyViewModel.getProperties().observe(this, Observer(binding::setClearkeyProperties))
-
         val widevineViewModel: WidevineViewModel by viewModels()
-        widevineViewModel.getProperties().observe(this, Observer(binding::setWidevineProperties))
-
         val playreadyViewModel: PlayreadyViewModel by viewModels()
-        playreadyViewModel.getProperties().observe(this, Observer(binding::setPlayreadyProperties))
-
         val wiseplayViewModel: WiseplayViewModel by viewModels()
-        wiseplayViewModel.getProperties().observe(this, Observer(binding::setWiseplayProperties))
 
-        // Firebase Analytics
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+        // Initialize GMA Next-Gen SDK via ViewModel using Application Context to prevent Activity leaks
+        infoViewModel.initMobileAds(getString(R.string.ad_app_id))
 
-        // Firebase Remote Config
-        val remoteConfig = Firebase.remoteConfig
-        val configSettings = remoteConfigSettings {
-            minimumFetchIntervalInSeconds = 3600
+        firebaseAnalytics = FirebaseAnalytics.getInstance(applicationContext)
+
+        setContent {
+            DrmInfoTheme {
+                val infoProperties by infoViewModel.properties.collectAsStateWithLifecycle()
+                val clearkeyProperties by clearKeyViewModel.properties.collectAsStateWithLifecycle()
+                val widevineProperties by widevineViewModel.properties.collectAsStateWithLifecycle()
+                val playreadyProperties by playreadyViewModel.properties.collectAsStateWithLifecycle()
+                val wiseplayProperties by wiseplayViewModel.properties.collectAsStateWithLifecycle()
+
+                MobileScreen(
+                    infoProperties = infoProperties,
+                    clearkeyProperties = clearkeyProperties,
+                    widevineProperties = widevineProperties,
+                    playreadyProperties = playreadyProperties,
+                    wiseplayProperties = wiseplayProperties,
+                    isAdsInitialized = infoViewModel.isAdsInitialized,
+                    isRefreshing = infoViewModel.isRefreshing,
+                    onRefresh = {
+                        infoViewModel.refresh()
+                        clearKeyViewModel.refresh()
+                        widevineViewModel.refresh()
+                        playreadyViewModel.refresh()
+                        wiseplayViewModel.refresh()
+                    }
+                )
+            }
         }
-        remoteConfig.setConfigSettingsAsync(configSettings)
-        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
-        remoteConfig.fetchAndActivate()
 
-//        val adEnabled = remoteConfig.getBoolean("ad_enabled")
-
-//        if (adEnabled && !BuildConfig.DEBUG) {
-//        if (adEnabled) {
-//            Log.d(TAG, "Ad Disabled")
-
-        val bannerAdHolder = findViewById<ViewGroup>(R.id.container_ad)
-        val adView = findViewById<AdView>(R.id.adView)
-
-        adView?.let {
-            MobileAds.initialize(this) {}
-            loadAdMobBannerAd(it, bannerAdHolder)
-        }
-
+        Log.d(TAG, "QPR: " + getQprNumber())
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle item selection
-        return when (item.itemId) {
-            R.id.license -> {
-                startActivity(Intent(this, OssLicensesMenuActivity::class.java))
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        if (level >= TRIM_MEMORY_UI_HIDDEN) {
+            // Release heavy UI resources if needed
         }
-    }
-
-    private fun loadAdMobBannerAd(adView: AdView, bannerAdHolder: ViewGroup? = null) {
-        adView.adListener = object : AdListener() {
-            override fun onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-                Log.i("Ads", "onAdLoaded")
-                bannerAdHolder?.visibility = View.VISIBLE
-                adView.visibility = View.VISIBLE
-            }
-
-            override fun onAdFailedToLoad(adError: LoadAdError) {
-                // Code to be executed when an ad request fails.
-                Log.i("Ads", "onAdFailedToLoad: ${adError.message}")
-                bannerAdHolder?.visibility = View.GONE
-                adView.visibility = View.GONE
-            }
-
-            override fun onAdOpened() {
-                // Code to be executed when an ad opens an overlay that
-                // covers the screen.
-                Log.i("Ads", "onAdOpened")
-            }
-
-            override fun onAdClosed() {
-                // Code to be executed when when the user is about to return
-                // to the app after tapping on an ad.
-                Log.i("Ads", "onAdClosed")
-            }
-
-            override fun onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-                Log.i("Ads", "onAdClicked")
-            }
-        }
-
-        adView.loadAd(AdRequest.Builder().build())
     }
 
     companion object {

@@ -7,4 +7,6 @@
     <dimen name="box_min_height">132dp</dimen>
     <dimen name="card_horizontal_margin">8dp</dimen>
     <dimen name="card_vertical_margin">8dp</dimen>
+    <dimen name="box_min_width">356dp</dimen>
+    <dimen name="box_max_width">600dp</dimen>
 </resources>

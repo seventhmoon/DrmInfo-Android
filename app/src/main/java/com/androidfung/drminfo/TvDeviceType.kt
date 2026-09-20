@@ -7,16 +7,16 @@ import android.os.Build
 import androidx.annotation.IntDef
 import com.androidfung.drminfo.Util.getDefaultLauncher
 
-
 /**
  * @author chofung@google.com
  */
 object TvDeviceTypes {
 
-    @IntDef(ANDROID_NON_TV, ANDROID_OTHER_TV, FIRE_TV, ANDROID_TV_WITH_WATSON,
+    @IntDef(
+        ANDROID_NON_TV, ANDROID_OTHER_TV, FIRE_TV, ANDROID_TV_WITH_WATSON,
         ANDROID_TV, ANDROID_TV_OPERATOR_DEVICE, ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER,
-        GOOGLE_TV)
-
+        GOOGLE_TV
+    )
     @Retention(AnnotationRetention.SOURCE)
     annotation class TvDeviceType
 
@@ -42,7 +42,8 @@ object TvDeviceTypes {
 
     private const val FEATURE_OPERATOR_TIER = "com.google.android.tv.operator_tier"
     private const val FEATURE_CUSTOM_LAUNCHER = "com.google.android.tv.custom_launcher"
-    private const val FEATIRE_CUSTOM_LAUNCHER_ELIGIBLE = "com.google.android.tv.custom_launcher_eligible"
+    private const val FEATURE_CUSTOM_LAUNCHER_ELIGIBLE =
+        "com.google.android.tv.custom_launcher_eligible"
     private const val FEATURE_AMATI_EXPERIENCE = "com.google.android.feature.AMATI_EXPERIENCE"
     private const val FEATURE_AMAZON_FIRE_TV = "amazon.hardware.fire_tv"
     private const val FEATURE_TV = "android.hardware.type.television"
@@ -53,19 +54,22 @@ object TvDeviceTypes {
 
     @TvDeviceType
     fun PackageManager.obtainDeviceType(): Int {
+        val defaultLauncher = getDefaultLauncher()
         return when {
             hasSystemFeature(FEATURE_AMAZON_FIRE_TV) -> FIRE_TV
             hasSystemFeature(PackageManager.FEATURE_LEANBACK) -> {
 
                 when {
                     hasSystemFeature(FEATURE_OPERATOR_TIER) -> {
-                        if (hasSystemFeature(FEATURE_CUSTOM_LAUNCHER)) ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER
+                        if (hasSystemFeature(FEATURE_CUSTOM_LAUNCHER) ||
+                            hasSystemFeature(FEATURE_CUSTOM_LAUNCHER_ELIGIBLE)
+                        ) ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER
                         else ANDROID_TV_OPERATOR_DEVICE
                     }
                     hasSystemFeature(FEATURE_AMATI_EXPERIENCE) &&
-                            getDefaultLauncher() == PACKAGE_LAUNCHER_X -> GOOGLE_TV
-                    getDefaultLauncher() == PACKAGE_WATSON_LAUNCHER -> ANDROID_TV_WITH_WATSON
-                    getDefaultLauncher() == PACKAGE_LEANBACK_LAUNCHER -> ANDROID_TV
+                            defaultLauncher == PACKAGE_LAUNCHER_X -> GOOGLE_TV
+                    defaultLauncher == PACKAGE_WATSON_LAUNCHER -> ANDROID_TV_WITH_WATSON
+                    defaultLauncher == PACKAGE_LEANBACK_LAUNCHER -> ANDROID_TV
                     else -> ANDROID_OTHER_TV
                 }
             }
@@ -73,4 +77,15 @@ object TvDeviceTypes {
             else -> ANDROID_NON_TV
         }
     }
+
+//    fun PackageManager.getDefaultLauncher(): String? {
+//        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+//            .addCategory(Intent.CATEGORY_DEFAULT)
+//        val resolveInfo =
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+//                resolveActivity(intent, PackageManager.ResolveInfoFlags.of(0L))
+//            else resolveActivity(intent, 0)
+//        return resolveInfo?.activityInfo?.packageName
+//    }
+
 }

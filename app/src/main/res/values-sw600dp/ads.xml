@@ -9,5 +9,6 @@
     <!--<string name="ad_unit_id_native">ca-app-pub-9890667024752973/7878000112</string>-->
     <dimen name="native_ad_min_height">250dp</dimen>
 
-
+<!--    <string name="adsize" translatable="false">@string/adsize_160x600</string>-->
+<!--    <string name="ad_unit_id" translatable="false">@string/ad_unit_id_160x600</string>-->
 </resources>

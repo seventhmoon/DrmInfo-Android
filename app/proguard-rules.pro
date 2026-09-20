@@ -15,6 +15,26 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--keepclassmembers class com.androidfung.drminfo.JwtResult {
+#-keepclassmembers class com.androidfung.drminfo.JwtResult {
+#    public *;
+#}
+
+# Keep Configuration fields to avoid NoSuchFieldError on font weight adjustments in Compose
+-keepclassmembers class android.content.res.Configuration {
+    public int fontWeightAdjustment;
+}
+
+# Preserve Compose font weight adjustment helper classes
+-keep class androidx.compose.ui.text.font.FontWeightAdjustmentHelper** { *; }
+
+# WorkManager Room Database implementation keep rules
+-keep class androidx.work.impl.WorkDatabase_Impl { *; }
+
+# General Room keep rules for transitive dependencies
+-keep class * extends androidx.room.RoomDatabase
+
+# Prevent R8 from stripping or mismanaging StrictMode methods used by Play Services
+-keep class android.os.StrictMode$VmPolicy$Builder {
     public *;
 }
+
