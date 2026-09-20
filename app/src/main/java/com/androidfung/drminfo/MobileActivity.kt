@@ -10,7 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.androidfung.drminfo.Util.getQprNumber
 import com.androidfung.drminfo.ui.mobile.ClearKeyViewModel
 import com.androidfung.drminfo.ui.mobile.InfoViewModel
@@ -51,11 +51,11 @@ class MobileActivity : ComponentActivity() {
 
         setContent {
             DrmInfoTheme {
-                val infoProperties by infoViewModel.properties.observeAsState()
-                val clearkeyProperties by clearKeyViewModel.properties.observeAsState()
-                val widevineProperties by widevineViewModel.properties.observeAsState()
-                val playreadyProperties by playreadyViewModel.properties.observeAsState()
-                val wiseplayProperties by wiseplayViewModel.properties.observeAsState()
+                val infoProperties by infoViewModel.properties.collectAsStateWithLifecycle()
+                val clearkeyProperties by clearKeyViewModel.properties.collectAsStateWithLifecycle()
+                val widevineProperties by widevineViewModel.properties.collectAsStateWithLifecycle()
+                val playreadyProperties by playreadyViewModel.properties.collectAsStateWithLifecycle()
+                val wiseplayProperties by wiseplayViewModel.properties.collectAsStateWithLifecycle()
 
                 MobileScreen(
                     infoProperties = infoProperties,
@@ -63,7 +63,15 @@ class MobileActivity : ComponentActivity() {
                     widevineProperties = widevineProperties,
                     playreadyProperties = playreadyProperties,
                     wiseplayProperties = wiseplayProperties,
-                    isAdsInitialized = infoViewModel.isAdsInitialized
+                    isAdsInitialized = infoViewModel.isAdsInitialized,
+                    isRefreshing = infoViewModel.isRefreshing,
+                    onRefresh = {
+                        infoViewModel.refresh()
+                        clearKeyViewModel.refresh()
+                        widevineViewModel.refresh()
+                        playreadyViewModel.refresh()
+                        wiseplayViewModel.refresh()
+                    }
                 )
             }
         }

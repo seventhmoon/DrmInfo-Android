@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.androidfung.drminfo.ui.mobile.ClearKeyViewModel
 import com.androidfung.drminfo.ui.mobile.InfoViewModel
 import com.androidfung.drminfo.ui.mobile.PlayreadyViewModel
@@ -31,11 +31,11 @@ class TvActivity : ComponentActivity() {
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         setContent {
-            val infoProperties by infoViewModel.properties.observeAsState()
-            val clearkeyProperties by clearKeyViewModel.properties.observeAsState()
-            val widevineProperties by widevineViewModel.properties.observeAsState()
-            val playreadyProperties by playreadyViewModel.properties.observeAsState()
-            val wiseplayProperties by wiseplayViewModel.properties.observeAsState()
+            val infoProperties by infoViewModel.properties.collectAsStateWithLifecycle()
+            val clearkeyProperties by clearKeyViewModel.properties.collectAsStateWithLifecycle()
+            val widevineProperties by widevineViewModel.properties.collectAsStateWithLifecycle()
+            val playreadyProperties by playreadyViewModel.properties.collectAsStateWithLifecycle()
+            val wiseplayProperties by wiseplayViewModel.properties.collectAsStateWithLifecycle()
 
             TvScreen(
                 infoProperties = infoProperties,

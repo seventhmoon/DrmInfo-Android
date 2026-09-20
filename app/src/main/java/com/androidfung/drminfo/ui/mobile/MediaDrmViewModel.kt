@@ -5,12 +5,13 @@ import android.media.MediaDrm
 import android.os.Build
 import androidx.collection.ArrayMap
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.Util
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -24,15 +25,22 @@ abstract class MediaDrmViewModel protected constructor(
         getApplication<Application>().resources.getStringArray(R.array.mediadrm_string_property_keys)
     }
 
-    private val _properties: MutableLiveData<ArrayMap<String, Any>> by lazy {
-        MutableLiveData<ArrayMap<String, Any>>().also { liveData ->
-            viewModelScope.launch(Dispatchers.IO) {
-                prepareProperties(liveData)
-            }
-        }
+    private val _properties = MutableStateFlow<Map<String, Any>>(emptyMap())
+    val properties: StateFlow<Map<String, Any>> = _properties.asStateFlow()
+
+    init {
+        loadProperties()
     }
 
-    val properties: LiveData<ArrayMap<String, Any>> get() = _properties
+    fun refresh() {
+        loadProperties()
+    }
+
+    private fun loadProperties() {
+        viewModelScope.launch(Dispatchers.IO) {
+            prepareProperties()
+        }
+    }
 
     private fun getPropertyString(key: String): String? {
         return runCatching {
@@ -59,7 +67,7 @@ abstract class MediaDrmViewModel protected constructor(
         return map
     }
 
-    private fun prepareProperties(mutableLiveData: MutableLiveData<ArrayMap<String, Any>>) {
+    private fun prepareProperties() {
         val map = ArrayMap<String, Any>()
 
         runCatching {
@@ -72,7 +80,7 @@ abstract class MediaDrmViewModel protected constructor(
             }
         }
 
-        mutableLiveData.postValue(map)
+        _properties.value = map
     }
 
     override fun onCleared() {

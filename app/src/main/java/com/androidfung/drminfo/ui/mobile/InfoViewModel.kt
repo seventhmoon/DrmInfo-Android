@@ -1,6 +1,7 @@
 package com.androidfung.drminfo.ui.mobile
 
 import android.app.Application
+import android.media.AudioManager
 import android.media.MediaCodecList
 import android.os.Build
 import android.os.Build.VERSION
@@ -12,21 +13,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.libraries.ads.mobile.sdk.MobileAds
 import com.google.android.libraries.ads.mobile.sdk.initialization.InitializationConfig
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.SortedSet
 
 class InfoViewModel(application: Application) : AndroidViewModel(application) {
 
     var isAdsInitialized by mutableStateOf(false)
         private set
 
-    private val _properties = MutableLiveData<ArrayMap<String, Any>>()
-    val properties: LiveData<ArrayMap<String, Any>> = _properties
+    private val _properties = MutableStateFlow<Map<String, Any>>(emptyMap())
+    val properties: StateFlow<Map<String, Any>> = _properties.asStateFlow()
 
     init {
         loadProperties()
@@ -46,9 +49,20 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    var isRefreshing by mutableStateOf(false)
+        private set
+
+    fun refresh() {
+        viewModelScope.launch(Dispatchers.Default) {
+            isRefreshing = true
+            _properties.value = buildPropertiesMap()
+            isRefreshing = false
+        }
+    }
+
     private fun loadProperties() {
         viewModelScope.launch(Dispatchers.Default) {
-            _properties.postValue(buildPropertiesMap())
+            _properties.value = buildPropertiesMap()
         }
     }
 
@@ -80,6 +94,13 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
 
         if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
             map["releaseOrPreviewDisplay"] = VERSION.RELEASE_OR_PREVIEW_DISPLAY
+
+            // Spatial Audio Support
+            val audioManager = getApplication<Application>().getSystemService(AudioManager::class.java)
+            audioManager?.spatializer?.let { spatializer ->
+                map["spatialAudioAvailable"] = spatializer.isAvailable
+                map["headTrackingAvailable"] = spatializer.isHeadTrackerAvailable
+            }
         }
 
         if (VERSION.SDK_INT >= VERSION_CODES.BAKLAVA) {
@@ -108,11 +129,14 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
 
         // Hardware Codec Support
         if (VERSION.SDK_INT >= VERSION_CODES.Q) {
-            val hardwareDecoders = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
-                .asSequence()
-                .filter { it.isHardwareAccelerated && !it.isEncoder }
-                .flatMap { it.supportedTypes.asSequence() }
-                .toSortedSet()
+            val hardwareDecoders = cachedHardwareDecoders ?: run {
+                MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+                    .asSequence()
+                    .filter { it.isHardwareAccelerated && !it.isEncoder }
+                    .flatMap { it.supportedTypes.asSequence() }
+                    .toSortedSet()
+                    .also { cachedHardwareDecoders = it }
+            }
 
             if (hardwareDecoders.isNotEmpty()) {
                 map["hardwareAcceleratedType"] = hardwareDecoders
@@ -120,5 +144,10 @@ class InfoViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         return map
+    }
+
+    companion object {
+        @Volatile
+        private var cachedHardwareDecoders: SortedSet<String>? = null
     }
 }

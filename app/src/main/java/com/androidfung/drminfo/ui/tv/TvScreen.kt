@@ -1,6 +1,7 @@
 package com.androidfung.drminfo.ui.tv
 
 import android.content.Context
+import android.media.AudioManager
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -250,6 +251,14 @@ private fun buildTvInfoItems(
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
         add(TvInfoItem(context.getString(R.string.text_sdk_level_full), Build.VERSION.SDK_INT_FULL.toString()))
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val audioManager = context.getSystemService(AudioManager::class.java)
+        audioManager?.spatializer?.let { spatializer ->
+            add(TvInfoItem(context.getString(R.string.text_spatial_audio), if (spatializer.isAvailable) context.getString(R.string.text_supported) else context.getString(R.string.text_not_supported)))
+            add(TvInfoItem(context.getString(R.string.text_head_tracking), if (spatializer.isHeadTrackerAvailable) context.getString(R.string.text_supported) else context.getString(R.string.text_not_supported)))
+        }
     }
 
     add(TvInfoItem(context.getString(R.string.text_abi), Build.SUPPORTED_ABIS.joinToString()))

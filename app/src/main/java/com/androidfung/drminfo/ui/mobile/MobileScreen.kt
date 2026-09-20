@@ -3,6 +3,7 @@ package com.androidfung.drminfo.ui.mobile
 import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -17,10 +18,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -46,6 +48,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import android.content.ClipData
+import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import kotlinx.coroutines.Job
@@ -62,6 +65,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.androidfung.drminfo.BuildConfig
@@ -83,15 +87,12 @@ fun MobileScreen(
     widevineProperties: Map<String, Any>?,
     playreadyProperties: Map<String, Any>?,
     wiseplayProperties: Map<String, Any>?,
-    isAdsInitialized: Boolean = false
+    isAdsInitialized: Boolean = false,
+    isRefreshing: Boolean = false,
+    onRefresh: () -> Unit = {}
 ) {
-    val scrollState = rememberScrollState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
-
-    val showSubtitle by remember {
-        derivedStateOf { scrollState.value > 100 }
-    }
 
     CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
         Scaffold(
@@ -109,13 +110,11 @@ fun MobileScreen(
                             text = stringResource(id = R.string.app_name),
                             style = MaterialTheme.typography.titleLarge
                         )
-                        if (showSubtitle) {
-                            Text(
-                                text = "${Build.MANUFACTURER} ${Build.MODEL}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
+                        Text(
+                            text = "${Build.MANUFACTURER} ${Build.MODEL}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 },
                 scrollBehavior = scrollBehavior,
@@ -125,79 +124,70 @@ fun MobileScreen(
             )
         }
     ) { paddingValues ->
-        Column(
+        val pullToRefreshState = rememberPullToRefreshState()
+
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
+            state = pullToRefreshState,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .verticalScroll(scrollState)
-                .padding(
-                    horizontal = dimensionResource(id = R.dimen.activity_horizontal_margin),
-                    vertical = dimensionResource(id = R.dimen.activity_vertical_margin)
-                ),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            val columnsCount = integerResource(R.integer.col_count)
-
-            val activeCardEntries = remember(
-                infoProperties,
-                clearkeyProperties,
-                widevineProperties,
-                playreadyProperties,
-                wiseplayProperties,
-                isAdsInitialized
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter
             ) {
-                buildList<Pair<Int, @Composable () -> Unit>> {
-                    // Pair(estimatedHeightDp, Composable)
-                    add(500 to { InfoCard(properties = infoProperties, modifier = Modifier.fillMaxWidth()) })
-                    if (!clearkeyProperties.isNullOrEmpty()) {
-                        add(160 to { MediaDrmCard(properties = clearkeyProperties, modifier = Modifier.fillMaxWidth()) })
-                    }
-                    if (!widevineProperties.isNullOrEmpty()) {
-                        add(280 to { WidevineCard(properties = widevineProperties, modifier = Modifier.fillMaxWidth()) })
-                    }
-                    if (!playreadyProperties.isNullOrEmpty()) {
-                        add(160 to { MediaDrmCard(properties = playreadyProperties, modifier = Modifier.fillMaxWidth()) })
-                    }
-                    if (!wiseplayProperties.isNullOrEmpty()) {
-                        add(160 to { MediaDrmCard(properties = wiseplayProperties, modifier = Modifier.fillMaxWidth()) })
-                    }
-                    if (isAdsInitialized) {
-                        add(280 to { AdCard(modifier = Modifier.fillMaxWidth(), isAdsInitialized = isAdsInitialized) })
-                    }
-                }
-            }
-
-            val allocatedColumns = remember(activeCardEntries, columnsCount) {
-                val cols = List(columnsCount) { mutableListOf<@Composable () -> Unit>() }
-                val colHeights = IntArray(columnsCount)
-
-                activeCardEntries.forEach { (heightDp, cardComposable) ->
-                    val shortestCol = colHeights.indices.minByOrNull { colHeights[it] } ?: 0
-                    cols[shortestCol].add(cardComposable)
-                    colHeights[shortestCol] += heightDp
-                }
-                cols
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .widthIn(max = 1200.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                LazyVerticalStaggeredGrid(
+                    columns = StaggeredGridCells.Adaptive(minSize = 340.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .widthIn(max = 1200.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalItemSpacing = 8.dp,
+                    contentPadding = PaddingValues(
+                        horizontal = dimensionResource(id = R.dimen.activity_horizontal_margin),
+                        vertical = dimensionResource(id = R.dimen.activity_vertical_margin)
+                    )
                 ) {
-                    allocatedColumns.forEach { colCards ->
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .widthIn(min = dimensionResource(id = R.dimen.box_min_width)),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            colCards.forEach { cardComposable -> cardComposable() }
+                    val isLoading = infoProperties.isNullOrEmpty() &&
+                            clearkeyProperties.isNullOrEmpty() &&
+                            widevineProperties.isNullOrEmpty() &&
+                            playreadyProperties.isNullOrEmpty() &&
+                            wiseplayProperties.isNullOrEmpty()
+
+                    if (isLoading) {
+                        items(count = 3, key = { "skeleton_$it" }) {
+                            SkeletonCard(modifier = Modifier.fillMaxWidth())
+                        }
+                    } else {
+                        item(key = "card_info") {
+                            InfoCard(properties = infoProperties, modifier = Modifier.fillMaxWidth())
+                        }
+                        if (!clearkeyProperties.isNullOrEmpty()) {
+                            item(key = "card_clearkey") {
+                                MediaDrmCard(properties = clearkeyProperties, modifier = Modifier.fillMaxWidth())
+                            }
+                        }
+                        if (!widevineProperties.isNullOrEmpty()) {
+                            item(key = "card_widevine") {
+                                WidevineCard(properties = widevineProperties, modifier = Modifier.fillMaxWidth())
+                            }
+                        }
+                        if (!playreadyProperties.isNullOrEmpty()) {
+                            item(key = "card_playready") {
+                                MediaDrmCard(properties = playreadyProperties, modifier = Modifier.fillMaxWidth())
+                            }
+                        }
+                        if (!wiseplayProperties.isNullOrEmpty()) {
+                            item(key = "card_wiseplay") {
+                                MediaDrmCard(properties = wiseplayProperties, modifier = Modifier.fillMaxWidth())
+                            }
+                        }
+                        if (isAdsInitialized) {
+                            item(key = "card_ads") {
+                                AdCard(modifier = Modifier.fillMaxWidth(), isAdsInitialized = isAdsInitialized)
+                            }
                         }
                     }
                 }
@@ -300,6 +290,22 @@ fun InfoCard(
                 )
             }
 
+            val spatialAudio = properties?.get("spatialAudioAvailable") as? Boolean
+            if (spatialAudio != null) {
+                LabelValueItem(
+                    label = stringResource(id = R.string.text_spatial_audio),
+                    value = if (spatialAudio) stringResource(id = R.string.text_supported) else stringResource(id = R.string.text_not_supported)
+                )
+            }
+
+            val headTracking = properties?.get("headTrackingAvailable") as? Boolean
+            if (headTracking != null) {
+                LabelValueItem(
+                    label = stringResource(id = R.string.text_head_tracking),
+                    value = if (headTracking) stringResource(id = R.string.text_supported) else stringResource(id = R.string.text_not_supported)
+                )
+            }
+
             LabelValueItem(
                 label = stringResource(id = R.string.text_abi),
                 value = Util.format(Build.SUPPORTED_ABIS),
@@ -383,6 +389,37 @@ fun MediaDrmCard(
 }
 
 @Composable
+fun SkeletonCard(modifier: Modifier = Modifier) {
+    OutlinedCard(modifier = modifier) {
+        Column(
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.card_padding)),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .height(24.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        shape = MaterialTheme.shapes.small
+                    )
+            )
+            repeat(4) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(if (it % 2 == 0) 0.8f else 0.6f)
+                        .height(16.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                            shape = MaterialTheme.shapes.extraSmall
+                        )
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun WidevineCard(
     properties: Map<String, Any>,
     modifier: Modifier = Modifier
@@ -408,12 +445,40 @@ fun WidevineCard(
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.card_padding))
         ) {
-            Text(
-                text = description,
-                style = MaterialTheme.typography.titleLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.titleLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
+                )
+
+                if (!securityLevel.isNullOrEmpty()) {
+                    val isL1 = securityLevel.contains("L1", ignoreCase = true)
+                    val containerColor = if (isL1) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer
+                    val contentColor = if (isL1) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer
+
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                color = containerColor,
+                                shape = MaterialTheme.shapes.extraSmall
+                            )
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = securityLevel,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = contentColor
+                        )
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(4.dp))
 
