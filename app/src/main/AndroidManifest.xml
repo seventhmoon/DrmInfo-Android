@@ -64,13 +64,9 @@
 <!--            android:resource="@xml/gma_ad_services_config"-->
 <!--            tools:replace="android:resource" />-->
 
-        <uses-library
-            android:name="org.apache.http.legacy"
-            android:required="false" />
-
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-9890667024752973~1133604110" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

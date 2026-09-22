@@ -12,12 +12,8 @@ import androidx.annotation.Keep
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.androidfung.drminfo.Util.getQprNumber
-import com.androidfung.drminfo.ui.mobile.ClearKeyViewModel
-import com.androidfung.drminfo.ui.mobile.InfoViewModel
+import com.androidfung.drminfo.ui.DrmViewModel
 import com.androidfung.drminfo.ui.mobile.MobileScreen
-import com.androidfung.drminfo.ui.mobile.PlayreadyViewModel
-import com.androidfung.drminfo.ui.mobile.WidevineViewModel
-import com.androidfung.drminfo.ui.mobile.WiseplayViewModel
 import com.androidfung.drminfo.ui.theme.DrmInfoTheme
 import com.google.firebase.analytics.FirebaseAnalytics
 
@@ -37,41 +33,27 @@ class MobileActivity : ComponentActivity() {
             )
         )
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        val infoViewModel: InfoViewModel by viewModels()
-        val clearKeyViewModel: ClearKeyViewModel by viewModels()
-        val widevineViewModel: WidevineViewModel by viewModels()
-        val playreadyViewModel: PlayreadyViewModel by viewModels()
-        val wiseplayViewModel: WiseplayViewModel by viewModels()
+        val drmViewModel: DrmViewModel by viewModels()
 
-        // Initialize GMA Next-Gen SDK via ViewModel using Application Context to prevent Activity leaks
-        infoViewModel.initMobileAds(getString(R.string.ad_app_id))
+        // Initialize GMA Next-Gen SDK and start preloading banner ad immediately
+        drmViewModel.initMobileAds(
+            appId = getString(R.string.ad_app_id),
+            adUnitId = getString(R.string.ad_unit_id)
+        )
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(applicationContext)
 
         setContent {
             DrmInfoTheme {
-                val infoProperties by infoViewModel.properties.collectAsStateWithLifecycle()
-                val clearkeyProperties by clearKeyViewModel.properties.collectAsStateWithLifecycle()
-                val widevineProperties by widevineViewModel.properties.collectAsStateWithLifecycle()
-                val playreadyProperties by playreadyViewModel.properties.collectAsStateWithLifecycle()
-                val wiseplayProperties by wiseplayViewModel.properties.collectAsStateWithLifecycle()
+                val state by drmViewModel.state.collectAsStateWithLifecycle()
 
                 MobileScreen(
-                    infoProperties = infoProperties,
-                    clearkeyProperties = clearkeyProperties,
-                    widevineProperties = widevineProperties,
-                    playreadyProperties = playreadyProperties,
-                    wiseplayProperties = wiseplayProperties,
-                    isAdsInitialized = infoViewModel.isAdsInitialized,
-                    isRefreshing = infoViewModel.isRefreshing,
-                    onRefresh = {
-                        infoViewModel.refresh()
-                        clearKeyViewModel.refresh()
-                        widevineViewModel.refresh()
-                        playreadyViewModel.refresh()
-                        wiseplayViewModel.refresh()
+                    state = state,
+                    isAdsInitialized = drmViewModel.isAdsInitialized,
+                    onRefresh = { drmViewModel.refresh() },
+                    onPreloadAd = { widthDp ->
+                        drmViewModel.startPreload(getString(R.string.ad_unit_id), widthDp)
                     }
                 )
             }

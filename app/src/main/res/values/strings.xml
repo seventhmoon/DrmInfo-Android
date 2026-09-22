@@ -18,6 +18,16 @@
     <!--    <string name="text_webview_version">WebView Version</string>-->
     <string name="text_max_security_level">Max Security Level</string>
     <string name="text_hardware">Hardware</string>
+    <string name="action_share">Share Report</string>
+    <string name="share_report_title">DRM Info Report</string>
+    <string name="section_system">System &amp; OS</string>
+    <string name="section_soc">Processor &amp; Performance</string>
+    <string name="section_display">Display</string>
+    <string name="section_codecs">Hardware Decoders</string>
+    <string name="section_audio">Audio &amp; Surround Formats</string>
+    <string name="text_surround_sound">Supported Surround Formats</string>
+    <string name="text_seamless_refresh_rate">Seamless Refresh Rates (Hz)</string>
+    <string name="action_back_to_overview">Back to Overview</string>
     <string name="text_type">Build Type</string>
     <string name="text_fingerprint">Build Fingerprint</string>
     <string name="text_display">Build</string>

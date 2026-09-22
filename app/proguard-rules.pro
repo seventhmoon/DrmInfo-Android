@@ -27,14 +27,27 @@
 # Preserve Compose font weight adjustment helper classes
 -keep class androidx.compose.ui.text.font.FontWeightAdjustmentHelper** { *; }
 
-# WorkManager Room Database implementation keep rules
--keep class androidx.work.impl.WorkDatabase_Impl { *; }
-
-# General Room keep rules for transitive dependencies
--keep class * extends androidx.room.RoomDatabase
-
 # Prevent R8 from stripping or mismanaging StrictMode methods used by Play Services
 -keep class android.os.StrictMode$VmPolicy$Builder {
     public *;
 }
+
+# WorkManager & Room keep rules (brought in transitively by Google Mobile Ads SDK)
+# Required for R8 Full Mode reflection instantiation in androidx.startup.InitializationProvider
+-keep class androidx.work.impl.WorkDatabase_Impl {
+    public <init>();
+    *;
+}
+
+-keep class * extends androidx.room.RoomDatabase {
+    public <init>();
+    *;
+}
+
+-keepclassmembers class * extends androidx.room.RoomDatabase {
+    *;
+}
+
+-keep interface androidx.work.** { *; }
+-dontwarn androidx.work.impl.WorkDatabase_Impl
 

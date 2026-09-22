@@ -16,8 +16,8 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 24
         targetSdk = 37
-        versionCode 495
-        versionName '1.2.2-2608907'
+        versionCode 500
+        versionName '1.2.2-260922'
 
         resourceConfigurations += ['en']
 
@@ -116,6 +116,7 @@ dependencies {
     androidTestImplementation (libs.androidx.compose.ui.test.junit4)
 
     debugImplementation (libs.androidx.compose.ui.tooling)
+    debugImplementation (libs.androidx.compose.ui.test.manifest)
     debugImplementation (libs.leakcanary.android)
 }
 

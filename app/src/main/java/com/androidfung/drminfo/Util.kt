@@ -13,7 +13,10 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.core.view.DisplayCompat
+import com.androidfung.drminfo.model.DrmInfoUiState
+import com.androidfung.drminfo.model.DrmSchemeState
 import java.util.*
+import kotlin.math.round
 
 
 //Make sure you have the following declared in Manifest when running on Android 11+
@@ -85,6 +88,78 @@ object Util {
         else -> R.string.text_undefined_name
     }
 
+    /**
+     * Builds a formatted, plain-text diagnostic report from the current [DrmInfoUiState].
+     * Suitable for sharing via clipboard or the Android share sheet.
+     */
+    fun buildReport(context: Context, state: DrmInfoUiState): String {
+        return formatReport(state) { resId ->
+            runCatching { context.getString(resId) }.getOrDefault(resId.toString())
+        }
+    }
+
+    /**
+     * Pure formatter for [DrmInfoUiState], completely decoupled from Android [Context].
+     * Enables direct unit testing without framework mocks.
+     */
+    fun formatReport(
+        state: DrmInfoUiState,
+        stringResolver: (Int) -> String = { it.toString() }
+    ): String {
+        val sb = StringBuilder()
+        val dev = state.device
+        sb.appendLine("=== DRM Info Report ===")
+        sb.appendLine("Device: ${dev.manufacturer} ${dev.model} (${dev.device})")
+        sb.appendLine("Brand: ${dev.brand}")
+        sb.appendLine("Hardware: ${dev.hardware}")
+        sb.appendLine("Build Display: ${dev.buildDisplay}")
+        sb.appendLine("Build Type: ${dev.buildType}")
+        sb.appendLine("Fingerprint: ${dev.fingerprint}")
+        sb.appendLine("Android Version: ${Build.VERSION.RELEASE} (SDK ${dev.sdkInt})")
+        dev.sdkFull?.let { sb.appendLine("SDK Full: $it") }
+        dev.securityPatch?.let { sb.appendLine("Security Patch: $it") }
+        dev.socManufacturer?.let { sb.appendLine("SoC Manufacturer: $it") }
+        dev.socModel?.let { sb.appendLine("SoC Model: $it") }
+        dev.mediaPerformanceClass?.let { sb.appendLine("Media Performance Class: $it") }
+        if (dev.supportedHdrTypes.isNotEmpty()) {
+            sb.appendLine("Supported HDR: ${dev.supportedHdrTypes.joinToString()}")
+        }
+        if (dev.supportedRefreshRates.isNotEmpty()) {
+            sb.appendLine("Supported Refresh Rates: ${dev.supportedRefreshRates.joinToString { "${round(it).toInt()} Hz" }}")
+        }
+        if (dev.alternativeRefreshRates.isNotEmpty()) {
+            sb.appendLine("Alternative Refresh Rates: ${dev.alternativeRefreshRates.joinToString { "${round(it).toInt()} Hz" }}")
+        }
+        if (dev.supportedAudioEncodings.isNotEmpty()) {
+            sb.appendLine("Surround Audio Formats: ${dev.supportedAudioEncodings.joinToString()}")
+        }
+        if (dev.hardwareDecoders.isNotEmpty()) {
+            sb.appendLine("HW Decoders: ${dev.hardwareDecoders.joinToString()}")
+        }
+
+        state.schemes.forEach { scheme ->
+            sb.appendLine()
+            sb.appendLine("[${scheme.name}]")
+            sb.appendLine("  Description: ${scheme.description}")
+            scheme.vendor?.let { sb.appendLine("  Vendor: $it") }
+            scheme.version?.let { sb.appendLine("  Version: $it") }
+            scheme.maxHdcpLevelRes?.let { sb.appendLine("  Max HDCP Level: ${stringResolver(it)}") }
+            scheme.connectedHdcpLevelRes?.let { sb.appendLine("  Connected HDCP Level: ${stringResolver(it)}") }
+
+            if (scheme is DrmSchemeState.Widevine) {
+                scheme.securityLevel?.let { sb.appendLine("  Security Level: $it") }
+                scheme.systemId?.let { sb.appendLine("  System ID: $it") }
+                scheme.maxSessions?.let { sb.appendLine("  Max Sessions: $it") }
+                scheme.oemCryptoVersion?.let { sb.appendLine("  OEM Crypto API: $it") }
+            }
+
+            scheme.extraProperties.forEach { (k, v) ->
+                sb.appendLine("  $k: $v")
+            }
+        }
+        return sb.toString().trimEnd()
+    }
+
     @JvmStatic
     fun goneIfNullOrEmpty(input: Any?) = when (input) {
         is Collection<*> if input.isEmpty() -> View.GONE
@@ -132,12 +207,31 @@ object Util {
     }
 
 
+    /**
+     * Best-effort legacy helper that extracts the QPR number from [Build.ID].
+     *
+     * Safe for every [Build.ID] format: single-character ids (e.g. "N", "O", "P",
+     * "Q", "R", "S") and any unparseable value return -1 instead of throwing.
+     */
     fun getQprNumber(): Int {
-        when (Build.ID.substring(1, 2)) {
-            "P", "D" -> return 0
-            "Q" -> return Build.ID.substring(2, 3).toInt()
+        val id = Build.ID ?: return -1
+        return when (id.getOrNull(1)) {
+            null -> -1
+            'P', 'D' -> 0
+            'Q' -> id.getOrNull(2)?.digitToIntOrNull() ?: -1
+            else -> -1
         }
-        return -1
+    }
+
+    /** Overload for pure unit testing without android.os.Build dependency. */
+    fun parseQprNumber(buildId: String?): Int {
+        val id = buildId ?: return -1
+        return when (id.getOrNull(1)) {
+            null -> -1
+            'P', 'D' -> 0
+            'Q' -> id.getOrNull(2)?.digitToIntOrNull() ?: -1
+            else -> -1
+        }
     }
 
 }

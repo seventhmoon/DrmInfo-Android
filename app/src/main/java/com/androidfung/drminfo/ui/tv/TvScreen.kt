@@ -1,7 +1,6 @@
 package com.androidfung.drminfo.ui.tv
 
 import android.content.Context
-import android.media.AudioManager
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -29,12 +28,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -47,10 +49,11 @@ import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import androidx.tv.material3.darkColorScheme
-import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
-import com.androidfung.drminfo.Util
+import com.androidfung.drminfo.model.DrmInfoUiState
+import com.androidfung.drminfo.model.DrmSchemeState
 import java.util.UUID
+import kotlin.math.round
 
 data class TvInfoItem(
     val title: String,
@@ -62,17 +65,23 @@ data class TvInfoItem(
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun TvScreen(
-    infoProperties: Map<String, Any>?,
-    clearkeyProperties: Map<String, Any>?,
-    widevineProperties: Map<String, Any>?,
-    playreadyProperties: Map<String, Any>?,
-    wiseplayProperties: Map<String, Any>?
+    state: DrmInfoUiState
 ) {
     val context = LocalContext.current
     var selectedItemWithSubActions by remember { mutableStateOf<TvInfoItem?>(null) }
+    val mainFocusRequester = remember { FocusRequester() }
+    val subFocusRequester = remember { FocusRequester() }
 
     BackHandler(enabled = selectedItemWithSubActions != null) {
         selectedItemWithSubActions = null
+    }
+
+    LaunchedEffect(selectedItemWithSubActions) {
+        if (selectedItemWithSubActions == null) {
+            runCatching { mainFocusRequester.requestFocus() }
+        } else {
+            runCatching { subFocusRequester.requestFocus() }
+        }
     }
 
     MaterialTheme(
@@ -82,7 +91,7 @@ fun TvScreen(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = 48.dp, end = 48.dp, top = 36.dp, bottom = 36.dp),
+                    .padding(start = 58.dp, end = 58.dp, top = 40.dp, bottom = 40.dp),
                 horizontalArrangement = Arrangement.spacedBy(48.dp)
             ) {
                 // Left Guidance Panel (Leanback Keyline Layout)
@@ -123,13 +132,10 @@ fun TvScreen(
                 }
 
                 // Right Guided Actions Panel with Slide Transition
-                val mainItems = remember(infoProperties, clearkeyProperties, widevineProperties, playreadyProperties, wiseplayProperties) {
+                val mainItems = remember(state) {
                     buildTvInfoItems(
                         context = context,
-                        clearkeyProperties = clearkeyProperties,
-                        widevineProperties = widevineProperties,
-                        playreadyProperties = playreadyProperties,
-                        wiseplayProperties = wiseplayProperties
+                        state = state
                     )
                 }
 
@@ -160,6 +166,7 @@ fun TvScreen(
                             ) {
                                 items(mainItems) { item ->
                                     val hasSubItems = !item.subItems.isNullOrEmpty()
+                                    val isFirst = item == mainItems.firstOrNull()
 
                                     ListItem(
                                         selected = false,
@@ -189,7 +196,9 @@ fun TvScreen(
                                                 )
                                             }
                                         },
-                                        modifier = Modifier.fillMaxWidth()
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .then(if (isFirst) Modifier.focusRequester(mainFocusRequester) else Modifier)
                                     )
                                 }
                             }
@@ -200,6 +209,32 @@ fun TvScreen(
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
                                 contentPadding = PaddingValues(vertical = 12.dp)
                             ) {
+                                // Sub-actions Back Navigation Breadcrumb (2C)
+                                item(key = "breadcrumb_back") {
+                                    ListItem(
+                                        selected = false,
+                                        onClick = { selectedItemWithSubActions = null },
+                                        headlineContent = {
+                                            Text(
+                                                text = stringResource(id = R.string.action_back_to_overview),
+                                                style = MaterialTheme.typography.titleMedium,
+                                                color = MaterialTheme.colorScheme.primary
+                                            )
+                                        },
+                                        leadingContent = {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.ic_arrow_back),
+                                                contentDescription = stringResource(id = R.string.action_back_to_overview),
+                                                modifier = Modifier.size(24.dp),
+                                                tint = MaterialTheme.colorScheme.primary
+                                            )
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .focusRequester(subFocusRequester)
+                                    )
+                                }
+
                                 items(activeSubItem.subItems ?: emptyList()) { subItem ->
                                     ListItem(
                                         selected = false,
@@ -230,63 +265,73 @@ fun TvScreen(
 
 private fun buildTvInfoItems(
     context: Context,
-    clearkeyProperties: Map<String, Any>?,
-    widevineProperties: Map<String, Any>?,
-    playreadyProperties: Map<String, Any>?,
-    wiseplayProperties: Map<String, Any>?
+    state: DrmInfoUiState
 ): List<TvInfoItem> = buildList {
-    add(TvInfoItem(context.getString(R.string.text_brand), Build.BRAND))
+    val dev = state.device
+    add(TvInfoItem(context.getString(R.string.text_brand), dev.brand))
     add(TvInfoItem(context.getString(R.string.text_product), Build.PRODUCT))
-    add(TvInfoItem(context.getString(R.string.text_hardware), Build.HARDWARE))
-    add(TvInfoItem(context.getString(R.string.text_display), Build.DISPLAY))
+    add(TvInfoItem(context.getString(R.string.text_hardware), dev.hardware))
+    add(TvInfoItem(context.getString(R.string.text_display), dev.buildDisplay))
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        add(TvInfoItem(context.getString(R.string.text_soc_manufacturer), Build.SOC_MANUFACTURER))
-        add(TvInfoItem(context.getString(R.string.text_soc_model), Build.SOC_MODEL))
+    dev.socManufacturer?.let { add(TvInfoItem(context.getString(R.string.text_soc_manufacturer), it)) }
+    dev.socModel?.let { add(TvInfoItem(context.getString(R.string.text_soc_model), it)) }
+
+    add(TvInfoItem(context.getString(R.string.text_type), dev.buildType))
+    add(TvInfoItem(context.getString(R.string.text_fingerprint), dev.fingerprint))
+    add(TvInfoItem(context.getString(R.string.text_sdk_level), dev.sdkInt.toString()))
+    dev.sdkFull?.let { add(TvInfoItem(context.getString(R.string.text_sdk_level_full), it)) }
+
+    dev.spatialAudioSupported?.let { supported ->
+        add(TvInfoItem(context.getString(R.string.text_spatial_audio), if (supported) context.getString(R.string.text_supported) else context.getString(R.string.text_not_supported)))
+    }
+    dev.headTrackingSupported?.let { supported ->
+        add(TvInfoItem(context.getString(R.string.text_head_tracking), if (supported) context.getString(R.string.text_supported) else context.getString(R.string.text_not_supported)))
     }
 
-    add(TvInfoItem(context.getString(R.string.text_type), Build.TYPE))
-    add(TvInfoItem(context.getString(R.string.text_fingerprint), Build.FINGERPRINT))
-    add(TvInfoItem(context.getString(R.string.text_sdk_level), Build.VERSION.SDK_INT.toString()))
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
-        add(TvInfoItem(context.getString(R.string.text_sdk_level_full), Build.VERSION.SDK_INT_FULL.toString()))
+    if (dev.abis.isNotEmpty()) {
+        add(TvInfoItem(context.getString(R.string.text_abi), dev.abis.joinToString()))
     }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        val audioManager = context.getSystemService(AudioManager::class.java)
-        audioManager?.spatializer?.let { spatializer ->
-            add(TvInfoItem(context.getString(R.string.text_spatial_audio), if (spatializer.isAvailable) context.getString(R.string.text_supported) else context.getString(R.string.text_not_supported)))
-            add(TvInfoItem(context.getString(R.string.text_head_tracking), if (spatializer.isHeadTrackerAvailable) context.getString(R.string.text_supported) else context.getString(R.string.text_not_supported)))
+    if (dev.supportedRefreshRates.isNotEmpty()) {
+        add(TvInfoItem(context.getString(R.string.text_supported_refresh_rate), dev.supportedRefreshRates.joinToString { "${round(it).toInt()} Hz" }))
+    }
+
+    if (dev.supportedAudioEncodings.isNotEmpty()) {
+        val audioSubItems = dev.supportedAudioEncodings.map {
+            TvInfoItem(title = it, description = context.getString(R.string.text_supported))
         }
+        add(
+            TvInfoItem(
+                title = context.getString(R.string.section_audio),
+                description = "${dev.supportedAudioEncodings.size} supported",
+                subItems = audioSubItems
+            )
+        )
     }
 
-    add(TvInfoItem(context.getString(R.string.text_abi), Build.SUPPORTED_ABIS.joinToString()))
+    // Dynamic DRM Schemes
+    state.schemes.forEach { scheme ->
+        val subItems = mutableListOf<TvInfoItem>()
+        subItems.add(TvInfoItem(context.getString(R.string.mediadrm_string_property_name_description), scheme.description))
+        scheme.vendor?.let { subItems.add(TvInfoItem(context.getString(R.string.mediadrm_string_property_name_vendor), it)) }
+        scheme.version?.let { subItems.add(TvInfoItem(context.getString(R.string.mediadrm_string_property_name_version), it)) }
+        scheme.maxHdcpLevelRes?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_maxHdcpLevel), context.getString(it))) }
+        scheme.connectedHdcpLevelRes?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_hdcpLevel), context.getString(it))) }
 
-    // DRM Schemes
-    addDrmSchemeItem(context, Constants.CLEARKEY_UUID, clearkeyProperties)
-    addDrmSchemeItem(context, Constants.WIDEVINE_UUID, widevineProperties)
-    addDrmSchemeItem(context, Constants.PLAYREADY_UUID, playreadyProperties)
-    addDrmSchemeItem(context, Constants.WISEPLAY_UUID, wiseplayProperties)
-}
+        if (scheme is DrmSchemeState.Widevine) {
+            scheme.securityLevel?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_securityLevel), it)) }
+            scheme.systemId?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_systemId), it)) }
+            scheme.maxSessions?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_maxNumberOfSessions), it)) }
+            scheme.oemCryptoVersion?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_oemCryptoApiVersion), it)) }
+        }
 
-private fun MutableList<TvInfoItem>.addDrmSchemeItem(
-    context: Context,
-    uuid: UUID,
-    properties: Map<String, Any>?
-) {
-    if (!properties.isNullOrEmpty()) {
-        val title = context.getString(Util.convertCryptoSchemeToStringRes(uuid))
-        val subItems = properties.mapNotNull { (key, value) ->
-            val valueStr = (value as Any?)?.toString()
-            if (!valueStr.isNullOrEmpty()) {
-                TvInfoItem(title = key, description = valueStr)
-            } else null
+        scheme.extraProperties.forEach { (label, value) ->
+            subItems.add(TvInfoItem(label, value))
         }
 
         add(
             TvInfoItem(
-                title = title,
+                title = scheme.name,
                 description = context.getString(R.string.text_supported),
                 subItems = subItems.ifEmpty { null }
             )
