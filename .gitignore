@@ -8,3 +8,8 @@
 .DS_Store
 /build
 /captures
+/app/release/
+app/release/
+google-services.json
+app/google-services.json
+/app/google-services.json

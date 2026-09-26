@@ -46,6 +46,8 @@
     <string name="adsize_300x600" translatable="false">300x600</string>
     <string name="adsize_300x900" translatable="false">300x900</string>
 
+    <string name="ad_unit_id_adaptive" translatable="false">ca-app-pub-9890667024752973/1907698710</string>
+
     <string name="adsize" translatable="false">@string/adsize_small_rect</string>
-    <string name="ad_unit_id" translatable="false">@string/ad_unit_id_250x250</string>
+    <string name="ad_unit_id" translatable="false">@string/ad_unit_id_adaptive</string>
 </resources>

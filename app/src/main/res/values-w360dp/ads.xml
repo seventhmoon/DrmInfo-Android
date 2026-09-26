@@ -26,5 +26,5 @@
     <dimen name="native_ad_min_height">250dp</dimen>
 
     <string name="adsize" translatable="false">@string/adsize_large_rect</string>
-    <string name="ad_unit_id" translatable="false">@string/ad_unit_id_336x280</string>
+    <string name="ad_unit_id" translatable="false">@string/ad_unit_id_adaptive</string>
 </resources>

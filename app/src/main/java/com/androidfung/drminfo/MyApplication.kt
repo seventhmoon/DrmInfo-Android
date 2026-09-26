@@ -1,22 +1,16 @@
-package com.androidfung.drminfo;
+package com.androidfung.drminfo
 
-import android.app.Application;
-import com.google.android.material.color.DynamicColors;
+import android.app.Application
+import com.google.android.material.color.DynamicColors
 
-public class MyApplication extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        // This is all you need.
-        DynamicColors.applyToActivitiesIfAvailable(this);
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        DynamicColors.applyToActivitiesIfAvailable(this)
     }
 
-    @Override
-    public void onTrimMemory(int level) {
-        super.onTrimMemory(level);
-        // Release global resources if memory is moderate or higher
-        if (level >= TRIM_MEMORY_MODERATE) {
-            // Add global resource cleanup here if needed in the future
-        }
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        // Global resource cleanup when UI is hidden or memory is tight
     }
 }

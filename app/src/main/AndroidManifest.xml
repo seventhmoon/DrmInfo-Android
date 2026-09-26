@@ -57,6 +57,7 @@
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
+        android:hardwareAccelerated="true"
         >
 
 <!--        <property-->
@@ -77,6 +78,7 @@
         <activity
             android:name=".MobileActivity"
             android:exported="true"
+            android:hardwareAccelerated="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

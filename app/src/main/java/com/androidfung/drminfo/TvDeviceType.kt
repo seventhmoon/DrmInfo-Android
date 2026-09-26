@@ -5,7 +5,6 @@ package com.androidfung.drminfo
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.IntDef
-import com.androidfung.drminfo.Util.getDefaultLauncher
 
 /**
  * @author chofung@google.com
@@ -53,8 +52,7 @@ object TvDeviceTypes {
 
 
     @TvDeviceType
-    fun PackageManager.obtainDeviceType(): Int {
-        val defaultLauncher = getDefaultLauncher()
+    fun PackageManager.obtainDeviceType(defaultLauncher: String?): Int {
         return when {
             hasSystemFeature(FEATURE_AMAZON_FIRE_TV) -> FIRE_TV
             hasSystemFeature(PackageManager.FEATURE_LEANBACK) -> {

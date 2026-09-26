@@ -38,6 +38,101 @@ class UtilUnitTest {
     }
 
     @Test
+    fun testDetectReleaseChannel() {
+        assertEquals(
+            R.string.text_channel_canary,
+            Util.detectReleaseChannel(
+                releaseOrCodename = "CANARY",
+                buildTags = "release-keys"
+            )
+        )
+        assertEquals(
+            R.string.text_channel_canary,
+            Util.detectReleaseChannel(
+                codename = "REL",
+                previewSdkInt = 0,
+                buildId = "canary-build-12345",
+                buildTags = "release-keys"
+            )
+        )
+        // Under AOSP specification (Year code A=2024, B=2025, C=2026), 4th char 'A' is GA
+        assertEquals(
+            R.string.text_channel_ga,
+            Util.detectReleaseChannel(
+                codename = "REL",
+                previewSdkInt = 0,
+                buildId = "CP1A.250101.001",
+                buildTags = "release-keys",
+                buildType = "user"
+            )
+        )
+        // 4th char 'B' (e.g. UP1B) or two digits (e.g. AP31, BP11) is Beta
+        assertEquals(
+            R.string.text_channel_beta,
+            Util.detectReleaseChannel(
+                codename = "REL",
+                previewSdkInt = 0,
+                buildId = "UP1B.231005.007",
+                buildTags = "release-keys"
+            )
+        )
+        assertEquals(
+            R.string.text_channel_beta,
+            Util.detectReleaseChannel(
+                codename = "REL",
+                previewSdkInt = 0,
+                buildId = "BP11.250110.005",
+                buildTags = "release-keys"
+            )
+        )
+        assertEquals(
+            R.string.text_channel_beta,
+            Util.detectReleaseChannel(
+                codename = "Baklava",
+                releaseOrCodename = "Baklava",
+                previewSdkInt = 1,
+                buildTags = "release-keys"
+            )
+        )
+        assertEquals(
+            R.string.text_channel_beta,
+            Util.detectReleaseChannel(
+                codename = "VanillaIceCream",
+                releaseOrCodename = "VanillaIceCream",
+                previewSdkInt = 1,
+                buildTags = "release-keys"
+            )
+        )
+        assertEquals(
+            R.string.text_channel_beta,
+            Util.detectReleaseChannel(
+                codename = "REL",
+                previewSdkInt = 0,
+                buildId = "AP31.240517.022",
+                buildTags = "release-keys"
+            )
+        )
+        assertEquals(
+            R.string.text_channel_custom,
+            Util.detectReleaseChannel(
+                codename = "REL",
+                previewSdkInt = 0,
+                buildTags = "test-keys"
+            )
+        )
+        assertEquals(
+            R.string.text_channel_ga,
+            Util.detectReleaseChannel(
+                codename = "REL",
+                previewSdkInt = 0,
+                buildId = "AP2A.240905.003",
+                buildTags = "release-keys",
+                buildType = "user"
+            )
+        )
+    }
+
+    @Test
     fun testGetQprNumberDoesNotCrashOnDefaultOrEmptyBuildId() {
         // Build.ID is null in unit tests without robolectric. Must return -1 without throwing.
         assertEquals(-1, Util.getQprNumber())
@@ -55,6 +150,24 @@ class UtilUnitTest {
         assertEquals(2, Util.parseQprNumber("UQ2A.240305.019"))
         assertEquals(-1, Util.parseQprNumber("UQxA.invalid"))
         assertEquals(-1, Util.parseQprNumber("XYZ"))
+
+        // Modern Trunk scheme (A=2024, B=2025, C=2026, digit at index 2 is Quarter / QPR)
+        assertEquals(2, Util.parseQprNumber("AP2A.240905.003"))
+        assertEquals(1, Util.parseQprNumber("BP1A.250105.002"))
+        assertEquals(2, Util.parseQprNumber("CP2A.260605.001"))
+        assertEquals(4, Util.parseQprNumber("AP4A.241105.001"))
+    }
+
+    @Test
+    fun testParseQuarterlyReleaseName() {
+        assertEquals("24Q2", Util.parseQuarterlyReleaseName("AP2A.240905.003"))
+        assertEquals("24Q3", Util.parseQuarterlyReleaseName("AP3A.240615.001"))
+        assertEquals("25Q1", Util.parseQuarterlyReleaseName("BP1A.250105.002"))
+        assertEquals("25Q2", Util.parseQuarterlyReleaseName("BP2A.250305.001"))
+        assertEquals("26Q2", Util.parseQuarterlyReleaseName("CP2A.260605.001"))
+        assertEquals("26Q4", Util.parseQuarterlyReleaseName("CP4A.261105.001"))
+        assertEquals(null, Util.parseQuarterlyReleaseName("UP1A.231005.007"))
+        assertEquals(null, Util.parseQuarterlyReleaseName(null))
     }
 
     @Test

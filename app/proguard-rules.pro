@@ -32,22 +32,14 @@
     public *;
 }
 
-# WorkManager & Room keep rules (brought in transitively by Google Mobile Ads SDK)
+# WorkManager keep rules (brought in transitively by Google Mobile Ads SDK)
 # Required for R8 Full Mode reflection instantiation in androidx.startup.InitializationProvider
+-dontwarn androidx.room.**
+-dontwarn androidx.work.**
 -keep class androidx.work.impl.WorkDatabase_Impl {
     public <init>();
     *;
 }
 
--keep class * extends androidx.room.RoomDatabase {
-    public <init>();
-    *;
-}
-
--keepclassmembers class * extends androidx.room.RoomDatabase {
-    *;
-}
-
 -keep interface androidx.work.** { *; }
--dontwarn androidx.work.impl.WorkDatabase_Impl
 

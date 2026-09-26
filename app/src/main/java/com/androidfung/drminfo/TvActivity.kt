@@ -9,18 +9,14 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.androidfung.drminfo.ui.DrmViewModel
 import com.androidfung.drminfo.ui.tv.TvScreen
-import com.google.firebase.analytics.FirebaseAnalytics
 
 @Keep
 class TvActivity : ComponentActivity() {
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val drmViewModel: DrmViewModel by viewModels()
-
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         setContent {
             val state by drmViewModel.state.collectAsStateWithLifecycle()

@@ -7,6 +7,13 @@
     <string name="text_brand">Brand</string>
     <string name="text_product">Product</string>
     <string name="text_version">Version</string>
+    <string name="text_security_patch">Security Patch</string>
+    <string name="text_release_channel">Release Channel</string>
+    <string name="text_quarterly_release">Quarterly Release</string>
+    <string name="text_channel_ga">Stable (GA)</string>
+    <string name="text_channel_beta">Beta / Preview</string>
+    <string name="text_channel_canary">Canary</string>
+    <string name="text_channel_custom">Custom / Engineering</string>
     <string name="text_sdk_level">SDK Level</string>
     <string name="text_sdk_level_full">SDK Level Full</string>
     <string name="text_device_information">Device Information</string>
@@ -20,6 +27,7 @@
     <string name="text_hardware">Hardware</string>
     <string name="action_share">Share Report</string>
     <string name="share_report_title">DRM Info Report</string>
+    <string name="section_hardware">Hardware</string>
     <string name="section_system">System &amp; OS</string>
     <string name="section_soc">Processor &amp; Performance</string>
     <string name="section_display">Display</string>
@@ -36,6 +44,7 @@
     <string name="text_hdr_type">HDR Type</string>
     <string name="text_wide_color">Wide Color Gamut</string>
     <string name="text_abi">Supported ABI</string>
+    <string name="text_hw_encode_type">Supported Hardware Encoder</string>
     <string name="text_hw_decode_type">Supported Hardware Decoder</string>
     <string name="text_supported_hdr_types">Supported HDR Types</string>
     <string name="text_supported_refresh_rate">Supported Refresh Rate (Hz)</string>

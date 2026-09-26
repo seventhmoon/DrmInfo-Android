@@ -57,6 +57,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
+import kotlin.math.roundToInt
 import android.app.Activity
 import android.content.ClipData
 import android.content.ContextWrapper
@@ -76,7 +79,6 @@ import kotlin.time.Duration.Companion.milliseconds
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -106,19 +108,22 @@ fun MobileScreen(
     state: DrmInfoUiState,
     isAdsInitialized: Boolean = false,
     onRefresh: () -> Unit = {},
-    onPreloadAd: (Int) -> Unit = {}
+    onPreloadAd: (Int) -> Unit = {},
+    onShareReport: () -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
     val gridState = rememberLazyStaggeredGridState()
     val context = LocalContext.current
-    val configuration = LocalConfiguration.current
+    val windowInfo = LocalWindowInfo.current
+    val density = LocalDensity.current
+    val windowWidthDp = with(density) { windowInfo.containerSize.width.toDp().value.roundToInt() }
 
-    val screenWidthDp = configuration.screenWidthDp
-    val defaultAdWidthDp = (screenWidthDp - 32).coerceAtLeast(300)
+    // For a 1-column card in the grid (minSize = 340dp), width is naturally ~320-360dp
+    val defaultAdWidthDp = minOf(windowWidthDp - 24, 360).coerceAtLeast(300)
 
-    // Preload when screen configuration (fold/unfold/rotate) changes
-    LaunchedEffect(configuration.screenWidthDp, configuration.orientation, isAdsInitialized) {
+    // Preload when screen/window configuration (fold/unfold/rotate/split-screen) changes
+    LaunchedEffect(windowInfo.containerSize, isAdsInitialized) {
         if (isAdsInitialized) {
             onPreloadAd(defaultAdWidthDp)
         }
@@ -176,6 +181,7 @@ fun MobileScreen(
                     val shareChooserTitle = stringResource(id = R.string.action_share)
                     IconButton(
                         onClick = {
+                            onShareReport()
                             val report = Util.buildReport(context, state)
                             val intent = Intent(Intent.ACTION_SEND).apply {
                                 type = "text/plain"
@@ -246,15 +252,15 @@ fun MobileScreen(
                             )
                         }
 
+                        item(key = "card_hardware") {
+                            HardwareCard(device = state.device, modifier = Modifier.fillMaxWidth())
+                        }
+
                         item(key = "card_system") {
                             SystemCard(device = state.device, modifier = Modifier.fillMaxWidth())
                         }
 
-                        if (state.device.hasPerformanceInfo) {
-                            item(key = "card_performance") {
-                                PerformanceCard(device = state.device, modifier = Modifier.fillMaxWidth())
-                            }
-                        }
+
 
                         if (state.device.hasDisplayInfo) {
                             item(key = "card_display") {
@@ -265,12 +271,6 @@ fun MobileScreen(
                         if (state.device.supportedAudioEncodings.isNotEmpty()) {
                             item(key = "card_audio") {
                                 AudioCard(device = state.device, modifier = Modifier.fillMaxWidth())
-                            }
-                        }
-
-                        if (state.device.hardwareDecoders.isNotEmpty()) {
-                            item(key = "card_decoders") {
-                                DecodersCard(device = state.device, modifier = Modifier.fillMaxWidth())
                             }
                         }
 
@@ -292,8 +292,7 @@ fun MobileScreen(
 
                         if (isAdsInitialized) {
                             item(
-                                key = "card_ads",
-                                span = StaggeredGridItemSpan.FullLine
+                                key = "card_ads"
                             ) {
                                 AdCard(
                                     modifier = Modifier.fillMaxWidth(),
@@ -320,8 +319,6 @@ fun HeroHighlightsCard(
     val widevine = state.schemes.asSequence().filterIsInstance<DrmSchemeState.Widevine>().firstOrNull()
     val maxRefreshRate = state.device.supportedRefreshRates.maxOrNull()
     val hasHdr = state.device.supportedHdrTypes.isNotEmpty()
-    val maxHdcpRes = widevine?.maxHdcpLevelRes
-        ?: state.schemes.firstNotNullOfOrNull { it.maxHdcpLevelRes }
 
     ElevatedCard(
         modifier = modifier
@@ -341,36 +338,54 @@ fun HeroHighlightsCard(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Widevine Badge
-                if (widevine != null && (!widevine.securityLevel.isNullOrEmpty())) {
-                    val isL1 = widevine.securityLevel.contains("L1", ignoreCase = true)
+                // 1. Build Identifier: prefer buildId (e.g. "CP4A.260305.001"), then fallback to buildDisplay or API level
+                val buildRaw = state.device.buildId.ifEmpty {
+                    // If buildDisplay contains a build token like "... CP4A.260305...", extract it
+                    state.device.buildDisplay.split(' ')
+                        .firstOrNull { it.contains('.') && it.length >= 4 }
+                        ?: state.device.buildDisplay
+                }.ifEmpty { Build.ID.orEmpty() }
+
+                val buildPrefix = if (buildRaw.contains('.')) {
+                    buildRaw.substringBefore('.')
+                } else if (buildRaw.isNotEmpty()) {
+                    buildRaw
+                } else if (state.device.sdkInt > 0) {
+                    "API ${state.device.sdkInt}"
+                } else {
+                    null
+                }
+
+                buildPrefix?.let { prefix ->
+                    val buildLevel = when (state.device.releaseChannelRes) {
+                        R.string.text_channel_ga -> HighlightLevel.PRIMARY
+                        R.string.text_channel_beta, R.string.text_channel_canary -> HighlightLevel.SECONDARY
+                        R.string.text_channel_custom -> HighlightLevel.ERROR
+                        else -> HighlightLevel.TERTIARY
+                    }
                     HighlightPill(
-                        label = "Widevine",
-                        value = widevine.securityLevel,
-                        isPrimary = isL1
+                        label = "Build",
+                        value = prefix,
+                        level = buildLevel
                     )
                 }
 
-                // HDCP Level
-                maxHdcpRes?.let { resId ->
-                    HighlightPill(
-                        label = "Max HDCP",
-                        value = stringResource(id = resId),
-                        isPrimary = true
-                    )
-                }
-
-                // Refresh Rate
+                // 2. Display Refresh Rate
                 if (maxRefreshRate != null) {
                     val roundedHz = round(maxRefreshRate).toInt()
+                    val displayLevel = when {
+                        state.device.alternativeRefreshRates.isNotEmpty() -> HighlightLevel.PRIMARY
+                        maxRefreshRate > 60f || state.device.supportedRefreshRates.size > 1 -> HighlightLevel.SECONDARY
+                        else -> HighlightLevel.TERTIARY
+                    }
                     HighlightPill(
                         label = "Display",
                         value = "$roundedHz Hz",
-                        isPrimary = false
+                        level = displayLevel
                     )
                 }
 
-                // HDR
+                // 3. HDR Formats
                 if (hasHdr) {
                     val hdrSummary = state.device.supportedHdrTypes.joinToString(separator = "/") { id ->
                         when (id) {
@@ -381,19 +396,33 @@ fun HeroHighlightsCard(
                             else -> "HDR"
                         }
                     }
+                    val hdrLevel = if (state.device.supportedHdrTypes.any {
+                            it == Display.HdrCapabilities.HDR_TYPE_DOLBY_VISION ||
+                                    it == Display.HdrCapabilities.HDR_TYPE_HDR10_PLUS
+                        }) {
+                        HighlightLevel.PRIMARY
+                    } else {
+                        HighlightLevel.SECONDARY
+                    }
                     HighlightPill(
                         label = "HDR",
                         value = hdrSummary,
-                        isPrimary = true
+                        level = hdrLevel
                     )
                 }
 
-                // Android OS
-                if (state.device.sdkInt > 0) {
+                // 4. Widevine Security Level
+                if (widevine != null && (!widevine.securityLevel.isNullOrEmpty())) {
+                    val widevineLevel = when {
+                        widevine.securityLevel.contains("L1", ignoreCase = true) -> HighlightLevel.PRIMARY
+                        widevine.securityLevel.contains("L3", ignoreCase = true) -> HighlightLevel.ERROR
+                        widevine.securityLevel.contains("L2", ignoreCase = true) -> HighlightLevel.SECONDARY
+                        else -> HighlightLevel.TERTIARY
+                    }
                     HighlightPill(
-                        label = "Android",
-                        value = "API ${state.device.sdkInt}",
-                        isPrimary = false
+                        label = "Widevine",
+                        value = widevine.securityLevel,
+                        level = widevineLevel
                     )
                 }
             }
@@ -401,21 +430,24 @@ fun HeroHighlightsCard(
     }
 }
 
+private enum class HighlightLevel {
+    PRIMARY,
+    SECONDARY,
+    TERTIARY,
+    ERROR
+}
+
 @Composable
 private fun HighlightPill(
     label: String,
     value: String,
-    isPrimary: Boolean
+    level: HighlightLevel = HighlightLevel.PRIMARY
 ) {
-    val containerColor = if (isPrimary) {
-        MaterialTheme.colorScheme.primaryContainer
-    } else {
-        MaterialTheme.colorScheme.secondaryContainer
-    }
-    val contentColor = if (isPrimary) {
-        MaterialTheme.colorScheme.onPrimaryContainer
-    } else {
-        MaterialTheme.colorScheme.onSecondaryContainer
+    val (containerColor, contentColor) = when (level) {
+        HighlightLevel.PRIMARY -> MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
+        HighlightLevel.SECONDARY -> MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
+        HighlightLevel.TERTIARY -> MaterialTheme.colorScheme.tertiaryContainer to MaterialTheme.colorScheme.onTertiaryContainer
+        HighlightLevel.ERROR -> MaterialTheme.colorScheme.errorContainer to MaterialTheme.colorScheme.onErrorContainer
     }
 
     Row(
@@ -435,6 +467,132 @@ private fun HighlightPill(
             style = MaterialTheme.typography.labelLarge,
             color = contentColor
         )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun HardwareCard(
+    device: DeviceInfo,
+    modifier: Modifier = Modifier
+) {
+    OutlinedCard(
+        modifier = modifier
+    ) {
+        Column(
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.card_padding))
+        ) {
+            Text(
+                text = stringResource(id = R.string.section_hardware),
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // 1. Model
+            LabelValueItem(
+                label = stringResource(id = R.string.text_model),
+                value = "${device.manufacturer} ${device.model}"
+            )
+
+            // 2. Brand
+            LabelValueItem(
+                label = stringResource(id = R.string.text_brand),
+                value = device.brand
+            )
+
+            // 3. Hardware
+            LabelValueItem(
+                label = stringResource(id = R.string.text_hardware),
+                value = device.hardware
+            )
+
+            // 4. SoC Manufacturer
+            device.socManufacturer?.let {
+                LabelValueItem(
+                    label = stringResource(id = R.string.text_soc_manufacturer),
+                    value = it
+                )
+            }
+
+            // 5. SoC Model
+            device.socModel?.let {
+                LabelValueItem(
+                    label = stringResource(id = R.string.text_soc_model),
+                    value = it
+                )
+            }
+
+            // 6. Supported ABI
+            if (device.abis.isNotEmpty()) {
+                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
+                    Text(
+                        text = stringResource(id = R.string.text_abi),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        device.abis.forEach { abi ->
+                            TagChip(text = abi, allowCopy = true)
+                        }
+                    }
+                }
+            }
+
+            // 7. Media Performance Class
+            device.mediaPerformanceClass?.let {
+                LabelValueItem(
+                    label = stringResource(id = R.string.text_media_performance_class),
+                    value = it.toString()
+                )
+            }
+
+            // 8. Supported Hardware Encoder
+            if (device.hardwareEncoders.isNotEmpty()) {
+                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
+                    Text(
+                        text = stringResource(id = R.string.text_hw_encode_type),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        device.hardwareEncoders.forEach { codec ->
+                            TagChip(text = codec, allowCopy = true)
+                        }
+                    }
+                }
+            }
+
+            // 9. Supported Hardware Decoder
+            if (device.hardwareDecoders.isNotEmpty()) {
+                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
+                    Text(
+                        text = stringResource(id = R.string.text_hw_decode_type),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        device.hardwareDecoders.forEach { codec ->
+                            TagChip(text = codec, allowCopy = true)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -458,43 +616,33 @@ fun SystemCard(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            LabelValueItem(
-                label = stringResource(id = R.string.text_model),
-                value = "${device.manufacturer} ${device.model}"
-            )
-
-            LabelValueItem(
-                label = stringResource(id = R.string.text_brand),
-                value = device.brand
-            )
-
-            LabelValueItem(
-                label = stringResource(id = R.string.text_hardware),
-                value = device.hardware
-            )
-
+            // 1. Build
             LabelValueItem(
                 label = stringResource(id = R.string.text_display),
                 value = device.buildDisplay,
                 allowCopy = true
             )
 
+            // 2. Build Type
             LabelValueItem(
                 label = stringResource(id = R.string.text_type),
                 value = device.buildType
             )
 
+            // 3. Build Fingerprint
             LabelValueItem(
                 label = stringResource(id = R.string.text_fingerprint),
                 value = device.fingerprint,
                 allowCopy = true
             )
 
+            // 4. SDK Level
             LabelValueItem(
                 label = stringResource(id = R.string.text_sdk_level),
                 value = device.sdkInt.toString()
             )
 
+            // 5. SDK Level Full
             device.sdkFull?.let {
                 LabelValueItem(
                     label = stringResource(id = R.string.text_sdk_level_full),
@@ -502,6 +650,7 @@ fun SystemCard(
                 )
             }
 
+            // 6. Release or Codename
             device.releaseOrCodename?.let {
                 LabelValueItem(
                     label = stringResource(id = R.string.text_release_or_codename),
@@ -510,81 +659,26 @@ fun SystemCard(
                 )
             }
 
+            // 7. Quarterly Release
+            device.quarterlyReleaseName?.let { qName ->
+                LabelValueItem(
+                    label = stringResource(id = R.string.text_quarterly_release),
+                    value = qName
+                )
+            }
+
+            // 8. Security Patch
             device.securityPatch?.let {
                 LabelValueItem(
-                    label = stringResource(id = R.string.text_version),
+                    label = stringResource(id = R.string.text_security_patch),
                     value = it
-                )
-            }
-
-            if (device.abis.isNotEmpty()) {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_abi),
-                    value = device.abis.joinToString(),
-                    allowCopy = true
                 )
             }
         }
     }
 }
 
-@Composable
-fun PerformanceCard(
-    device: DeviceInfo,
-    modifier: Modifier = Modifier
-) {
-    OutlinedCard(
-        modifier = modifier
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.card_padding))
-        ) {
-            Text(
-                text = stringResource(id = R.string.section_soc),
-                style = MaterialTheme.typography.titleLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
 
-            Spacer(modifier = Modifier.height(4.dp))
-
-            device.socManufacturer?.let {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_soc_manufacturer),
-                    value = it
-                )
-            }
-
-            device.socModel?.let {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_soc_model),
-                    value = it
-                )
-            }
-
-            device.mediaPerformanceClass?.let {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_media_performance_class),
-                    value = it.toString()
-                )
-            }
-
-            device.spatialAudioSupported?.let { supported ->
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_spatial_audio),
-                    value = if (supported) stringResource(id = R.string.text_supported) else stringResource(id = R.string.text_not_supported)
-                )
-            }
-
-            device.headTrackingSupported?.let { supported ->
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_head_tracking),
-                    value = if (supported) stringResource(id = R.string.text_supported) else stringResource(id = R.string.text_not_supported)
-                )
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -702,19 +796,35 @@ fun AudioCard(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
-                Text(
-                    text = stringResource(id = R.string.text_surround_sound),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+            device.spatialAudioSupported?.let { supported ->
+                LabelValueItem(
+                    label = stringResource(id = R.string.text_spatial_audio),
+                    value = if (supported) stringResource(id = R.string.text_supported) else stringResource(id = R.string.text_not_supported)
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    device.supportedAudioEncodings.forEach { format ->
-                        TagChip(text = format, allowCopy = true)
+            }
+
+            device.headTrackingSupported?.let { supported ->
+                LabelValueItem(
+                    label = stringResource(id = R.string.text_head_tracking),
+                    value = if (supported) stringResource(id = R.string.text_supported) else stringResource(id = R.string.text_not_supported)
+                )
+            }
+
+            if (device.supportedAudioEncodings.isNotEmpty()) {
+                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
+                    Text(
+                        text = stringResource(id = R.string.text_surround_sound),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        device.supportedAudioEncodings.forEach { format ->
+                            TagChip(text = format, allowCopy = true)
+                        }
                     }
                 }
             }
@@ -722,46 +832,7 @@ fun AudioCard(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-fun DecodersCard(
-    device: DeviceInfo,
-    modifier: Modifier = Modifier
-) {
-    OutlinedCard(
-        modifier = modifier
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.card_padding))
-        ) {
-            Text(
-                text = stringResource(id = R.string.section_codecs),
-                style = MaterialTheme.typography.titleLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
 
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
-                Text(
-                    text = stringResource(id = R.string.text_hw_decode_type),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    device.hardwareDecoders.forEach { codec ->
-                        TagChip(text = codec, allowCopy = true)
-                    }
-                }
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -883,40 +954,10 @@ fun WidevineCard(
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.card_padding))
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = scheme.description,
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f, fill = false)
-                )
-
-                scheme.securityLevel?.let { secLevel ->
-                    val isL1 = secLevel.contains("L1", ignoreCase = true)
-                    val containerColor = if (isL1) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer
-                    val contentColor = if (isL1) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer
-
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                color = containerColor,
-                                shape = MaterialTheme.shapes.extraSmall
-                            )
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
-                    ) {
-                        Text(
-                            text = secLevel,
-                            style = MaterialTheme.typography.labelMedium,
-                            color = contentColor
-                        )
-                    }
-                }
-            }
+            Text(
+                text = scheme.description,
+                style = MaterialTheme.typography.titleLarge
+            )
 
             Spacer(modifier = Modifier.height(4.dp))
 
@@ -932,13 +973,6 @@ fun WidevineCard(
             scheme.securityLevel?.let {
                 LabelValueItem(
                     label = stringResource(id = R.string.widevine_string_property_name_securityLevel),
-                    value = it
-                )
-            }
-
-            scheme.maxSessions?.let {
-                LabelValueItem(
-                    label = stringResource(id = R.string.widevine_string_property_name_maxNumberOfSessions),
                     value = it
                 )
             }
@@ -1047,20 +1081,21 @@ fun AdCard(
     isRefreshing: Boolean = false,
     onPreloadAd: (Int) -> Unit = {}
 ) {
-    val configuration = LocalConfiguration.current
+    val windowInfo = LocalWindowInfo.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var retryJob by remember { mutableStateOf<Job?>(null) }
 
-    // Reset failure state whenever folding/unfolding changes the screen width
-    var isAdFailedToLoad by remember(configuration.screenWidthDp, configuration.orientation) { mutableStateOf(false) }
-    var retryCount by remember(configuration.screenWidthDp, configuration.orientation) { mutableIntStateOf(0) }
+    var isAdLoaded by remember(windowInfo.containerSize) { mutableStateOf(false) }
+    var isAdFailedToLoad by remember(windowInfo.containerSize) { mutableStateOf(false) }
+    var retryCount by remember(windowInfo.containerSize) { mutableIntStateOf(0) }
     val maxRetries = 3
 
     LaunchedEffect(isRefreshing) {
         if (isRefreshing) {
             retryJob?.cancel()
             retryJob = null
+            isAdLoaded = false
             isAdFailedToLoad = false
             retryCount = 0
         }
@@ -1076,11 +1111,14 @@ fun AdCard(
                     .padding(dimensionResource(id = R.dimen.card_padding)),
                 contentAlignment = Alignment.Center
             ) {
-                val screenWidthDp = configuration.screenWidthDp
-                val safeAdWidthDp = if (maxWidth.value > 0) maxWidth.value.toInt() else screenWidthDp
+                val safeAdWidthDp = if (maxWidth.value.isFinite() && maxWidth.value > 0) {
+                    maxWidth.value.roundToInt()
+                } else {
+                    with(LocalDensity.current) { LocalWindowInfo.current.containerSize.width.toDp().value.roundToInt() }
+                }
                 val effectiveAdWidthDp = safeAdWidthDp.coerceAtLeast(300)
 
-                key(configuration.screenWidthDp, configuration.orientation, effectiveAdWidthDp, retryCount) {
+                key(effectiveAdWidthDp, retryCount) {
                     AndroidView(
                         factory = { viewCtx ->
                             val activity = (context as? Activity)
@@ -1089,13 +1127,18 @@ fun AdCard(
 
                             AdView(activity ?: viewCtx).apply {
                                 val adUnitId = viewCtx.getString(R.string.ad_unit_id)
+                                // Restrict inline adaptive banner max height to 300dp so it never reserves an overly tall blank container
                                 val adSize = runCatching {
-                                    AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(
-                                        activity ?: viewCtx,
-                                        effectiveAdWidthDp
-                                    )
+                                    AdSize.getInlineAdaptiveBannerAdSize(effectiveAdWidthDp, 300)
                                 }.getOrElse {
-                                    AdSize.BANNER
+                                    runCatching {
+                                        AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(
+                                            activity ?: viewCtx,
+                                            effectiveAdWidthDp
+                                        )
+                                    }.getOrElse {
+                                        AdSize.MEDIUM_RECTANGLE
+                                    }
                                 }
                                 val adRequest = BannerAdRequest.Builder(adUnitId, adSize).build()
 
@@ -1109,6 +1152,7 @@ fun AdCard(
                                         if (isSizeCompatible) {
                                             Log.i("Ads", "Using preloaded BannerAd (width: $preloadedWidth dp, target: $effectiveAdWidthDp dp)")
                                             registerBannerAd(preloadedAd, activity)
+                                            isAdLoaded = true
                                             isAdFailedToLoad = false
                                             retryCount = 0
 
@@ -1128,12 +1172,14 @@ fun AdCard(
                                     object : AdLoadCallback<BannerAd> {
                                         override fun onAdLoaded(ad: BannerAd) {
                                             Log.i("Ads", "BannerAd loaded successfully with width $effectiveAdWidthDp dp")
+                                            isAdLoaded = true
                                             isAdFailedToLoad = false
                                             retryCount = 0
                                         }
 
                                         override fun onAdFailedToLoad(adError: LoadAdError) {
                                             Log.w("Ads", "BannerAd failed to load: $adError (retry attempt $retryCount/$maxRetries)")
+                                            isAdLoaded = false
                                             if (retryCount < maxRetries) {
                                                 retryJob?.cancel()
                                                 retryJob = coroutineScope.launch {

@@ -31,12 +31,13 @@ import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdRequest
 import com.google.android.libraries.ads.mobile.sdk.common.PreloadConfiguration
 import com.google.android.libraries.ads.mobile.sdk.initialization.InitializationConfig
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.SortedSet
 import java.util.UUID
 
@@ -85,10 +86,17 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
     fun startPreload(adUnitId: String, targetWidthDp: Int? = null) {
         cachedAdUnitId = adUnitId
         if (!MobileAds.isInitialized) return
+        val widthDp = (targetWidthDp ?: 340).coerceIn(300, 360)
         val context = getApplication<Application>()
-        val screenWidth = context.resources.configuration.screenWidthDp
-        val widthDp = (targetWidthDp ?: (screenWidth - 48)).coerceAtLeast(300)
-        val adSize = AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(context, widthDp)
+        val adSize = runCatching {
+            AdSize.getInlineAdaptiveBannerAdSize(widthDp, 300)
+        }.getOrElse {
+            runCatching {
+                AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(context, widthDp)
+            }.getOrElse {
+                AdSize.MEDIUM_RECTANGLE
+            }
+        }
         val adRequest = BannerAdRequest.Builder(adUnitId, adSize).build()
         val preloadConfig = PreloadConfiguration(adRequest, 1)
 
@@ -112,11 +120,9 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
             _state.update { it.copy(device = deviceInfo) }
 
             val specs = buildDrmSpecs()
-            val supportedSchemes = withContext(Dispatchers.IO) {
-                specs.mapNotNull { spec ->
-                    readDrmScheme(spec)
-                }
-            }
+            val supportedSchemes = specs.map { spec ->
+                async(Dispatchers.IO) { readDrmScheme(spec) }
+            }.awaitAll().filterNotNull()
 
             _state.update {
                 it.copy(
@@ -150,7 +156,7 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
             Build.SOC_MODEL.takeIf { it.isNotEmpty() }
         } else null
 
-        val mediaPerformanceClass = if (VERSION.SDK_INT >= VERSION_CODES.S && VERSION.MEDIA_PERFORMANCE_CLASS > 0) {
+        val mediaPerformanceClass = if (VERSION.SDK_INT >= VERSION_CODES.S && (VERSION.MEDIA_PERFORMANCE_CLASS > 0)) {
             VERSION.MEDIA_PERFORMANCE_CLASS
         } else null
 
@@ -174,7 +180,12 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
 
         val displayManager = DisplayManagerCompat.getInstance(app)
         displayManager.getDisplay(DEFAULT_DISPLAY)?.let { display ->
-            refreshRates = display.supportedModes.map { it.refreshRate }.distinct().sorted()
+            refreshRates = display.supportedModes
+                .asSequence()
+                .map { it.refreshRate }
+                .distinct()
+                .sorted()
+                .toList()
 
             if (VERSION.SDK_INT >= VERSION_CODES.S) {
                 alternativeRates = display.mode.alternativeRefreshRates.toList().filter { it > 0 }.distinct().sorted()
@@ -191,6 +202,17 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
                 hdrTypes = rawHdrTypes.toList()
             }
         }
+
+        val hardwareEncoders: List<String> = if (VERSION.SDK_INT >= VERSION_CODES.Q) {
+            (cachedHardwareEncoders ?: run {
+                MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+                    .asSequence()
+                    .filter { it.isHardwareAccelerated && it.isEncoder }
+                    .flatMap { it.supportedTypes.asSequence() }
+                    .toSortedSet()
+                    .also { cachedHardwareEncoders = it }
+            }).toList()
+        } else emptyList()
 
         val hardwareDecoders: List<String> = if (VERSION.SDK_INT >= VERSION_CODES.Q) {
             (cachedHardwareDecoders ?: run {
@@ -210,6 +232,7 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
             model = Build.MODEL.orEmpty(),
             brand = Build.BRAND.orEmpty(),
             hardware = Build.HARDWARE.orEmpty(),
+            buildId = Build.ID.orEmpty(),
             buildDisplay = Build.DISPLAY.orEmpty(),
             buildType = Build.TYPE.orEmpty(),
             fingerprint = Build.FINGERPRINT.orEmpty(),
@@ -224,12 +247,15 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
             spatialAudioSupported = spatialAudioSupported,
             headTrackingSupported = headTrackingSupported,
             abis = Build.SUPPORTED_ABIS.toList(),
+            hardwareEncoders = hardwareEncoders,
             hardwareDecoders = hardwareDecoders,
             supportedHdrTypes = hdrTypes,
             isWideColorGamut = wideColorGamut,
             supportedRefreshRates = refreshRates,
             alternativeRefreshRates = alternativeRates,
-            supportedAudioEncodings = audioEncodings
+            supportedAudioEncodings = audioEncodings,
+            releaseChannelRes = Util.detectReleaseChannel(),
+            quarterlyReleaseName = Util.getQuarterlyReleaseName()
         )
     }
 
@@ -262,9 +288,13 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
                     .setSampleRate(48000)
                     .setChannelMask(AudioFormat.CHANNEL_OUT_5POINT1)
                     .build()
-                if (AudioTrack.isDirectPlaybackSupported(format, attributes)) {
-                    label
-                } else null
+                val isSupported = if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
+                    AudioManager.getDirectPlaybackSupport(format, attributes) != AudioManager.DIRECT_PLAYBACK_NOT_SUPPORTED
+                } else {
+                    @Suppress("DEPRECATION")
+                    AudioTrack.isDirectPlaybackSupported(format, attributes)
+                }
+                if (isSupported) label else null
             }.getOrNull()
         }
     }
@@ -353,10 +383,6 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
             } else {
                 val extraProps = mutableListOf<Pair<String, String>>()
                 if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                    val maxSessions = drm.maxSessionCount
-                    if (maxSessions > 0) {
-                        extraProps.add(resources.getString(R.string.mediadrm_key_maxNumberOfSessions) to maxSessions.toString())
-                    }
                     val openSessions = drm.openSessionCount
                     if (openSessions > 0) {
                         extraProps.add(resources.getString(R.string.mediadrm_key_numberOfOpenSessions) to openSessions.toString())
@@ -419,5 +445,8 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
 
         @Volatile
         private var cachedHardwareDecoders: SortedSet<String>? = null
+
+        @Volatile
+        private var cachedHardwareEncoders: SortedSet<String>? = null
     }
 }

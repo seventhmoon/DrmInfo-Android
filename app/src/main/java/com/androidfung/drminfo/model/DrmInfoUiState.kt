@@ -11,6 +11,7 @@ data class DeviceInfo(
     val model: String = "",
     val brand: String = "",
     val hardware: String = "",
+    val buildId: String = "",
     val buildDisplay: String = "",
     val buildType: String = "",
     val fingerprint: String = "",
@@ -25,12 +26,15 @@ data class DeviceInfo(
     val spatialAudioSupported: Boolean? = null,
     val headTrackingSupported: Boolean? = null,
     val abis: List<String> = emptyList(),
+    val hardwareEncoders: List<String> = emptyList(),
     val hardwareDecoders: List<String> = emptyList(),
     val supportedHdrTypes: List<Int> = emptyList(),
     val isWideColorGamut: Boolean? = null,
     val supportedRefreshRates: List<Float> = emptyList(),
     val alternativeRefreshRates: List<Float> = emptyList(),
     val supportedAudioEncodings: List<String> = emptyList(),
+    val releaseChannelRes: Int? = null,
+    val quarterlyReleaseName: String? = null,
 ) {
     val hasPerformanceInfo: Boolean
         get() = socManufacturer != null || socModel != null || mediaPerformanceClass != null || spatialAudioSupported != null

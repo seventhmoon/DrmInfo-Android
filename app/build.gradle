@@ -16,8 +16,8 @@ android {
         applicationId 'com.androidfung.drminfo'
         minSdkVersion 24
         targetSdk = 37
-        versionCode 500
-        versionName '1.2.2-260922'
+        versionCode 504
+        versionName '1.2.2-260924'
 
         resourceConfigurations += ['en']
 
@@ -67,14 +67,14 @@ android {
 //        kotlinCompilerExtensionVersion "1.5.3"
 //    }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
     lint {
         abortOnError false
-        checkReleaseBuilds false
+        checkReleaseBuilds true
         textOutput file('stdout')
         textReport true
     }

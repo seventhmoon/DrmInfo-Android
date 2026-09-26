@@ -50,6 +50,7 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import androidx.tv.material3.darkColorScheme
 import com.androidfung.drminfo.R
+import com.androidfung.drminfo.Util
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
 import java.util.UUID
@@ -309,6 +310,42 @@ private fun buildTvInfoItems(
         )
     }
 
+    if (dev.hardwareEncoders.isNotEmpty()) {
+        val encoderSubItems = dev.hardwareEncoders.map {
+            TvInfoItem(title = it, description = context.getString(R.string.text_supported))
+        }
+        add(
+            TvInfoItem(
+                title = context.getString(R.string.text_hw_encode_type),
+                description = "${dev.hardwareEncoders.size} supported",
+                subItems = encoderSubItems
+            )
+        )
+    }
+
+    if (dev.hardwareDecoders.isNotEmpty()) {
+        val decoderSubItems = dev.hardwareDecoders.map {
+            TvInfoItem(title = it, description = context.getString(R.string.text_supported))
+        }
+        add(
+            TvInfoItem(
+                title = context.getString(R.string.text_hw_decode_type),
+                description = "${dev.hardwareDecoders.size} supported",
+                subItems = decoderSubItems
+            )
+        )
+    }
+
+    dev.mediaPerformanceClass?.let {
+        add(TvInfoItem(context.getString(R.string.text_media_performance_class), it.toString()))
+    }
+    dev.securityPatch?.let {
+        add(TvInfoItem(context.getString(R.string.text_security_patch), it))
+    }
+    dev.quarterlyReleaseName?.let {
+        add(TvInfoItem(context.getString(R.string.text_quarterly_release), it))
+    }
+
     // Dynamic DRM Schemes
     state.schemes.forEach { scheme ->
         val subItems = mutableListOf<TvInfoItem>()
@@ -321,7 +358,6 @@ private fun buildTvInfoItems(
         if (scheme is DrmSchemeState.Widevine) {
             scheme.securityLevel?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_securityLevel), it)) }
             scheme.systemId?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_systemId), it)) }
-            scheme.maxSessions?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_maxNumberOfSessions), it)) }
             scheme.oemCryptoVersion?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_oemCryptoApiVersion), it)) }
         }
 

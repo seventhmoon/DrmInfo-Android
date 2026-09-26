@@ -15,6 +15,7 @@ import com.androidfung.drminfo.Util.getQprNumber
 import com.androidfung.drminfo.ui.DrmViewModel
 import com.androidfung.drminfo.ui.mobile.MobileScreen
 import com.androidfung.drminfo.ui.theme.DrmInfoTheme
+import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdPreloader
 import com.google.firebase.analytics.FirebaseAnalytics
 
 @Keep
@@ -51,21 +52,38 @@ class MobileActivity : ComponentActivity() {
                 MobileScreen(
                     state = state,
                     isAdsInitialized = drmViewModel.isAdsInitialized,
-                    onRefresh = { drmViewModel.refresh() },
+                    onRefresh = {
+                        firebaseAnalytics.logEvent("refresh_drm_info", null)
+                        drmViewModel.refresh()
+                    },
                     onPreloadAd = { widthDp ->
                         drmViewModel.startPreload(getString(R.string.ad_unit_id), widthDp)
+                    },
+                    onShareReport = {
+                        val params = Bundle().apply {
+                            putString("device_model", "${state.device.manufacturer} ${state.device.model}")
+                            putInt("sdk_int", state.device.sdkInt)
+                        }
+                        firebaseAnalytics.logEvent("share_drm_report", params)
                     }
                 )
             }
         }
 
         Log.d(TAG, "QPR: " + getQprNumber())
+        Log.d(TAG, "Quarterly Release: " + Util.getQuarterlyReleaseName())
+        Log.d(TAG, "Release Channel: " + getString(Util.detectReleaseChannel()))
     }
 
     override fun onTrimMemory(level: Int) {
         super.onTrimMemory(level)
         if (level >= TRIM_MEMORY_UI_HIDDEN) {
-            // Release heavy UI resources if needed
+            val adUnitId = getString(R.string.ad_unit_id)
+            runCatching {
+                if (BannerAdPreloader.isAdAvailable(adUnitId)) {
+                    BannerAdPreloader.pollAd(adUnitId)?.destroy()
+                }
+            }
         }
     }
 
