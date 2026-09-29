@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources >
-    <dimen name="box_min_width">356dp</dimen>
-    <dimen name="box_max_width">600dp</dimen>
-</resources>

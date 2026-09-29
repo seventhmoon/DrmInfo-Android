@@ -18,21 +18,9 @@
 
     <style name="AppTheme.Leanback" parent="AppTheme.NoActionBar" />
 
-
-<!--    <style name="AppTheme.Widget.AppCompat.Toolbar.Title" parent="TextAppearance.Material3.ActionBar.Title">-->
-<!--&lt;!&ndash;    <style name="AppTheme.Widget.AppCompat.Toolbar.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">&ndash;&gt;-->
-<!--        <item name="android:fontFamily">@font/open_sans</item>-->
-<!--        <item name="android:gravity">center</item>-->
-<!--    </style>-->
-
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-<!--    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.Material3.DynamicColors.DayNight" />-->
-<!--    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.Material3.DynamicColors.DayNight" />-->
-
-<!--    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
-<!--    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
 </resources>

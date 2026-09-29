@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">DRM Info</string>
-    <string name="action_settings">Paramètres</string>
     <string name="text_not_supported">Non pris en charge</string>
     <string name="text_supported">Pris en charge</string>
     <string name="text_unknown">Inconnu</string>

@@ -1,45 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="mediadrm_string_property_key_vendor" translatable="false">vendor</string>
     <string name="mediadrm_string_property_key_description" translatable="false">description</string>
     <string name="mediadrm_string_property_key_version" translatable="false">version</string>
-    <string name="mediadrm_string_property_key_algorithms" translatable="false">algorithms</string>
 
     <string name="mediadrm_string_property_name_vendor" translatable="false">Vendor</string>
     <string name="mediadrm_string_property_name_description" translatable="false">Description</string>
     <string name="mediadrm_string_property_name_version" translatable="false">Version</string>
-    <string name="mediadrm_string_property_name_algorithms" translatable="false">Algorithm</string>
-    <string name="mediadrm_key_maxHdcpLevel" translatable="false">maxHdcpLevel</string>
-    <string name="mediadrm_key_hdcpLevel" translatable="false">hdcpLevel</string>
-    <string name="mediadrm_key_maxNumberOfSessions" translatable="false">maxNumberOfSessions</string>
+
     <string name="mediadrm_key_numberOfOpenSessions" translatable="false">numberOfOpenSessions</string>
-    <!--    <string name="widevine_string_property_name_numberOfOpenSessions">Number of Open Sessions</string>-->
-
-    <string-array name="mediadrm_string_property_keys">
-        <item>@string/mediadrm_string_property_key_vendor</item>
-        <item>@string/mediadrm_string_property_key_description</item>
-        <item>@string/mediadrm_string_property_key_version</item>
-        <item>@string/mediadrm_string_property_key_algorithms</item>
-    </string-array>
-
-    <string-array name="mediadrm_string_property_names">
-        <item>@string/mediadrm_string_property_name_vendor</item>
-        <item>@string/mediadrm_string_property_name_description</item>
-        <item>@string/mediadrm_string_property_name_version</item>
-        <item>@string/mediadrm_string_property_name_algorithms</item>
-    </string-array>
-
-    <string name="mediadrm_bytearray_property_key_deviceuniqueid" translatable="false">deviceUniqueId</string>
-    <string name="mediadrm_bytearray_property_name_deviceuniqueid">Device Unique ID</string>
-
-    <string-array name="mediadrm_bytearray_property_keys">
-        <item>@string/mediadrm_bytearray_property_key_deviceuniqueid</item>
-    </string-array>
-
-    <string-array name="mediadrm_bytearray_property_names">
-        <item>@string/mediadrm_bytearray_property_name_deviceuniqueid</item>
-    </string-array>
-
-
 </resources>

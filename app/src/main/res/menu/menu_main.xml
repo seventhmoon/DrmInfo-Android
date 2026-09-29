@@ -1,9 +1,0 @@
-<!--suppress ALL, XmlUnusedNamespaceDeclaration -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.androidfung.drminfo.MainActivity">
-    <item
-        android:id="@+id/license"
-        android:title="@string/text_licenseinformation" />
-</menu>
