@@ -1,6 +1,6 @@
 package com.androidfung.drminfo
 
-import java.util.*
+import java.util.UUID
 
 object Constants {
     @JvmField
@@ -16,11 +16,7 @@ object Constants {
     @JvmField
     val PRIMETIME_UUID = UUID(-0xdc61896105cb7b0L, -0x63e956fc396cd105L)
     @JvmField
-    val CISCO_UUID = UUID(-0x597ed62ca8a4b0e6L, -0x6345cddc7b93083dL)
-    @JvmField
     val DIVX_UUID = UUID(0x35BF197B530E42D7L, -0x749ae4b40beaf8f1L)
-    @JvmField
-    val FAIRPLAY_UUID = UUID(-0x6b317904f800b0bdL, -0x52476c2d0569735eL)
     @JvmField
     val WISEPLAY_UUID = UUID(0X3D5E6D359B9A41E8L, -0x47bc22c3918d3bd4L)
 }

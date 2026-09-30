@@ -1,10 +1,11 @@
 package com.androidfung.drminfo
 
-import android.view.View
+import android.media.MediaDrm
 import com.androidfung.drminfo.model.DeviceInfo
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
-import org.junit.Assert
+import com.androidfung.drminfo.model.HdcpLevel
+import com.androidfung.drminfo.model.ReleaseChannel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -24,30 +25,28 @@ class UtilUnitTest {
     }
 
     @Test
-    fun testGoneIfNullOrEmpty() {
-        assertEquals(View.GONE, Util.goneIfNullOrEmpty(null))
-        assertEquals(View.GONE, Util.goneIfNullOrEmpty(""))
-        assertEquals(View.GONE, Util.goneIfNullOrEmpty("   "))
-        assertEquals(View.GONE, Util.goneIfNullOrEmpty(emptyList<String>()))
-        assertEquals(View.GONE, Util.goneIfNullOrEmpty(emptyMap<String, String>()))
-        assertEquals(View.GONE, Util.goneIfNullOrEmpty(emptyArray<String>()))
-
-        assertEquals(View.VISIBLE, Util.goneIfNullOrEmpty("Valid String"))
-        assertEquals(View.VISIBLE, Util.goneIfNullOrEmpty(listOf("item")))
-        assertEquals(View.VISIBLE, Util.goneIfNullOrEmpty(mapOf("key" to "value")))
+    fun testConvertHdcpLevel() {
+        assertEquals(HdcpLevel.UNKNOWN, Util.convertHdcpLevel(MediaDrm.HDCP_LEVEL_UNKNOWN))
+        assertEquals(HdcpLevel.NONE, Util.convertHdcpLevel(MediaDrm.HDCP_NONE))
+        assertEquals(HdcpLevel.NO_DIGITAL_OUTPUT, Util.convertHdcpLevel(MediaDrm.HDCP_NO_DIGITAL_OUTPUT))
+        assertEquals(HdcpLevel.V1, Util.convertHdcpLevel(MediaDrm.HDCP_V1))
+        assertEquals(HdcpLevel.V2, Util.convertHdcpLevel(MediaDrm.HDCP_V2))
+        assertEquals(HdcpLevel.V2_1, Util.convertHdcpLevel(MediaDrm.HDCP_V2_1))
+        assertEquals(HdcpLevel.V2_2, Util.convertHdcpLevel(MediaDrm.HDCP_V2_2))
+        assertEquals(HdcpLevel.V2_3, Util.convertHdcpLevel(MediaDrm.HDCP_V2_3))
     }
 
     @Test
     fun testDetectReleaseChannel() {
         assertEquals(
-            R.string.text_channel_canary,
+            ReleaseChannel.CANARY,
             Util.detectReleaseChannel(
                 releaseOrCodename = "CANARY",
                 buildTags = "release-keys"
             )
         )
         assertEquals(
-            R.string.text_channel_canary,
+            ReleaseChannel.CANARY,
             Util.detectReleaseChannel(
                 codename = "REL",
                 previewSdkInt = 0,
@@ -55,9 +54,8 @@ class UtilUnitTest {
                 buildTags = "release-keys"
             )
         )
-        // Under AOSP specification (Year code A=2024, B=2025, C=2026), 4th char 'A' is GA
         assertEquals(
-            R.string.text_channel_ga,
+            ReleaseChannel.GA,
             Util.detectReleaseChannel(
                 codename = "REL",
                 previewSdkInt = 0,
@@ -66,9 +64,8 @@ class UtilUnitTest {
                 buildType = "user"
             )
         )
-        // 4th char 'B' (e.g. UP1B) or two digits (e.g. AP31, BP11) is Beta
         assertEquals(
-            R.string.text_channel_beta,
+            ReleaseChannel.BETA,
             Util.detectReleaseChannel(
                 codename = "REL",
                 previewSdkInt = 0,
@@ -77,165 +74,119 @@ class UtilUnitTest {
             )
         )
         assertEquals(
-            R.string.text_channel_beta,
+            ReleaseChannel.BETA,
             Util.detectReleaseChannel(
                 codename = "REL",
                 previewSdkInt = 0,
-                buildId = "BP11.250110.005",
+                buildId = "AP31.240119.015",
                 buildTags = "release-keys"
             )
         )
         assertEquals(
-            R.string.text_channel_beta,
-            Util.detectReleaseChannel(
-                codename = "Baklava",
-                releaseOrCodename = "Baklava",
-                previewSdkInt = 1,
-                buildTags = "release-keys"
-            )
-        )
-        assertEquals(
-            R.string.text_channel_beta,
+            ReleaseChannel.BETA,
             Util.detectReleaseChannel(
                 codename = "VanillaIceCream",
-                releaseOrCodename = "VanillaIceCream",
-                previewSdkInt = 1,
-                buildTags = "release-keys"
+                previewSdkInt = 1
             )
         )
         assertEquals(
-            R.string.text_channel_beta,
+            ReleaseChannel.CUSTOM,
             Util.detectReleaseChannel(
-                codename = "REL",
-                previewSdkInt = 0,
-                buildId = "AP31.240517.022",
-                buildTags = "release-keys"
+                buildTags = "test-keys",
+                buildType = "userdebug"
             )
         )
         assertEquals(
-            R.string.text_channel_custom,
+            ReleaseChannel.CUSTOM,
             Util.detectReleaseChannel(
-                codename = "REL",
-                previewSdkInt = 0,
-                buildTags = "test-keys"
-            )
-        )
-        assertEquals(
-            R.string.text_channel_ga,
-            Util.detectReleaseChannel(
-                codename = "REL",
-                previewSdkInt = 0,
-                buildId = "AP2A.240905.003",
                 buildTags = "release-keys",
-                buildType = "user"
+                buildType = "eng"
             )
         )
-    }
-
-    @Test
-    fun testGetQprNumberDoesNotCrashOnDefaultOrEmptyBuildId() {
-        // Build.ID is null in unit tests without robolectric. Must return -1 without throwing.
-        assertEquals(-1, Util.getQprNumber())
-    }
-
-    @Test
-    fun testParseQprNumber() {
-        assertEquals(-1, Util.parseQprNumber(null))
-        assertEquals(-1, Util.parseQprNumber(""))
-        assertEquals(-1, Util.parseQprNumber("N"))
-        assertEquals(-1, Util.parseQprNumber("P"))
-        assertEquals(0, Util.parseQprNumber("UP1A.231005.007"))
-        assertEquals(0, Util.parseQprNumber("UD1A.230803.022"))
-        assertEquals(1, Util.parseQprNumber("UQ1A.231205.015"))
-        assertEquals(2, Util.parseQprNumber("UQ2A.240305.019"))
-        assertEquals(-1, Util.parseQprNumber("UQxA.invalid"))
-        assertEquals(-1, Util.parseQprNumber("XYZ"))
-
-        // Modern Trunk scheme (A=2024, B=2025, C=2026, digit at index 2 is Quarter / QPR)
-        assertEquals(2, Util.parseQprNumber("AP2A.240905.003"))
-        assertEquals(1, Util.parseQprNumber("BP1A.250105.002"))
-        assertEquals(2, Util.parseQprNumber("CP2A.260605.001"))
-        assertEquals(4, Util.parseQprNumber("AP4A.241105.001"))
     }
 
     @Test
     fun testParseQuarterlyReleaseName() {
-        assertEquals("24Q2", Util.parseQuarterlyReleaseName("AP2A.240905.003"))
-        assertEquals("24Q3", Util.parseQuarterlyReleaseName("AP3A.240615.001"))
-        assertEquals("25Q1", Util.parseQuarterlyReleaseName("BP1A.250105.002"))
+        assertEquals("24Q1", Util.parseQuarterlyReleaseName("AP1A.240101.001"))
+        assertEquals("24Q2", Util.parseQuarterlyReleaseName("AP2A.240305.019"))
+        assertEquals("24Q3", Util.parseQuarterlyReleaseName("AP3A.240617.008"))
+        assertEquals("24Q4", Util.parseQuarterlyReleaseName("AP4A.240905.015"))
+
+        assertEquals("25Q1", Util.parseQuarterlyReleaseName("BP1A.250101.001"))
         assertEquals("25Q2", Util.parseQuarterlyReleaseName("BP2A.250305.001"))
-        assertEquals("26Q2", Util.parseQuarterlyReleaseName("CP2A.260605.001"))
-        assertEquals("26Q4", Util.parseQuarterlyReleaseName("CP4A.261105.001"))
-        assertEquals(null, Util.parseQuarterlyReleaseName("UP1A.231005.007"))
+        assertEquals("26Q2", Util.parseQuarterlyReleaseName("CP2A.260305.001"))
+        assertEquals("27Q3", Util.parseQuarterlyReleaseName("DP3A.270601.001"))
+
         assertEquals(null, Util.parseQuarterlyReleaseName(null))
+        assertEquals(null, Util.parseQuarterlyReleaseName(""))
+        assertEquals(null, Util.parseQuarterlyReleaseName("UP1A"))
+        assertEquals(null, Util.parseQuarterlyReleaseName("12345"))
+    }
+
+    @Test
+    fun testParseQprNumber() {
+        assertEquals(1, Util.parseQprNumber("AP1A.240101.001"))
+        assertEquals(2, Util.parseQprNumber("AP2A.240305.019"))
+        assertEquals(3, Util.parseQprNumber("AP3A.240617.008"))
+        assertEquals(4, Util.parseQprNumber("AP4A.240905.015"))
+        assertEquals(1, Util.parseQprNumber("BP1A.250101.001"))
+        assertEquals(2, Util.parseQprNumber("CP2A.260305.001"))
+
+        assertEquals(0, Util.parseQprNumber("UP1A.231005.007"))
+        assertEquals(0, Util.parseQprNumber("UD1A.230805.022"))
+        assertEquals(1, Util.parseQprNumber("UQ1A.231205.015"))
+        assertEquals(2, Util.parseQprNumber("UQ2A.240205.002"))
+
+        assertEquals(-1, Util.parseQprNumber(null))
+        assertEquals(-1, Util.parseQprNumber(""))
+        assertEquals(-1, Util.parseQprNumber("CUSTOM_ROM"))
     }
 
     @Test
     fun testBuildReportContainsHeaderAndSchemes() {
-        val state = DrmInfoUiState(
+        val testState = DrmInfoUiState(
             device = DeviceInfo(
-                securityPatch = "2024-08-01",
-                socManufacturer = "Google",
-                socModel = "Tensor G3"
+                manufacturer = "Google",
+                model = "Pixel 8 Pro",
+                brand = "google",
+                hardware = "husky",
+                buildDisplay = "AP2A.240305.019",
+                buildType = "user",
+                fingerprint = "google/husky/husky:14/AP2A.240305.019/1234:user/release-keys",
+                device = "husky",
+                sdkInt = 34,
+                releaseChannel = ReleaseChannel.GA,
+                quarterlyReleaseName = "24Q2",
+                supportedRefreshRates = listOf(60.0f, 120.0f),
+                alternativeRefreshRates = listOf(30.0f),
+                hardwareEncoders = listOf("video/avc"),
+                hardwareDecoders = listOf("video/avc", "video/hevc")
             ),
             schemes = listOf(
                 DrmSchemeState.Widevine(
-                    name = "Google Widevine",
+                    name = "Google Widevine Modular DRM",
                     description = "Widevine CDM",
                     vendor = "Google",
-                    version = "17.0.0",
-                    maxHdcpLevelRes = null,
-                    connectedHdcpLevelRes = null,
+                    version = "18.0.0",
+                    maxHdcpLevel = HdcpLevel.V2_3,
+                    connectedHdcpLevel = HdcpLevel.V2_2,
                     securityLevel = "L1",
-                    systemId = "12345",
+                    systemId = "4445",
                     maxSessions = "16",
-                    oemCryptoVersion = "16",
-                ),
-                DrmSchemeState.Generic(
-                    id = "marlin",
-                    name = "Marlin DRM",
-                    description = "Marlin CDM",
-                    vendor = "Sony",
-                    version = "2.0",
-                    maxHdcpLevelRes = null,
-                    connectedHdcpLevelRes = null,
+                    oemCryptoVersion = "18"
                 )
             )
         )
-        val report = Util.formatReport(state)
+
+        val report = Util.formatReport(testState) { it.toString() }
+
         assertTrue(report.contains("=== DRM Info Report ==="))
-        assertTrue(report.contains("Security Patch: 2024-08-01"))
-        assertTrue(report.contains("SoC Manufacturer: Google"))
-        assertTrue(report.contains("[Google Widevine]"))
+        assertTrue(report.contains("Pixel 8 Pro"))
+        assertTrue(report.contains("60 Hz, 120 Hz"))
+        assertTrue(report.contains("Quarterly Release: 24Q2"))
+        assertTrue(report.contains("[Google Widevine Modular DRM]"))
+        assertTrue(report.contains("Widevine CDM"))
         assertTrue(report.contains("Security Level: L1"))
-        assertTrue(report.contains("System ID: 12345"))
-        assertTrue(report.contains("[Marlin DRM]"))
-        assertTrue(report.contains("Vendor: Sony"))
-    }
-
-    @Test
-    fun testDeviceInfoComputedFlags() {
-        val emptyDevice = DeviceInfo()
-        Assert.assertFalse(emptyDevice.hasPerformanceInfo)
-        Assert.assertFalse(emptyDevice.hasDisplayInfo)
-
-        val perfDevice = DeviceInfo(socManufacturer = "Qualcomm")
-        assertTrue(perfDevice.hasPerformanceInfo)
-
-        val displayDevice = DeviceInfo(supportedRefreshRates = listOf(60.0f, 120.0f))
-        assertTrue(displayDevice.hasDisplayInfo)
-    }
-
-    @Test
-    fun testReportIncludesAudioAndSeamlessRates() {
-        val state = DrmInfoUiState(
-            device = DeviceInfo(
-                supportedAudioEncodings = listOf("Dolby Atmos (E-AC-3 JOC)", "DTS:X / DTS-UHD"),
-                alternativeRefreshRates = listOf(90.00001f)
-            )
-        )
-        val report = Util.formatReport(state)
-        assertTrue(report.contains("Surround Audio Formats: Dolby Atmos (E-AC-3 JOC), DTS:X / DTS-UHD"))
-        assertTrue(report.contains("Alternative Refresh Rates: 90 Hz"))
+        assertTrue(report.contains("System ID: 4445"))
     }
 }

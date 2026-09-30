@@ -3,12 +3,37 @@ package com.androidfung.drminfo.model
 import androidx.compose.runtime.Immutable
 
 /**
+ * Release channels for Android OS versions.
+ */
+enum class ReleaseChannel {
+    GA,
+    BETA,
+    CANARY,
+    CUSTOM
+}
+
+/**
+ * Supported HDCP levels as reported by [android.media.MediaDrm].
+ */
+enum class HdcpLevel {
+    UNKNOWN,
+    NONE,
+    NO_DIGITAL_OUTPUT,
+    V1,
+    V2,
+    V2_1,
+    V2_2,
+    V2_3
+}
+
+/**
  * Strongly-typed hardware and OS capabilities of the device.
  */
 @Immutable
 data class DeviceInfo(
     val manufacturer: String = "",
     val model: String = "",
+    val product: String = "",
     val brand: String = "",
     val hardware: String = "",
     val buildId: String = "",
@@ -33,7 +58,7 @@ data class DeviceInfo(
     val supportedRefreshRates: List<Float> = emptyList(),
     val alternativeRefreshRates: List<Float> = emptyList(),
     val supportedAudioEncodings: List<String> = emptyList(),
-    val releaseChannelRes: Int? = null,
+    val releaseChannel: ReleaseChannel? = null,
     val quarterlyReleaseName: String? = null,
 ) {
     val hasPerformanceInfo: Boolean
@@ -53,8 +78,8 @@ sealed interface DrmSchemeState {
     val description: String
     val vendor: String?
     val version: String?
-    val maxHdcpLevelRes: Int?
-    val connectedHdcpLevelRes: Int?
+    val maxHdcpLevel: HdcpLevel?
+    val connectedHdcpLevel: HdcpLevel?
     val extraProperties: List<Pair<String, String>>
 
     @Immutable
@@ -64,8 +89,8 @@ sealed interface DrmSchemeState {
         override val description: String,
         override val vendor: String?,
         override val version: String?,
-        override val maxHdcpLevelRes: Int?,
-        override val connectedHdcpLevelRes: Int?,
+        override val maxHdcpLevel: HdcpLevel?,
+        override val connectedHdcpLevel: HdcpLevel?,
         val securityLevel: String?,
         val systemId: String?,
         val maxSessions: String?,
@@ -80,8 +105,8 @@ sealed interface DrmSchemeState {
         override val description: String,
         override val vendor: String?,
         override val version: String?,
-        override val maxHdcpLevelRes: Int?,
-        override val connectedHdcpLevelRes: Int?,
+        override val maxHdcpLevel: HdcpLevel?,
+        override val connectedHdcpLevel: HdcpLevel?,
         override val extraProperties: List<Pair<String, String>> = emptyList(),
     ) : DrmSchemeState
 }

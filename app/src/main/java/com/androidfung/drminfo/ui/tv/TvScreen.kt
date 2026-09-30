@@ -1,7 +1,6 @@
 package com.androidfung.drminfo.ui.tv
 
 import android.content.Context
-import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -50,10 +49,9 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import androidx.tv.material3.darkColorScheme
 import com.androidfung.drminfo.R
-import com.androidfung.drminfo.Util
+import com.androidfung.drminfo.Util.toStringRes
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
-import java.util.UUID
 import kotlin.math.round
 
 data class TvInfoItem(
@@ -121,11 +119,14 @@ fun TvScreen(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(8.dp))
+                    val deviceSubtitle = "${state.device.manufacturer} ${state.device.model}".trim()
                     Text(
                         text = if (selectedItemWithSubActions != null) {
                             stringResource(id = R.string.text_supported)
+                        } else if (deviceSubtitle.isNotEmpty()) {
+                            deviceSubtitle
                         } else {
-                            "${Build.MANUFACTURER} ${Build.MODEL}"
+                            ""
                         },
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurface
@@ -210,7 +211,6 @@ fun TvScreen(
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
                                 contentPadding = PaddingValues(vertical = 12.dp)
                             ) {
-                                // Sub-actions Back Navigation Breadcrumb (2C)
                                 item(key = "breadcrumb_back") {
                                     ListItem(
                                         selected = false,
@@ -270,7 +270,9 @@ private fun buildTvInfoItems(
 ): List<TvInfoItem> = buildList {
     val dev = state.device
     add(TvInfoItem(context.getString(R.string.text_brand), dev.brand))
-    add(TvInfoItem(context.getString(R.string.text_product), Build.PRODUCT))
+    if (dev.product.isNotEmpty()) {
+        add(TvInfoItem(context.getString(R.string.text_product), dev.product))
+    }
     add(TvInfoItem(context.getString(R.string.text_hardware), dev.hardware))
     add(TvInfoItem(context.getString(R.string.text_display), dev.buildDisplay))
 
@@ -352,8 +354,8 @@ private fun buildTvInfoItems(
         subItems.add(TvInfoItem(context.getString(R.string.mediadrm_string_property_name_description), scheme.description))
         scheme.vendor?.let { subItems.add(TvInfoItem(context.getString(R.string.mediadrm_string_property_name_vendor), it)) }
         scheme.version?.let { subItems.add(TvInfoItem(context.getString(R.string.mediadrm_string_property_name_version), it)) }
-        scheme.maxHdcpLevelRes?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_maxHdcpLevel), context.getString(it))) }
-        scheme.connectedHdcpLevelRes?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_hdcpLevel), context.getString(it))) }
+        scheme.maxHdcpLevel?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_maxHdcpLevel), context.getString(it.toStringRes()))) }
+        scheme.connectedHdcpLevel?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_hdcpLevel), context.getString(it.toStringRes()))) }
 
         if (scheme is DrmSchemeState.Widevine) {
             scheme.securityLevel?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_securityLevel), it)) }

@@ -41,6 +41,10 @@
     <string name="text_supported_hdr_types">Supported HDR Types</string>
     <string name="text_supported_refresh_rate">Supported Refresh Rate (Hz)</string>
 
+    <!-- In-App Updates -->
+    <string name="update_downloaded_message">An update has been downloaded.</string>
+    <string name="action_restart">Restart</string>
+
     <!-- Crypto Scheme -->
     <string name="text_playready_name">Microsoft Playready DRM</string>
     <string name="text_clearkey_name">CENC ClearKey</string>

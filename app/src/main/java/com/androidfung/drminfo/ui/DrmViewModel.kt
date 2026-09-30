@@ -12,9 +12,6 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.util.Log
 import android.view.Display.DEFAULT_DISPLAY
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,13 +21,9 @@ import com.androidfung.drminfo.Util
 import com.androidfung.drminfo.model.DeviceInfo
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
-import com.google.android.libraries.ads.mobile.sdk.MobileAds
-import com.google.android.libraries.ads.mobile.sdk.banner.AdSize
-import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdPreloader
-import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdRequest
-import com.google.android.libraries.ads.mobile.sdk.common.PreloadConfiguration
-import com.google.android.libraries.ads.mobile.sdk.initialization.InitializationConfig
+import com.androidfung.drminfo.model.HdcpLevel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,6 +31,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Collections
 import java.util.SortedSet
 import java.util.UUID
 
@@ -50,82 +44,33 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
     private val _state = MutableStateFlow(DrmInfoUiState())
     val state: StateFlow<DrmInfoUiState> = _state.asStateFlow()
 
-    var isAdsInitialized by mutableStateOf(false)
-        private set
+    /** Thread-safe map of open [MediaDrm] instances, one per supported scheme. */
+    private val mediaDrmByUuid = Collections.synchronizedMap(linkedMapOf<UUID, MediaDrm>())
 
-    private var cachedAdUnitId: String? = null
-
-    /** Open [MediaDrm] instances, one per supported scheme. */
-    private val mediaDrmByUuid = linkedMapOf<UUID, MediaDrm>()
+    private var refreshJob: Job? = null
 
     init {
         refresh()
     }
 
-    fun initMobileAds(appId: String, adUnitId: String? = null) {
-        cachedAdUnitId = adUnitId
-        if (MobileAds.isInitialized) {
-            isAdsInitialized = true
-            adUnitId?.let { startPreload(it) }
-            return
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            val context = getApplication<Application>().applicationContext
-            val config = InitializationConfig.Builder(appId).build()
-            MobileAds.initialize(context, config) {
-                isAdsInitialized = true
-                cachedAdUnitId?.let { startPreload(it) }
-            }
-        }
-    }
-
-    /**
-     * Starts the official Next-Gen SDK [BannerAdPreloader] so an ad is buffered
-     * in the background before the user scrolls to the bottom of the list.
-     */
-    fun startPreload(adUnitId: String, targetWidthDp: Int? = null) {
-        cachedAdUnitId = adUnitId
-        if (!MobileAds.isInitialized) return
-        val widthDp = (targetWidthDp ?: 340).coerceIn(300, 360)
-        val context = getApplication<Application>()
-        val adSize = runCatching {
-            AdSize.getInlineAdaptiveBannerAdSize(widthDp, 300)
-        }.getOrElse {
-            runCatching {
-                AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(context, widthDp)
-            }.getOrElse {
-                AdSize.MEDIUM_RECTANGLE
-            }
-        }
-        val adRequest = BannerAdRequest.Builder(adUnitId, adSize).build()
-        val preloadConfig = PreloadConfiguration(adRequest, 1)
-
-        runCatching {
-            BannerAdPreloader.start(adUnitId, preloadConfig)
-            Log.i(TAG, "BannerAdPreloader started for $adUnitId with width $widthDp dp")
-        }.onFailure { error ->
-            Log.w(TAG, "Failed to start BannerAdPreloader", error)
-        }
-    }
-
     /** Re-reads the device capabilities and all supported DRM schemes. */
     fun refresh() {
-        viewModelScope.launch(Dispatchers.Default) {
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch(Dispatchers.IO) {
             _state.update { it.copy(isRefreshing = true) }
 
-            // Ensure preloader has a fresh ad ready on pull-to-refresh
-            cachedAdUnitId?.let { startPreload(it) }
-
-            val deviceInfo = buildDeviceInfo()
-            _state.update { it.copy(device = deviceInfo) }
-
+            val deviceInfoDeferred = async { buildDeviceInfo() }
             val specs = buildDrmSpecs()
-            val supportedSchemes = specs.map { spec ->
-                async(Dispatchers.IO) { readDrmScheme(spec) }
-            }.awaitAll().filterNotNull()
+            val supportedSchemesDeferred = specs.map { spec ->
+                async { readDrmScheme(spec) }
+            }
+
+            val deviceInfo = deviceInfoDeferred.await()
+            val supportedSchemes = supportedSchemesDeferred.awaitAll().filterNotNull()
 
             _state.update {
                 it.copy(
+                    device = deviceInfo,
                     schemes = supportedSchemes,
                     isRefreshing = false
                 )
@@ -156,9 +101,10 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
             Build.SOC_MODEL.takeIf { it.isNotEmpty() }
         } else null
 
-        val mediaPerformanceClass = if (VERSION.SDK_INT >= VERSION_CODES.S && (VERSION.MEDIA_PERFORMANCE_CLASS > 0)) {
-            VERSION.MEDIA_PERFORMANCE_CLASS
-        } else null
+        val mediaPerformanceClass =
+            if (VERSION.SDK_INT >= VERSION_CODES.S && (VERSION.MEDIA_PERFORMANCE_CLASS > 0)) {
+                VERSION.MEDIA_PERFORMANCE_CLASS
+            } else null
 
         var spatialAudioSupported: Boolean? = null
         var headTrackingSupported: Boolean? = null
@@ -188,12 +134,15 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
                 .toList()
 
             if (VERSION.SDK_INT >= VERSION_CODES.S) {
-                alternativeRates = display.mode.alternativeRefreshRates.toList().filter { it > 0 }.distinct().sorted()
+                alternativeRates =
+                    display.mode.alternativeRefreshRates.toList().filter { it > 0 }.distinct()
+                        .sorted()
             }
 
             @Suppress("DEPRECATION")
             val rawHdrTypes = if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                display.mode.supportedHdrTypes
+                runCatching { display.mode.supportedHdrTypes }
+                    .getOrElse { display.hdrCapabilities?.supportedHdrTypes }
             } else {
                 display.hdrCapabilities?.supportedHdrTypes
             }
@@ -230,6 +179,7 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
         return DeviceInfo(
             manufacturer = Build.MANUFACTURER.orEmpty(),
             model = Build.MODEL.orEmpty(),
+            product = Build.PRODUCT.orEmpty(),
             brand = Build.BRAND.orEmpty(),
             hardware = Build.HARDWARE.orEmpty(),
             buildId = Build.ID.orEmpty(),
@@ -254,7 +204,7 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
             supportedRefreshRates = refreshRates,
             alternativeRefreshRates = alternativeRates,
             supportedAudioEncodings = audioEncodings,
-            releaseChannelRes = Util.detectReleaseChannel(),
+            releaseChannel = Util.detectReleaseChannel(),
             quarterlyReleaseName = Util.getQuarterlyReleaseName()
         )
     }
@@ -289,7 +239,10 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
                     .setChannelMask(AudioFormat.CHANNEL_OUT_5POINT1)
                     .build()
                 val isSupported = if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
-                    AudioManager.getDirectPlaybackSupport(format, attributes) != AudioManager.DIRECT_PLAYBACK_NOT_SUPPORTED
+                    AudioManager.getDirectPlaybackSupport(
+                        format,
+                        attributes
+                    ) != AudioManager.DIRECT_PLAYBACK_NOT_SUPPORTED
                 } else {
                     @Suppress("DEPRECATION")
                     AudioTrack.isDirectPlaybackSupported(format, attributes)
@@ -313,7 +266,12 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
     private fun buildDrmSpecs(): List<DrmSpec> {
         return listOf(
             DrmSpec("clearkey", Constants.CLEARKEY_UUID, R.string.text_clearkey_name),
-            DrmSpec("widevine", Constants.WIDEVINE_UUID, R.string.text_widevine_name, isWidevine = true),
+            DrmSpec(
+                "widevine",
+                Constants.WIDEVINE_UUID,
+                R.string.text_widevine_name,
+                isWidevine = true
+            ),
             DrmSpec("playready", Constants.PLAYREADY_UUID, R.string.text_playready_name),
             DrmSpec("wiseplay", Constants.WISEPLAY_UUID, R.string.text_wiseplay_name),
             DrmSpec("marlin", Constants.MARLIN_UUID, R.string.text_marlin_name),
@@ -346,18 +304,21 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
             val vendor = drm.safeGetProperty(vendorKey).takeIf { it.isNotEmpty() }
             val version = drm.safeGetProperty(versionKey).takeIf { it.isNotEmpty() }
 
-            val maxHdcpRes = if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                Util.convertHdcpLevelToStringRes(drm.maxHdcpLevel)
+            val maxHdcp = if (VERSION.SDK_INT >= VERSION_CODES.P) {
+                Util.convertHdcpLevel(drm.maxHdcpLevel)
             } else null
 
-            val connectedHdcpRes = if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                Util.convertHdcpLevelToStringRes(drm.connectedHdcpLevel)
+            val connectedHdcp = if (VERSION.SDK_INT >= VERSION_CODES.P) {
+                Util.convertHdcpLevel(drm.connectedHdcpLevel)
             } else null
 
             if (spec.isWidevine) {
-                val secLevelKey = resources.getString(R.string.widevine_string_property_key_securityLevel)
-                val systemIdKey = resources.getString(R.string.widevine_string_property_key_systemId)
-                val oemCryptoKey = resources.getString(R.string.widevine_string_property_key_oemCryptoApiVersion)
+                val secLevelKey =
+                    resources.getString(R.string.widevine_string_property_key_securityLevel)
+                val systemIdKey =
+                    resources.getString(R.string.widevine_string_property_key_systemId)
+                val oemCryptoKey =
+                    resources.getString(R.string.widevine_string_property_key_oemCryptoApiVersion)
 
                 val securityLevel = drm.safeGetProperty(secLevelKey).takeIf { it.isNotEmpty() }
                 val systemId = drm.safeGetProperty(systemIdKey).takeIf { it.isNotEmpty() }
@@ -373,8 +334,8 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
                     description = description,
                     vendor = vendor,
                     version = version,
-                    maxHdcpLevelRes = maxHdcpRes,
-                    connectedHdcpLevelRes = connectedHdcpRes,
+                    maxHdcpLevel = maxHdcp,
+                    connectedHdcpLevel = connectedHdcp,
                     securityLevel = securityLevel,
                     systemId = systemId,
                     maxSessions = maxSessions,
@@ -395,8 +356,8 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
                     description = description,
                     vendor = vendor,
                     version = version,
-                    maxHdcpLevelRes = maxHdcpRes,
-                    connectedHdcpLevelRes = connectedHdcpRes,
+                    maxHdcpLevel = maxHdcp,
+                    connectedHdcpLevel = connectedHdcp,
                     extraProperties = extraProps,
                 )
             }
@@ -425,19 +386,21 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     override fun onCleared() {
-        mediaDrmByUuid.values.forEach { drm ->
-            runCatching {
-                if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                    drm.close()
-                } else {
-                    @Suppress("DEPRECATION")
-                    drm.release()
+        synchronized(mediaDrmByUuid) {
+            mediaDrmByUuid.values.forEach { drm ->
+                runCatching {
+                    if (VERSION.SDK_INT >= VERSION_CODES.P) {
+                        drm.close()
+                    } else {
+                        @Suppress("DEPRECATION")
+                        drm.release()
+                    }
+                }.onFailure { error ->
+                    Log.w(TAG, "Failed to release MediaDrm on clear", error)
                 }
-            }.onFailure { error ->
-                Log.w(TAG, "Failed to release MediaDrm on clear", error)
             }
+            mediaDrmByUuid.clear()
         }
-        mediaDrmByUuid.clear()
     }
 
     companion object {

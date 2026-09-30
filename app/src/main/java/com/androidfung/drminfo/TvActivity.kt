@@ -26,15 +26,4 @@ class TvActivity : ComponentActivity() {
             )
         }
     }
-
-    override fun onTrimMemory(level: Int) {
-        super.onTrimMemory(level)
-        if (level >= TRIM_MEMORY_UI_HIDDEN) {
-            // Release heavy UI resources if needed
-        }
-    }
-
-    companion object {
-        private val TAG = TvActivity::class.java.simpleName
-    }
 }

@@ -1,49 +1,67 @@
 package com.androidfung.drminfo
 
-import android.annotation.SuppressLint
-import android.app.ActivityManager
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.media.MediaDrm
 import android.os.Build
-import android.view.Display
 import android.view.Display.HdrCapabilities
-import android.view.View
 import androidx.annotation.StringRes
-import androidx.core.hardware.display.DisplayManagerCompat
-import androidx.core.view.DisplayCompat
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
-import java.util.*
+import com.androidfung.drminfo.model.HdcpLevel
+import com.androidfung.drminfo.model.ReleaseChannel
+import java.util.UUID
 import kotlin.math.round
 
-
-//Make sure you have the following declared in Manifest when running on Android 11+
-//<queries>
-//<package android:name="com.google.android.tvlauncher" />
-//<package android:name="com.google.android.leanbacklauncher" />
-//<package android:name="com.google.android.apps.tv.launcherx" />
-//</queries>
-
-
 object Util {
-    private const val DISPLAY_SIZE_4K_WIDTH = 3840
-    private const val DISPLAY_SIZE_4K_HEIGHT = 2160
+
+    /**
+     * Converts a raw [MediaDrm] HDCP level integer to a domain [HdcpLevel].
+     */
+    @JvmStatic
+    fun convertHdcpLevel(maxHdcpLevel: Int): HdcpLevel = when (maxHdcpLevel) {
+        MediaDrm.HDCP_LEVEL_UNKNOWN -> HdcpLevel.UNKNOWN
+        MediaDrm.HDCP_NONE -> HdcpLevel.NONE
+        MediaDrm.HDCP_NO_DIGITAL_OUTPUT -> HdcpLevel.NO_DIGITAL_OUTPUT
+        MediaDrm.HDCP_V1 -> HdcpLevel.V1
+        MediaDrm.HDCP_V2 -> HdcpLevel.V2
+        MediaDrm.HDCP_V2_1 -> HdcpLevel.V2_1
+        MediaDrm.HDCP_V2_2 -> HdcpLevel.V2_2
+        MediaDrm.HDCP_V2_3 -> HdcpLevel.V2_3
+        else -> HdcpLevel.UNKNOWN
+    }
+
+    /**
+     * Resolves a domain [HdcpLevel] to its localized string resource ID.
+     */
+    @JvmStatic
+    @StringRes
+    fun HdcpLevel.toStringRes(): Int = when (this) {
+        HdcpLevel.UNKNOWN -> R.string.message_hdcp_level_unknown
+        HdcpLevel.NONE -> R.string.message_hdcp_none
+        HdcpLevel.NO_DIGITAL_OUTPUT -> R.string.message_hdcp_no_digital_output
+        HdcpLevel.V1 -> R.string.message_hdcp_level_1
+        HdcpLevel.V2 -> R.string.message_hdcp_level_2
+        HdcpLevel.V2_1 -> R.string.message_hdcp_level_2_1
+        HdcpLevel.V2_2 -> R.string.message_hdcp_level_2_2
+        HdcpLevel.V2_3 -> R.string.message_hdcp_level_2_3
+    }
+
+    /**
+     * Resolves a domain [ReleaseChannel] to its localized string resource ID.
+     */
+    @JvmStatic
+    @StringRes
+    fun ReleaseChannel.toStringRes(): Int = when (this) {
+        ReleaseChannel.GA -> R.string.text_channel_ga
+        ReleaseChannel.BETA -> R.string.text_channel_beta
+        ReleaseChannel.CANARY -> R.string.text_channel_canary
+        ReleaseChannel.CUSTOM -> R.string.text_channel_custom
+    }
 
     @JvmStatic
     @StringRes
-    fun convertHdcpLevelToStringRes(maxHdcpLevel: Int) = when (maxHdcpLevel) {
-        MediaDrm.HDCP_LEVEL_UNKNOWN -> R.string.message_hdcp_level_unknown
-        MediaDrm.HDCP_NONE -> R.string.message_hdcp_none
-        MediaDrm.HDCP_NO_DIGITAL_OUTPUT -> R.string.message_hdcp_no_digital_output
-        MediaDrm.HDCP_V1 -> R.string.message_hdcp_level_1
-        MediaDrm.HDCP_V2 -> R.string.message_hdcp_level_2
-        MediaDrm.HDCP_V2_1 -> R.string.message_hdcp_level_2_1
-        MediaDrm.HDCP_V2_2 -> R.string.message_hdcp_level_2_2
-        MediaDrm.HDCP_V2_3 -> R.string.message_hdcp_level_2_3
-        else -> R.string.message_hdcp_level_unknown
-    }
+    fun convertHdcpLevelToStringRes(maxHdcpLevel: Int): Int =
+        convertHdcpLevel(maxHdcpLevel).toStringRes()
 
     @JvmStatic
     @StringRes
@@ -53,18 +71,6 @@ object Util {
         HdrCapabilities.HDR_TYPE_HDR10_PLUS -> R.string.hdr_type_hdr10_plus
         HdrCapabilities.HDR_TYPE_HLG -> R.string.hdr_type_hlg
         else -> R.string.hdr_type_unknown
-    }
-
-    @JvmStatic
-    @StringRes
-    fun convertTvDeviceTypeToStringRes(@TvDeviceTypes.TvDeviceType type: Int) = when (type) {
-        TvDeviceTypes.ANDROID_TV, TvDeviceTypes.ANDROID_TV_WITH_WATSON -> R.string.text_android_tv
-        TvDeviceTypes.ANDROID_TV_OPERATOR_DEVICE, TvDeviceTypes.ANDROID_TV_OPERATOR_DEVICE_WITH_CUSTOM_LAUNCHER -> R.string.text_android_tv_operator_tier
-        TvDeviceTypes.GOOGLE_TV -> R.string.text_google_tv
-        TvDeviceTypes.ANDROID_OTHER_TV -> R.string.text_android_unknown
-        TvDeviceTypes.ANDROID_NON_TV -> R.string.text_android_non_tv
-        TvDeviceTypes.FIRE_TV -> R.string.text_fire_tv
-        else -> R.string.text_android_unknown
     }
 
     @JvmStatic
@@ -116,7 +122,7 @@ object Util {
         sb.appendLine("Build Type: ${dev.buildType}")
         sb.appendLine("Fingerprint: ${dev.fingerprint}")
         sb.appendLine("Android Version: ${Build.VERSION.RELEASE} (SDK ${dev.sdkInt})")
-        dev.releaseChannelRes?.let { sb.appendLine("Release Channel: ${stringResolver(it)}") }
+        dev.releaseChannel?.let { sb.appendLine("Release Channel: ${stringResolver(it.toStringRes())}") }
         dev.quarterlyReleaseName?.let { sb.appendLine("Quarterly Release: $it") }
         dev.sdkFull?.let { sb.appendLine("SDK Full: $it") }
         dev.securityPatch?.let { sb.appendLine("Security Patch: $it") }
@@ -148,8 +154,8 @@ object Util {
             sb.appendLine("  Description: ${scheme.description}")
             scheme.vendor?.let { sb.appendLine("  Vendor: $it") }
             scheme.version?.let { sb.appendLine("  Version: $it") }
-            scheme.maxHdcpLevelRes?.let { sb.appendLine("  Max HDCP Level: ${stringResolver(it)}") }
-            scheme.connectedHdcpLevelRes?.let { sb.appendLine("  Connected HDCP Level: ${stringResolver(it)}") }
+            scheme.maxHdcpLevel?.let { sb.appendLine("  Max HDCP Level: ${stringResolver(it.toStringRes())}") }
+            scheme.connectedHdcpLevel?.let { sb.appendLine("  Connected HDCP Level: ${stringResolver(it.toStringRes())}") }
 
             if (scheme is DrmSchemeState.Widevine) {
                 scheme.securityLevel?.let { sb.appendLine("  Security Level: $it") }
@@ -165,72 +171,9 @@ object Util {
         return sb.toString().trimEnd()
     }
 
-    @JvmStatic
-    fun goneIfNullOrEmpty(input: Any?) = when (input) {
-        is Collection<*> if input.isEmpty() -> View.GONE
-        is Map<*, *> if input.isEmpty() -> View.GONE
-        is Array<*> if input.isEmpty() -> View.GONE
-        is String if input.isBlank() -> View.GONE
-        null -> View.GONE
-        else -> View.VISIBLE
-    }
-
-    /**
-     * Checks if the package with the given package name is installed.
-     * Supports API 33+ package flags as well as legacy querying.
-     */
-    @SuppressLint("QueryPermissionsNeeded")
-    fun PackageManager.hasPackageInstalled(packageName: String): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            getInstalledApplications(PackageManager.ApplicationInfoFlags.of(0L)).any { it.packageName == packageName }
-        } else {
-            getInstalledApplications(0).any { it.packageName == packageName }
-        }
-    }
-
-    /**
-     * Resolves and returns the package name of the default home launcher app.
-     */
-    fun PackageManager.getDefaultLauncher(): String? {
-        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
-            .addCategory(Intent.CATEGORY_DEFAULT)
-        val resolveInfo =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                resolveActivity(intent, PackageManager.ResolveInfoFlags.of(0L))
-            else resolveActivity(intent, 0)
-        return resolveInfo?.activityInfo?.packageName
-    }
-
-    /**
-     * Checks if the default display supports Ultra High Definition (4K or higher) resolution.
-     */
-    fun isUhdDevice(context: Context): Boolean {
-        val displayManager = DisplayManagerCompat.getInstance(context)
-
-        displayManager.getDisplay(Display.DEFAULT_DISPLAY)?.let { display ->
-            return DisplayCompat.getSupportedModes(context, display)
-                .any {
-                    (it.physicalHeight >= DISPLAY_SIZE_4K_HEIGHT) && (it.physicalWidth >= DISPLAY_SIZE_4K_WIDTH)
-                }
-        }
-        return false
-    }
-
-    /**
-     * Determines whether the device is running under a low-RAM configuration.
-     */
-    fun isLowRamDevice(context: Context): Boolean {
-        val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        return am.isLowRamDevice
-    }
-
-
-
-
     /**
      * Detects the Android release channel (Canary, Beta/Preview, GA, or Custom/Engineering).
      */
-    @StringRes
     fun detectReleaseChannel(
         codename: String = Build.VERSION.CODENAME.orEmpty(),
         previewSdkInt: Int = Build.VERSION.PREVIEW_SDK_INT,
@@ -239,7 +182,7 @@ object Util {
         buildTags: String = Build.TAGS.orEmpty(),
         buildType: String = Build.TYPE.orEmpty(),
         releaseOrCodename: String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) Build.VERSION.RELEASE_OR_CODENAME else "",
-    ): Int {
+    ): ReleaseChannel {
         val lowerDisplay = buildDisplay.lowercase()
         val lowerId = buildId.lowercase()
         val lowerReleaseOrCodename = releaseOrCodename.lowercase()
@@ -247,14 +190,14 @@ object Util {
         return when {
             // Custom ROM or engineering build
             buildTags.contains("test-keys") || buildTags.contains("dev-keys") || buildType == "eng" -> {
-                R.string.text_channel_custom
+                ReleaseChannel.CUSTOM
             }
 
             // Canary markers: explicit "canary" keyword in release, display, or build ID
             lowerReleaseOrCodename.contains("canary") ||
                     lowerDisplay.contains("canary") ||
                     lowerId.contains("canary") -> {
-                R.string.text_channel_canary
+                ReleaseChannel.CANARY
             }
 
             // Beta / Developer Preview markers:
@@ -270,11 +213,11 @@ object Util {
                             buildId.matches(Regex("^[A-Z]{2}[0-9]B.*", RegexOption.IGNORE_CASE)) ||
                             buildId.matches(Regex("^[A-Z]{2}[0-9][1-9].*"))
                     )) -> {
-                R.string.text_channel_beta
+                ReleaseChannel.BETA
             }
 
             // Production General Availability (e.g. 4th char is 'A' like AP2A, BP1A, CP1A, or standard REL)
-            else -> R.string.text_channel_ga
+            else -> ReleaseChannel.GA
         }
     }
 
@@ -335,5 +278,4 @@ object Util {
             else -> -1
         }
     }
-
 }

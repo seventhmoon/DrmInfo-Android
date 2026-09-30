@@ -24,6 +24,7 @@ activityCompose = "1.13.0"
 lifecycleCompose = "2.11.0"
 
 adsMobileSdk = "1.5.0"
+playAppUpdate = "2.1.0"
 playServicesBase = "18.11.0"
 playServicesBasement = "18.12.0"
 
@@ -58,6 +59,8 @@ junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanaryAndroid" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+play-app-update = { group = "com.google.android.play", name = "app-update", version.ref = "playAppUpdate" }
+play-app-update-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "playAppUpdate" }
 play-services-base = { group = "com.google.android.gms", name = "play-services-base", version.ref = "playServicesBase" }
 play-services-basement = { group = "com.google.android.gms", name = "play-services-basement", version.ref = "playServicesBasement" }
 perf-plugin = { group = "com.google.firebase", name = "perf-plugin", version.ref = "perfPlugin" }

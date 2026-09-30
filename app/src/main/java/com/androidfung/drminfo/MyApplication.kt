@@ -8,9 +8,4 @@ class MyApplication : Application() {
         super.onCreate()
         DynamicColors.applyToActivitiesIfAvailable(this)
     }
-
-    override fun onTrimMemory(level: Int) {
-        super.onTrimMemory(level)
-        // Global resource cleanup when UI is hidden or memory is tight
-    }
 }
