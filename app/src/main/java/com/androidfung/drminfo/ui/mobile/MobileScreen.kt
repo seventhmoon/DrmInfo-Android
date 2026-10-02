@@ -42,6 +42,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -70,6 +72,7 @@ fun MobileScreen(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
     val gridState = rememberLazyStaggeredGridState()
+    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val windowInfo = LocalWindowInfo.current
     val density = LocalDensity.current
@@ -207,7 +210,32 @@ fun MobileScreen(
                             ) {
                                 HeroHighlightsCard(
                                     state = state,
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier.fillMaxWidth(),
+                                    onPillClick = { targetKey ->
+                                        val targetIndex = when (targetKey) {
+                                            "card_hardware" -> 1
+                                            "card_system" -> 2
+                                            "card_display" -> if (state.device.hasDisplayInfo) 3 else -1
+                                            "card_audio" -> {
+                                                var idx = 3
+                                                if (state.device.hasDisplayInfo) idx++
+                                                if (state.device.supportedAudioEncodings.isNotEmpty()) idx else -1
+                                            }
+                                            "card_widevine" -> {
+                                                var idx = 3
+                                                if (state.device.hasDisplayInfo) idx++
+                                                if (state.device.supportedAudioEncodings.isNotEmpty()) idx++
+                                                val widevineIdx = state.schemes.indexOfFirst { it is DrmSchemeState.Widevine }
+                                                if (widevineIdx >= 0) idx + widevineIdx else -1
+                                            }
+                                            else -> -1
+                                        }
+                                        if (targetIndex >= 0) {
+                                            coroutineScope.launch {
+                                                gridState.animateScrollToItem(targetIndex)
+                                            }
+                                        }
+                                    }
                                 )
                             }
 

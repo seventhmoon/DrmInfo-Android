@@ -182,6 +182,10 @@ fun TvScreen(
                                                 selectedItemWithSubActions = item
                                             }
                                         },
+                                        colors = androidx.tv.material3.ListItemDefaults.colors(
+                                            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                            focusedContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                        ),
                                         headlineContent = {
                                             Text(
                                                 text = item.title,
@@ -245,6 +249,10 @@ fun TvScreen(
                                     ListItem(
                                         selected = false,
                                         onClick = {},
+                                        colors = androidx.tv.material3.ListItemDefaults.colors(
+                                            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                            focusedContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                        ),
                                         headlineContent = {
                                             Text(
                                                 text = subItem.title,

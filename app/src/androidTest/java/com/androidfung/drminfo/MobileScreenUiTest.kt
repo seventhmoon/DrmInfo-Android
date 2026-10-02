@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.androidfung.drminfo.model.DeviceInfo
 import com.androidfung.drminfo.model.DrmInfoUiState
@@ -122,5 +123,44 @@ class MobileScreenUiTest {
 
         composeTestRule.onNodeWithText("DRM Info").assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription("Share Report").assertIsDisplayed()
+    }
+
+    @Test
+    fun heroCard_clickingPillTriggersCallback() {
+        var clickedTarget: String? = null
+        val testState = DrmInfoUiState(
+            device = DeviceInfo(
+                manufacturer = "Pixel",
+                model = "8 Pro",
+                supportedRefreshRates = listOf(120.0f)
+            ),
+            schemes = listOf(
+                DrmSchemeState.Widevine(
+                    name = "Google Widevine",
+                    description = "Widevine CDM",
+                    vendor = "Google",
+                    version = "17.0.0",
+                    maxHdcpLevel = HdcpLevel.V2_3,
+                    connectedHdcpLevel = null,
+                    securityLevel = "L1",
+                    systemId = "1234",
+                    maxSessions = "16",
+                    oemCryptoVersion = "16"
+                )
+            )
+        )
+
+        composeTestRule.setContent {
+            DrmInfoTheme {
+                HeroHighlightsCard(
+                    state = testState,
+                    onPillClick = { targetKey -> clickedTarget = targetKey }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("120 Hz").assertIsDisplayed()
+        composeTestRule.onNodeWithText("120 Hz").performClick()
+        org.junit.Assert.assertEquals("card_display", clickedTarget)
     }
 }

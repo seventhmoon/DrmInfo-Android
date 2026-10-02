@@ -2,6 +2,7 @@ package com.androidfung.drminfo.ui.mobile
 
 import android.view.Display
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -15,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,7 +37,8 @@ enum class HighlightLevel {
 @Composable
 fun HeroHighlightsCard(
     state: DrmInfoUiState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onPillClick: ((targetKey: String) -> Unit)? = null
 ) {
     val widevine = state.schemes.asSequence().filterIsInstance<DrmSchemeState.Widevine>().firstOrNull()
     val maxRefreshRate = state.device.supportedRefreshRates.maxOrNull()
@@ -86,7 +89,8 @@ fun HeroHighlightsCard(
                     HighlightPill(
                         label = stringResource(id = R.string.highlight_label_build),
                         value = prefix,
-                        level = buildLevel
+                        level = buildLevel,
+                        onClick = onPillClick?.let { { it("card_system") } }
                     )
                 }
 
@@ -101,7 +105,8 @@ fun HeroHighlightsCard(
                     HighlightPill(
                         label = stringResource(id = R.string.highlight_label_display),
                         value = "$roundedHz Hz",
-                        level = displayLevel
+                        level = displayLevel,
+                        onClick = onPillClick?.let { { it("card_display") } }
                     )
                 }
 
@@ -127,7 +132,8 @@ fun HeroHighlightsCard(
                     HighlightPill(
                         label = stringResource(id = R.string.highlight_label_hdr),
                         value = hdrSummary,
-                        level = hdrLevel
+                        level = hdrLevel,
+                        onClick = onPillClick?.let { { it("card_display") } }
                     )
                 }
 
@@ -142,7 +148,8 @@ fun HeroHighlightsCard(
                     HighlightPill(
                         label = stringResource(id = R.string.highlight_label_widevine),
                         value = widevine.securityLevel,
-                        level = widevineLevel
+                        level = widevineLevel,
+                        onClick = onPillClick?.let { { it("card_widevine") } }
                     )
                 }
             }
@@ -154,7 +161,8 @@ fun HeroHighlightsCard(
 fun HighlightPill(
     label: String,
     value: String,
-    level: HighlightLevel = HighlightLevel.PRIMARY
+    level: HighlightLevel = HighlightLevel.PRIMARY,
+    onClick: (() -> Unit)? = null
 ) {
     val (containerColor, contentColor) = when (level) {
         HighlightLevel.PRIMARY -> MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
@@ -163,9 +171,16 @@ fun HighlightPill(
         HighlightLevel.ERROR -> MaterialTheme.colorScheme.errorContainer to MaterialTheme.colorScheme.onErrorContainer
     }
 
+    val shape = MaterialTheme.shapes.small
     Row(
         modifier = Modifier
-            .background(color = containerColor, shape = MaterialTheme.shapes.small)
+            .clip(shape)
+            .background(color = containerColor, shape = shape)
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable(onClick = onClick)
+                } else Modifier
+            )
             .padding(horizontal = 10.dp, vertical = 6.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically
