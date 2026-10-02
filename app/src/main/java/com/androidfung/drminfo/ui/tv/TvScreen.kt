@@ -97,7 +97,12 @@ fun TvScreen(
                 Column(
                     modifier = Modifier
                         .weight(0.35f)
-                        .fillMaxHeight(),
+                        .fillMaxHeight()
+                        .background(
+                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+                        )
+                        .padding(24.dp),
                     verticalArrangement = Arrangement.Top
                 ) {
                     Box(

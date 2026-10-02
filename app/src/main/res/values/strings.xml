@@ -81,4 +81,10 @@
     <string name="text_spatial_audio">Spatial Audio</string>
     <string name="text_head_tracking">Head Tracking</string>
 
+    <!-- Hero Highlight Labels -->
+    <string name="highlight_label_build">Build</string>
+    <string name="highlight_label_display">Display</string>
+    <string name="highlight_label_hdr">HDR</string>
+    <string name="highlight_label_widevine">Widevine</string>
+
 </resources>
