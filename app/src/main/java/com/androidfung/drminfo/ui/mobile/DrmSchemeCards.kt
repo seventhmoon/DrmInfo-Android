@@ -44,8 +44,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.androidfung.drminfo.R
-import com.androidfung.drminfo.Util.toStringRes
 import com.androidfung.drminfo.model.DrmSchemeState
+import com.androidfung.drminfo.util.Util.toStringRes
 import kotlinx.coroutines.launch
 
 val LocalSnackbarHostState = staticCompositionLocalOf { SnackbarHostState() }

@@ -11,7 +11,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @SmallTest
-class MyMobileAndroidUnitTest {
+class MobileActivityIntegrationTest {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MobileActivity>()

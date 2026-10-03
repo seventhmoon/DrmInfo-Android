@@ -15,13 +15,13 @@ import android.view.Display.DEFAULT_DISPLAY
 import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.androidfung.drminfo.Constants
 import com.androidfung.drminfo.R
-import com.androidfung.drminfo.Util
 import com.androidfung.drminfo.model.DeviceInfo
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
 import com.androidfung.drminfo.model.HdcpLevel
+import com.androidfung.drminfo.util.Constants
+import com.androidfung.drminfo.util.Util
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -205,7 +205,8 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
             alternativeRefreshRates = alternativeRates,
             supportedAudioEncodings = audioEncodings,
             releaseChannel = Util.detectReleaseChannel(),
-            quarterlyReleaseName = Util.getQuarterlyReleaseName()
+            quarterlyReleaseName = Util.getQuarterlyReleaseName(),
+            tvDeviceType = com.androidfung.drminfo.model.TvDeviceType.resolve(app)
         )
     }
 

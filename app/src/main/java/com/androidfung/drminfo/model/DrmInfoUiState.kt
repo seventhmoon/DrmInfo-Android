@@ -60,6 +60,7 @@ data class DeviceInfo(
     val supportedAudioEncodings: List<String> = emptyList(),
     val releaseChannel: ReleaseChannel? = null,
     val quarterlyReleaseName: String? = null,
+    val tvDeviceType: TvDeviceType? = null,
 ) {
     val hasPerformanceInfo: Boolean
         get() = socManufacturer != null || socModel != null || mediaPerformanceClass != null || spatialAudioSupported != null

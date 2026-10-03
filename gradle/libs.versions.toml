@@ -4,20 +4,15 @@ coreKtx = "1.19.1"
 coreTesting = "2.2.0"
 espressoCore = "3.7.0"
 firebaseBom = "34.19.0"
-firebaseCrashlyticsGradle = "3.0.8"
 googleFirebaseCrashlytics = "3.0.8"
 googleFirebaseFirebasePerf = "2.0.2"
 googleGmsGoogleServices = "4.5.0"
-googleServices = "4.5.0"
-gradle = "9.4.1"
 junit = "1.3.0"
 junitVersion = "4.13.2"
 kotlin = "2.4.20"
 leakcanaryAndroid = "2.14"
 lifecycleViewmodelKtx = "2.11.0"
 material = "1.14.0"
-perfPlugin = "2.0.2"
-strictVersionMatcherPlugin = "1.2.4"
 
 composeBom = "2026.09.00"
 activityCompose = "1.13.0"
@@ -53,11 +48,7 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-perf = { group = "com.google.firebase", name = "firebase-perf" }
-firebase-crashlytics-gradle = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradle" }
-google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "gradle" }
 junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
-kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanaryAndroid" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 play-app-update = { group = "com.google.android.play", name = "app-update", version.ref = "playAppUpdate" }
@@ -65,17 +56,13 @@ play-app-update-ktx = { group = "com.google.android.play", name = "app-update-kt
 play-hsdp = { group = "com.google.android.play", name = "hsdp", version.ref = "playHsdp" }
 play-services-base = { group = "com.google.android.gms", name = "play-services-base", version.ref = "playServicesBase" }
 play-services-basement = { group = "com.google.android.gms", name = "play-services-basement", version.ref = "playServicesBasement" }
-perf-plugin = { group = "com.google.firebase", name = "perf-plugin", version.ref = "perfPlugin" }
-strict-version-matcher-plugin = { group = "com.google.android.gms", name = "strict-version-matcher-plugin", version.ref = "strictVersionMatcherPlugin" }
 ads-mobile-sdk = { group = "com.google.android.libraries.ads.mobile.sdk", name = "ads-mobile-sdk", version.ref = "adsMobileSdk" }
 androidx-tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tvMaterial" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-google-android-gms-strict-version-matcher-plugin = { id = "com.google.android.gms.strict-version-matcher-plugin", version.ref = "strictVersionMatcherPlugin" }
 google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }
 google-firebase-firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "googleFirebaseFirebasePerf" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }

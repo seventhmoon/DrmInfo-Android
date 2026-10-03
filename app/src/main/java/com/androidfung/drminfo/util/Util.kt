@@ -1,10 +1,11 @@
-package com.androidfung.drminfo
+package com.androidfung.drminfo.util
 
 import android.content.Context
 import android.media.MediaDrm
 import android.os.Build
 import android.view.Display.HdrCapabilities
 import androidx.annotation.StringRes
+import com.androidfung.drminfo.R
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
 import com.androidfung.drminfo.model.HdcpLevel

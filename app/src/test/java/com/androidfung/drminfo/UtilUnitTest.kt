@@ -6,6 +6,8 @@ import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
 import com.androidfung.drminfo.model.HdcpLevel
 import com.androidfung.drminfo.model.ReleaseChannel
+import com.androidfung.drminfo.util.Constants
+import com.androidfung.drminfo.util.Util
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

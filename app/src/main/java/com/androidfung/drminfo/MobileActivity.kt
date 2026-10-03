@@ -12,11 +12,12 @@ import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.androidfung.drminfo.Util.getQprNumber
 import com.androidfung.drminfo.ads.AdsManager
 import com.androidfung.drminfo.ui.DrmViewModel
 import com.androidfung.drminfo.ui.mobile.MobileScreen
 import com.androidfung.drminfo.ui.theme.DrmInfoTheme
+import com.androidfung.drminfo.util.Util
+import com.androidfung.drminfo.util.Util.getQprNumber
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager

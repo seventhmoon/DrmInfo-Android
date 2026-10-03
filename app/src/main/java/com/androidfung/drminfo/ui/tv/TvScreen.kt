@@ -49,9 +49,9 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import androidx.tv.material3.darkColorScheme
 import com.androidfung.drminfo.R
-import com.androidfung.drminfo.Util.toStringRes
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
+import com.androidfung.drminfo.util.Util.toStringRes
 import kotlin.math.round
 
 data class TvInfoItem(
@@ -282,6 +282,11 @@ private fun buildTvInfoItems(
     state: DrmInfoUiState
 ): List<TvInfoItem> = buildList {
     val dev = state.device
+    dev.tvDeviceType?.let { tvType ->
+        if (tvType != com.androidfung.drminfo.model.TvDeviceType.ANDROID_NON_TV) {
+            add(TvInfoItem(context.getString(R.string.text_tv_type), context.getString(tvType.stringRes)))
+        }
+    }
     add(TvInfoItem(context.getString(R.string.text_brand), dev.brand))
     if (dev.product.isNotEmpty()) {
         add(TvInfoItem(context.getString(R.string.text_product), dev.product))

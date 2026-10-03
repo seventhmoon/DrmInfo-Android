@@ -1,4 +1,4 @@
-package com.androidfung.drminfo
+package com.androidfung.drminfo.util
 
 import java.util.UUID
 
