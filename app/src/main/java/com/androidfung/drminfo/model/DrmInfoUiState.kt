@@ -67,6 +67,9 @@ data class DeviceInfo(
 
     val hasDisplayInfo: Boolean
         get() = supportedRefreshRates.isNotEmpty() || alternativeRefreshRates.isNotEmpty() || supportedHdrTypes.isNotEmpty() || isWideColorGamut != null
+
+    val hasMediaDisplayInfo: Boolean
+        get() = hasDisplayInfo || mediaPerformanceClass != null || hardwareEncoders.isNotEmpty() || hardwareDecoders.isNotEmpty()
 }
 
 /**

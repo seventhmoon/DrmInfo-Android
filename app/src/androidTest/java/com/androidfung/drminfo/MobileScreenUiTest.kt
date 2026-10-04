@@ -10,8 +10,8 @@ import com.androidfung.drminfo.model.DeviceInfo
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
 import com.androidfung.drminfo.model.HdcpLevel
-import com.androidfung.drminfo.ui.mobile.DisplayCard
 import com.androidfung.drminfo.ui.mobile.HeroHighlightsCard
+import com.androidfung.drminfo.ui.mobile.MediaDisplayCard
 import com.androidfung.drminfo.ui.mobile.MobileScreen
 import com.androidfung.drminfo.ui.mobile.WidevineCard
 import com.androidfung.drminfo.ui.theme.DrmInfoTheme
@@ -87,7 +87,7 @@ class MobileScreenUiTest {
     }
 
     @Test
-    fun displayCard_rendersRefreshRateChips() {
+    fun mediaDisplayCard_rendersRefreshRateChips() {
         val device = DeviceInfo(
             supportedRefreshRates = listOf(60.00001f, 120.00001f),
             alternativeRefreshRates = listOf(30.0f, 90.0f)
@@ -95,7 +95,7 @@ class MobileScreenUiTest {
 
         composeTestRule.setContent {
             DrmInfoTheme {
-                DisplayCard(device = device)
+                MediaDisplayCard(device = device)
             }
         }
 

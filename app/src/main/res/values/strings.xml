@@ -23,6 +23,7 @@
     <string name="section_hardware">Hardware</string>
     <string name="section_system">System &amp; OS</string>
     <string name="section_soc">Processor &amp; Performance</string>
+    <string name="section_media_and_display">Media &amp; Display</string>
     <string name="section_display">Display</string>
     <string name="section_codecs">Hardware Decoders</string>
     <string name="section_audio">Audio &amp; Surround Formats</string>

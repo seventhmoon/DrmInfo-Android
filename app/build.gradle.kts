@@ -15,8 +15,8 @@ android {
         applicationId = "com.androidfung.drminfo"
         minSdk = 24
         targetSdk = 37
-        versionCode = 508
-        versionName = "1.2.3-261002"
+        versionCode = 509
+        versionName = "1.2.3-261004"
 
         resourceConfigurations += listOf("en")
 

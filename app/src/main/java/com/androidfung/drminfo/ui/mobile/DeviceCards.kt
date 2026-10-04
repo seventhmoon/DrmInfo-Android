@@ -97,52 +97,6 @@ fun HardwareCard(
                     }
                 }
             }
-
-            device.mediaPerformanceClass?.let {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_media_performance_class),
-                    value = it.toString(),
-                    allowCopy = true
-                )
-            }
-
-            if (device.hardwareEncoders.isNotEmpty()) {
-                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
-                    Text(
-                        text = stringResource(id = R.string.text_hw_encode_type),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        device.hardwareEncoders.forEach { codec ->
-                            TagChip(text = codec, allowCopy = true)
-                        }
-                    }
-                }
-            }
-
-            if (device.hardwareDecoders.isNotEmpty()) {
-                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
-                    Text(
-                        text = stringResource(id = R.string.text_hw_decode_type),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        device.hardwareDecoders.forEach { codec ->
-                            TagChip(text = codec, allowCopy = true)
-                        }
-                    }
-                }
-            }
         }
     }
 }
@@ -231,7 +185,7 @@ fun SystemCard(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun DisplayCard(
+fun MediaDisplayCard(
     device: DeviceInfo,
     modifier: Modifier = Modifier
 ) {
@@ -242,7 +196,7 @@ fun DisplayCard(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.card_padding))
         ) {
             CardSectionHeader(
-                title = stringResource(id = R.string.section_display),
+                title = stringResource(id = R.string.section_media_and_display),
                 iconRes = R.drawable.ic_tv
             )
 
@@ -252,6 +206,14 @@ fun DisplayCard(
                 color = MaterialTheme.colorScheme.outlineVariant
             )
             Spacer(modifier = Modifier.height(4.dp))
+
+            device.mediaPerformanceClass?.let {
+                LabelValueItem(
+                    label = stringResource(id = R.string.text_media_performance_class),
+                    value = it.toString(),
+                    allowCopy = true
+                )
+            }
 
             if (device.supportedRefreshRates.isNotEmpty()) {
                 Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
@@ -320,6 +282,44 @@ fun DisplayCard(
                             hdrTypeNames.forEach { name ->
                                 TagChip(text = name, allowCopy = true)
                             }
+                        }
+                    }
+                }
+            }
+
+            if (device.hardwareDecoders.isNotEmpty()) {
+                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
+                    Text(
+                        text = stringResource(id = R.string.text_hw_decode_type),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        device.hardwareDecoders.forEach { codec ->
+                            TagChip(text = codec, allowCopy = true)
+                        }
+                    }
+                }
+            }
+
+            if (device.hardwareEncoders.isNotEmpty()) {
+                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
+                    Text(
+                        text = stringResource(id = R.string.text_hw_encode_type),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        device.hardwareEncoders.forEach { codec ->
+                            TagChip(text = codec, allowCopy = true)
                         }
                     }
                 }

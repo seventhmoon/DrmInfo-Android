@@ -215,15 +215,15 @@ fun MobileScreen(
                                         val targetIndex = when (targetKey) {
                                             "card_hardware" -> 1
                                             "card_system" -> 2
-                                            "card_display" -> if (state.device.hasDisplayInfo) 3 else -1
+                                            "card_display" -> if (state.device.hasMediaDisplayInfo) 3 else -1
                                             "card_audio" -> {
                                                 var idx = 3
-                                                if (state.device.hasDisplayInfo) idx++
+                                                if (state.device.hasMediaDisplayInfo) idx++
                                                 if (state.device.supportedAudioEncodings.isNotEmpty()) idx else -1
                                             }
                                             "card_widevine" -> {
                                                 var idx = 3
-                                                if (state.device.hasDisplayInfo) idx++
+                                                if (state.device.hasMediaDisplayInfo) idx++
                                                 if (state.device.supportedAudioEncodings.isNotEmpty()) idx++
                                                 val widevineIdx = state.schemes.indexOfFirst { it is DrmSchemeState.Widevine }
                                                 if (widevineIdx >= 0) idx + widevineIdx else -1
@@ -247,9 +247,9 @@ fun MobileScreen(
                                 SystemCard(device = state.device, modifier = Modifier.fillMaxWidth())
                             }
 
-                            if (state.device.hasDisplayInfo) {
+                            if (state.device.hasMediaDisplayInfo) {
                                 item(key = "card_display") {
-                                    DisplayCard(device = state.device, modifier = Modifier.fillMaxWidth())
+                                    MediaDisplayCard(device = state.device, modifier = Modifier.fillMaxWidth())
                                 }
                             }
 
