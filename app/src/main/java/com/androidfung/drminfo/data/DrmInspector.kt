@@ -173,6 +173,8 @@ class DrmInspector(private val context: Context) {
     }
 
     private fun probeAudioEncodings(): List<String> {
+        cachedAudioEncodings?.let { return it }
+
         if (VERSION.SDK_INT < VERSION_CODES.Q) return emptyList()
 
         val attributes = AudioAttributes.Builder()
@@ -194,7 +196,7 @@ class DrmInspector(private val context: Context) {
             }
         }
 
-        return candidates.mapNotNull { (encoding, label) ->
+        val result = candidates.mapNotNull { (encoding, label) ->
             runCatching {
                 val format = AudioFormat.Builder()
                     .setEncoding(encoding)
@@ -213,6 +215,8 @@ class DrmInspector(private val context: Context) {
                 if (isSupported) label else null
             }.getOrNull()
         }
+        cachedAudioEncodings = result
+        return result
     }
 
     private class DrmSpec(
@@ -244,7 +248,10 @@ class DrmInspector(private val context: Context) {
         }
 
         return runCatching {
-            val drm = MediaDrm(spec.uuid)
+            val drm = runCatching { MediaDrm(spec.uuid) }.getOrElse {
+                Log.w(TAG, "Failed to instantiate MediaDrm for ${spec.id} (${spec.uuid}): ${it.message}")
+                return@runCatching null
+            }
             mediaDrmByUuid[spec.uuid] = drm
 
             val schemeName = resources.getString(spec.nameRes)
@@ -257,11 +264,11 @@ class DrmInspector(private val context: Context) {
             val version = drm.safeGetProperty(versionKey).takeIf { it.isNotEmpty() }
 
             val maxHdcp = if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                Util.convertHdcpLevel(drm.maxHdcpLevel)
+                runCatching { Util.convertHdcpLevel(drm.maxHdcpLevel) }.getOrNull()
             } else null
 
             val connectedHdcp = if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                Util.convertHdcpLevel(drm.connectedHdcpLevel)
+                runCatching { Util.convertHdcpLevel(drm.connectedHdcpLevel) }.getOrNull()
             } else null
 
             if (spec.isWidevine) {
@@ -360,5 +367,8 @@ class DrmInspector(private val context: Context) {
 
         @Volatile
         private var cachedHardwareEncoders: SortedSet<String>? = null
+        
+        @Volatile
+        private var cachedAudioEncodings: List<String>? = null
     }
 }

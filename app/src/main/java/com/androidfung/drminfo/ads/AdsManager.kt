@@ -1,5 +1,6 @@
 package com.androidfung.drminfo.ads
 
+import android.app.Activity
 import android.content.ComponentCallbacks2
 import android.content.Context
 import android.util.Log
@@ -12,6 +13,10 @@ import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdPreloader
 import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdRequest
 import com.google.android.libraries.ads.mobile.sdk.common.PreloadConfiguration
 import com.google.android.libraries.ads.mobile.sdk.initialization.InitializationConfig
+import com.google.android.ump.ConsentDebugSettings
+import com.google.android.ump.ConsentInformation
+import com.google.android.ump.ConsentRequestParameters
+import com.google.android.ump.UserMessagingPlatform
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,8 +33,50 @@ object AdsManager {
 
     private var cachedAdUnitId: String? = null
     private val scope = CoroutineScope(Dispatchers.IO)
+    private var consentInformation: ConsentInformation? = null
 
-    fun initialize(context: Context, appId: String, adUnitId: String? = null) {
+    fun requestConsentAndInitialize(activity: Activity, appId: String, adUnitId: String? = null) {
+        val debugSettings = ConsentDebugSettings.Builder(activity)
+            .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+            .addTestDeviceHashedId("TEST-DEVICE-HASHED-ID")
+            .build()
+            
+        val params = ConsentRequestParameters.Builder()
+            // .setConsentDebugSettings(debugSettings) // Uncomment to test in EEA
+            .build()
+
+        consentInformation = UserMessagingPlatform.getConsentInformation(activity)
+        consentInformation?.requestConsentInfoUpdate(
+            activity,
+            params,
+            {
+                UserMessagingPlatform.loadAndShowConsentFormIfRequired(
+                    activity
+                ) { loadAndShowError ->
+                    if (loadAndShowError != null) {
+                        Log.w(TAG, "Consent form load/show error: ${loadAndShowError.errorCode}: ${loadAndShowError.message}")
+                    }
+                    
+                    if (consentInformation?.canRequestAds() == true) {
+                        initialize(activity, appId, adUnitId)
+                    }
+                }
+            },
+            { requestConsentError ->
+                Log.w(TAG, "Consent form request error: ${requestConsentError.errorCode}: ${requestConsentError.message}")
+                if (consentInformation?.canRequestAds() == true) {
+                    initialize(activity, appId, adUnitId)
+                }
+            }
+        )
+        
+        // Check if you can initialize immediately (e.g. consent already given in a previous session)
+        if (consentInformation?.canRequestAds() == true) {
+            initialize(activity, appId, adUnitId)
+        }
+    }
+
+    private fun initialize(context: Context, appId: String, adUnitId: String? = null) {
         cachedAdUnitId = adUnitId
         if (MobileAds.isInitialized) {
             isInitialized = true

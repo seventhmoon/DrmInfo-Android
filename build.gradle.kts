@@ -8,6 +8,3 @@ plugins {
     alias(libs.plugins.google.firebase.firebase.perf) apply false
 }
 
-tasks.register<Delete>("clean") {
-    delete(rootProject.layout.buildDirectory)
-}

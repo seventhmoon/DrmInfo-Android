@@ -69,8 +69,8 @@ class MobileActivity : ComponentActivity() {
         val drmViewModel: DrmViewModel by viewModels()
 
         // Initialize GMA Next-Gen SDK via AdsManager
-        AdsManager.initialize(
-            context = this,
+        AdsManager.requestConsentAndInitialize(
+            activity = this,
             appId = getString(R.string.ad_app_id),
             adUnitId = getString(R.string.ad_unit_id)
         )

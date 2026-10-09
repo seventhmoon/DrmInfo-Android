@@ -9,14 +9,13 @@ plugins {
 android {
     namespace = "com.androidfung.drminfo"
     compileSdk = 37
-    buildToolsVersion = "37.0.0"
 
     defaultConfig {
         applicationId = "com.androidfung.drminfo"
         minSdk = 24
         targetSdk = 37
-        versionCode = 509
-        versionName = "1.2.3-261004"
+        versionCode = 510
+        versionName = "1.2.3-261009"
 
         resourceConfigurations += listOf("en")
 
@@ -62,18 +61,6 @@ android {
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = false
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlin {
-        jvmToolchain(17)
-        compilerOptions {
-            freeCompilerArgs.addAll(
-                "-opt-in=kotlin.RequiresOptIn",
-                "-Xjvm-default=all"
-            )
-        }
     }
 
     packaging {
@@ -85,8 +72,6 @@ android {
     lint {
         abortOnError = false
         checkReleaseBuilds = true
-        textOutput = file("stdout")
-        textReport = true
     }
 }
 
@@ -94,33 +79,24 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(platform(libs.androidx.compose.bom))
 
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.runtime.livedata)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.bundles.compose)
     implementation(libs.androidx.tv.material)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     implementation(libs.ads.mobile.sdk)
+    implementation(libs.user.messaging.platform)
     implementation(libs.material)
-    implementation(libs.play.app.update)
-    implementation(libs.play.app.update.ktx)
+    implementation(libs.bundles.play.update)
 
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.perf)
+    implementation(libs.bundles.firebase)
 
     testImplementation(libs.androidx.core.testing)
     testImplementation(libs.junit)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
