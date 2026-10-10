@@ -41,3 +41,9 @@
 
 -keep interface androidx.work.** { *; }
 
+# Preserve Protobuf Lite messages for reflection lookup in MessageSchema (used by Firebase Perf)
+-keep class * extends com.google.protobuf.GeneratedMessageLite { *; }
+-keepclassmembers class * extends com.google.protobuf.GeneratedMessageLite {
+    <fields>;
+}
+

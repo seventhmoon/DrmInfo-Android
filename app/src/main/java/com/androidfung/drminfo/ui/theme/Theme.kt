@@ -2,7 +2,9 @@ package com.androidfung.drminfo.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -10,6 +12,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 
 // Brand Palette for DRM Info: Modern Cyan / Slate / Indigo
 private val BrandDarkColorScheme = darkColorScheme(
@@ -79,9 +82,18 @@ fun DrmInfoTheme(
         else -> BrandLightColorScheme
     }
 
+    // Material 3 Expressive shapes: distinct corner radiuses for progressive visual emphasis
+    val expressiveShapes = Shapes(
+        small = RoundedCornerShape(12.dp),
+        medium = RoundedCornerShape(16.dp),
+        large = RoundedCornerShape(24.dp),
+        extraLarge = RoundedCornerShape(32.dp)
+    )
+
     MaterialTheme(
         colorScheme = colorScheme,
         typography = AppTypography,
+        shapes = expressiveShapes,
         content = content
     )
 }

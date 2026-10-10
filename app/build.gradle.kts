@@ -14,7 +14,7 @@ android {
         applicationId = "com.androidfung.drminfo"
         minSdk = 24
         targetSdk = 37
-        versionCode = 510
+        versionCode = 512
         versionName = "1.2.3-261009"
 
         resourceConfigurations += listOf("en")
@@ -34,8 +34,12 @@ android {
         debug {
             versionNameSuffix = ".debug"
             isDebuggable = true
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 

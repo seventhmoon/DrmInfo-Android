@@ -45,15 +45,16 @@ fun HeroHighlightsCard(
     val hasHdr = state.device.supportedHdrTypes.isNotEmpty()
 
     ElevatedCard(
-        modifier = modifier
+        modifier = modifier,
+        shape = MaterialTheme.shapes.large
     ) {
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.card_padding)),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
                 text = "${state.device.manufacturer} ${state.device.model}",
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
@@ -181,8 +182,8 @@ fun HighlightPill(
                     Modifier.clickable(onClick = onClick)
                 } else Modifier
             )
-            .padding(horizontal = 10.dp, vertical = 6.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

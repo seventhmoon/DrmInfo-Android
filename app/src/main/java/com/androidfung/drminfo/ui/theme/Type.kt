@@ -13,17 +13,35 @@ val OpenSans = FontFamily(
 )
 
 val AppTypography = Typography(
+    displayMedium = TextStyle(
+        fontFamily = OpenSans,
+        fontWeight = FontWeight.Bold,
+        fontSize = 28.sp,
+        lineHeight = 34.sp
+    ),
+    headlineSmall = TextStyle(
+        fontFamily = OpenSans,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        lineHeight = 26.sp
+    ),
     titleLarge = TextStyle(
         fontFamily = OpenSans,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 20.sp,
         lineHeight = 24.sp
     ),
     titleMedium = TextStyle(
         fontFamily = OpenSans,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
         lineHeight = 20.sp
+    ),
+    bodyLarge = TextStyle(
+        fontFamily = OpenSans,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 24.sp
     ),
     bodyMedium = TextStyle(
         fontFamily = OpenSans,
@@ -37,16 +55,22 @@ val AppTypography = Typography(
         fontSize = 12.sp,
         lineHeight = 16.sp
     ),
-    labelSmall = TextStyle(
+    labelLarge = TextStyle(
         fontFamily = OpenSans,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 16.sp
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        lineHeight = 18.sp
     ),
     labelMedium = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp
+    ),
+    labelSmall = TextStyle(
+        fontFamily = OpenSans,
+        fontWeight = FontWeight.Medium,
+        fontSize = 11.sp,
+        lineHeight = 14.sp
     )
 )

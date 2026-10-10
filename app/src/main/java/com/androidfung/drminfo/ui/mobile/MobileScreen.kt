@@ -124,8 +124,10 @@ fun MobileScreen(
                             )
                             AnimatedVisibility(
                                 visible = showSubtitle,
-                                enter = fadeIn() + expandVertically(),
-                                exit = fadeOut() + shrinkVertically()
+                                enter = fadeIn(animationSpec = androidx.compose.animation.core.spring(dampingRatio = androidx.compose.animation.core.Spring.DampingRatioMediumBouncy, stiffness = androidx.compose.animation.core.Spring.StiffnessLow)) +
+                                        expandVertically(animationSpec = androidx.compose.animation.core.spring(dampingRatio = androidx.compose.animation.core.Spring.DampingRatioMediumBouncy, stiffness = androidx.compose.animation.core.Spring.StiffnessLow)),
+                                exit = fadeOut(animationSpec = androidx.compose.animation.core.spring(stiffness = androidx.compose.animation.core.Spring.StiffnessMedium)) +
+                                        shrinkVertically(animationSpec = androidx.compose.animation.core.spring(stiffness = androidx.compose.animation.core.Spring.StiffnessMedium))
                             ) {
                                 val subtitle = "${state.device.manufacturer} ${state.device.model}".trim()
                                 if (subtitle.isNotEmpty()) {
