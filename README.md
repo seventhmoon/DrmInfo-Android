@@ -6,11 +6,7 @@
 
 An open-source Android application that inspects and displays detailed Digital Rights Management (DRM) module information, hardware capabilities, media decoding/encoding support, audio formats, and display specifications for Android phones, tablets, and Android TV devices.
 
-<p align="center">
-  <a href="https://play.google.com/store/apps/details?id=com.androidfung.drminfo">
-    <img alt="Get it on Google Play" height="60" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" />
-  </a>
-</p>
+[![Get it on Google Play](https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png)](https://play.google.com/store/apps/details?id=com.androidfung.drminfo)
 
 ---
 
