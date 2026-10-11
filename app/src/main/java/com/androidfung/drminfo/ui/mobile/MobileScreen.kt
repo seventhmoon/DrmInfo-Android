@@ -41,8 +41,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,6 +79,7 @@ fun MobileScreen(
     val windowInfo = LocalWindowInfo.current
     val density = LocalDensity.current
     val windowWidthDp = with(density) { windowInfo.containerSize.width.toDp().value.roundToInt() }
+    var showHelpSheet by remember { mutableStateOf(false) }
 
     // For a 1-column card in the grid (minSize = 340dp), width is naturally ~320-360dp
     val defaultAdWidthDp = minOf(windowWidthDp - 24, 360).coerceAtLeast(300)
@@ -141,6 +144,14 @@ fun MobileScreen(
                         }
                     },
                     actions = {
+                        IconButton(
+                            onClick = { showHelpSheet = true }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_info),
+                                contentDescription = stringResource(id = R.string.action_about_help)
+                            )
+                        }
                         val shareSubject = stringResource(id = R.string.share_report_title)
                         val shareChooserTitle = stringResource(id = R.string.action_share)
                         IconButton(
@@ -293,6 +304,12 @@ fun MobileScreen(
                     }
                 }
             }
+        }
+
+        if (showHelpSheet) {
+            HelpBottomSheet(
+                onDismissRequest = { showHelpSheet = false }
+            )
         }
     }
 }

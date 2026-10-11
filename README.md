@@ -82,6 +82,49 @@ cd DrmInfo-Android
 
 ---
 
+## ❓ Frequently Asked Questions (FAQ)
+
+### 1. Can DRM Info fix, restore, or upgrade my DRM security level?
+No. DRM Info is strictly an informational reporting tool. DRM security levels (such as Widevine L1) require hardware-isolated cryptographic certificates provisioned at the factory by the device manufacturer. A third-party application cannot repair, modify, or restore these security certificates.
+
+### 2. What is the difference between Widevine L1, L2, and L3?
+* **L1**: Cryptography and media decoding are completely handled in a hardware-isolated environment (TEE). Major streaming services require L1 for HD (1080p), 4K, and HDR.
+* **L2**: Cryptography is performed in hardware, but media processing happens in software.
+* **L3**: Both cryptography and media processing are handled in software. Streaming services typically limit L3 devices to Standard Definition (SD, 480p/540p).
+
+### 3. Why did my device downgrade from Widevine L1 to L3?
+The most common reasons are:
+* Unlocking the bootloader, rooting, or flashing a custom ROM, which breaks Android's hardware keystore integrity checks.
+* A corrupted or faulty official OEM software update that affected keystore/TEE provisioning.
+
+### 4. DRM Info shows Widevine L1, why does Netflix / Prime Video still restrict playback to SD?
+DRM Info directly reports the hardware security level currently declared by the on-device Android MediaDrm module. However, streaming providers like Netflix maintain server-side revocation and security lists. If a specific device model, chipset, or firmware build is flagged as compromised, vulnerable, or no longer secure, the streaming service's servers will restrict playback resolution to SD regardless of what the device locally reports.
+
+### 5. My screen supports HDR, but streaming apps will not play HDR content. Why?
+For HDR streaming to function, all three criteria must be satisfied:
+1. The display panel must support the specific HDR standard (HDR10, Dolby Vision, HLG, etc.).
+2. The chipset must have a certified hardware video decoder capable of decoding that HDR format.
+3. The streaming provider must have certified that specific device model for HDR playback on their platform.
+
+### 6. What does "HDCP Level" mean (Max vs. Connected)?
+HDCP (High-bandwidth Digital Content Protection) secures content transmitted across external connections like HDMI or DisplayPort:
+* **Max HDCP Level**: The highest revision the phone/tablet hardware supports (e.g., HDCP 2.2 / 2.3).
+* **Connected HDCP Level**: The revision currently negotiated with the currently attached display or TV (or "No Digital Output" / "Disconnected" when not plugged into an external display).
+
+### 7. What is Media Performance Class (MPC)?
+Introduced in Android 12, Media Performance Class defines a set of baseline multimedia requirements set by Google. It evaluates media codec concurrency, frame drop thresholds during playback/recording, camera initialization speed, and flash storage read/write performance. (Class 12 = Android 12 baseline, Class 13 = Android 13 baseline, etc. A value of 0 means the OEM did not declare a performance class).
+
+### 8. What are "Seamless Refresh Rates"?
+These are display refresh rates (e.g., switching between 60Hz, 90Hz, or 120Hz) that the display hardware can transition between dynamically without causing visual flicker or blanking the screen.
+
+### 9. Why doesn't DRM Info list Microsoft PlayReady or other DRM schemes on my phone?
+Android supports modular DRM via the `MediaDrm` API, but manufacturers choose which modules to license and integrate. While Google Widevine and CENC ClearKey are standard on Google-certified Android devices, proprietary schemes like Microsoft PlayReady, Marlin, or Verimatrix are only present if specifically bundled by the OEM (common on select Android TVs or carrier devices).
+
+### 10. Does DRM Info collect or upload my device or DRM information?
+DRM Info inspects and generates all device specifications entirely on-device using local Android APIs. No device specifications, hardware IDs, or DRM data are collected, transmitted, or stored on external servers. (Internet access is only utilized if ads or consent forms are enabled).
+
+---
+
 ## 📄 License
 
 ```text

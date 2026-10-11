@@ -79,6 +79,22 @@ fun HardwareCard(
                 )
             }
 
+            if (device.totalMemoryBytes > 0L) {
+                LabelValueItem(
+                    label = stringResource(id = R.string.text_total_memory),
+                    value = Util.formatMemorySize(device.totalMemoryBytes),
+                    allowCopy = true
+                )
+            }
+
+            device.mediaPerformanceClass?.let {
+                LabelValueItem(
+                    label = stringResource(id = R.string.text_media_performance_class),
+                    value = it.toString(),
+                    allowCopy = true
+                )
+            }
+
             if (device.abis.isNotEmpty()) {
                 Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
                     Text(
@@ -206,14 +222,6 @@ fun MediaDisplayCard(
                 color = MaterialTheme.colorScheme.outlineVariant
             )
             Spacer(modifier = Modifier.height(4.dp))
-
-            device.mediaPerformanceClass?.let {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_media_performance_class),
-                    value = it.toString(),
-                    allowCopy = true
-                )
-            }
 
             if (device.supportedRefreshRates.isNotEmpty()) {
                 Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {

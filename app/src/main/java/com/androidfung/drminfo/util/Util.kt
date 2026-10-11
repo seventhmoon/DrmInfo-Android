@@ -48,6 +48,23 @@ object Util {
     }
 
     /**
+     * Categorizes display physical dimensions into a common resolution standard tag.
+     */
+    @JvmStatic
+    fun getResolutionLabel(width: Int, height: Int): String? {
+        if (width <= 0 || height <= 0) return null
+        val shortDim = minOf(width, height)
+        val longDim = maxOf(width, height)
+        return when {
+            shortDim >= 2160 || longDim >= 3840 -> "4K"
+            shortDim >= 1440 || (shortDim >= 1200 && longDim >= 2560) -> if (longDim > 2560) "QHD+" else "QHD"
+            shortDim >= 1000 || longDim >= 2100 -> if (longDim > 1920) "FHD+" else "FHD"
+            shortDim >= 720 || longDim >= 1280 -> if (longDim > 1280) "HD+" else "HD"
+            else -> "SD"
+        }
+    }
+
+    /**
      * Resolves a domain [ReleaseChannel] to its localized string resource ID.
      */
     @JvmStatic
@@ -72,6 +89,16 @@ object Util {
         HdrCapabilities.HDR_TYPE_HDR10_PLUS -> R.string.hdr_type_hdr10_plus
         HdrCapabilities.HDR_TYPE_HLG -> R.string.hdr_type_hlg
         else -> R.string.hdr_type_unknown
+    }
+
+    @JvmStatic
+    fun formatMemorySize(bytes: Long): String {
+        if (bytes <= 0L) return ""
+        val actualGb = bytes.toDouble() / (1024.0 * 1024.0 * 1024.0)
+        val standardTiers = listOf(1, 2, 3, 4, 6, 8, 12, 16, 18, 24, 32, 64)
+        val nominalGb = standardTiers.firstOrNull { it >= actualGb } ?: kotlin.math.ceil(actualGb).toInt()
+        val availableFormatted = String.format(java.util.Locale.US, "%.1f", actualGb)
+        return "$nominalGb GB ($availableFormatted GB available)"
     }
 
     @JvmStatic

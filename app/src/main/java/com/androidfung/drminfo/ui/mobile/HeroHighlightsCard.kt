@@ -1,6 +1,5 @@
 package com.androidfung.drminfo.ui.mobile
 
-import android.view.Display
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +23,7 @@ import com.androidfung.drminfo.R
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
 import com.androidfung.drminfo.model.ReleaseChannel
+import com.androidfung.drminfo.util.Util
 import kotlin.math.round
 
 enum class HighlightLevel {
@@ -95,47 +95,31 @@ fun HeroHighlightsCard(
                     )
                 }
 
-                // 2. Display Refresh Rate
-                if (maxRefreshRate != null) {
-                    val roundedHz = round(maxRefreshRate).toInt()
-                    val displayLevel = when {
-                        state.device.alternativeRefreshRates.isNotEmpty() -> HighlightLevel.PRIMARY
-                        maxRefreshRate > 60f || state.device.supportedRefreshRates.size > 1 -> HighlightLevel.SECONDARY
-                        else -> HighlightLevel.TERTIARY
-                    }
-                    HighlightPill(
-                        label = stringResource(id = R.string.highlight_label_display),
-                        value = "$roundedHz Hz",
-                        level = displayLevel,
-                        onClick = onPillClick?.let { { it("card_display") } }
-                    )
-                }
+                // 2. Combined Display Badge (Resolution + Refresh Rate + HDR)
+                if (maxRefreshRate != null || state.device.displayWidth > 0) {
+                    val roundedHz = maxRefreshRate?.let { round(it).toInt() }
+                    val resLabel = Util.getResolutionLabel(state.device.displayWidth, state.device.displayHeight)
 
-                // 3. HDR Formats
-                if (hasHdr) {
-                    val hdrSummary = state.device.supportedHdrTypes.joinToString(separator = "/") { id ->
-                        when (id) {
-                            Display.HdrCapabilities.HDR_TYPE_DOLBY_VISION -> "DV"
-                            Display.HdrCapabilities.HDR_TYPE_HDR10 -> "HDR10"
-                            Display.HdrCapabilities.HDR_TYPE_HDR10_PLUS -> "HDR10+"
-                            Display.HdrCapabilities.HDR_TYPE_HLG -> "HLG"
-                            else -> "HDR"
+                    val parts = buildList {
+                        resLabel?.let { add(it) }
+                        if (roundedHz != null && roundedHz > 0) add("${roundedHz}Hz")
+                        if (hasHdr) add("HDR")
+                    }
+
+                    if (parts.isNotEmpty()) {
+                        val displayValue = parts.joinToString(" ")
+                        val displayLevel = when {
+                            hasHdr && ((roundedHz ?: 0) >= 90) -> HighlightLevel.PRIMARY
+                            hasHdr || ((roundedHz ?: 0) > 60) -> HighlightLevel.SECONDARY
+                            else -> HighlightLevel.TERTIARY
                         }
+                        HighlightPill(
+                            label = stringResource(id = R.string.highlight_label_display),
+                            value = displayValue,
+                            level = displayLevel,
+                            onClick = onPillClick?.let { { it("card_display") } }
+                        )
                     }
-                    val hdrLevel = if (state.device.supportedHdrTypes.any {
-                            it == Display.HdrCapabilities.HDR_TYPE_DOLBY_VISION ||
-                                    it == Display.HdrCapabilities.HDR_TYPE_HDR10_PLUS
-                        }) {
-                        HighlightLevel.PRIMARY
-                    } else {
-                        HighlightLevel.SECONDARY
-                    }
-                    HighlightPill(
-                        label = stringResource(id = R.string.highlight_label_hdr),
-                        value = hdrSummary,
-                        level = hdrLevel,
-                        onClick = onPillClick?.let { { it("card_display") } }
-                    )
                 }
 
                 // 4. Widevine Security Level

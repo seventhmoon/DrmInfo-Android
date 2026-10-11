@@ -76,6 +76,17 @@ object AdsManager {
         }
     }
 
+    /**
+     * Attempts early initialization during Application startup if user consent
+     * was already granted in a previous session.
+     */
+    fun initializeIfConsentGiven(context: Context, appId: String, adUnitId: String? = null) {
+        val consentInfo = UserMessagingPlatform.getConsentInformation(context)
+        if (consentInfo.canRequestAds()) {
+            initialize(context, appId, adUnitId)
+        }
+    }
+
     private fun initialize(context: Context, appId: String, adUnitId: String? = null) {
         cachedAdUnitId = adUnitId
         if (MobileAds.isInitialized) {
@@ -102,8 +113,12 @@ object AdsManager {
         cachedAdUnitId = adUnitId
         if (!MobileAds.isInitialized) return
 
-        val widthDp = (targetWidthDp ?: 340).coerceIn(300, 360)
         val appContext = context.applicationContext
+        val displayMetrics = appContext.resources.displayMetrics
+        val screenWidthDp = (displayMetrics.widthPixels / displayMetrics.density).toInt()
+        val defaultCalculatedWidth = minOf(screenWidthDp - 32, 360).coerceAtLeast(300)
+        val widthDp = (targetWidthDp ?: defaultCalculatedWidth).coerceIn(300, 380)
+
         val adSize = runCatching {
             AdSize.getInlineAdaptiveBannerAdSize(widthDp, 300)
         }.getOrElse {
@@ -114,11 +129,11 @@ object AdsManager {
             }
         }
         val adRequest = BannerAdRequest.Builder(adUnitId, adSize).build()
-        val preloadConfig = PreloadConfiguration(adRequest, 1)
+        val preloadConfig = PreloadConfiguration(adRequest, 2)
 
         runCatching {
             BannerAdPreloader.start(adUnitId, preloadConfig)
-            Log.i(TAG, "BannerAdPreloader started for $adUnitId with width $widthDp dp")
+            Log.i(TAG, "BannerAdPreloader started for $adUnitId with width $widthDp dp (buffer size 2)")
         }.onFailure { error ->
             Log.w(TAG, "Failed to start BannerAdPreloader", error)
         }

@@ -30,12 +30,12 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /** Re-reads the device capabilities and all supported DRM schemes. */
-    fun refresh() {
+    fun refresh(context: android.content.Context? = null) {
         refreshJob?.cancel()
         refreshJob = viewModelScope.launch {
             _state.update { it.copy(isRefreshing = true) }
 
-            val (deviceInfo, schemes) = inspector.inspectAll()
+            val (deviceInfo, schemes) = inspector.inspectAll(context)
 
             _state.update {
                 it.copy(

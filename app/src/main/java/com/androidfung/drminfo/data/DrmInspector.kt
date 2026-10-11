@@ -1,5 +1,6 @@
 package com.androidfung.drminfo.data
 
+import android.app.ActivityManager
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFormat
@@ -35,8 +36,9 @@ class DrmInspector(private val context: Context) {
 
     private val mediaDrmByUuid: MutableMap<UUID, MediaDrm> = Collections.synchronizedMap(linkedMapOf())
 
-    suspend fun inspectAll(): Pair<DeviceInfo, List<DrmSchemeState>> = coroutineScope {
-        val deviceInfoDeferred = async(Dispatchers.IO) { buildDeviceInfo() }
+    suspend fun inspectAll(activeContext: Context? = null): Pair<DeviceInfo, List<DrmSchemeState>> = coroutineScope {
+        val targetContext = activeContext ?: context
+        val deviceInfoDeferred = async(Dispatchers.IO) { buildDeviceInfo(targetContext) }
         val specs = buildDrmSpecs()
         val schemesDeferred = specs.map { spec ->
             async(Dispatchers.IO) { readDrmScheme(spec) }
@@ -46,9 +48,10 @@ class DrmInspector(private val context: Context) {
         deviceInfo to schemes
     }
 
-    fun buildDeviceInfo(): DeviceInfo {
+    fun buildDeviceInfo(activeContext: Context? = null): DeviceInfo {
+        val targetContext = activeContext ?: context
         val wideColorGamut = if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            context.resources.configuration.isScreenWideColorGamut
+            targetContext.resources.configuration.isScreenWideColorGamut
         } else null
 
         val releaseOrCodename = if (VERSION.SDK_INT >= VERSION_CODES.R) {
@@ -62,6 +65,11 @@ class DrmInspector(private val context: Context) {
         val socModel = if (VERSION.SDK_INT >= VERSION_CODES.S) {
             Build.SOC_MODEL.takeIf { it.isNotEmpty() }
         } else null
+
+        val memoryInfo = ActivityManager.MemoryInfo()
+        val activityManager = targetContext.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+        activityManager?.getMemoryInfo(memoryInfo)
+        val totalMemoryBytes = memoryInfo.totalMem
 
         val mediaPerformanceClass =
             if (VERSION.SDK_INT >= VERSION_CODES.S && (VERSION.MEDIA_PERFORMANCE_CLASS > 0)) {
@@ -85,28 +93,44 @@ class DrmInspector(private val context: Context) {
         var refreshRates: List<Float> = emptyList()
         var alternativeRates: List<Float> = emptyList()
         var hdrTypes: List<Int> = emptyList()
+        var displayWidth = 0
+        var displayHeight = 0
 
-        val displayManager = DisplayManagerCompat.getInstance(context)
-        displayManager.getDisplay(DEFAULT_DISPLAY)?.let { display ->
-            refreshRates = display.supportedModes
+        val display = if (VERSION.SDK_INT >= VERSION_CODES.R) {
+            runCatching { targetContext.display }.getOrNull()
+        } else {
+            null
+        } ?: DisplayManagerCompat.getInstance(targetContext).getDisplay(DEFAULT_DISPLAY)
+
+        display?.let { activeDisplay ->
+            val nativePanelMode = activeDisplay.supportedModes.maxByOrNull {
+                it.physicalWidth.toLong() * it.physicalHeight.toLong()
+            } ?: activeDisplay.mode
+
+            nativePanelMode?.let { mode ->
+                displayWidth = mode.physicalWidth
+                displayHeight = mode.physicalHeight
+            }
+
+            refreshRates = activeDisplay.supportedModes
                 .asSequence()
-                .map { it.refreshRate }
+                .map { mode -> mode.refreshRate }
                 .distinct()
                 .sorted()
                 .toList()
 
             if (VERSION.SDK_INT >= VERSION_CODES.S) {
                 alternativeRates =
-                    display.mode.alternativeRefreshRates.toList().filter { it > 0 }.distinct()
+                    activeDisplay.mode.alternativeRefreshRates.toList().filter { rate -> rate > 0 }.distinct()
                         .sorted()
             }
 
             @Suppress("DEPRECATION")
-            val rawHdrTypes = if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                runCatching { display.mode.supportedHdrTypes }
-                    .getOrElse { display.hdrCapabilities?.supportedHdrTypes }
+            val rawHdrTypes: IntArray? = if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                runCatching { activeDisplay.mode.supportedHdrTypes }
+                    .getOrElse { activeDisplay.hdrCapabilities?.supportedHdrTypes }
             } else {
-                display.hdrCapabilities?.supportedHdrTypes
+                activeDisplay.hdrCapabilities?.supportedHdrTypes
             }
 
             if (rawHdrTypes != null && rawHdrTypes.isNotEmpty()) {
@@ -153,6 +177,7 @@ class DrmInspector(private val context: Context) {
             sdkFull = sdkFull,
             releaseOrCodename = releaseOrCodename,
             securityPatch = VERSION.SECURITY_PATCH,
+            totalMemoryBytes = totalMemoryBytes,
             socManufacturer = socManufacturer,
             socModel = socModel,
             mediaPerformanceClass = mediaPerformanceClass,
@@ -165,6 +190,8 @@ class DrmInspector(private val context: Context) {
             isWideColorGamut = wideColorGamut,
             supportedRefreshRates = refreshRates,
             alternativeRefreshRates = alternativeRates,
+            displayWidth = displayWidth,
+            displayHeight = displayHeight,
             supportedAudioEncodings = audioEncodings,
             releaseChannel = Util.detectReleaseChannel(),
             quarterlyReleaseName = Util.getQuarterlyReleaseName(),

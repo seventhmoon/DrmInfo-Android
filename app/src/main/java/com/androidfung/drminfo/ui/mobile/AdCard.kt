@@ -109,8 +109,8 @@ fun AdCard(
                                     val preloadedAd = BannerAdPreloader.pollAd(adUnitId)
                                     if (preloadedAd != null && activity != null) {
                                         val preloadedWidth = preloadedAd.getAdSize().width
-                                        val isSizeCompatible = preloadedWidth <= effectiveAdWidthDp + 16 ||
-                                                abs(preloadedWidth - effectiveAdWidthDp) <= 64
+                                        val isSizeCompatible = preloadedWidth <= effectiveAdWidthDp + 24 ||
+                                                abs(preloadedWidth - effectiveAdWidthDp) <= 80
 
                                         if (isSizeCompatible) {
                                             Log.i("Ads", "Using preloaded BannerAd (width: $preloadedWidth dp, target: $effectiveAdWidthDp dp)")

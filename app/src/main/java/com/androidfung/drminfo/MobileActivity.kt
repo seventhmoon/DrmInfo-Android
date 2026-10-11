@@ -81,12 +81,17 @@ class MobileActivity : ComponentActivity() {
             DrmInfoTheme {
                 val state by drmViewModel.state.collectAsStateWithLifecycle()
 
+                val context = androidx.compose.ui.platform.LocalContext.current
+                androidx.compose.runtime.LaunchedEffect(context) {
+                    drmViewModel.refresh(context)
+                }
+
                 MobileScreen(
                     state = state,
                     isAdsInitialized = AdsManager.isInitialized,
                     onRefresh = {
                         firebaseAnalytics.logEvent("refresh_drm_info", null)
-                        drmViewModel.refresh()
+                        drmViewModel.refresh(this@MobileActivity)
                         AdsManager.startPreload(this@MobileActivity, getString(R.string.ad_unit_id))
                     },
                     onPreloadAd = { widthDp ->

@@ -9,6 +9,7 @@ import com.androidfung.drminfo.model.ReleaseChannel
 import com.androidfung.drminfo.util.Constants
 import com.androidfung.drminfo.util.Util
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.UUID
@@ -190,5 +191,36 @@ class UtilUnitTest {
         assertTrue(report.contains("Widevine CDM"))
         assertTrue(report.contains("Security Level: L1"))
         assertTrue(report.contains("System ID: 4445"))
+    }
+
+    @Test
+    fun testGetResolutionLabel() {
+        assertEquals("4K", Util.getResolutionLabel(3840, 2160))
+        assertEquals("4K", Util.getResolutionLabel(2160, 3840))
+        assertEquals("QHD+", Util.getResolutionLabel(1440, 3120))
+        assertEquals("QHD", Util.getResolutionLabel(1440, 2560))
+        assertEquals("FHD+", Util.getResolutionLabel(1080, 2400))
+        assertEquals("FHD", Util.getResolutionLabel(1080, 1920))
+        assertEquals("HD+", Util.getResolutionLabel(720, 1600))
+        assertEquals("HD", Util.getResolutionLabel(720, 1280))
+        assertEquals("SD", Util.getResolutionLabel(480, 800))
+        // Modern tall aspect ratios: Pixel 9 Pro native panel & downscaled mode
+        assertEquals("QHD+", Util.getResolutionLabel(1280, 2856))
+        assertEquals("FHD+", Util.getResolutionLabel(960, 2142))
+        assertNull(Util.getResolutionLabel(0, 0))
+    }
+
+    @Test
+    fun testFormatMemorySize() {
+        assertEquals("", Util.formatMemorySize(0L))
+        assertEquals("", Util.formatMemorySize(-1L))
+        // Exactly 8 GB
+        assertEquals("8 GB (8.0 GB available)", Util.formatMemorySize(8L * 1024L * 1024L * 1024L))
+        // Typical ~15.2 GB kernel available on 16 GB physical RAM
+        val bytes15_2Gb = (15.2 * 1024.0 * 1024.0 * 1024.0).toLong()
+        assertEquals("16 GB (15.2 GB available)", Util.formatMemorySize(bytes15_2Gb))
+        // Typical ~11.4 GB kernel available on 12 GB physical RAM
+        val bytes11_4Gb = (11.4 * 1024.0 * 1024.0 * 1024.0).toLong()
+        assertEquals("12 GB (11.4 GB available)", Util.formatMemorySize(bytes11_4Gb))
     }
 }

@@ -45,6 +45,7 @@ data class DeviceInfo(
     val sdkFull: String? = null,
     val releaseOrCodename: String? = null,
     val securityPatch: String? = null,
+    val totalMemoryBytes: Long = 0L,
     val socManufacturer: String? = null,
     val socModel: String? = null,
     val mediaPerformanceClass: Int? = null,
@@ -57,6 +58,8 @@ data class DeviceInfo(
     val isWideColorGamut: Boolean? = null,
     val supportedRefreshRates: List<Float> = emptyList(),
     val alternativeRefreshRates: List<Float> = emptyList(),
+    val displayWidth: Int = 0,
+    val displayHeight: Int = 0,
     val supportedAudioEncodings: List<String> = emptyList(),
     val releaseChannel: ReleaseChannel? = null,
     val quarterlyReleaseName: String? = null,
@@ -69,7 +72,7 @@ data class DeviceInfo(
         get() = supportedRefreshRates.isNotEmpty() || alternativeRefreshRates.isNotEmpty() || supportedHdrTypes.isNotEmpty() || isWideColorGamut != null
 
     val hasMediaDisplayInfo: Boolean
-        get() = hasDisplayInfo || mediaPerformanceClass != null || hardwareEncoders.isNotEmpty() || hardwareDecoders.isNotEmpty()
+        get() = hasDisplayInfo || hardwareEncoders.isNotEmpty() || hardwareDecoders.isNotEmpty()
 }
 
 /**
