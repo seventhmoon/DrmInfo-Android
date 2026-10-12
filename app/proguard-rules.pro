@@ -47,3 +47,7 @@
     <fields>;
 }
 
+# Preserve AccessibilityEventCompat and Api34Impl delegates to prevent R8 inlining / missing method issues on API 34
+-keep class androidx.core.view.accessibility.AccessibilityEventCompat** { *; }
+-dontwarn androidx.core.view.accessibility.AccessibilityEventCompat**
+

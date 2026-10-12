@@ -69,7 +69,8 @@ fun MobileScreen(
     isAdsInitialized: Boolean = false,
     onRefresh: () -> Unit = {},
     onPreloadAd: (Int) -> Unit = {},
-    onShareReport: () -> Unit = {}
+    onShareReport: () -> Unit = {},
+    onDisplayConfigurationChanged: (android.content.Context) -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -84,7 +85,11 @@ fun MobileScreen(
     // For a 1-column card in the grid (minSize = 340dp), width is naturally ~320-360dp
     val defaultAdWidthDp = minOf(windowWidthDp - 24, 360).coerceAtLeast(300)
 
-    // Preload when screen/window configuration (fold/unfold/rotate/split-screen) changes
+    // Fast update display specs and preload ads when screen/window configuration (fold/unfold/rotate/split-screen) changes
+    LaunchedEffect(windowInfo.containerSize) {
+        onDisplayConfigurationChanged(context)
+    }
+
     LaunchedEffect(windowInfo.containerSize, isAdsInitialized) {
         if (isAdsInitialized) {
             onPreloadAd(defaultAdWidthDp)

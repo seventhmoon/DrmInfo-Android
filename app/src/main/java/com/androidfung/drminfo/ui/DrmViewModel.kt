@@ -26,7 +26,7 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
     private var refreshJob: Job? = null
 
     init {
-        refresh()
+        refresh(application)
     }
 
     /** Re-reads the device capabilities and all supported DRM schemes. */
@@ -42,6 +42,28 @@ class DrmViewModel(application: Application) : AndroidViewModel(application) {
                     device = deviceInfo,
                     schemes = schemes,
                     isRefreshing = false
+                )
+            }
+        }
+    }
+
+    /**
+     * Fast update for dynamic display metrics (resolution, refresh rates, HDR)
+     * without re-inspecting DRM or hardware decoders.
+     */
+    fun updateDisplayInfo(context: android.content.Context) {
+        viewModelScope.launch {
+            val displayInfo = inspector.readDisplayInfo(context)
+            _state.update { current ->
+                current.copy(
+                    device = current.device.copy(
+                        displayWidth = displayInfo.width,
+                        displayHeight = displayInfo.height,
+                        supportedRefreshRates = displayInfo.supportedRefreshRates,
+                        alternativeRefreshRates = displayInfo.alternativeRefreshRates,
+                        supportedHdrTypes = displayInfo.supportedHdrTypes,
+                        isWideColorGamut = displayInfo.isWideColorGamut ?: current.device.isWideColorGamut
+                    )
                 )
             }
         }

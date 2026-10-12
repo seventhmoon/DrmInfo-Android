@@ -81,11 +81,6 @@ class MobileActivity : ComponentActivity() {
             DrmInfoTheme {
                 val state by drmViewModel.state.collectAsStateWithLifecycle()
 
-                val context = androidx.compose.ui.platform.LocalContext.current
-                androidx.compose.runtime.LaunchedEffect(context) {
-                    drmViewModel.refresh(context)
-                }
-
                 MobileScreen(
                     state = state,
                     isAdsInitialized = AdsManager.isInitialized,
@@ -103,6 +98,9 @@ class MobileActivity : ComponentActivity() {
                             putInt("sdk_int", state.device.sdkInt)
                         }
                         firebaseAnalytics.logEvent("share_drm_report", params)
+                    },
+                    onDisplayConfigurationChanged = { activeContext ->
+                        drmViewModel.updateDisplayInfo(activeContext)
                     }
                 )
             }

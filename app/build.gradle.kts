@@ -14,7 +14,7 @@ android {
         applicationId = "com.androidfung.drminfo"
         minSdk = 24
         targetSdk = 37
-        versionCode = 515
+        versionCode = 517
         versionName = "1.2.3-261011"
 
         resourceConfigurations += listOf("en")
@@ -30,6 +30,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            ndk {
+                debugSymbolLevel = "SYMBOL_TABLE"
+            }
         }
         debug {
             versionNameSuffix = ".debug"
@@ -90,6 +93,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     implementation(libs.ads.mobile.sdk)
+    implementation(libs.play.hsdp)
     implementation(libs.user.messaging.platform)
     implementation(libs.material)
     implementation(libs.bundles.play.update)

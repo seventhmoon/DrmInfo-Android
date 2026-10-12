@@ -16,6 +16,7 @@ import android.view.Display.DEFAULT_DISPLAY
 import androidx.core.hardware.display.DisplayManagerCompat
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.model.DeviceInfo
+import com.androidfung.drminfo.model.DisplayInfo
 import com.androidfung.drminfo.model.DrmSchemeState
 import com.androidfung.drminfo.model.TvDeviceType
 import com.androidfung.drminfo.util.Constants
@@ -90,53 +91,7 @@ class DrmInspector(private val context: Context) {
             VERSION.SDK_INT_FULL.toString()
         } else null
 
-        var refreshRates: List<Float> = emptyList()
-        var alternativeRates: List<Float> = emptyList()
-        var hdrTypes: List<Int> = emptyList()
-        var displayWidth = 0
-        var displayHeight = 0
-
-        val display = if (VERSION.SDK_INT >= VERSION_CODES.R) {
-            runCatching { targetContext.display }.getOrNull()
-        } else {
-            null
-        } ?: DisplayManagerCompat.getInstance(targetContext).getDisplay(DEFAULT_DISPLAY)
-
-        display?.let { activeDisplay ->
-            val nativePanelMode = activeDisplay.supportedModes.maxByOrNull {
-                it.physicalWidth.toLong() * it.physicalHeight.toLong()
-            } ?: activeDisplay.mode
-
-            nativePanelMode?.let { mode ->
-                displayWidth = mode.physicalWidth
-                displayHeight = mode.physicalHeight
-            }
-
-            refreshRates = activeDisplay.supportedModes
-                .asSequence()
-                .map { mode -> mode.refreshRate }
-                .distinct()
-                .sorted()
-                .toList()
-
-            if (VERSION.SDK_INT >= VERSION_CODES.S) {
-                alternativeRates =
-                    activeDisplay.mode.alternativeRefreshRates.toList().filter { rate -> rate > 0 }.distinct()
-                        .sorted()
-            }
-
-            @Suppress("DEPRECATION")
-            val rawHdrTypes: IntArray? = if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                runCatching { activeDisplay.mode.supportedHdrTypes }
-                    .getOrElse { activeDisplay.hdrCapabilities?.supportedHdrTypes }
-            } else {
-                activeDisplay.hdrCapabilities?.supportedHdrTypes
-            }
-
-            if (rawHdrTypes != null && rawHdrTypes.isNotEmpty()) {
-                hdrTypes = rawHdrTypes.toList()
-            }
-        }
+        val displayInfo = readDisplayInfo(targetContext)
 
         val hardwareEncoders: List<String> = if (VERSION.SDK_INT >= VERSION_CODES.Q) {
             (cachedHardwareEncoders ?: run {
@@ -186,16 +141,83 @@ class DrmInspector(private val context: Context) {
             abis = Build.SUPPORTED_ABIS.toList(),
             hardwareEncoders = hardwareEncoders,
             hardwareDecoders = hardwareDecoders,
-            supportedHdrTypes = hdrTypes,
-            isWideColorGamut = wideColorGamut,
-            supportedRefreshRates = refreshRates,
-            alternativeRefreshRates = alternativeRates,
-            displayWidth = displayWidth,
-            displayHeight = displayHeight,
+            supportedHdrTypes = displayInfo.supportedHdrTypes,
+            isWideColorGamut = displayInfo.isWideColorGamut ?: wideColorGamut,
+            supportedRefreshRates = displayInfo.supportedRefreshRates,
+            alternativeRefreshRates = displayInfo.alternativeRefreshRates,
+            displayWidth = displayInfo.width,
+            displayHeight = displayInfo.height,
             supportedAudioEncodings = audioEncodings,
             releaseChannel = Util.detectReleaseChannel(),
             quarterlyReleaseName = Util.getQuarterlyReleaseName(),
             tvDeviceType = TvDeviceType.resolve(context)
+        )
+    }
+
+    fun readDisplayInfo(activeContext: Context? = null): DisplayInfo {
+        val targetContext = activeContext ?: context
+        var refreshRates: List<Float> = emptyList()
+        var alternativeRates: List<Float> = emptyList()
+        var hdrTypes: List<Int> = emptyList()
+        var displayWidth = 0
+        var displayHeight = 0
+
+        val wideColorGamut = if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            targetContext.resources.configuration.isScreenWideColorGamut
+        } else null
+
+        val display = if (VERSION.SDK_INT >= VERSION_CODES.R) {
+            runCatching { targetContext.display }.getOrNull()
+        } else {
+            null
+        } ?: DisplayManagerCompat.getInstance(targetContext).getDisplay(DEFAULT_DISPLAY)
+
+        display?.let { activeDisplay ->
+            val nativePanelMode = activeDisplay.supportedModes.maxByOrNull {
+                it.physicalWidth.toLong() * it.physicalHeight.toLong()
+            } ?: activeDisplay.mode
+
+            nativePanelMode?.let { mode ->
+                displayWidth = mode.physicalWidth
+                displayHeight = mode.physicalHeight
+            }
+
+            refreshRates = activeDisplay.supportedModes
+                .asSequence()
+                .map { mode -> mode.refreshRate }
+                .distinct()
+                .sorted()
+                .toList()
+
+            if (VERSION.SDK_INT >= VERSION_CODES.S) {
+                alternativeRates =
+                    activeDisplay.mode.alternativeRefreshRates.asSequence()
+                        .filter { rate -> rate > 0 }
+                        .distinct()
+                        .sorted()
+                        .toList()
+            }
+
+            @Suppress("DEPRECATION")
+            val rawHdrTypes: IntArray? = if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                runCatching { activeDisplay.mode.supportedHdrTypes }
+                    .getOrElse { activeDisplay.hdrCapabilities?.supportedHdrTypes }
+            } else {
+                activeDisplay.hdrCapabilities?.supportedHdrTypes
+            }
+
+            if (rawHdrTypes != null && rawHdrTypes.isNotEmpty()) {
+                hdrTypes = rawHdrTypes.toList()
+            }
+        }
+
+        return DisplayInfo(
+            width = displayWidth,
+            height = displayHeight,
+            supportedRefreshRates = refreshRates,
+            alternativeRefreshRates = alternativeRates,
+            supportedHdrTypes = hdrTypes,
+            isWideColorGamut = wideColorGamut
         )
     }
 

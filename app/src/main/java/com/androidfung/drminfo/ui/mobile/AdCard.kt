@@ -3,6 +3,11 @@ package com.androidfung.drminfo.ui.mobile
 import android.app.Activity
 import android.content.ContextWrapper
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -65,9 +70,14 @@ fun AdCard(
         }
     }
 
-    if (!isAdFailedToLoad && isAdsInitialized) {
+    AnimatedVisibility(
+        visible = !isAdFailedToLoad && isAdsInitialized,
+        enter = fadeIn() + expandVertically(),
+        exit = fadeOut() + shrinkVertically(),
+        modifier = modifier
+    ) {
         OutlinedCard(
-            modifier = modifier
+            modifier = Modifier.fillMaxWidth()
         ) {
             BoxWithConstraints(
                 modifier = Modifier
@@ -83,13 +93,25 @@ fun AdCard(
                 val effectiveAdWidthDp = safeAdWidthDp.coerceAtLeast(300)
 
                 key(effectiveAdWidthDp, retryCount) {
-                    AndroidView(
-                        factory = { viewCtx ->
-                            val activity = (context as? Activity)
-                                ?: (viewCtx as? Activity)
-                                ?: ((viewCtx as? ContextWrapper)?.baseContext as? Activity)
+                    var adViewConstructed by remember { mutableStateOf(true) }
 
-                            AdView(activity ?: viewCtx).apply {
+                    if (adViewConstructed) {
+                        AndroidView<AdView>(
+                            factory = { viewCtx ->
+                                val activity = (context as? Activity)
+                                    ?: (viewCtx as? Activity)
+                                    ?: ((viewCtx as? ContextWrapper)?.baseContext as? Activity)
+
+                                val adView = runCatching {
+                                    AdView(activity ?: viewCtx)
+                                }.getOrElse { error ->
+                                    Log.w("Ads", "Failed to construct AdView (possible WebView crash)", error)
+                                    isAdFailedToLoad = true
+                                    adViewConstructed = false
+                                    throw error
+                                }
+
+                                adView.apply {
                                 val adUnitId = viewCtx.getString(R.string.ad_unit_id)
                                 val adSize = runCatching {
                                     AdSize.getInlineAdaptiveBannerAdSize(effectiveAdWidthDp, 300)
@@ -105,8 +127,8 @@ fun AdCard(
                                 }
                                 val adRequest = BannerAdRequest.Builder(adUnitId, adSize).build()
 
-                                if (BannerAdPreloader.isAdAvailable(adUnitId)) {
-                                    val preloadedAd = BannerAdPreloader.pollAd(adUnitId)
+                                if (runCatching { BannerAdPreloader.isAdAvailable(adUnitId) }.getOrDefault(false)) {
+                                    val preloadedAd = runCatching { BannerAdPreloader.pollAd(adUnitId) }.getOrNull()
                                     if (preloadedAd != null && activity != null) {
                                         val preloadedWidth = preloadedAd.getAdSize().width
                                         val isSizeCompatible = preloadedWidth <= effectiveAdWidthDp + 24 ||
@@ -163,6 +185,7 @@ fun AdCard(
                             adView.destroy()
                         }
                     )
+                    }
                 }
             }
         }

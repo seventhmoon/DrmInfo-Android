@@ -36,43 +36,47 @@ object AdsManager {
     private var consentInformation: ConsentInformation? = null
 
     fun requestConsentAndInitialize(activity: Activity, appId: String, adUnitId: String? = null) {
-        val debugSettings = ConsentDebugSettings.Builder(activity)
-            .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
-            .addTestDeviceHashedId("TEST-DEVICE-HASHED-ID")
-            .build()
-            
-        val params = ConsentRequestParameters.Builder()
-            // .setConsentDebugSettings(debugSettings) // Uncomment to test in EEA
-            .build()
+        runCatching {
+            val debugSettings = ConsentDebugSettings.Builder(activity)
+                .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+                .addTestDeviceHashedId("TEST-DEVICE-HASHED-ID")
+                .build()
+                
+            val params = ConsentRequestParameters.Builder()
+                // .setConsentDebugSettings(debugSettings) // Uncomment to test in EEA
+                .build()
 
-        consentInformation = UserMessagingPlatform.getConsentInformation(activity)
-        consentInformation?.requestConsentInfoUpdate(
-            activity,
-            params,
-            {
-                UserMessagingPlatform.loadAndShowConsentFormIfRequired(
-                    activity
-                ) { loadAndShowError ->
-                    if (loadAndShowError != null) {
-                        Log.w(TAG, "Consent form load/show error: ${loadAndShowError.errorCode}: ${loadAndShowError.message}")
+            consentInformation = UserMessagingPlatform.getConsentInformation(activity)
+            consentInformation?.requestConsentInfoUpdate(
+                activity,
+                params,
+                {
+                    UserMessagingPlatform.loadAndShowConsentFormIfRequired(
+                        activity
+                    ) { loadAndShowError ->
+                        if (loadAndShowError != null) {
+                            Log.w(TAG, "Consent form load/show error: ${loadAndShowError.errorCode}: ${loadAndShowError.message}")
+                        }
+                        
+                        if (consentInformation?.canRequestAds() == true) {
+                            initialize(activity, appId, adUnitId)
+                        }
                     }
-                    
+                },
+                { requestConsentError ->
+                    Log.w(TAG, "Consent form request error: ${requestConsentError.errorCode}: ${requestConsentError.message}")
                     if (consentInformation?.canRequestAds() == true) {
                         initialize(activity, appId, adUnitId)
                     }
                 }
-            },
-            { requestConsentError ->
-                Log.w(TAG, "Consent form request error: ${requestConsentError.errorCode}: ${requestConsentError.message}")
-                if (consentInformation?.canRequestAds() == true) {
-                    initialize(activity, appId, adUnitId)
-                }
+            )
+            
+            // Check if you can initialize immediately (e.g. consent already given in a previous session)
+            if (consentInformation?.canRequestAds() == true) {
+                initialize(activity, appId, adUnitId)
             }
-        )
-        
-        // Check if you can initialize immediately (e.g. consent already given in a previous session)
-        if (consentInformation?.canRequestAds() == true) {
-            initialize(activity, appId, adUnitId)
+        }.onFailure { error ->
+            Log.w(TAG, "Failed during requestConsentAndInitialize", error)
         }
     }
 
@@ -81,27 +85,41 @@ object AdsManager {
      * was already granted in a previous session.
      */
     fun initializeIfConsentGiven(context: Context, appId: String, adUnitId: String? = null) {
-        val consentInfo = UserMessagingPlatform.getConsentInformation(context)
-        if (consentInfo.canRequestAds()) {
-            initialize(context, appId, adUnitId)
+        runCatching {
+            val consentInfo = UserMessagingPlatform.getConsentInformation(context)
+            if (consentInfo.canRequestAds()) {
+                initialize(context, appId, adUnitId)
+            }
+        }.onFailure { error ->
+            Log.w(TAG, "Failed during early consent check / initialization", error)
         }
     }
 
     private fun initialize(context: Context, appId: String, adUnitId: String? = null) {
         cachedAdUnitId = adUnitId
-        if (MobileAds.isInitialized) {
-            isInitialized = true
-            adUnitId?.let { startPreload(context, it) }
-            return
-        }
-
-        scope.launch {
-            val appContext = context.applicationContext
-            val config = InitializationConfig.Builder(appId).build()
-            MobileAds.initialize(appContext, config) {
+        runCatching {
+            if (MobileAds.isInitialized) {
                 isInitialized = true
-                cachedAdUnitId?.let { startPreload(appContext, it) }
+                adUnitId?.let { startPreload(context, it) }
+                return
             }
+
+            scope.launch {
+                val appContext = context.applicationContext
+                runCatching {
+                    val config = InitializationConfig.Builder(appId).build()
+                    MobileAds.initialize(appContext, config) {
+                        launch(Dispatchers.Main) {
+                            isInitialized = true
+                        }
+                        cachedAdUnitId?.let { startPreload(appContext, it) }
+                    }
+                }.onFailure { error ->
+                    Log.w(TAG, "Failed to initialize MobileAds (possible WebView issue)", error)
+                }
+            }
+        }.onFailure { error ->
+            Log.w(TAG, "Failed during MobileAds initialization setup", error)
         }
     }
 

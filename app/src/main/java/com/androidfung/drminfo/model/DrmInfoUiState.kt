@@ -27,6 +27,19 @@ enum class HdcpLevel {
 }
 
 /**
+ * Dynamic display specification that can change on fold/unfold, rotation, or external display events.
+ */
+@Immutable
+data class DisplayInfo(
+    val width: Int = 0,
+    val height: Int = 0,
+    val supportedRefreshRates: List<Float> = emptyList(),
+    val alternativeRefreshRates: List<Float> = emptyList(),
+    val supportedHdrTypes: List<Int> = emptyList(),
+    val isWideColorGamut: Boolean? = null,
+)
+
+/**
  * Strongly-typed hardware and OS capabilities of the device.
  */
 @Immutable
