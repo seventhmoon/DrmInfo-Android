@@ -51,6 +51,8 @@ import androidx.tv.material3.darkColorScheme
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
+import com.androidfung.drminfo.model.toHardwareProperties
+import com.androidfung.drminfo.model.toSystemProperties
 import com.androidfung.drminfo.util.Util.toStringRes
 import kotlin.math.round
 
@@ -287,20 +289,16 @@ private fun buildTvInfoItems(
             add(TvInfoItem(context.getString(R.string.text_tv_type), context.getString(tvType.stringRes)))
         }
     }
-    add(TvInfoItem(context.getString(R.string.text_brand), dev.brand))
-    if (dev.product.isNotEmpty()) {
-        add(TvInfoItem(context.getString(R.string.text_product), dev.product))
+
+    // Add shared hardware properties
+    dev.toHardwareProperties().forEach { prop ->
+        add(TvInfoItem(context.getString(prop.labelRes), prop.value))
     }
-    add(TvInfoItem(context.getString(R.string.text_hardware), dev.hardware))
-    add(TvInfoItem(context.getString(R.string.text_display), dev.buildDisplay))
 
-    dev.socManufacturer?.let { add(TvInfoItem(context.getString(R.string.text_soc_manufacturer), it)) }
-    dev.socModel?.let { add(TvInfoItem(context.getString(R.string.text_soc_model), it)) }
-
-    add(TvInfoItem(context.getString(R.string.text_type), dev.buildType))
-    add(TvInfoItem(context.getString(R.string.text_fingerprint), dev.fingerprint))
-    add(TvInfoItem(context.getString(R.string.text_sdk_level), dev.sdkInt.toString()))
-    dev.sdkFull?.let { add(TvInfoItem(context.getString(R.string.text_sdk_level_full), it)) }
+    // Add shared system properties
+    dev.toSystemProperties().forEach { prop ->
+        add(TvInfoItem(context.getString(prop.labelRes), prop.value))
+    }
 
     dev.spatialAudioSupported?.let { supported ->
         add(TvInfoItem(context.getString(R.string.text_spatial_audio), if (supported) context.getString(R.string.text_supported) else context.getString(R.string.text_not_supported)))
@@ -315,6 +313,10 @@ private fun buildTvInfoItems(
 
     if (dev.supportedRefreshRates.isNotEmpty()) {
         add(TvInfoItem(context.getString(R.string.text_supported_refresh_rate), dev.supportedRefreshRates.joinToString { "${round(it).toInt()} Hz" }))
+    }
+
+    dev.isWideColorGamut?.let { supported ->
+        add(TvInfoItem(context.getString(R.string.text_wide_color), if (supported) context.getString(R.string.text_supported) else context.getString(R.string.text_not_supported)))
     }
 
     if (dev.supportedAudioEncodings.isNotEmpty()) {

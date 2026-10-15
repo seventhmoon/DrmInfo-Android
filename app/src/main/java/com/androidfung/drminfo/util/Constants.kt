@@ -19,4 +19,15 @@ object Constants {
     val DIVX_UUID = UUID(0x35BF197B530E42D7L, -0x749ae4b40beaf8f1L)
     @JvmField
     val WISEPLAY_UUID = UUID(0X3D5E6D359B9A41E8L, -0x47bc22c3918d3bd4L)
+
+    // Standard MediaDrm Property Keys (Device and Driver level)
+    const val PROPERTY_DESCRIPTION = "description"
+    const val PROPERTY_VENDOR = "vendor"
+    const val PROPERTY_VERSION = "version"
+    const val PROPERTY_DEVICE_UNIQUE_ID = "deviceUniqueId"
+
+    // Widevine-specific Property Keys
+    const val PROPERTY_SECURITY_LEVEL = "securityLevel"
+    const val PROPERTY_SYSTEM_ID = "systemId"
+    const val PROPERTY_OEM_CRYPTO_API_VERSION = "oemCryptoApiVersion"
 }

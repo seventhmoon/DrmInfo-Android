@@ -2,6 +2,8 @@
 
 An open-source Android application that inspects and displays detailed Digital Rights Management (DRM) module information, hardware capabilities, media decoding/encoding support, audio formats, and display specifications for Android phones, tablets, and Android TV devices.
 
+[![CI](https://github.com/androidfung/DrmInfo-Android/actions/workflows/ci.yml/badge.svg)](https://github.com/androidfung/DrmInfo-Android/actions/workflows/ci.yml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Get it on Google Play](https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png)](https://play.google.com/store/apps/details?id=com.androidfung.drminfo)
 
 ---
@@ -67,6 +69,9 @@ Inspects installed DRM modular schemes via the Android `MediaDrm` API:
 # Clone the repository
 git clone https://github.com/androidfung/DrmInfo-Android.git
 cd DrmInfo-Android
+
+# (Optional) If you don't have a google-services.json for Firebase:
+cp app/google-services.json.template app/google-services.json
 
 # Run unit tests
 ./gradlew testDebugUnitTest

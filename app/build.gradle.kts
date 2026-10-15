@@ -14,8 +14,8 @@ android {
         applicationId = "com.androidfung.drminfo"
         minSdk = 24
         targetSdk = 37
-        versionCode = 517
-        versionName = "1.2.3-261011"
+        versionCode = 519
+        versionName = "1.2.3-261015"
 
         resourceConfigurations += listOf("en")
 
@@ -37,12 +37,8 @@ android {
         debug {
             versionNameSuffix = ".debug"
             isDebuggable = true
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 
@@ -97,11 +93,13 @@ dependencies {
     implementation(libs.user.messaging.platform)
     implementation(libs.material)
     implementation(libs.bundles.play.update)
+    implementation(libs.androidx.profileinstaller)
 
     implementation(libs.bundles.firebase)
 
     testImplementation(libs.androidx.core.testing)
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

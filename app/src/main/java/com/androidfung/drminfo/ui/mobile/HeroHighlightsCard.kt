@@ -20,6 +20,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.androidfung.drminfo.R
+import com.androidfung.drminfo.model.CardSection
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
 import com.androidfung.drminfo.model.ReleaseChannel
@@ -38,7 +39,7 @@ enum class HighlightLevel {
 fun HeroHighlightsCard(
     state: DrmInfoUiState,
     modifier: Modifier = Modifier,
-    onPillClick: ((targetKey: String) -> Unit)? = null
+    onPillClick: ((section: CardSection) -> Unit)? = null
 ) {
     val widevine = state.schemes.asSequence().filterIsInstance<DrmSchemeState.Widevine>().firstOrNull()
     val maxRefreshRate = state.device.supportedRefreshRates.maxOrNull()
@@ -91,7 +92,7 @@ fun HeroHighlightsCard(
                         label = stringResource(id = R.string.highlight_label_build),
                         value = prefix,
                         level = buildLevel,
-                        onClick = onPillClick?.let { { it("card_system") } }
+                        onClick = onPillClick?.let { { it(CardSection.SYSTEM) } }
                     )
                 }
 
@@ -117,12 +118,12 @@ fun HeroHighlightsCard(
                             label = stringResource(id = R.string.highlight_label_display),
                             value = displayValue,
                             level = displayLevel,
-                            onClick = onPillClick?.let { { it("card_display") } }
+                            onClick = onPillClick?.let { { it(CardSection.DISPLAY) } }
                         )
                     }
                 }
 
-                // 4. Widevine Security Level
+                // 3. Widevine Security Level
                 if (widevine != null && (!widevine.securityLevel.isNullOrEmpty())) {
                     val widevineLevel = when {
                         widevine.securityLevel.contains("L1", ignoreCase = true) -> HighlightLevel.PRIMARY
@@ -134,7 +135,7 @@ fun HeroHighlightsCard(
                         label = stringResource(id = R.string.highlight_label_widevine),
                         value = widevine.securityLevel,
                         level = widevineLevel,
-                        onClick = onPillClick?.let { { it("card_widevine") } }
+                        onClick = onPillClick?.let { { it(CardSection.WIDEVINE) } }
                     )
                 }
             }

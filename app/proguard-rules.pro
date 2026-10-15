@@ -51,3 +51,8 @@
 -keep class androidx.core.view.accessibility.AccessibilityEventCompat** { *; }
 -dontwarn androidx.core.view.accessibility.AccessibilityEventCompat**
 
+# Preserve ViewModel constructors instantiated via reflection by ViewModelProvider / AndroidViewModelFactory
+-keepclassmembers class * extends androidx.lifecycle.ViewModel {
+    public <init>(...);
+}
+

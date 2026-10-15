@@ -21,6 +21,7 @@ import com.androidfung.drminfo.model.DrmSchemeState
 import com.androidfung.drminfo.model.TvDeviceType
 import com.androidfung.drminfo.util.Constants
 import com.androidfung.drminfo.util.Util
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -33,16 +34,20 @@ import java.util.UUID
  * Inspects device hardware capabilities, codecs, display modes, and DRM schemes.
  * Operates independently of ViewModel lifecycle for testability and separation of concerns.
  */
-class DrmInspector(private val context: Context) {
+class DrmInspector(
+    context: Context,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : DrmRepository {
+    private val appContext: Context = context.applicationContext
 
     private val mediaDrmByUuid: MutableMap<UUID, MediaDrm> = Collections.synchronizedMap(linkedMapOf())
 
-    suspend fun inspectAll(activeContext: Context? = null): Pair<DeviceInfo, List<DrmSchemeState>> = coroutineScope {
-        val targetContext = activeContext ?: context
-        val deviceInfoDeferred = async(Dispatchers.IO) { buildDeviceInfo(targetContext) }
+    override suspend fun inspectAll(activeContext: Context?): Pair<DeviceInfo, List<DrmSchemeState>> = coroutineScope {
+        val targetContext = activeContext ?: appContext
+        val deviceInfoDeferred = async(ioDispatcher) { buildDeviceInfo(targetContext) }
         val specs = buildDrmSpecs()
         val schemesDeferred = specs.map { spec ->
-            async(Dispatchers.IO) { readDrmScheme(spec) }
+            async(ioDispatcher) { readDrmScheme(spec) }
         }
         val deviceInfo = deviceInfoDeferred.await()
         val schemes = schemesDeferred.awaitAll().filterNotNull()
@@ -50,7 +55,7 @@ class DrmInspector(private val context: Context) {
     }
 
     fun buildDeviceInfo(activeContext: Context? = null): DeviceInfo {
-        val targetContext = activeContext ?: context
+        val targetContext = activeContext ?: appContext
         val wideColorGamut = if (VERSION.SDK_INT >= VERSION_CODES.O) {
             targetContext.resources.configuration.isScreenWideColorGamut
         } else null
@@ -80,7 +85,7 @@ class DrmInspector(private val context: Context) {
         var spatialAudioSupported: Boolean? = null
         var headTrackingSupported: Boolean? = null
         if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
-            val audioManager = context.getSystemService(AudioManager::class.java)
+            val audioManager = appContext.getSystemService(AudioManager::class.java)
             audioManager?.spatializer?.let { spatializer ->
                 spatialAudioSupported = spatializer.isAvailable
                 headTrackingSupported = spatializer.isHeadTrackerAvailable
@@ -150,12 +155,12 @@ class DrmInspector(private val context: Context) {
             supportedAudioEncodings = audioEncodings,
             releaseChannel = Util.detectReleaseChannel(),
             quarterlyReleaseName = Util.getQuarterlyReleaseName(),
-            tvDeviceType = TvDeviceType.resolve(context)
+            tvDeviceType = TvDeviceType.resolve(targetContext)
         )
     }
 
-    fun readDisplayInfo(activeContext: Context? = null): DisplayInfo {
-        val targetContext = activeContext ?: context
+    override fun readDisplayInfo(context: Context): DisplayInfo {
+        val targetContext = context
         var refreshRates: List<Float> = emptyList()
         var alternativeRates: List<Float> = emptyList()
         var hdrTypes: List<Int> = emptyList()
@@ -289,7 +294,7 @@ class DrmInspector(private val context: Context) {
     }
 
     private fun readDrmScheme(spec: DrmSpec): DrmSchemeState? {
-        val resources = context.resources
+        val resources = appContext.resources
         releaseMediaDrm(spec.uuid)
 
         if (!MediaDrm.isCryptoSchemeSupported(spec.uuid)) {
@@ -304,13 +309,9 @@ class DrmInspector(private val context: Context) {
             mediaDrmByUuid[spec.uuid] = drm
 
             val schemeName = resources.getString(spec.nameRes)
-            val descKey = resources.getString(R.string.mediadrm_string_property_key_description)
-            val vendorKey = resources.getString(R.string.mediadrm_string_property_key_vendor)
-            val versionKey = resources.getString(R.string.mediadrm_string_property_key_version)
-
-            val description = drm.safeGetProperty(descKey).takeIf { it.isNotEmpty() } ?: schemeName
-            val vendor = drm.safeGetProperty(vendorKey).takeIf { it.isNotEmpty() }
-            val version = drm.safeGetProperty(versionKey).takeIf { it.isNotEmpty() }
+            val description = drm.safeGetProperty(Constants.PROPERTY_DESCRIPTION).takeIf { it.isNotEmpty() } ?: schemeName
+            val vendor = drm.safeGetProperty(Constants.PROPERTY_VENDOR).takeIf { it.isNotEmpty() }
+            val version = drm.safeGetProperty(Constants.PROPERTY_VERSION).takeIf { it.isNotEmpty() }
 
             val maxHdcp = if (VERSION.SDK_INT >= VERSION_CODES.P) {
                 runCatching { Util.convertHdcpLevel(drm.maxHdcpLevel) }.getOrNull()
@@ -321,13 +322,9 @@ class DrmInspector(private val context: Context) {
             } else null
 
             if (spec.isWidevine) {
-                val secLevelKey = resources.getString(R.string.widevine_string_property_key_securityLevel)
-                val systemIdKey = resources.getString(R.string.widevine_string_property_key_systemId)
-                val oemCryptoKey = resources.getString(R.string.widevine_string_property_key_oemCryptoApiVersion)
-
-                val securityLevel = drm.safeGetProperty(secLevelKey).takeIf { it.isNotEmpty() }
-                val systemId = drm.safeGetProperty(systemIdKey).takeIf { it.isNotEmpty() }
-                val oemCrypto = drm.safeGetProperty(oemCryptoKey).takeIf { it.isNotEmpty() }
+                val securityLevel = drm.safeGetProperty(Constants.PROPERTY_SECURITY_LEVEL).takeIf { it.isNotEmpty() }
+                val systemId = drm.safeGetProperty(Constants.PROPERTY_SYSTEM_ID).takeIf { it.isNotEmpty() }
+                val oemCrypto = drm.safeGetProperty(Constants.PROPERTY_OEM_CRYPTO_API_VERSION).takeIf { it.isNotEmpty() }
 
                 val maxSessions = if (VERSION.SDK_INT >= VERSION_CODES.P) {
                     runCatching { drm.maxSessionCount }.getOrNull()?.takeIf { it > 0 }?.toString()
@@ -390,7 +387,7 @@ class DrmInspector(private val context: Context) {
         }
     }
 
-    fun releaseAll() {
+    override fun releaseAll() {
         synchronized(mediaDrmByUuid) {
             mediaDrmByUuid.values.forEach { drm ->
                 runCatching {

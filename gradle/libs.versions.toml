@@ -3,13 +3,14 @@ agp = "9.4.1"
 coreKtx = "1.19.1"
 coreTesting = "2.2.0"
 espressoCore = "3.7.0"
-firebaseBom = "35.0.0"
+firebaseBom = "35.0.1"
 googleFirebaseCrashlytics = "3.0.8"
 googleFirebaseFirebasePerf = "2.0.2"
 googleGmsGoogleServices = "4.5.0"
 junit = "1.3.0"
 junitVersion = "4.13.2"
 kotlin = "2.4.21"
+kotlinxCoroutines = "1.11.0"
 leakcanaryAndroid = "2.14"
 lifecycleViewmodelKtx = "2.11.0"
 material = "1.14.0"
@@ -24,6 +25,7 @@ playHsdp = "2.2.0"
 userMessagingPlatform = "4.0.0"
 
 tvMaterial = "1.1.0"
+profileinstaller = "1.4.1"
 
 [libraries]
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -48,6 +50,7 @@ firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-perf = { group = "com.google.firebase", name = "firebase-perf" }
 junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanaryAndroid" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 play-app-update = { group = "com.google.android.play", name = "app-update", version.ref = "playAppUpdate" }
@@ -56,6 +59,7 @@ play-hsdp = { group = "com.google.android.play", name = "hsdp", version.ref = "p
 user-messaging-platform = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "userMessagingPlatform" }
 ads-mobile-sdk = { group = "com.google.android.libraries.ads.mobile.sdk", name = "ads-mobile-sdk", version.ref = "adsMobileSdk" }
 androidx-tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tvMaterial" }
+androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profileinstaller" }
 
 [bundles]
 compose = [

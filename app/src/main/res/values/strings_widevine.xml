@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Widevine String Property Keys -->
-    <string name="widevine_string_property_key_securityLevel" translatable="false">securityLevel</string>
-    <string name="widevine_string_property_key_systemId" translatable="false">systemId</string>
-    <string name="widevine_string_property_key_oemCryptoApiVersion" translatable="false">oemCryptoApiVersion</string>
-
     <!-- Widevine Property Display Labels -->
     <string name="widevine_string_property_name_securityLevel">Security Level</string>
     <string name="widevine_string_property_name_systemId">System ID</string>

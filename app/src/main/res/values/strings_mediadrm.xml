@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- MediaDrm String Property Keys -->
-    <string name="mediadrm_string_property_key_vendor" translatable="false">vendor</string>
-    <string name="mediadrm_string_property_key_description" translatable="false">description</string>
-    <string name="mediadrm_string_property_key_version" translatable="false">version</string>
-
     <!-- MediaDrm Property Display Labels -->
     <string name="mediadrm_string_property_name_vendor" translatable="false">Vendor</string>
     <string name="mediadrm_string_property_name_description" translatable="false">Description</string>

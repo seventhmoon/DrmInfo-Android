@@ -59,6 +59,8 @@ import androidx.compose.ui.unit.dp
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
+import com.androidfung.drminfo.ui.components.LocalSnackbarHostState
+import com.androidfung.drminfo.ui.components.SkeletonCard
 import com.androidfung.drminfo.util.Util
 import kotlin.math.roundToInt
 
@@ -70,7 +72,9 @@ fun MobileScreen(
     onRefresh: () -> Unit = {},
     onPreloadAd: (Int) -> Unit = {},
     onShareReport: () -> Unit = {},
-    onDisplayConfigurationChanged: (android.content.Context) -> Unit = {}
+    onDisplayConfigurationChanged: (android.content.Context) -> Unit = {},
+    isUpdateDownloaded: Boolean = false,
+    onCompleteUpdate: () -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -81,6 +85,21 @@ fun MobileScreen(
     val density = LocalDensity.current
     val windowWidthDp = with(density) { windowInfo.containerSize.width.toDp().value.roundToInt() }
     var showHelpSheet by remember { mutableStateOf(false) }
+
+    val updateDownloadedMessage = stringResource(id = R.string.update_downloaded_message)
+    val restartAction = stringResource(id = R.string.action_restart)
+    LaunchedEffect(isUpdateDownloaded) {
+        if (isUpdateDownloaded) {
+            val result = snackbarHostState.showSnackbar(
+                message = updateDownloadedMessage,
+                actionLabel = restartAction,
+                duration = androidx.compose.material3.SnackbarDuration.Indefinite
+            )
+            if (result == androidx.compose.material3.SnackbarResult.ActionPerformed) {
+                onCompleteUpdate()
+            }
+        }
+    }
 
     // For a 1-column card in the grid (minSize = 340dp), width is naturally ~320-360dp
     val defaultAdWidthDp = minOf(windowWidthDp - 24, 360).coerceAtLeast(300)
@@ -229,25 +248,8 @@ fun MobileScreen(
                                 HeroHighlightsCard(
                                     state = state,
                                     modifier = Modifier.fillMaxWidth(),
-                                    onPillClick = { targetKey ->
-                                        val targetIndex = when (targetKey) {
-                                            "card_hardware" -> 1
-                                            "card_system" -> 2
-                                            "card_display" -> if (state.device.hasMediaDisplayInfo) 3 else -1
-                                            "card_audio" -> {
-                                                var idx = 3
-                                                if (state.device.hasMediaDisplayInfo) idx++
-                                                if (state.device.supportedAudioEncodings.isNotEmpty()) idx else -1
-                                            }
-                                            "card_widevine" -> {
-                                                var idx = 3
-                                                if (state.device.hasMediaDisplayInfo) idx++
-                                                if (state.device.supportedAudioEncodings.isNotEmpty()) idx++
-                                                val widevineIdx = state.schemes.indexOfFirst { it is DrmSchemeState.Widevine }
-                                                if (widevineIdx >= 0) idx + widevineIdx else -1
-                                            }
-                                            else -> -1
-                                        }
+                                    onPillClick = { section ->
+                                        val targetIndex = DrmGridScrollHelper.getTargetIndex(section, state)
                                         if (targetIndex >= 0) {
                                             coroutineScope.launch {
                                                 gridState.animateScrollToItem(targetIndex)

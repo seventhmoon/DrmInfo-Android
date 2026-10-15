@@ -11,6 +11,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.Keep
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.androidfung.drminfo.ads.AdsManager
 import com.androidfung.drminfo.ui.DrmViewModel
@@ -18,7 +20,6 @@ import com.androidfung.drminfo.ui.mobile.MobileScreen
 import com.androidfung.drminfo.ui.theme.DrmInfoTheme
 import com.androidfung.drminfo.util.Util
 import com.androidfung.drminfo.util.Util.getQprNumber
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -33,6 +34,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 class MobileActivity : ComponentActivity() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var appUpdateManager: AppUpdateManager
+    private var isUpdateDownloaded by mutableStateOf(false)
 
     private val updateLauncher = registerForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()
@@ -44,7 +46,7 @@ class MobileActivity : ComponentActivity() {
 
     private val installStateUpdatedListener = InstallStateUpdatedListener { state ->
         if (state.installStatus() == InstallStatus.DOWNLOADED) {
-            showUpdateDownloadedSnackbar()
+            isUpdateDownloaded = true
         }
     }
 
@@ -68,12 +70,8 @@ class MobileActivity : ComponentActivity() {
 
         val drmViewModel: DrmViewModel by viewModels()
 
-        // Initialize GMA Next-Gen SDK via AdsManager
-        AdsManager.requestConsentAndInitialize(
-            activity = this,
-            appId = getString(R.string.ad_app_id),
-            adUnitId = getString(R.string.ad_unit_id)
-        )
+        // Initialize GMA Next-Gen SDK via ViewModel
+        drmViewModel.requestConsentAndInitializeAds(this)
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(applicationContext)
 
@@ -83,14 +81,14 @@ class MobileActivity : ComponentActivity() {
 
                 MobileScreen(
                     state = state,
-                    isAdsInitialized = AdsManager.isInitialized,
+                    isAdsInitialized = drmViewModel.isAdsInitialized(),
                     onRefresh = {
                         firebaseAnalytics.logEvent("refresh_drm_info", null)
                         drmViewModel.refresh(this@MobileActivity)
-                        AdsManager.startPreload(this@MobileActivity, getString(R.string.ad_unit_id))
+                        drmViewModel.preloadAd(this@MobileActivity)
                     },
                     onPreloadAd = { widthDp ->
-                        AdsManager.startPreload(this@MobileActivity, getString(R.string.ad_unit_id), widthDp)
+                        drmViewModel.preloadAd(this@MobileActivity, widthDp)
                     },
                     onShareReport = {
                         val params = Bundle().apply {
@@ -101,6 +99,10 @@ class MobileActivity : ComponentActivity() {
                     },
                     onDisplayConfigurationChanged = { activeContext ->
                         drmViewModel.updateDisplayInfo(activeContext)
+                    },
+                    isUpdateDownloaded = isUpdateDownloaded,
+                    onCompleteUpdate = {
+                        appUpdateManager.completeUpdate()
                     }
                 )
             }
@@ -142,21 +144,11 @@ class MobileActivity : ComponentActivity() {
         }
     }
 
-    private fun showUpdateDownloadedSnackbar() {
-        Snackbar.make(
-            findViewById(android.R.id.content),
-            getString(R.string.update_downloaded_message),
-            Snackbar.LENGTH_INDEFINITE
-        ).setAction(getString(R.string.action_restart)) {
-            appUpdateManager.completeUpdate()
-        }.show()
-    }
-
     override fun onResume() {
         super.onResume()
         appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
             if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
-                showUpdateDownloadedSnackbar()
+                isUpdateDownloaded = true
             } else if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                 requestUpdate(appUpdateInfo, AppUpdateType.IMMEDIATE)
             }

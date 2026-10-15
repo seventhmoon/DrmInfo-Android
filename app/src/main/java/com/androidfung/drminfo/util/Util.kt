@@ -166,6 +166,9 @@ object Util {
         if (dev.alternativeRefreshRates.isNotEmpty()) {
             sb.appendLine("Alternative Refresh Rates: ${dev.alternativeRefreshRates.joinToString { "${round(it).toInt()} Hz" }}")
         }
+        dev.isWideColorGamut?.let { supported ->
+            sb.appendLine("Wide Color Gamut: ${if (supported) "Supported" else "Not Supported"}")
+        }
         if (dev.supportedAudioEncodings.isNotEmpty()) {
             sb.appendLine("Surround Audio Formats: ${dev.supportedAudioEncodings.joinToString()}")
         }

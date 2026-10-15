@@ -18,6 +18,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.model.DeviceInfo
+import com.androidfung.drminfo.ui.components.CardSectionHeader
+import com.androidfung.drminfo.ui.components.InfoCardContainer
+import com.androidfung.drminfo.ui.components.LabelValueItem
+import com.androidfung.drminfo.ui.components.TagChip
 import com.androidfung.drminfo.util.Util
 import kotlin.math.round
 
@@ -122,59 +126,46 @@ fun SystemCard(
     device: DeviceInfo,
     modifier: Modifier = Modifier
 ) {
-    OutlinedCard(
+    InfoCardContainer(
+        title = stringResource(id = R.string.section_system),
+        iconRes = R.drawable.ic_phone_android,
         modifier = modifier
     ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.card_padding))
-        ) {
-            CardSectionHeader(
-                title = stringResource(id = R.string.section_system),
-                iconRes = R.drawable.ic_phone_android
-            )
+        LabelValueItem(
+            label = stringResource(id = R.string.text_display),
+            value = device.buildDisplay,
+            allowCopy = true
+        )
 
-            Spacer(modifier = Modifier.height(8.dp))
-            HorizontalDivider(
-                thickness = 0.5.dp,
-                color = MaterialTheme.colorScheme.outlineVariant
-            )
-            Spacer(modifier = Modifier.height(4.dp))
+        LabelValueItem(
+            label = stringResource(id = R.string.text_type),
+            value = device.buildType,
+            allowCopy = true
+        )
 
+        LabelValueItem(
+            label = stringResource(id = R.string.text_fingerprint),
+            value = device.fingerprint,
+            allowCopy = true
+        )
+
+        LabelValueItem(
+            label = stringResource(id = R.string.text_sdk_level),
+            value = device.sdkInt.toString(),
+            allowCopy = true
+        )
+
+        device.sdkFull?.let {
             LabelValueItem(
-                label = stringResource(id = R.string.text_display),
-                value = device.buildDisplay,
+                label = stringResource(id = R.string.text_sdk_level_full),
+                value = it,
                 allowCopy = true
             )
+        }
 
+        device.releaseOrCodename?.let {
             LabelValueItem(
-                label = stringResource(id = R.string.text_type),
-                value = device.buildType,
-                allowCopy = true
-            )
-
-            LabelValueItem(
-                label = stringResource(id = R.string.text_fingerprint),
-                value = device.fingerprint,
-                allowCopy = true
-            )
-
-            LabelValueItem(
-                label = stringResource(id = R.string.text_sdk_level),
-                value = device.sdkInt.toString(),
-                allowCopy = true
-            )
-
-            device.sdkFull?.let {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_sdk_level_full),
-                    value = it,
-                    allowCopy = true
-                )
-            }
-
-            device.releaseOrCodename?.let {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_release_or_codename),
+                label = stringResource(id = R.string.text_release_or_codename),
                     value = it,
                     allowCopy = true
                 )
@@ -195,7 +186,6 @@ fun SystemCard(
                     allowCopy = true
                 )
             }
-        }
     }
 }
 
@@ -205,23 +195,11 @@ fun MediaDisplayCard(
     device: DeviceInfo,
     modifier: Modifier = Modifier
 ) {
-    OutlinedCard(
+    InfoCardContainer(
+        title = stringResource(id = R.string.section_media_and_display),
+        iconRes = R.drawable.ic_tv,
         modifier = modifier
     ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.card_padding))
-        ) {
-            CardSectionHeader(
-                title = stringResource(id = R.string.section_media_and_display),
-                iconRes = R.drawable.ic_tv
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-            HorizontalDivider(
-                thickness = 0.5.dp,
-                color = MaterialTheme.colorScheme.outlineVariant
-            )
-            Spacer(modifier = Modifier.height(4.dp))
 
             if (device.supportedRefreshRates.isNotEmpty()) {
                 Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
@@ -332,7 +310,6 @@ fun MediaDisplayCard(
                     }
                 }
             }
-        }
     }
 }
 
@@ -342,23 +319,11 @@ fun AudioCard(
     device: DeviceInfo,
     modifier: Modifier = Modifier
 ) {
-    OutlinedCard(
+    InfoCardContainer(
+        title = stringResource(id = R.string.section_audio),
+        iconRes = R.drawable.ic_audio,
         modifier = modifier
     ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.card_padding))
-        ) {
-            CardSectionHeader(
-                title = stringResource(id = R.string.section_audio),
-                iconRes = R.drawable.ic_audio
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-            HorizontalDivider(
-                thickness = 0.5.dp,
-                color = MaterialTheme.colorScheme.outlineVariant
-            )
-            Spacer(modifier = Modifier.height(4.dp))
 
             device.spatialAudioSupported?.let { supported ->
                 LabelValueItem(
@@ -394,6 +359,5 @@ fun AudioCard(
                     }
                 }
             }
-        }
     }
 }

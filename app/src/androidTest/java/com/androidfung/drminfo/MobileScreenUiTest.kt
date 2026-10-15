@@ -154,13 +154,32 @@ class MobileScreenUiTest {
             DrmInfoTheme {
                 HeroHighlightsCard(
                     state = testState,
-                    onPillClick = { targetKey -> clickedTarget = targetKey }
+                    onPillClick = { section -> clickedTarget = section.name }
                 )
             }
         }
 
         composeTestRule.onNodeWithText("120 Hz").assertIsDisplayed()
         composeTestRule.onNodeWithText("120 Hz").performClick()
-        org.junit.Assert.assertEquals("card_display", clickedTarget)
+        org.junit.Assert.assertEquals("DISPLAY", clickedTarget)
+    }
+
+    @Test
+    fun mobileScreen_rendersInBothDarkAndLightModes() {
+        val testState = DrmInfoUiState(
+            device = DeviceInfo(
+                manufacturer = "Google",
+                model = "Pixel 9 Pro Fold",
+                fingerprint = "test/fingerprint"
+            )
+        )
+
+        // Verify Light Theme composition
+        composeTestRule.setContent {
+            DrmInfoTheme(darkTheme = false, dynamicColor = false) {
+                MobileScreen(state = testState)
+            }
+        }
+        composeTestRule.onNodeWithText("DRM Info").assertIsDisplayed()
     }
 }

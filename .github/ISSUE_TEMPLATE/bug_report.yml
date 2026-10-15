@@ -1,0 +1,47 @@
+name: 🐛 Bug Report
+description: Report a crash, incorrect DRM detection, or unexpected behavior.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue! Please provide as much detail as possible to help us reproduce and fix it.
+  - type: input
+    id: device
+    attributes:
+      label: Device Model & Manufacturer
+      placeholder: "e.g., Google Pixel 8 Pro, Xiaomi 13, Samsung Galaxy S24"
+    validations:
+      required: true
+  - type: input
+    id: os_version
+    attributes:
+      label: Android OS Version & Build Number
+      placeholder: "e.g., Android 14 (UP1A.231005.007)"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description of the Problem
+      placeholder: "Describe what happened and what you expected to see instead."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Open DRM Info
+        2. Navigate to ...
+        3. See crash / incorrect value
+    validations:
+      required: false
+  - type: textarea
+    id: logcat
+    attributes:
+      label: Logcat or Stack Trace (if applicable)
+      render: shell
+      placeholder: "Paste relevant logcat or stack trace here"
+    validations:
+      required: false

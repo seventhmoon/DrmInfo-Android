@@ -21,11 +21,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.activity.compose.PredictiveBackHandler
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +50,18 @@ fun HelpBottomSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val context = LocalContext.current
+
+    PredictiveBackHandler(enabled = sheetState.isVisible) { progress ->
+        try {
+            progress.collect {
+                // Progressive back gesture received; sheet will animate on completion
+            }
+            sheetState.hide()
+            onDismissRequest()
+        } catch (_: Exception) {
+            // Back gesture cancelled
+        }
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
