@@ -13,6 +13,7 @@ import com.androidfung.drminfo.ads.AdsManager
 import com.androidfung.drminfo.data.DrmInspector
 import com.androidfung.drminfo.data.DrmRepository
 import com.androidfung.drminfo.model.DrmInfoUiState
+import com.google.firebase.appcheck.FirebaseAppCheck
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,6 +38,7 @@ class DrmViewModel @JvmOverloads constructor(
 
     init {
         refresh()
+        checkPlayIntegrity()
     }
 
     /** Requests ad consent and initializes Google Mobile Ads SDK. */
@@ -63,12 +65,61 @@ class DrmViewModel @JvmOverloads constructor(
 
             val (deviceInfo, schemes) = repository.inspectAll(context)
 
-            _state.update {
-                it.copy(
-                    device = deviceInfo,
+            _state.update { current ->
+                val currentIntegrity = current.device.playIntegrityStatus
+                current.copy(
+                    device = deviceInfo.copy(playIntegrityStatus = currentIntegrity),
                     schemes = schemes,
                     isRefreshing = false
                 )
+            }
+        }
+    }
+
+    /**
+     * Checks device integrity via Firebase App Check with Play Integrity.
+     */
+    fun checkPlayIntegrity() {
+        val app = runCatching { getApplication<Application>() }.getOrNull()
+        try {
+            val appCheck = FirebaseAppCheck.getInstance()
+            appCheck.getAppCheckToken(false)
+                .addOnSuccessListener {
+                    val statusText = if (app != null) {
+                        try {
+                            app.getString(R.string.text_play_integrity_passed)
+                        } catch (_: Throwable) {
+                            "Meets Integrity (Passed)"
+                        }
+                    } else {
+                        "Meets Integrity (Passed)"
+                    }
+                    _state.update { current ->
+                        current.copy(device = current.device.copy(playIntegrityStatus = statusText))
+                    }
+                }
+                .addOnFailureListener {
+                    val statusText = if (app != null) {
+                        try {
+                            app.getString(R.string.text_play_integrity_failed)
+                        } catch (_: Throwable) {
+                            "Failed"
+                        }
+                    } else {
+                        "Failed"
+                    }
+                    _state.update { current ->
+                        current.copy(device = current.device.copy(playIntegrityStatus = statusText))
+                    }
+                }
+        } catch (_: Throwable) {
+            val statusText = if (app != null) {
+                runCatching { app.getString(R.string.text_play_integrity_failed) }.getOrNull() ?: "Failed"
+            } else {
+                "Failed"
+            }
+            _state.update { current ->
+                current.copy(device = current.device.copy(playIntegrityStatus = statusText))
             }
         }
     }

@@ -84,6 +84,7 @@ class MobileScreenUiTest {
         composeTestRule.onNodeWithText("Widevine CDM").assertIsDisplayed()
         composeTestRule.onNodeWithText("Google").assertIsDisplayed()
         composeTestRule.onNodeWithText("9999").assertIsDisplayed()
+        composeTestRule.onNodeWithText("8").assertIsDisplayed()
     }
 
     @Test

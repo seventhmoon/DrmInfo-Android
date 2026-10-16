@@ -41,6 +41,10 @@
     <string name="text_hw_decode_type">Supported Hardware Decoder</string>
     <string name="text_supported_hdr_types">Supported HDR Types</string>
     <string name="text_supported_refresh_rate">Supported Refresh Rate (Hz)</string>
+    <string name="text_play_integrity">Play Integrity</string>
+    <string name="text_play_integrity_passed">Meets Integrity (Passed)</string>
+    <string name="text_play_integrity_failed">Failed</string>
+    <string name="text_play_integrity_checking">Checking…</string>
 
     <!-- In-App Updates -->
     <string name="update_downloaded_message">An update has been downloaded.</string>
@@ -82,12 +86,22 @@
 
     <string name="text_spatial_audio">Spatial Audio</string>
     <string name="text_head_tracking">Head Tracking</string>
+    <string name="text_display_resolution">Display Resolution</string>
+    <string name="message_copied_to_clipboard">%1$s copied to clipboard</string>
+
+    <!-- Search & Filter -->
+    <string name="action_search">Search</string>
+    <string name="action_clear_search">Clear search</string>
+    <string name="search_placeholder">Filter properties, codecs, or DRM…</string>
+    <string name="search_empty_results">No matching properties or codecs found</string>
 
     <!-- Hero Highlight Labels -->
     <string name="highlight_label_build">Build</string>
     <string name="highlight_label_display">Display</string>
     <string name="highlight_label_hdr">HDR</string>
     <string name="highlight_label_widevine">Widevine</string>
+    <string name="highlight_label_soc">SoC</string>
+    <string name="highlight_label_audio">Audio</string>
 
     <!-- Help & About -->
     <string name="action_about_help">About &amp; Help</string>

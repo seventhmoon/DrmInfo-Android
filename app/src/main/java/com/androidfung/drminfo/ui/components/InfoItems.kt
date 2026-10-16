@@ -116,25 +116,33 @@ fun LabelValueItem(
     val hapticFeedback = LocalHapticFeedback.current
     val snackbarHostState = LocalSnackbarHostState.current
     val coroutineScope = rememberCoroutineScope()
+    val copiedMessage = androidx.compose.ui.res.stringResource(id = R.string.message_copied_to_clipboard, label)
+    val copyActionLabel = androidx.compose.ui.res.stringResource(id = R.string.label_copy)
+
+    val copyToClipboard = {
+        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+        val clipData = ClipData.newPlainText(label, value)
+        coroutineScope.launch {
+            clipboard.setClipEntry(ClipEntry(clipData))
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar(
+                message = copiedMessage,
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
 
     Column(
         modifier = modifier
+            .fillMaxWidth()
             .padding(top = dimensionResource(id = R.dimen.listitem_padding))
             .then(
                 if (allowCopy) {
                     Modifier.combinedClickable(
-                        onClick = {},
-                        onLongClick = {
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                            val clipData = ClipData.newPlainText(label, value)
-                            coroutineScope.launch {
-                                clipboard.setClipEntry(ClipEntry(clipData))
-                                snackbarHostState.showSnackbar(
-                                    message = "$label copied to clipboard",
-                                    duration = SnackbarDuration.Short
-                                )
-                            }
-                        }
+                        onClickLabel = copyActionLabel,
+                        onLongClickLabel = copyActionLabel,
+                        onClick = { copyToClipboard() },
+                        onLongClick = { copyToClipboard() }
                     )
                 } else Modifier
             )
@@ -162,6 +170,21 @@ fun TagChip(
     val hapticFeedback = LocalHapticFeedback.current
     val snackbarHostState = LocalSnackbarHostState.current
     val coroutineScope = rememberCoroutineScope()
+    val copiedMessage = androidx.compose.ui.res.stringResource(id = R.string.message_copied_to_clipboard, text)
+    val copyActionLabel = androidx.compose.ui.res.stringResource(id = R.string.label_copy)
+
+    val copyToClipboard = {
+        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+        val clipData = ClipData.newPlainText("Capability", text)
+        coroutineScope.launch {
+            clipboard.setClipEntry(ClipEntry(clipData))
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar(
+                message = copiedMessage,
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
 
     Box(
         modifier = modifier
@@ -169,25 +192,17 @@ fun TagChip(
                 color = MaterialTheme.colorScheme.surfaceVariant,
                 shape = MaterialTheme.shapes.small
             )
-            .padding(horizontal = 8.dp, vertical = 4.dp)
             .then(
                 if (allowCopy) {
                     Modifier.combinedClickable(
-                        onClick = {},
-                        onLongClick = {
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                            val clipData = ClipData.newPlainText("Capability", text)
-                            coroutineScope.launch {
-                                clipboard.setClipEntry(ClipEntry(clipData))
-                                snackbarHostState.showSnackbar(
-                                    message = "$text copied to clipboard",
-                                    duration = SnackbarDuration.Short
-                                )
-                            }
-                        }
+                        onClickLabel = copyActionLabel,
+                        onLongClickLabel = copyActionLabel,
+                        onClick = { copyToClipboard() },
+                        onLongClick = { copyToClipboard() }
                     )
                 } else Modifier
             )
+            .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         Text(
             text = text,

@@ -20,9 +20,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.viewinterop.AndroidView
 import com.androidfung.drminfo.R
@@ -61,7 +60,7 @@ fun AdCard(
                 val safeAdWidthDp = if (maxWidth.value.isFinite() && maxWidth.value > 0) {
                     maxWidth.value.roundToInt()
                 } else {
-                    with(LocalDensity.current) { LocalWindowInfo.current.containerSize.width.toDp().value.roundToInt() }
+                    LocalConfiguration.current.screenWidthDp
                 }
                 val effectiveAdWidthDp = safeAdWidthDp.coerceAtLeast(300)
 

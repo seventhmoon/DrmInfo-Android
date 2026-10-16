@@ -6,4 +6,5 @@
     <string name="widevine_string_property_name_oemCryptoApiVersion">OEM Crypto API Version</string>
     <string name="widevine_string_property_name_maxHdcpLevel">Max HDCP Level Supported</string>
     <string name="widevine_string_property_name_hdcpLevel">Current HDCP Level</string>
+    <string name="widevine_string_property_name_maxNumberOfSessions">Max Number of Sessions</string>
 </resources>

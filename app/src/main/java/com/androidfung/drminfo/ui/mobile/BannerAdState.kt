@@ -9,7 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.IntSize
 import com.google.android.libraries.ads.mobile.sdk.banner.BannerAd
 import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
@@ -82,10 +82,13 @@ class BannerAdState(
 fun rememberBannerAdState(
     isRefreshing: Boolean = false
 ): BannerAdState {
-    val windowInfo = LocalWindowInfo.current
+    val configuration = LocalConfiguration.current
+    val containerSize = remember(configuration.screenWidthDp, configuration.screenHeightDp) {
+        IntSize(configuration.screenWidthDp, configuration.screenHeightDp)
+    }
     val coroutineScope = rememberCoroutineScope()
-    val state = remember(windowInfo.containerSize) {
-        BannerAdState(windowInfo.containerSize, coroutineScope)
+    val state = remember(containerSize) {
+        BannerAdState(containerSize, coroutineScope)
     }
 
     LaunchedEffect(isRefreshing) {

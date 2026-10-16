@@ -7,8 +7,9 @@ import com.androidfung.drminfo.ui.tv.TvInfoItem
  * Maps [DisplayableProperty] directly to [TvInfoItem].
  */
 fun DisplayableProperty.toTvInfoItem(context: Context): TvInfoItem {
+    val resolvedValue = valueRes?.let { context.getString(it) } ?: value
     return TvInfoItem(
         title = context.getString(labelRes),
-        description = value
+        description = resolvedValue
     )
 }

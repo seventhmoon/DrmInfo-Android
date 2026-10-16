@@ -17,12 +17,12 @@ object DrmGridScrollHelper {
             CardSection.AUDIO -> {
                 var idx = 3
                 if (state.device.hasMediaDisplayInfo) idx++
-                if (state.device.supportedAudioEncodings.isNotEmpty()) idx else -1
+                if (state.device.hasAudioInfo) idx else -1
             }
             CardSection.WIDEVINE -> {
                 var idx = 3
                 if (state.device.hasMediaDisplayInfo) idx++
-                if (state.device.supportedAudioEncodings.isNotEmpty()) idx++
+                if (state.device.hasAudioInfo) idx++
                 val widevineIdx = state.schemes.indexOfFirst { it is DrmSchemeState.Widevine }
                 if (widevineIdx >= 0) idx + widevineIdx else -1
             }

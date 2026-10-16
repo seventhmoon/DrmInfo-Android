@@ -158,8 +158,15 @@ class UtilUnitTest {
                 fingerprint = "google/husky/husky:14/AP2A.240305.019/1234:user/release-keys",
                 device = "husky",
                 sdkInt = 34,
+                totalMemoryBytes = 12L * 1024L * 1024L * 1024L,
+                abis = listOf("arm64-v8a"),
+                displayWidth = 1344,
+                displayHeight = 2992,
+                spatialAudioSupported = true,
+                headTrackingSupported = false,
                 releaseChannel = ReleaseChannel.GA,
                 quarterlyReleaseName = "24Q2",
+                playIntegrityStatus = "Meets Integrity (Passed)",
                 supportedRefreshRates = listOf(60.0f, 120.0f),
                 alternativeRefreshRates = listOf(30.0f),
                 hardwareEncoders = listOf("video/avc"),
@@ -185,16 +192,23 @@ class UtilUnitTest {
 
         assertTrue(report.contains("=== DRM Info Report ==="))
         assertTrue(report.contains("Pixel 8 Pro"))
+        assertTrue(report.contains("Total Memory (RAM): 12 GB (12.0 GB available)"))
+        assertTrue(report.contains("Supported ABIs: arm64-v8a"))
+        assertTrue(report.contains("Display Resolution: 1344 × 2992 (QHD+)"))
+        assertTrue(report.contains("Spatial Audio: Supported"))
+        assertTrue(report.contains("Head Tracking: Not Supported"))
         assertTrue(report.contains("60 Hz, 120 Hz"))
         assertTrue(report.contains("Quarterly Release: 24Q2"))
+        assertTrue(report.contains("Play Integrity: Meets Integrity (Passed)"))
         assertTrue(report.contains("[Google Widevine Modular DRM]"))
         assertTrue(report.contains("Widevine CDM"))
         assertTrue(report.contains("Security Level: L1"))
         assertTrue(report.contains("System ID: 4445"))
+        assertTrue(report.contains("Max Sessions: 16"))
     }
 
     @Test
-    fun testGetResolutionLabel() {
+    fun testGetResolutionLabelAndFormatResolution() {
         assertEquals("4K", Util.getResolutionLabel(3840, 2160))
         assertEquals("4K", Util.getResolutionLabel(2160, 3840))
         assertEquals("QHD+", Util.getResolutionLabel(1440, 3120))
@@ -208,6 +222,10 @@ class UtilUnitTest {
         assertEquals("QHD+", Util.getResolutionLabel(1280, 2856))
         assertEquals("FHD+", Util.getResolutionLabel(960, 2142))
         assertNull(Util.getResolutionLabel(0, 0))
+
+        assertEquals("3840 × 2160 (4K)", Util.formatResolution(3840, 2160))
+        assertEquals("1440 × 3120 (QHD+)", Util.formatResolution(1440, 3120))
+        assertNull(Util.formatResolution(0, 0))
     }
 
     @Test
@@ -222,5 +240,37 @@ class UtilUnitTest {
         // Typical ~11.4 GB kernel available on 12 GB physical RAM
         val bytes11_4Gb = (11.4 * 1024.0 * 1024.0 * 1024.0).toLong()
         assertEquals("12 GB (11.4 GB available)", Util.formatMemorySize(bytes11_4Gb))
+    }
+
+    @Test
+    fun testDrmGridScrollHelperWithSpatialAudioOnly() {
+        val stateWithSpatialAudioOnly = DrmInfoUiState(
+            device = DeviceInfo(
+                displayWidth = 1080,
+                displayHeight = 2400,
+                spatialAudioSupported = true,
+                supportedAudioEncodings = emptyList()
+            ),
+            schemes = listOf(
+                DrmSchemeState.Widevine(
+                    name = "Widevine",
+                    description = "Widevine CDM",
+                    vendor = "Google",
+                    version = "18.0",
+                    maxHdcpLevel = HdcpLevel.V2_3,
+                    connectedHdcpLevel = null,
+                    securityLevel = "L1",
+                    systemId = "1234",
+                    maxSessions = "16",
+                    oemCryptoVersion = "18"
+                )
+            )
+        )
+
+        assertEquals(1, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.HARDWARE, stateWithSpatialAudioOnly))
+        assertEquals(2, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.SYSTEM, stateWithSpatialAudioOnly))
+        assertEquals(3, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.DISPLAY, stateWithSpatialAudioOnly))
+        assertEquals(4, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.AUDIO, stateWithSpatialAudioOnly))
+        assertEquals(5, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.WIDEVINE, stateWithSpatialAudioOnly))
     }
 }

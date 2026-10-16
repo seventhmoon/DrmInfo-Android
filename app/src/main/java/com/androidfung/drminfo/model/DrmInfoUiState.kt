@@ -77,15 +77,23 @@ data class DeviceInfo(
     val releaseChannel: ReleaseChannel? = null,
     val quarterlyReleaseName: String? = null,
     val tvDeviceType: TvDeviceType? = null,
+    val playIntegrityStatus: String? = null,
 ) {
     val hasPerformanceInfo: Boolean
         get() = socManufacturer != null || socModel != null || mediaPerformanceClass != null || spatialAudioSupported != null
 
     val hasDisplayInfo: Boolean
-        get() = supportedRefreshRates.isNotEmpty() || alternativeRefreshRates.isNotEmpty() || supportedHdrTypes.isNotEmpty() || isWideColorGamut != null
+        get() = (displayWidth > 0 && displayHeight > 0) ||
+                supportedRefreshRates.isNotEmpty() ||
+                alternativeRefreshRates.isNotEmpty() ||
+                supportedHdrTypes.isNotEmpty() ||
+                isWideColorGamut != null
 
     val hasMediaDisplayInfo: Boolean
         get() = hasDisplayInfo || hardwareEncoders.isNotEmpty() || hardwareDecoders.isNotEmpty()
+
+    val hasAudioInfo: Boolean
+        get() = spatialAudioSupported != null || headTrackingSupported != null || supportedAudioEncodings.isNotEmpty()
 }
 
 /**

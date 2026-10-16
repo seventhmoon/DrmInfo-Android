@@ -24,11 +24,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,6 +56,7 @@ import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
 import com.androidfung.drminfo.model.toHardwareProperties
 import com.androidfung.drminfo.model.toSystemProperties
+import com.androidfung.drminfo.model.toTvInfoItem
 import com.androidfung.drminfo.util.Util.toStringRes
 import kotlin.math.round
 
@@ -70,18 +74,29 @@ fun TvScreen(
 ) {
     val context = LocalContext.current
     var selectedItemWithSubActions by remember { mutableStateOf<TvInfoItem?>(null) }
-    val mainFocusRequester = remember { FocusRequester() }
+    var lastSelectedIndex by remember { mutableIntStateOf(0) }
+    val mainListState = rememberLazyListState()
+    val subListState = rememberLazyListState()
     val subFocusRequester = remember { FocusRequester() }
+
+    val mainItems = remember(state) {
+        buildTvInfoItems(
+            context = context,
+            state = state
+        )
+    }
 
     BackHandler(enabled = selectedItemWithSubActions != null) {
         selectedItemWithSubActions = null
     }
 
     LaunchedEffect(selectedItemWithSubActions) {
-        if (selectedItemWithSubActions == null) {
-            runCatching { mainFocusRequester.requestFocus() }
-        } else {
+        if (selectedItemWithSubActions != null) {
             runCatching { subFocusRequester.requestFocus() }
+        } else {
+            if (lastSelectedIndex in mainItems.indices) {
+                runCatching { mainListState.scrollToItem(lastSelectedIndex) }
+            }
         }
     }
 
@@ -141,13 +156,6 @@ fun TvScreen(
                 }
 
                 // Right Guided Actions Panel with Slide Transition
-                val mainItems = remember(state) {
-                    buildTvInfoItems(
-                        context = context,
-                        state = state
-                    )
-                }
-
                 Box(
                     modifier = Modifier
                         .weight(0.65f)
@@ -169,19 +177,22 @@ fun TvScreen(
                         if (activeSubItem == null) {
                             // Main Actions List
                             LazyColumn(
+                                state = mainListState,
                                 modifier = Modifier.fillMaxSize(),
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
                                 contentPadding = PaddingValues(vertical = 12.dp)
                             ) {
-                                items(mainItems) { item ->
+                                itemsIndexed(mainItems) { index, item ->
                                     val hasSubItems = !item.subItems.isNullOrEmpty()
-                                    val isFirst = item == mainItems.firstOrNull()
 
                                     ListItem(
                                         selected = false,
                                         onClick = {
                                             if (hasSubItems) {
+                                                lastSelectedIndex = index
                                                 selectedItemWithSubActions = item
+                                            } else {
+                                                copyTvItemToClipboard(context, item.title, item.description)
                                             }
                                         },
                                         colors = androidx.tv.material3.ListItemDefaults.colors(
@@ -209,15 +220,14 @@ fun TvScreen(
                                                 )
                                             }
                                         },
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .then(if (isFirst) Modifier.focusRequester(mainFocusRequester) else Modifier)
+                                        modifier = Modifier.fillMaxWidth()
                                     )
                                 }
                             }
                         } else {
                             // Sub-Actions List (DRM Properties)
                             LazyColumn(
+                                state = subListState,
                                 modifier = Modifier.fillMaxSize(),
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
                                 contentPadding = PaddingValues(vertical = 12.dp)
@@ -250,7 +260,9 @@ fun TvScreen(
                                 items(activeSubItem.subItems ?: emptyList()) { subItem ->
                                     ListItem(
                                         selected = false,
-                                        onClick = {},
+                                        onClick = {
+                                            copyTvItemToClipboard(context, subItem.title, subItem.description)
+                                        },
                                         colors = androidx.tv.material3.ListItemDefaults.colors(
                                             focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                                             focusedContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -279,6 +291,18 @@ fun TvScreen(
     }
 }
 
+private fun copyTvItemToClipboard(context: Context, title: String, value: String) {
+    runCatching {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
+        clipboard?.setPrimaryClip(android.content.ClipData.newPlainText(title, value))
+        android.widget.Toast.makeText(
+            context,
+            context.getString(R.string.message_copied_to_clipboard, title),
+            android.widget.Toast.LENGTH_SHORT
+        ).show()
+    }
+}
+
 private fun buildTvInfoItems(
     context: Context,
     state: DrmInfoUiState
@@ -292,12 +316,12 @@ private fun buildTvInfoItems(
 
     // Add shared hardware properties
     dev.toHardwareProperties().forEach { prop ->
-        add(TvInfoItem(context.getString(prop.labelRes), prop.value))
+        add(prop.toTvInfoItem(context))
     }
 
     // Add shared system properties
     dev.toSystemProperties().forEach { prop ->
-        add(TvInfoItem(context.getString(prop.labelRes), prop.value))
+        add(prop.toTvInfoItem(context))
     }
 
     dev.spatialAudioSupported?.let { supported ->
@@ -311,12 +335,31 @@ private fun buildTvInfoItems(
         add(TvInfoItem(context.getString(R.string.text_abi), dev.abis.joinToString()))
     }
 
+    com.androidfung.drminfo.util.Util.formatResolution(dev.displayWidth, dev.displayHeight)?.let { resolutionText ->
+        add(TvInfoItem(context.getString(R.string.text_display_resolution), resolutionText))
+    }
+
     if (dev.supportedRefreshRates.isNotEmpty()) {
-        add(TvInfoItem(context.getString(R.string.text_supported_refresh_rate), dev.supportedRefreshRates.joinToString { "${round(it).toInt()} Hz" }))
+        val uniqueRates = dev.supportedRefreshRates.map { round(it).toInt() }.distinct()
+        add(TvInfoItem(context.getString(R.string.text_supported_refresh_rate), uniqueRates.joinToString { "$it Hz" }))
+    }
+
+    if (dev.alternativeRefreshRates.isNotEmpty()) {
+        val uniqueAltRates = dev.alternativeRefreshRates.map { round(it).toInt() }.distinct()
+        add(TvInfoItem(context.getString(R.string.text_seamless_refresh_rate), uniqueAltRates.joinToString { "$it Hz" }))
     }
 
     dev.isWideColorGamut?.let { supported ->
         add(TvInfoItem(context.getString(R.string.text_wide_color), if (supported) context.getString(R.string.text_supported) else context.getString(R.string.text_not_supported)))
+    }
+
+    if (dev.supportedHdrTypes.isNotEmpty()) {
+        val hdrTypeNames = dev.supportedHdrTypes
+            .map { id -> context.getString(com.androidfung.drminfo.util.Util.convertHdrTypeToStringRes(id)) }
+            .sorted()
+        if (hdrTypeNames.isNotEmpty()) {
+            add(TvInfoItem(context.getString(R.string.text_supported_hdr_types), hdrTypeNames.joinToString()))
+        }
     }
 
     if (dev.supportedAudioEncodings.isNotEmpty()) {
@@ -358,16 +401,6 @@ private fun buildTvInfoItems(
         )
     }
 
-    dev.mediaPerformanceClass?.let {
-        add(TvInfoItem(context.getString(R.string.text_media_performance_class), it.toString()))
-    }
-    dev.securityPatch?.let {
-        add(TvInfoItem(context.getString(R.string.text_security_patch), it))
-    }
-    dev.quarterlyReleaseName?.let {
-        add(TvInfoItem(context.getString(R.string.text_quarterly_release), it))
-    }
-
     // Dynamic DRM Schemes
     state.schemes.forEach { scheme ->
         val subItems = mutableListOf<TvInfoItem>()
@@ -380,6 +413,7 @@ private fun buildTvInfoItems(
         if (scheme is DrmSchemeState.Widevine) {
             scheme.securityLevel?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_securityLevel), it)) }
             scheme.systemId?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_systemId), it)) }
+            scheme.maxSessions?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_maxNumberOfSessions), it)) }
             scheme.oemCryptoVersion?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_oemCryptoApiVersion), it)) }
         }
 

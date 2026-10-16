@@ -65,6 +65,16 @@ object Util {
     }
 
     /**
+     * Formats physical display dimensions with their standard resolution label (e.g. "1440 × 3120 (QHD+)").
+     */
+    @JvmStatic
+    fun formatResolution(width: Int, height: Int): String? {
+        if (width <= 0 || height <= 0) return null
+        val label = getResolutionLabel(width, height)
+        return if (label != null) "$width × $height ($label)" else "$width × $height"
+    }
+
+    /**
      * Resolves a domain [ReleaseChannel] to its localized string resource ID.
      */
     @JvmStatic
@@ -154,20 +164,41 @@ object Util {
         dev.quarterlyReleaseName?.let { sb.appendLine("Quarterly Release: $it") }
         dev.sdkFull?.let { sb.appendLine("SDK Full: $it") }
         dev.securityPatch?.let { sb.appendLine("Security Patch: $it") }
+        dev.playIntegrityStatus?.let { sb.appendLine("Play Integrity: $it") }
         dev.socManufacturer?.let { sb.appendLine("SoC Manufacturer: $it") }
         dev.socModel?.let { sb.appendLine("SoC Model: $it") }
+        if (dev.totalMemoryBytes > 0L) {
+            sb.appendLine("Total Memory (RAM): ${formatMemorySize(dev.totalMemoryBytes)}")
+        }
         dev.mediaPerformanceClass?.let { sb.appendLine("Media Performance Class: $it") }
+        if (dev.abis.isNotEmpty()) {
+            sb.appendLine("Supported ABIs: ${dev.abis.joinToString()}")
+        }
+        formatResolution(dev.displayWidth, dev.displayHeight)?.let {
+            sb.appendLine("Display Resolution: $it")
+        }
         if (dev.supportedHdrTypes.isNotEmpty()) {
-            sb.appendLine("Supported HDR: ${dev.supportedHdrTypes.joinToString()}")
+            val hdrNames = dev.supportedHdrTypes
+                .map { id -> stringResolver(convertHdrTypeToStringRes(id)) }
+                .sorted()
+            sb.appendLine("Supported HDR: ${hdrNames.joinToString()}")
         }
         if (dev.supportedRefreshRates.isNotEmpty()) {
-            sb.appendLine("Supported Refresh Rates: ${dev.supportedRefreshRates.joinToString { "${round(it).toInt()} Hz" }}")
+            val uniqueRates = dev.supportedRefreshRates.map { round(it).toInt() }.distinct()
+            sb.appendLine("Supported Refresh Rates: ${uniqueRates.joinToString { "$it Hz" }}")
         }
         if (dev.alternativeRefreshRates.isNotEmpty()) {
-            sb.appendLine("Alternative Refresh Rates: ${dev.alternativeRefreshRates.joinToString { "${round(it).toInt()} Hz" }}")
+            val uniqueAltRates = dev.alternativeRefreshRates.map { round(it).toInt() }.distinct()
+            sb.appendLine("Alternative Refresh Rates: ${uniqueAltRates.joinToString { "$it Hz" }}")
         }
         dev.isWideColorGamut?.let { supported ->
             sb.appendLine("Wide Color Gamut: ${if (supported) "Supported" else "Not Supported"}")
+        }
+        dev.spatialAudioSupported?.let { supported ->
+            sb.appendLine("Spatial Audio: ${if (supported) "Supported" else "Not Supported"}")
+        }
+        dev.headTrackingSupported?.let { supported ->
+            sb.appendLine("Head Tracking: ${if (supported) "Supported" else "Not Supported"}")
         }
         if (dev.supportedAudioEncodings.isNotEmpty()) {
             sb.appendLine("Surround Audio Formats: ${dev.supportedAudioEncodings.joinToString()}")
@@ -242,7 +273,7 @@ object Util {
                     // Where 4th character is 'B' (Beta, e.g. UP1B) or two digits (e.g. AP31, AP41, BP11)
                     (buildId.length >= 4 && (
                             buildId.matches(Regex("^[A-Z]{2}[0-9]B.*", RegexOption.IGNORE_CASE)) ||
-                            buildId.matches(Regex("^[A-Z]{2}[0-9][1-9].*"))
+                            buildId.matches(Regex("^[A-Z]{2}[0-9][1-9].*", RegexOption.IGNORE_CASE))
                     )) -> {
                 ReleaseChannel.BETA
             }
@@ -265,12 +296,12 @@ object Util {
 
     /** Overload for pure unit testing without android.os.Build dependency. */
     fun parseQuarterlyReleaseName(buildId: String?): String? {
-        val id = buildId ?: return null
+        val id = buildId?.uppercase() ?: return null
         if (id.length < 3) return null
 
         // Trunk-based development year codes start at 'A'=2024 ('A'=24, 'B'=25, 'C'=26, 'D'=27...)
         val firstChar = id[0]
-        if (firstChar in 'A'..'D' && id[1] == 'P' && id[2] in '1'..'4') {
+        if (firstChar in 'A'..'G' && id[1] == 'P' && id[2] in '1'..'4') {
             val yearTwoDigits = 24 + (firstChar - 'A')
             val quarter = id[2]
             return "${yearTwoDigits}Q$quarter"
@@ -293,12 +324,12 @@ object Util {
 
     /** Overload for pure unit testing without android.os.Build dependency. */
     fun parseQprNumber(buildId: String?): Int {
-        val id = buildId ?: return -1
+        val id = buildId?.uppercase() ?: return -1
         if (id.length < 3) return -1
 
-        // Modern Trunk scheme starting 2024: [Year A-D][P][Quarter 1-4][Type A-Z] (e.g. AP2A, BP1A, CP2A)
+        // Modern Trunk scheme starting 2024: [Year A-G][P][Quarter 1-4][Type A-Z] (e.g. AP2A, BP1A, CP2A)
         // Years A (2024), B (2025), C (2026), D (2027)...
-        if (id[0] in 'A'..'D' && id[1] == 'P' && id[2] in '1'..'4') {
+        if (id[0] in 'A'..'G' && id[1] == 'P' && id[2] in '1'..'4') {
             return id[2].digitToInt()
         }
 

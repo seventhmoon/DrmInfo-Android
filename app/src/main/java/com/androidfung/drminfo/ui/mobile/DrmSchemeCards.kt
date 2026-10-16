@@ -1,77 +1,89 @@
 package com.androidfung.drminfo.ui.mobile
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.model.DrmSchemeState
-import com.androidfung.drminfo.ui.components.CardSectionHeader
 import com.androidfung.drminfo.ui.components.InfoCardContainer
 import com.androidfung.drminfo.ui.components.LabelValueItem
-import com.androidfung.drminfo.ui.components.LocalSnackbarHostState
-import com.androidfung.drminfo.ui.components.SkeletonCard
-import com.androidfung.drminfo.ui.components.TagChip
 import com.androidfung.drminfo.util.Util.toStringRes
+
+internal fun matchesQuery(query: String, vararg fields: String?): Boolean {
+    if (query.isBlank()) return true
+    val trimmed = query.trim()
+    return fields.any { it?.contains(trimmed, ignoreCase = true) == true }
+}
 
 @Composable
 fun WidevineCard(
     scheme: DrmSchemeState.Widevine,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    searchQuery: String = ""
 ) {
+    val cardTitleMatches = searchQuery.isNotBlank() &&
+            matchesQuery(searchQuery, scheme.name, scheme.description, "widevine")
+    val effectiveQuery = if (cardTitleMatches) "" else searchQuery
+
     InfoCardContainer(
         title = scheme.description,
         iconRes = R.drawable.ic_security,
         modifier = modifier
     ) {
-        MediaDrmCardContent(scheme = scheme)
+        MediaDrmCardContent(scheme = scheme, searchQuery = effectiveQuery)
 
-        scheme.systemId?.let {
-            LabelValueItem(
-                label = stringResource(id = R.string.widevine_string_property_name_systemId),
-                value = it,
-                allowCopy = true
-            )
+        scheme.systemId?.let { value ->
+            val label = stringResource(id = R.string.widevine_string_property_name_systemId)
+            if (matchesQuery(effectiveQuery, label, value)) {
+                LabelValueItem(
+                    label = label,
+                    value = value,
+                    allowCopy = true
+                )
+            }
         }
 
-        scheme.securityLevel?.let {
-            LabelValueItem(
-                label = stringResource(id = R.string.widevine_string_property_name_securityLevel),
-                value = it,
-                allowCopy = true
-            )
+        scheme.securityLevel?.let { value ->
+            val label = stringResource(id = R.string.widevine_string_property_name_securityLevel)
+            if (matchesQuery(effectiveQuery, label, value)) {
+                LabelValueItem(
+                    label = label,
+                    value = value,
+                    allowCopy = true
+                )
+            }
         }
 
-        scheme.oemCryptoVersion?.let {
-            LabelValueItem(
-                label = stringResource(id = R.string.widevine_string_property_name_oemCryptoApiVersion),
-                value = it,
-                allowCopy = true
-            )
+        scheme.maxSessions?.let { value ->
+            val label = stringResource(id = R.string.widevine_string_property_name_maxNumberOfSessions)
+            if (matchesQuery(effectiveQuery, label, value)) {
+                LabelValueItem(
+                    label = label,
+                    value = value,
+                    allowCopy = true
+                )
+            }
+        }
+
+        scheme.oemCryptoVersion?.let { value ->
+            val label = stringResource(id = R.string.widevine_string_property_name_oemCryptoApiVersion)
+            if (matchesQuery(effectiveQuery, label, value)) {
+                LabelValueItem(
+                    label = label,
+                    value = value,
+                    allowCopy = true
+                )
+            }
         }
 
         scheme.extraProperties.forEach { (label, value) ->
-            LabelValueItem(
-                label = label,
-                value = value,
-                allowCopy = true
-            )
+            if (matchesQuery(effectiveQuery, label, value)) {
+                LabelValueItem(
+                    label = label,
+                    value = value,
+                    allowCopy = true
+                )
+            }
         }
     }
 }
@@ -79,16 +91,40 @@ fun WidevineCard(
 @Composable
 fun MediaDrmCard(
     scheme: DrmSchemeState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    searchQuery: String = ""
 ) {
+    val cardTitleMatches = searchQuery.isNotBlank() &&
+            matchesQuery(searchQuery, scheme.name, scheme.description, scheme.id)
+    val effectiveQuery = if (cardTitleMatches) "" else searchQuery
+
     InfoCardContainer(
         title = scheme.description,
         iconRes = R.drawable.ic_security,
         modifier = modifier
     ) {
-        MediaDrmCardContent(scheme = scheme)
+        MediaDrmCardContent(scheme = scheme, searchQuery = effectiveQuery)
 
         scheme.extraProperties.forEach { (label, value) ->
+            if (matchesQuery(effectiveQuery, label, value)) {
+                LabelValueItem(
+                    label = label,
+                    value = value,
+                    allowCopy = true
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MediaDrmCardContent(
+    scheme: DrmSchemeState,
+    searchQuery: String = ""
+) {
+    scheme.vendor?.let { value ->
+        val label = stringResource(id = R.string.mediadrm_string_property_name_vendor)
+        if (matchesQuery(searchQuery, label, value)) {
             LabelValueItem(
                 label = label,
                 value = value,
@@ -96,39 +132,39 @@ fun MediaDrmCard(
             )
         }
     }
-}
 
-@Composable
-private fun MediaDrmCardContent(scheme: DrmSchemeState) {
-    scheme.vendor?.let {
-        LabelValueItem(
-            label = stringResource(id = R.string.mediadrm_string_property_name_vendor),
-            value = it,
-            allowCopy = true
-        )
+    scheme.version?.let { value ->
+        val label = stringResource(id = R.string.mediadrm_string_property_name_version)
+        if (matchesQuery(searchQuery, label, value)) {
+            LabelValueItem(
+                label = label,
+                value = value,
+                allowCopy = true
+            )
+        }
     }
 
-    scheme.version?.let {
-        LabelValueItem(
-            label = stringResource(id = R.string.mediadrm_string_property_name_version),
-            value = it,
-            allowCopy = true
-        )
+    scheme.maxHdcpLevel?.let { level ->
+        val label = stringResource(id = R.string.widevine_string_property_name_maxHdcpLevel)
+        val value = stringResource(id = level.toStringRes())
+        if (matchesQuery(searchQuery, label, value)) {
+            LabelValueItem(
+                label = label,
+                value = value,
+                allowCopy = true
+            )
+        }
     }
 
-    scheme.maxHdcpLevel?.let {
-        LabelValueItem(
-            label = stringResource(id = R.string.widevine_string_property_name_maxHdcpLevel),
-            value = stringResource(id = it.toStringRes()),
-            allowCopy = true
-        )
-    }
-
-    scheme.connectedHdcpLevel?.let {
-        LabelValueItem(
-            label = stringResource(id = R.string.widevine_string_property_name_hdcpLevel),
-            value = stringResource(id = it.toStringRes()),
-            allowCopy = true
-        )
+    scheme.connectedHdcpLevel?.let { level ->
+        val label = stringResource(id = R.string.widevine_string_property_name_hdcpLevel)
+        val value = stringResource(id = level.toStringRes())
+        if (matchesQuery(searchQuery, label, value)) {
+            LabelValueItem(
+                label = label,
+                value = value,
+                allowCopy = true
+            )
+        }
     }
 }

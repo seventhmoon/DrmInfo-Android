@@ -14,12 +14,14 @@ android {
         applicationId = "com.androidfung.drminfo"
         minSdk = 24
         targetSdk = 37
-        versionCode = 519
-        versionName = "1.2.3-261015"
-
-        resourceConfigurations += listOf("en")
+        versionCode = 521
+        versionName = "1.3.0-261016"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    androidResources {
+        localeFilters += listOf("en")
     }
 
     buildTypes {
@@ -96,11 +98,13 @@ dependencies {
     implementation(libs.androidx.profileinstaller)
 
     implementation(libs.bundles.firebase)
+    implementation(libs.firebase.appcheck.playintegrity)
 
     testImplementation(libs.androidx.core.testing)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
 
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)

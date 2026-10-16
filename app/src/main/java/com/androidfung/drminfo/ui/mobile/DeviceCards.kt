@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,7 +16,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.model.DeviceInfo
-import com.androidfung.drminfo.ui.components.CardSectionHeader
+import com.androidfung.drminfo.model.toHardwareProperties
+import com.androidfung.drminfo.model.toSystemProperties
 import com.androidfung.drminfo.ui.components.InfoCardContainer
 import com.androidfung.drminfo.ui.components.LabelValueItem
 import com.androidfung.drminfo.ui.components.TagChip
@@ -29,80 +28,40 @@ import kotlin.math.round
 @Composable
 fun HardwareCard(
     device: DeviceInfo,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    searchQuery: String = ""
 ) {
-    OutlinedCard(
+    val sectionTitle = stringResource(id = R.string.section_hardware)
+    val effectiveQuery = if (searchQuery.isNotBlank() && matchesQuery(searchQuery, sectionTitle)) "" else searchQuery
+
+    InfoCardContainer(
+        title = sectionTitle,
+        iconRes = R.drawable.ic_memory,
         modifier = modifier
     ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.card_padding))
-        ) {
-            CardSectionHeader(
-                title = stringResource(id = R.string.section_hardware),
-                iconRes = R.drawable.ic_memory
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-            HorizontalDivider(
-                thickness = 0.5.dp,
-                color = MaterialTheme.colorScheme.outlineVariant
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-
-            LabelValueItem(
-                label = stringResource(id = R.string.text_model),
-                value = "${device.manufacturer} ${device.model}",
-                allowCopy = true
-            )
-
-            LabelValueItem(
-                label = stringResource(id = R.string.text_brand),
-                value = device.brand,
-                allowCopy = true
-            )
-
-            LabelValueItem(
-                label = stringResource(id = R.string.text_hardware),
-                value = device.hardware,
-                allowCopy = true
-            )
-
-            device.socManufacturer?.let {
+        device.toHardwareProperties().forEach { prop ->
+            val label = stringResource(id = prop.labelRes)
+            val value = prop.valueRes?.let { stringResource(id = it) } ?: prop.value
+            if (matchesQuery(effectiveQuery, label, value)) {
                 LabelValueItem(
-                    label = stringResource(id = R.string.text_soc_manufacturer),
-                    value = it,
-                    allowCopy = true
+                    label = label,
+                    value = value,
+                    allowCopy = prop.allowCopy
                 )
             }
+        }
 
-            device.socModel?.let {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_soc_model),
-                    value = it,
-                    allowCopy = true
-                )
+        if (device.abis.isNotEmpty()) {
+            val abiLabel = stringResource(id = R.string.text_abi)
+            val matchingAbis = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, abiLabel)) {
+                device.abis
+            } else {
+                device.abis.filter { matchesQuery(effectiveQuery, it) }
             }
-
-            if (device.totalMemoryBytes > 0L) {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_total_memory),
-                    value = Util.formatMemorySize(device.totalMemoryBytes),
-                    allowCopy = true
-                )
-            }
-
-            device.mediaPerformanceClass?.let {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_media_performance_class),
-                    value = it.toString(),
-                    allowCopy = true
-                )
-            }
-
-            if (device.abis.isNotEmpty()) {
+            if (matchingAbis.isNotEmpty()) {
                 Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
                     Text(
-                        text = stringResource(id = R.string.text_abi),
+                        text = abiLabel,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -111,7 +70,7 @@ fun HardwareCard(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        device.abis.forEach { abi ->
+                        matchingAbis.forEach { abi ->
                             TagChip(text = abi, allowCopy = true)
                         }
                     }
@@ -124,68 +83,28 @@ fun HardwareCard(
 @Composable
 fun SystemCard(
     device: DeviceInfo,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    searchQuery: String = ""
 ) {
+    val sectionTitle = stringResource(id = R.string.section_system)
+    val effectiveQuery = if (searchQuery.isNotBlank() && matchesQuery(searchQuery, sectionTitle)) "" else searchQuery
+
     InfoCardContainer(
-        title = stringResource(id = R.string.section_system),
+        title = sectionTitle,
         iconRes = R.drawable.ic_phone_android,
         modifier = modifier
     ) {
-        LabelValueItem(
-            label = stringResource(id = R.string.text_display),
-            value = device.buildDisplay,
-            allowCopy = true
-        )
-
-        LabelValueItem(
-            label = stringResource(id = R.string.text_type),
-            value = device.buildType,
-            allowCopy = true
-        )
-
-        LabelValueItem(
-            label = stringResource(id = R.string.text_fingerprint),
-            value = device.fingerprint,
-            allowCopy = true
-        )
-
-        LabelValueItem(
-            label = stringResource(id = R.string.text_sdk_level),
-            value = device.sdkInt.toString(),
-            allowCopy = true
-        )
-
-        device.sdkFull?.let {
-            LabelValueItem(
-                label = stringResource(id = R.string.text_sdk_level_full),
-                value = it,
-                allowCopy = true
-            )
+        device.toSystemProperties().forEach { prop ->
+            val label = stringResource(id = prop.labelRes)
+            val value = prop.valueRes?.let { stringResource(id = it) } ?: prop.value
+            if (matchesQuery(effectiveQuery, label, value)) {
+                LabelValueItem(
+                    label = label,
+                    value = value,
+                    allowCopy = prop.allowCopy
+                )
+            }
         }
-
-        device.releaseOrCodename?.let {
-            LabelValueItem(
-                label = stringResource(id = R.string.text_release_or_codename),
-                    value = it,
-                    allowCopy = true
-                )
-            }
-
-            device.quarterlyReleaseName?.let { qName ->
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_quarterly_release),
-                    value = qName,
-                    allowCopy = true
-                )
-            }
-
-            device.securityPatch?.let {
-                LabelValueItem(
-                    label = stringResource(id = R.string.text_security_patch),
-                    value = it,
-                    allowCopy = true
-                )
-            }
     }
 }
 
@@ -193,90 +112,40 @@ fun SystemCard(
 @Composable
 fun MediaDisplayCard(
     device: DeviceInfo,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    searchQuery: String = ""
 ) {
+    val sectionTitle = stringResource(id = R.string.section_media_and_display)
+    val effectiveQuery = if (searchQuery.isNotBlank() && matchesQuery(searchQuery, sectionTitle)) "" else searchQuery
+
     InfoCardContainer(
-        title = stringResource(id = R.string.section_media_and_display),
+        title = sectionTitle,
         iconRes = R.drawable.ic_tv,
         modifier = modifier
     ) {
-
-            if (device.supportedRefreshRates.isNotEmpty()) {
-                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
-                    Text(
-                        text = stringResource(id = R.string.text_supported_refresh_rate),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        device.supportedRefreshRates.forEach { rate ->
-                            val rounded = round(rate).toInt()
-                            TagChip(text = "$rounded Hz", allowCopy = true)
-                        }
-                    }
-                }
-            }
-
-            if (device.alternativeRefreshRates.isNotEmpty()) {
-                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
-                    Text(
-                        text = stringResource(id = R.string.text_seamless_refresh_rate),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        device.alternativeRefreshRates.forEach { rate ->
-                            val rounded = round(rate).toInt()
-                            TagChip(text = "$rounded Hz", allowCopy = true)
-                        }
-                    }
-                }
-            }
-
-            device.isWideColorGamut?.let {
+        Util.formatResolution(device.displayWidth, device.displayHeight)?.let { resolutionText ->
+            val label = stringResource(id = R.string.text_display_resolution)
+            if (matchesQuery(effectiveQuery, label, resolutionText)) {
                 LabelValueItem(
-                    label = stringResource(id = R.string.text_wide_color),
-                    value = it.toString(),
+                    label = label,
+                    value = resolutionText,
                     allowCopy = true
                 )
             }
+        }
 
-            if (device.supportedHdrTypes.isNotEmpty()) {
-                val hdrTypeNames = device.supportedHdrTypes
-                    .map { id -> stringResource(id = Util.convertHdrTypeToStringRes(id)) }
-                    .sorted()
-                if (hdrTypeNames.isNotEmpty()) {
-                    Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
-                        Text(
-                            text = stringResource(id = R.string.text_supported_hdr_types),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.height(6.dp))
-                        FlowRow(
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            hdrTypeNames.forEach { name ->
-                                TagChip(text = name, allowCopy = true)
-                            }
-                        }
-                    }
-                }
+        if (device.supportedRefreshRates.isNotEmpty()) {
+            val label = stringResource(id = R.string.text_supported_refresh_rate)
+            val uniqueRates = device.supportedRefreshRates.map { "${round(it).toInt()} Hz" }.distinct()
+            val matchingRates = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, label)) {
+                uniqueRates
+            } else {
+                uniqueRates.filter { matchesQuery(effectiveQuery, it) }
             }
-
-            if (device.hardwareDecoders.isNotEmpty()) {
+            if (matchingRates.isNotEmpty()) {
                 Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
                     Text(
-                        text = stringResource(id = R.string.text_hw_decode_type),
+                        text = label,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -285,17 +154,26 @@ fun MediaDisplayCard(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        device.hardwareDecoders.forEach { codec ->
-                            TagChip(text = codec, allowCopy = true)
+                        matchingRates.forEach { rateText ->
+                            TagChip(text = rateText, allowCopy = true)
                         }
                     }
                 }
             }
+        }
 
-            if (device.hardwareEncoders.isNotEmpty()) {
+        if (device.alternativeRefreshRates.isNotEmpty()) {
+            val label = stringResource(id = R.string.text_seamless_refresh_rate)
+            val uniqueAltRates = device.alternativeRefreshRates.map { "${round(it).toInt()} Hz" }.distinct()
+            val matchingAltRates = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, label)) {
+                uniqueAltRates
+            } else {
+                uniqueAltRates.filter { matchesQuery(effectiveQuery, it) }
+            }
+            if (matchingAltRates.isNotEmpty()) {
                 Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
                     Text(
-                        text = stringResource(id = R.string.text_hw_encode_type),
+                        text = label,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -304,12 +182,109 @@ fun MediaDisplayCard(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        device.hardwareEncoders.forEach { codec ->
+                        matchingAltRates.forEach { rateText ->
+                            TagChip(text = rateText, allowCopy = true)
+                        }
+                    }
+                }
+            }
+        }
+
+        device.isWideColorGamut?.let { supported ->
+            val label = stringResource(id = R.string.text_wide_color)
+            val value = if (supported) stringResource(id = R.string.text_supported) else stringResource(id = R.string.text_not_supported)
+            if (matchesQuery(effectiveQuery, label, value)) {
+                LabelValueItem(
+                    label = label,
+                    value = value,
+                    allowCopy = true
+                )
+            }
+        }
+
+        if (device.supportedHdrTypes.isNotEmpty()) {
+            val label = stringResource(id = R.string.text_supported_hdr_types)
+            val hdrTypeNames = device.supportedHdrTypes
+                .map { id -> stringResource(id = Util.convertHdrTypeToStringRes(id)) }
+                .sorted()
+            val matchingHdr = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, label)) {
+                hdrTypeNames
+            } else {
+                hdrTypeNames.filter { matchesQuery(effectiveQuery, it) }
+            }
+            if (matchingHdr.isNotEmpty()) {
+                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        matchingHdr.forEach { name ->
+                            TagChip(text = name, allowCopy = true)
+                        }
+                    }
+                }
+            }
+        }
+
+        if (device.hardwareDecoders.isNotEmpty()) {
+            val label = stringResource(id = R.string.text_hw_decode_type)
+            val matchingDecoders = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, label)) {
+                device.hardwareDecoders
+            } else {
+                device.hardwareDecoders.filter { matchesQuery(effectiveQuery, it) }
+            }
+            if (matchingDecoders.isNotEmpty()) {
+                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        matchingDecoders.forEach { codec ->
                             TagChip(text = codec, allowCopy = true)
                         }
                     }
                 }
             }
+        }
+
+        if (device.hardwareEncoders.isNotEmpty()) {
+            val label = stringResource(id = R.string.text_hw_encode_type)
+            val matchingEncoders = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, label)) {
+                device.hardwareEncoders
+            } else {
+                device.hardwareEncoders.filter { matchesQuery(effectiveQuery, it) }
+            }
+            if (matchingEncoders.isNotEmpty()) {
+                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        matchingEncoders.forEach { codec ->
+                            TagChip(text = codec, allowCopy = true)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -317,34 +292,52 @@ fun MediaDisplayCard(
 @Composable
 fun AudioCard(
     device: DeviceInfo,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    searchQuery: String = ""
 ) {
+    val sectionTitle = stringResource(id = R.string.section_audio)
+    val effectiveQuery = if (searchQuery.isNotBlank() && matchesQuery(searchQuery, sectionTitle)) "" else searchQuery
+
     InfoCardContainer(
-        title = stringResource(id = R.string.section_audio),
+        title = sectionTitle,
         iconRes = R.drawable.ic_audio,
         modifier = modifier
     ) {
-
-            device.spatialAudioSupported?.let { supported ->
+        device.spatialAudioSupported?.let { supported ->
+            val label = stringResource(id = R.string.text_spatial_audio)
+            val value = if (supported) stringResource(id = R.string.text_supported) else stringResource(id = R.string.text_not_supported)
+            if (matchesQuery(effectiveQuery, label, value)) {
                 LabelValueItem(
-                    label = stringResource(id = R.string.text_spatial_audio),
-                    value = if (supported) stringResource(id = R.string.text_supported) else stringResource(id = R.string.text_not_supported),
+                    label = label,
+                    value = value,
                     allowCopy = true
                 )
             }
+        }
 
-            device.headTrackingSupported?.let { supported ->
+        device.headTrackingSupported?.let { supported ->
+            val label = stringResource(id = R.string.text_head_tracking)
+            val value = if (supported) stringResource(id = R.string.text_supported) else stringResource(id = R.string.text_not_supported)
+            if (matchesQuery(effectiveQuery, label, value)) {
                 LabelValueItem(
-                    label = stringResource(id = R.string.text_head_tracking),
-                    value = if (supported) stringResource(id = R.string.text_supported) else stringResource(id = R.string.text_not_supported),
+                    label = label,
+                    value = value,
                     allowCopy = true
                 )
             }
+        }
 
-            if (device.supportedAudioEncodings.isNotEmpty()) {
+        if (device.supportedAudioEncodings.isNotEmpty()) {
+            val label = stringResource(id = R.string.text_surround_sound)
+            val matchingEncodings = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, label)) {
+                device.supportedAudioEncodings
+            } else {
+                device.supportedAudioEncodings.filter { matchesQuery(effectiveQuery, it) }
+            }
+            if (matchingEncodings.isNotEmpty()) {
                 Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
                     Text(
-                        text = stringResource(id = R.string.text_surround_sound),
+                        text = label,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -353,11 +346,12 @@ fun AudioCard(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        device.supportedAudioEncodings.forEach { format ->
+                        matchingEncodings.forEach { format ->
                             TagChip(text = format, allowCopy = true)
                         }
                     }
                 }
             }
+        }
     }
 }

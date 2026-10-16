@@ -96,19 +96,29 @@ fun HeroHighlightsCard(
                     )
                 }
 
-                // 2. Combined Display Badge (Resolution + Refresh Rate + HDR)
+                // 2. SoC / Hardware Badge
+                state.device.socModel?.takeIf { it.isNotEmpty() }?.let { soc ->
+                    HighlightPill(
+                        label = stringResource(id = R.string.highlight_label_soc),
+                        value = soc,
+                        level = HighlightLevel.SECONDARY,
+                        onClick = onPillClick?.let { { it(CardSection.HARDWARE) } }
+                    )
+                }
+
+                // 3. Combined Display Badge (Resolution + Refresh Rate + HDR)
                 if (maxRefreshRate != null || state.device.displayWidth > 0) {
                     val roundedHz = maxRefreshRate?.let { round(it).toInt() }
                     val resLabel = Util.getResolutionLabel(state.device.displayWidth, state.device.displayHeight)
 
                     val parts = buildList {
                         resLabel?.let { add(it) }
-                        if (roundedHz != null && roundedHz > 0) add("${roundedHz}Hz")
+                        if (roundedHz != null && roundedHz > 0) add("$roundedHz Hz")
                         if (hasHdr) add("HDR")
                     }
 
                     if (parts.isNotEmpty()) {
-                        val displayValue = parts.joinToString(" ")
+                        val displayValue = parts.joinToString(" • ")
                         val displayLevel = when {
                             hasHdr && ((roundedHz ?: 0) >= 90) -> HighlightLevel.PRIMARY
                             hasHdr || ((roundedHz ?: 0) > 60) -> HighlightLevel.SECONDARY
@@ -123,7 +133,22 @@ fun HeroHighlightsCard(
                     }
                 }
 
-                // 3. Widevine Security Level
+                // 4. Audio Badge (Spatial Audio or Surround Sound)
+                val audioBadgeValue = when {
+                    state.device.spatialAudioSupported == true -> stringResource(id = R.string.text_spatial_audio)
+                    state.device.supportedAudioEncodings.isNotEmpty() -> "${state.device.supportedAudioEncodings.size} Formats"
+                    else -> null
+                }
+                audioBadgeValue?.let { value ->
+                    HighlightPill(
+                        label = stringResource(id = R.string.highlight_label_audio),
+                        value = value,
+                        level = HighlightLevel.SECONDARY,
+                        onClick = onPillClick?.let { { it(CardSection.AUDIO) } }
+                    )
+                }
+
+                // 5. Widevine Security Level
                 if (widevine != null && (!widevine.securityLevel.isNullOrEmpty())) {
                     val widevineLevel = when {
                         widevine.securityLevel.contains("L1", ignoreCase = true) -> HighlightLevel.PRIMARY

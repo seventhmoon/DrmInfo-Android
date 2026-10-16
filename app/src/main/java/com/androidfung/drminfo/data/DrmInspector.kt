@@ -26,7 +26,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import java.util.Collections
 import java.util.SortedSet
 import java.util.UUID
 
@@ -39,8 +38,6 @@ class DrmInspector(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : DrmRepository {
     private val appContext: Context = context.applicationContext
-
-    private val mediaDrmByUuid: MutableMap<UUID, MediaDrm> = Collections.synchronizedMap(linkedMapOf())
 
     override suspend fun inspectAll(activeContext: Context?): Pair<DeviceInfo, List<DrmSchemeState>> = coroutineScope {
         val targetContext = activeContext ?: appContext
@@ -295,7 +292,6 @@ class DrmInspector(
 
     private fun readDrmScheme(spec: DrmSpec): DrmSchemeState? {
         val resources = appContext.resources
-        releaseMediaDrm(spec.uuid)
 
         if (!MediaDrm.isCryptoSchemeSupported(spec.uuid)) {
             return null
@@ -306,44 +302,21 @@ class DrmInspector(
                 Log.w(TAG, "Failed to instantiate MediaDrm for ${spec.id} (${spec.uuid}): ${it.message}")
                 return@runCatching null
             }
-            mediaDrmByUuid[spec.uuid] = drm
 
-            val schemeName = resources.getString(spec.nameRes)
-            val description = drm.safeGetProperty(Constants.PROPERTY_DESCRIPTION).takeIf { it.isNotEmpty() } ?: schemeName
-            val vendor = drm.safeGetProperty(Constants.PROPERTY_VENDOR).takeIf { it.isNotEmpty() }
-            val version = drm.safeGetProperty(Constants.PROPERTY_VERSION).takeIf { it.isNotEmpty() }
+            try {
+                val schemeName = resources.getString(spec.nameRes)
+                val description = drm.safeGetProperty(Constants.PROPERTY_DESCRIPTION).takeIf { it.isNotEmpty() } ?: schemeName
+                val vendor = drm.safeGetProperty(Constants.PROPERTY_VENDOR).takeIf { it.isNotEmpty() }
+                val version = drm.safeGetProperty(Constants.PROPERTY_VERSION).takeIf { it.isNotEmpty() }
 
-            val maxHdcp = if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                runCatching { Util.convertHdcpLevel(drm.maxHdcpLevel) }.getOrNull()
-            } else null
-
-            val connectedHdcp = if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                runCatching { Util.convertHdcpLevel(drm.connectedHdcpLevel) }.getOrNull()
-            } else null
-
-            if (spec.isWidevine) {
-                val securityLevel = drm.safeGetProperty(Constants.PROPERTY_SECURITY_LEVEL).takeIf { it.isNotEmpty() }
-                val systemId = drm.safeGetProperty(Constants.PROPERTY_SYSTEM_ID).takeIf { it.isNotEmpty() }
-                val oemCrypto = drm.safeGetProperty(Constants.PROPERTY_OEM_CRYPTO_API_VERSION).takeIf { it.isNotEmpty() }
-
-                val maxSessions = if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                    runCatching { drm.maxSessionCount }.getOrNull()?.takeIf { it > 0 }?.toString()
+                val maxHdcp = if (VERSION.SDK_INT >= VERSION_CODES.P) {
+                    runCatching { Util.convertHdcpLevel(drm.maxHdcpLevel) }.getOrNull()
                 } else null
 
-                DrmSchemeState.Widevine(
-                    id = spec.id,
-                    name = schemeName,
-                    description = description,
-                    vendor = vendor,
-                    version = version,
-                    maxHdcpLevel = maxHdcp,
-                    connectedHdcpLevel = connectedHdcp,
-                    securityLevel = securityLevel,
-                    systemId = systemId,
-                    maxSessions = maxSessions,
-                    oemCryptoVersion = oemCrypto,
-                )
-            } else {
+                val connectedHdcp = if (VERSION.SDK_INT >= VERSION_CODES.P) {
+                    runCatching { Util.convertHdcpLevel(drm.connectedHdcpLevel) }.getOrNull()
+                } else null
+
                 val extraProps = mutableListOf<Pair<String, String>>()
                 if (VERSION.SDK_INT >= VERSION_CODES.P) {
                     val openSessions = runCatching { drm.openSessionCount }.getOrDefault(0)
@@ -352,16 +325,43 @@ class DrmInspector(
                     }
                 }
 
-                DrmSchemeState.Generic(
-                    id = spec.id,
-                    name = schemeName,
-                    description = description,
-                    vendor = vendor,
-                    version = version,
-                    maxHdcpLevel = maxHdcp,
-                    connectedHdcpLevel = connectedHdcp,
-                    extraProperties = extraProps,
-                )
+                if (spec.isWidevine) {
+                    val securityLevel = drm.safeGetProperty(Constants.PROPERTY_SECURITY_LEVEL).takeIf { it.isNotEmpty() }
+                    val systemId = drm.safeGetProperty(Constants.PROPERTY_SYSTEM_ID).takeIf { it.isNotEmpty() }
+                    val oemCrypto = drm.safeGetProperty(Constants.PROPERTY_OEM_CRYPTO_API_VERSION).takeIf { it.isNotEmpty() }
+
+                    val maxSessions = if (VERSION.SDK_INT >= VERSION_CODES.P) {
+                        runCatching { drm.maxSessionCount }.getOrNull()?.takeIf { it > 0 }?.toString()
+                    } else null
+
+                    DrmSchemeState.Widevine(
+                        id = spec.id,
+                        name = schemeName,
+                        description = description,
+                        vendor = vendor,
+                        version = version,
+                        maxHdcpLevel = maxHdcp,
+                        connectedHdcpLevel = connectedHdcp,
+                        securityLevel = securityLevel,
+                        systemId = systemId,
+                        maxSessions = maxSessions,
+                        oemCryptoVersion = oemCrypto,
+                        extraProperties = extraProps,
+                    )
+                } else {
+                    DrmSchemeState.Generic(
+                        id = spec.id,
+                        name = schemeName,
+                        description = description,
+                        vendor = vendor,
+                        version = version,
+                        maxHdcpLevel = maxHdcp,
+                        connectedHdcpLevel = connectedHdcp,
+                        extraProperties = extraProps,
+                    )
+                }
+            } finally {
+                closeMediaDrm(drm, spec.uuid)
             }
         }.onFailure { error ->
             Log.w(TAG, "Failed to read ${spec.id} properties", error)
@@ -372,37 +372,21 @@ class DrmInspector(
         return runCatching { getPropertyString(key) }.getOrNull().orEmpty()
     }
 
-    private fun releaseMediaDrm(uuid: UUID) {
-        mediaDrmByUuid.remove(uuid)?.let { drm ->
-            runCatching {
-                if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                    drm.close()
-                } else {
-                    @Suppress("DEPRECATION")
-                    drm.release()
-                }
-            }.onFailure { error ->
-                Log.w(TAG, "Failed to release MediaDrm for $uuid", error)
+    private fun closeMediaDrm(drm: MediaDrm, uuid: UUID) {
+        runCatching {
+            if (VERSION.SDK_INT >= VERSION_CODES.P) {
+                drm.close()
+            } else {
+                @Suppress("DEPRECATION")
+                drm.release()
             }
+        }.onFailure { error ->
+            Log.w(TAG, "Failed to release MediaDrm for $uuid", error)
         }
     }
 
     override fun releaseAll() {
-        synchronized(mediaDrmByUuid) {
-            mediaDrmByUuid.values.forEach { drm ->
-                runCatching {
-                    if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                        drm.close()
-                    } else {
-                        @Suppress("DEPRECATION")
-                        drm.release()
-                    }
-                }.onFailure { error ->
-                    Log.w(TAG, "Failed to release MediaDrm on clear", error)
-                }
-            }
-            mediaDrmByUuid.clear()
-        }
+        // MediaDrm instances are closed immediately after inspection in readDrmScheme.
     }
 
     companion object {

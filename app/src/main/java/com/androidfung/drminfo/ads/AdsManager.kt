@@ -13,7 +13,6 @@ import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdPreloader
 import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdRequest
 import com.google.android.libraries.ads.mobile.sdk.common.PreloadConfiguration
 import com.google.android.libraries.ads.mobile.sdk.initialization.InitializationConfig
-import com.google.android.ump.ConsentDebugSettings
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
@@ -37,14 +36,7 @@ object AdsManager {
 
     fun requestConsentAndInitialize(activity: Activity, appId: String, adUnitId: String? = null) {
         runCatching {
-            val debugSettings = ConsentDebugSettings.Builder(activity)
-                .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
-                .addTestDeviceHashedId("TEST-DEVICE-HASHED-ID")
-                .build()
-                
-            val params = ConsentRequestParameters.Builder()
-                // .setConsentDebugSettings(debugSettings) // Uncomment to test in EEA
-                .build()
+            val params = ConsentRequestParameters.Builder().build()
 
             consentInformation = UserMessagingPlatform.getConsentInformation(activity)
             consentInformation?.requestConsentInfoUpdate(
