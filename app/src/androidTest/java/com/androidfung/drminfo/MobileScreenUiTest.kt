@@ -1,6 +1,7 @@
 package com.androidfung.drminfo
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -182,5 +183,40 @@ class MobileScreenUiTest {
             }
         }
         composeTestRule.onNodeWithText("DRM Info").assertIsDisplayed()
+    }
+
+    @Test
+    fun heroCard_captureScreenshot_hasValidDimensions() {
+        val testState = DrmInfoUiState(
+            device = DeviceInfo(
+                manufacturer = "Google",
+                model = "Pixel 8",
+                supportedRefreshRates = listOf(120.0f)
+            ),
+            schemes = listOf(
+                DrmSchemeState.Widevine(
+                    name = "Widevine",
+                    description = "Widevine CDM",
+                    vendor = "Google",
+                    version = "17.0",
+                    maxHdcpLevel = HdcpLevel.V2_3,
+                    connectedHdcpLevel = null,
+                    securityLevel = "L1",
+                    systemId = "1234",
+                    maxSessions = "16",
+                    oemCryptoVersion = "16"
+                )
+            )
+        )
+
+        composeTestRule.setContent {
+            DrmInfoTheme {
+                HeroHighlightsCard(state = testState)
+            }
+        }
+
+        val bitmap = composeTestRule.onNodeWithText("Pixel 8").captureToImage()
+        org.junit.Assert.assertTrue("Captured screenshot width should be > 0", bitmap.width > 0)
+        org.junit.Assert.assertTrue("Captured screenshot height should be > 0", bitmap.height > 0)
     }
 }

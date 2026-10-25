@@ -8,11 +8,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.google.android.libraries.ads.mobile.sdk.MobileAds
-import com.google.android.libraries.ads.mobile.sdk.banner.AdSize
-import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdPreloader
-import com.google.android.libraries.ads.mobile.sdk.banner.BannerAdRequest
 import com.google.android.libraries.ads.mobile.sdk.common.PreloadConfiguration
 import com.google.android.libraries.ads.mobile.sdk.initialization.InitializationConfig
+import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdPreloader
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
@@ -22,19 +20,19 @@ import kotlinx.coroutines.launch
 
 /**
  * Encapsulates initialization, preloading, and lifecycle management
- * for the Google Mobile Ads SDK.
+ * for the Google Mobile Ads SDK using Native Ads.
  */
-object AdsManager {
+object AdsManager : AdsController {
     private const val TAG = "AdsManager"
 
-    var isInitialized by mutableStateOf(false)
+    override var isInitialized by mutableStateOf(false)
         private set
 
     private var cachedAdUnitId: String? = null
     private val scope = CoroutineScope(Dispatchers.IO)
     private var consentInformation: ConsentInformation? = null
 
-    fun requestConsentAndInitialize(activity: Activity, appId: String, adUnitId: String? = null) {
+    override fun requestConsentAndInitialize(activity: Activity, appId: String, adUnitId: String?) {
         runCatching {
             val params = ConsentRequestParameters.Builder().build()
 
@@ -76,7 +74,7 @@ object AdsManager {
      * Attempts early initialization during Application startup if user consent
      * was already granted in a previous session.
      */
-    fun initializeIfConsentGiven(context: Context, appId: String, adUnitId: String? = null) {
+    override fun initializeIfConsentGiven(context: Context, appId: String, adUnitId: String?) {
         runCatching {
             val consentInfo = UserMessagingPlatform.getConsentInformation(context)
             if (consentInfo.canRequestAds()) {
@@ -92,7 +90,7 @@ object AdsManager {
         runCatching {
             if (MobileAds.isInitialized) {
                 isInitialized = true
-                adUnitId?.let { startPreload(context, it) }
+                adUnitId?.let { startPreload(it) }
                 return
             }
 
@@ -104,7 +102,7 @@ object AdsManager {
                         launch(Dispatchers.Main) {
                             isInitialized = true
                         }
-                        cachedAdUnitId?.let { startPreload(appContext, it) }
+                        cachedAdUnitId?.let { startPreload(it) }
                     }
                 }.onFailure { error ->
                     Log.w(TAG, "Failed to initialize MobileAds (possible WebView issue)", error)
@@ -116,47 +114,34 @@ object AdsManager {
     }
 
     /**
-     * Starts the official Next-Gen SDK [BannerAdPreloader] so an ad is buffered
-     * in the background before the user scrolls to the bottom of the list.
+     * Starts the official Next-Gen SDK [NativeAdPreloader] so native ads are buffered
+     * in the background before the user scrolls to them.
      */
-    fun startPreload(context: Context, adUnitId: String, targetWidthDp: Int? = null) {
+    override fun startPreload(adUnitId: String) {
         cachedAdUnitId = adUnitId
         if (!MobileAds.isInitialized) return
 
-        val appContext = context.applicationContext
-        val displayMetrics = appContext.resources.displayMetrics
-        val screenWidthDp = (displayMetrics.widthPixels / displayMetrics.density).toInt()
-        val defaultCalculatedWidth = minOf(screenWidthDp - 32, 360).coerceAtLeast(300)
-        val widthDp = (targetWidthDp ?: defaultCalculatedWidth).coerceIn(300, 380)
-
-        val adSize = runCatching {
-            AdSize.getInlineAdaptiveBannerAdSize(widthDp, 300)
-        }.getOrElse {
-            runCatching {
-                AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(appContext, widthDp)
-            }.getOrElse {
-                AdSize.MEDIUM_RECTANGLE
-            }
-        }
-        val adRequest = BannerAdRequest.Builder(adUnitId, adSize).build()
+        val adRequest = NativeAdRequests.createRequest(adUnitId)
         val preloadConfig = PreloadConfiguration(adRequest, 2)
 
         runCatching {
-            BannerAdPreloader.start(adUnitId, preloadConfig)
-            Log.i(TAG, "BannerAdPreloader started for $adUnitId with width $widthDp dp (buffer size 2)")
+            NativeAdPreloader.start(adUnitId, preloadConfig)
+            Log.i(TAG, "NativeAdPreloader started for $adUnitId (buffer size 2)")
         }.onFailure { error ->
-            Log.w(TAG, "Failed to start BannerAdPreloader", error)
+            Log.w(TAG, "Failed to start NativeAdPreloader", error)
         }
     }
 
     /**
      * Cleans up preloaded ads when memory is constrained.
      */
-    fun onTrimMemory(adUnitId: String, level: Int) {
+    override fun onTrimMemory(adUnitId: String, level: Int) {
         if (level >= ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
             runCatching {
-                if (BannerAdPreloader.isAdAvailable(adUnitId)) {
-                    BannerAdPreloader.pollAd(adUnitId)?.destroy()
+                if (NativeAdPreloader.isAdAvailable(adUnitId)) {
+                    val result = NativeAdPreloader.pollAd(adUnitId)
+                    (result as? com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdLoadResult.NativeAdSuccess)
+                        ?.ad?.destroy()
                 }
             }
         }

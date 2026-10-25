@@ -87,8 +87,8 @@ class MobileActivity : ComponentActivity() {
                         drmViewModel.refresh(this@MobileActivity)
                         drmViewModel.preloadAd(this@MobileActivity)
                     },
-                    onPreloadAd = { widthDp ->
-                        drmViewModel.preloadAd(this@MobileActivity, widthDp)
+                    onPreloadAd = {
+                        drmViewModel.preloadAd(this@MobileActivity)
                     },
                     onShareReport = {
                         val params = Bundle().apply {

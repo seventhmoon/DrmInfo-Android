@@ -114,4 +114,55 @@ class DrmViewModelTest {
         val constructor = DrmViewModel::class.java.getConstructor(Application::class.java)
         org.junit.Assert.assertNotNull(constructor)
     }
+
+    private class FakeAdsController(
+        override var isInitialized: Boolean = false
+    ) : com.androidfung.drminfo.ads.AdsController {
+        var requestConsentCalled = false
+        var preloadedAdUnitId: String? = null
+        var trimmedLevel: Int? = null
+
+        override fun requestConsentAndInitialize(
+            activity: android.app.Activity,
+            appId: String,
+            adUnitId: String?
+        ) {
+            requestConsentCalled = true
+        }
+
+        override fun initializeIfConsentGiven(context: Context, appId: String, adUnitId: String?) {}
+
+        override fun startPreload(adUnitId: String) {
+            preloadedAdUnitId = adUnitId
+        }
+
+        override fun onTrimMemory(adUnitId: String, level: Int) {
+            trimmedLevel = level
+        }
+    }
+
+    @Test
+    fun adsController_preloadAndStatusDelegation() = runTest {
+        val fakeRepo = FakeDrmRepository()
+        val fakeAds = FakeAdsController(isInitialized = true)
+
+        val viewModel = DrmViewModel(fakeApplication, fakeRepo, fakeAds)
+        advanceUntilIdle()
+
+        org.junit.Assert.assertTrue(viewModel.isAdsInitialized())
+
+        viewModel.preloadAd(fakeApplication)
+        org.junit.Assert.assertNotNull(fakeAds.preloadedAdUnitId)
+    }
+
+    @Test
+    fun provideFactory_createsViewModelWithCustomDependencies() {
+        val fakeRepo = FakeDrmRepository()
+        val fakeAds = FakeAdsController(isInitialized = true)
+        val factory = DrmViewModel.provideFactory(fakeApplication, fakeRepo, fakeAds)
+        val vm = factory.create(DrmViewModel::class.java)
+
+        org.junit.Assert.assertNotNull(vm)
+        org.junit.Assert.assertTrue(vm.isAdsInitialized())
+    }
 }

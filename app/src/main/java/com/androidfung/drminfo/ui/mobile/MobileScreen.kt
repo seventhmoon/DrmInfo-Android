@@ -2,7 +2,7 @@ package com.androidfung.drminfo.ui.mobile
 
 import android.content.Context
 import android.content.Intent
-import androidx.activity.compose.BackHandler
+import androidx.activity.compose.PredictiveBackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -29,6 +29,8 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -69,14 +71,11 @@ import com.androidfung.drminfo.R
 import com.androidfung.drminfo.model.DeviceInfo
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
-import com.androidfung.drminfo.model.toHardwareProperties
-import com.androidfung.drminfo.model.toSystemProperties
 import com.androidfung.drminfo.ui.components.LocalSnackbarHostState
 import com.androidfung.drminfo.ui.components.SkeletonCard
 import com.androidfung.drminfo.util.Util
 import com.androidfung.drminfo.util.Util.toStringRes
 import kotlinx.coroutines.launch
-import kotlin.math.round
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -84,7 +83,7 @@ fun MobileScreen(
     state: DrmInfoUiState,
     isAdsInitialized: Boolean = false,
     onRefresh: () -> Unit = {},
-    onPreloadAd: (Int) -> Unit = {},
+    onPreloadAd: () -> Unit = {},
     onShareReport: () -> Unit = {},
     onDisplayConfigurationChanged: (Context) -> Unit = {},
     isUpdateDownloaded: Boolean = false,
@@ -96,15 +95,22 @@ fun MobileScreen(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
-    val windowWidthDp = configuration.screenWidthDp
     var showHelpSheet by rememberSaveable { mutableStateOf(false) }
+    var showShareMenu by remember { mutableStateOf(false) }
     var isSearchActive by rememberSaveable { mutableStateOf(false) }
     var searchQuery by rememberSaveable { mutableStateOf("") }
     val searchFocusRequester = remember { FocusRequester() }
 
-    BackHandler(enabled = isSearchActive) {
-        isSearchActive = false
-        searchQuery = ""
+    PredictiveBackHandler(enabled = isSearchActive) { progress ->
+        try {
+            progress.collect {
+                // Predictive back progress received
+            }
+            isSearchActive = false
+            searchQuery = ""
+        } catch (_: java.util.concurrent.CancellationException) {
+            // Back gesture cancelled by user
+        }
     }
 
     LaunchedEffect(isSearchActive) {
@@ -128,29 +134,30 @@ fun MobileScreen(
         }
     }
 
-    // For a 1-column card in the grid (minSize = 340dp), width is naturally ~320-360dp
-    val defaultAdWidthDp = minOf(windowWidthDp - 24, 360).coerceAtLeast(300)
-
     // Fast update display specs and preload ads when screen/window configuration (fold/unfold/rotate/split-screen) changes
     LaunchedEffect(configuration.screenWidthDp, configuration.screenHeightDp, configuration.orientation) {
         onDisplayConfigurationChanged(context)
     }
 
-    LaunchedEffect(configuration.screenWidthDp, configuration.screenHeightDp, isAdsInitialized) {
-        if (isAdsInitialized) {
-            onPreloadAd(defaultAdWidthDp)
+    var hasInitialPreloadedAd by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(isAdsInitialized) {
+        if (isAdsInitialized && !hasInitialPreloadedAd) {
+            hasInitialPreloadedAd = true
+            onPreloadAd()
         }
     }
 
     // Scroll-proximity preload: pre-fetch just-in-time when user starts scrolling
+    var hasScrollPreloadedAd by rememberSaveable { mutableStateOf(false) }
     val shouldPreloadOnScroll by remember {
         derivedStateOf {
             (gridState.firstVisibleItemIndex >= 1) || (gridState.firstVisibleItemScrollOffset > 80)
         }
     }
     LaunchedEffect(shouldPreloadOnScroll, isAdsInitialized) {
-        if (shouldPreloadOnScroll && isAdsInitialized) {
-            onPreloadAd(defaultAdWidthDp)
+        if (shouldPreloadOnScroll && isAdsInitialized && !hasScrollPreloadedAd) {
+            hasScrollPreloadedAd = true
+            onPreloadAd()
         }
     }
 
@@ -289,22 +296,48 @@ fun MobileScreen(
                             }
                             val shareSubject = stringResource(id = R.string.share_report_title)
                             val shareChooserTitle = stringResource(id = R.string.action_share)
-                            IconButton(
-                                onClick = {
-                                    onShareReport()
-                                    val report = Util.buildReport(context, state)
-                                    val intent = Intent(Intent.ACTION_SEND).apply {
-                                        type = "text/plain"
-                                        putExtra(Intent.EXTRA_SUBJECT, shareSubject)
-                                        putExtra(Intent.EXTRA_TEXT, report)
-                                    }
-                                    context.startActivity(Intent.createChooser(intent, shareChooserTitle))
+                            Box {
+                                IconButton(
+                                    onClick = { showShareMenu = true }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_share),
+                                        contentDescription = shareChooserTitle
+                                    )
                                 }
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_share),
-                                    contentDescription = shareChooserTitle
-                                )
+                                DropdownMenu(
+                                    expanded = showShareMenu,
+                                    onDismissRequest = { showShareMenu = false }
+                                ) {
+                                    DropdownMenuItem(
+                                        text = { Text(text = stringResource(id = R.string.action_share_plain_text)) },
+                                        onClick = {
+                                            showShareMenu = false
+                                            onShareReport()
+                                            val report = Util.buildReport(context, state)
+                                            val intent = Intent(Intent.ACTION_SEND).apply {
+                                                type = "text/plain"
+                                                putExtra(Intent.EXTRA_SUBJECT, shareSubject)
+                                                putExtra(Intent.EXTRA_TEXT, report)
+                                            }
+                                            context.startActivity(Intent.createChooser(intent, shareChooserTitle))
+                                        }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(text = stringResource(id = R.string.action_share_json)) },
+                                        onClick = {
+                                            showShareMenu = false
+                                            onShareReport()
+                                            val jsonReport = Util.buildJsonReport(context, state)
+                                            val intent = Intent(Intent.ACTION_SEND).apply {
+                                                type = "application/json"
+                                                putExtra(Intent.EXTRA_SUBJECT, "$shareSubject (JSON)")
+                                                putExtra(Intent.EXTRA_TEXT, jsonReport)
+                                            }
+                                            context.startActivity(Intent.createChooser(intent, shareChooserTitle))
+                                        }
+                                    )
+                                }
                             }
                         }
                     },
@@ -318,6 +351,38 @@ fun MobileScreen(
         ) { paddingValues ->
             val pullToRefreshState = rememberPullToRefreshState()
             val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
+            val clipboard = androidx.compose.ui.platform.LocalClipboard.current
+            val hapticFeedback = androidx.compose.ui.platform.LocalHapticFeedback.current
+            val copiedTemplate = stringResource(id = R.string.message_copied_to_clipboard)
+            val onCopyValue: (String, String) -> Unit = remember(clipboard, hapticFeedback, snackbarHostState, copiedTemplate) {
+                { label, value ->
+                    hapticFeedback.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                    val clipData = android.content.ClipData.newPlainText(label, value)
+                    coroutineScope.launch {
+                        clipboard.setClipEntry(androidx.compose.ui.platform.ClipEntry(clipData))
+                        snackbarHostState.currentSnackbarData?.dismiss()
+                        snackbarHostState.showSnackbar(
+                            message = java.lang.String.format(copiedTemplate, label),
+                            duration = androidx.compose.material3.SnackbarDuration.Short
+                        )
+                    }
+                }
+            }
+            val onCopyTag: (String) -> Unit = remember(clipboard, hapticFeedback, snackbarHostState, copiedTemplate) {
+                { text ->
+                    hapticFeedback.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                    val clipData = android.content.ClipData.newPlainText("Capability", text)
+                    coroutineScope.launch {
+                        clipboard.setClipEntry(androidx.compose.ui.platform.ClipEntry(clipData))
+                        snackbarHostState.currentSnackbarData?.dismiss()
+                        snackbarHostState.showSnackbar(
+                            message = java.lang.String.format(copiedTemplate, text),
+                            duration = androidx.compose.material3.SnackbarDuration.Short
+                        )
+                    }
+                }
+            }
 
             PullToRefreshBox(
                 isRefreshing = state.isRefreshing,
@@ -362,7 +427,11 @@ fun MobileScreen(
                                         state = state,
                                         modifier = Modifier.fillMaxWidth(),
                                         onPillClick = { section ->
-                                            val targetIndex = DrmGridScrollHelper.getTargetIndex(section, state)
+                                            val targetIndex = DrmGridScrollHelper.getTargetIndex(
+                                                section = section,
+                                                state = state,
+                                                isAdsInitialized = isAdsInitialized
+                                            )
                                             if (targetIndex >= 0) {
                                                 coroutineScope.launch {
                                                     gridState.animateScrollToItem(targetIndex)
@@ -406,7 +475,9 @@ fun MobileScreen(
                                     HardwareCard(
                                         device = state.device,
                                         modifier = Modifier.fillMaxWidth(),
-                                        searchQuery = activeQuery
+                                        searchQuery = activeQuery,
+                                        onCopy = onCopyValue,
+                                        onCopyText = onCopyTag
                                     )
                                 }
                             }
@@ -416,7 +487,20 @@ fun MobileScreen(
                                     SystemCard(
                                         device = state.device,
                                         modifier = Modifier.fillMaxWidth(),
-                                        searchQuery = activeQuery
+                                        searchQuery = activeQuery,
+                                        onCopy = onCopyValue
+                                    )
+                                }
+                            }
+
+                            if (isAdsInitialized && activeQuery.isEmpty()) {
+                                item(key = "card_ads_compact") {
+                                    NativeAdCard(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        style = NativeAdStyle.COMPACT,
+                                        isAdsInitialized = isAdsInitialized,
+                                        isRefreshing = state.isRefreshing,
+                                        onPreloadAd = onPreloadAd
                                     )
                                 }
                             }
@@ -426,7 +510,9 @@ fun MobileScreen(
                                     MediaDisplayCard(
                                         device = state.device,
                                         modifier = Modifier.fillMaxWidth(),
-                                        searchQuery = activeQuery
+                                        searchQuery = activeQuery,
+                                        onCopy = onCopyValue,
+                                        onCopyText = onCopyTag
                                     )
                                 }
                             }
@@ -436,7 +522,9 @@ fun MobileScreen(
                                     AudioCard(
                                         device = state.device,
                                         modifier = Modifier.fillMaxWidth(),
-                                        searchQuery = activeQuery
+                                        searchQuery = activeQuery,
+                                        onCopy = onCopyValue,
+                                        onCopyText = onCopyTag
                                     )
                                 }
                             }
@@ -449,22 +537,25 @@ fun MobileScreen(
                                     is DrmSchemeState.Widevine -> WidevineCard(
                                         scheme = scheme,
                                         modifier = Modifier.fillMaxWidth(),
-                                        searchQuery = activeQuery
+                                        searchQuery = activeQuery,
+                                        onCopy = onCopyValue
                                     )
                                     is DrmSchemeState.Generic -> MediaDrmCard(
                                         scheme = scheme,
                                         modifier = Modifier.fillMaxWidth(),
-                                        searchQuery = activeQuery
+                                        searchQuery = activeQuery,
+                                        onCopy = onCopyValue
                                     )
                                 }
                             }
 
                             if (isAdsInitialized && activeQuery.isEmpty()) {
                                 item(
-                                    key = "card_ads"
+                                    key = "card_ads_full"
                                 ) {
-                                    AdCard(
+                                    NativeAdCard(
                                         modifier = Modifier.fillMaxWidth(),
+                                        style = NativeAdStyle.FULL,
                                         isAdsInitialized = isAdsInitialized,
                                         isRefreshing = state.isRefreshing,
                                         onPreloadAd = onPreloadAd
@@ -488,7 +579,7 @@ fun MobileScreen(
 private fun hasMatchingHardwareContent(context: Context, device: DeviceInfo, query: String): Boolean {
     if (query.isBlank()) return true
     if (matchesQuery(query, context.getString(R.string.section_hardware))) return true
-    if (device.toHardwareProperties().any { prop ->
+    if (device.hardwareProperties.any { prop ->
             val label = context.getString(prop.labelRes)
             val value = prop.valueRes?.let { context.getString(it) } ?: prop.value
             matchesQuery(query, label, value)
@@ -503,7 +594,7 @@ private fun hasMatchingHardwareContent(context: Context, device: DeviceInfo, que
 private fun hasMatchingSystemContent(context: Context, device: DeviceInfo, query: String): Boolean {
     if (query.isBlank()) return true
     if (matchesQuery(query, context.getString(R.string.section_system))) return true
-    return device.toSystemProperties().any { prop ->
+    return device.systemProperties.any { prop ->
         val label = context.getString(prop.labelRes)
         val value = prop.valueRes?.let { context.getString(it) } ?: prop.value
         matchesQuery(query, label, value)
@@ -518,11 +609,11 @@ private fun hasMatchingDisplayContent(context: Context, device: DeviceInfo, quer
     }
     if (device.supportedRefreshRates.isNotEmpty()) {
         if (matchesQuery(query, context.getString(R.string.text_supported_refresh_rate))) return true
-        if (device.supportedRefreshRates.any { matchesQuery(query, "${round(it).toInt()} Hz") }) return true
+        if (Util.formatRefreshRates(device.supportedRefreshRates).any { matchesQuery(query, it) }) return true
     }
     if (device.alternativeRefreshRates.isNotEmpty()) {
         if (matchesQuery(query, context.getString(R.string.text_seamless_refresh_rate))) return true
-        if (device.alternativeRefreshRates.any { matchesQuery(query, "${round(it).toInt()} Hz") }) return true
+        if (Util.formatRefreshRates(device.alternativeRefreshRates).any { matchesQuery(query, it) }) return true
     }
     device.isWideColorGamut?.let { supported ->
         val value = if (supported) context.getString(R.string.text_supported) else context.getString(R.string.text_not_supported)
@@ -535,6 +626,10 @@ private fun hasMatchingDisplayContent(context: Context, device: DeviceInfo, quer
     if (device.hardwareDecoders.isNotEmpty()) {
         if (matchesQuery(query, context.getString(R.string.text_hw_decode_type))) return true
         if (device.hardwareDecoders.any { matchesQuery(query, it) }) return true
+    }
+    if (device.secureDecoders.isNotEmpty()) {
+        if (matchesQuery(query, context.getString(R.string.text_hw_secure_decode_type))) return true
+        if (device.secureDecoders.any { matchesQuery(query, it) }) return true
     }
     if (device.hardwareEncoders.isNotEmpty()) {
         if (matchesQuery(query, context.getString(R.string.text_hw_encode_type))) return true
@@ -576,15 +671,15 @@ private fun hasMatchingSchemeContent(context: Context, scheme: DrmSchemeState, q
     scheme.connectedHdcpLevel?.let {
         if (matchesQuery(query, context.getString(R.string.widevine_string_property_name_hdcpLevel), context.getString(it.toStringRes()))) return true
     }
+    scheme.securityLevel?.let {
+        if (matchesQuery(query, context.getString(R.string.widevine_string_property_name_securityLevel), it)) return true
+    }
+    scheme.maxSessions?.let {
+        if (matchesQuery(query, context.getString(R.string.widevine_string_property_name_maxNumberOfSessions), it)) return true
+    }
     if (scheme is DrmSchemeState.Widevine) {
-        scheme.securityLevel?.let {
-            if (matchesQuery(query, context.getString(R.string.widevine_string_property_name_securityLevel), it)) return true
-        }
         scheme.systemId?.let {
             if (matchesQuery(query, context.getString(R.string.widevine_string_property_name_systemId), it)) return true
-        }
-        scheme.maxSessions?.let {
-            if (matchesQuery(query, context.getString(R.string.widevine_string_property_name_maxNumberOfSessions), it)) return true
         }
         scheme.oemCryptoVersion?.let {
             if (matchesQuery(query, context.getString(R.string.widevine_string_property_name_oemCryptoApiVersion), it)) return true

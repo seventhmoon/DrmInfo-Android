@@ -4,5 +4,6 @@
     <string name="mediadrm_string_property_name_vendor" translatable="false">Vendor</string>
     <string name="mediadrm_string_property_name_description" translatable="false">Description</string>
     <string name="mediadrm_string_property_name_version" translatable="false">Version</string>
+    <string name="mediadrm_string_property_name_algorithms" translatable="false">Algorithms</string>
     <string name="mediadrm_key_numberOfOpenSessions" translatable="false">numberOfOpenSessions</string>
 </resources>

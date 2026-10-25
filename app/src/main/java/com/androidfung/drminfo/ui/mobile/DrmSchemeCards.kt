@@ -19,7 +19,8 @@ internal fun matchesQuery(query: String, vararg fields: String?): Boolean {
 fun WidevineCard(
     scheme: DrmSchemeState.Widevine,
     modifier: Modifier = Modifier,
-    searchQuery: String = ""
+    searchQuery: String = "",
+    onCopy: ((label: String, value: String) -> Unit)? = null
 ) {
     val cardTitleMatches = searchQuery.isNotBlank() &&
             matchesQuery(searchQuery, scheme.name, scheme.description, "widevine")
@@ -30,7 +31,7 @@ fun WidevineCard(
         iconRes = R.drawable.ic_security,
         modifier = modifier
     ) {
-        MediaDrmCardContent(scheme = scheme, searchQuery = effectiveQuery)
+        MediaDrmCardContent(scheme = scheme, searchQuery = effectiveQuery, onCopy = onCopy)
 
         scheme.systemId?.let { value ->
             val label = stringResource(id = R.string.widevine_string_property_name_systemId)
@@ -38,7 +39,8 @@ fun WidevineCard(
                 LabelValueItem(
                     label = label,
                     value = value,
-                    allowCopy = true
+                    allowCopy = true,
+                    onCopy = onCopy
                 )
             }
         }
@@ -49,7 +51,8 @@ fun WidevineCard(
                 LabelValueItem(
                     label = label,
                     value = value,
-                    allowCopy = true
+                    allowCopy = true,
+                    onCopy = onCopy
                 )
             }
         }
@@ -60,7 +63,8 @@ fun WidevineCard(
                 LabelValueItem(
                     label = label,
                     value = value,
-                    allowCopy = true
+                    allowCopy = true,
+                    onCopy = onCopy
                 )
             }
         }
@@ -71,7 +75,8 @@ fun WidevineCard(
                 LabelValueItem(
                     label = label,
                     value = value,
-                    allowCopy = true
+                    allowCopy = true,
+                    onCopy = onCopy
                 )
             }
         }
@@ -81,7 +86,8 @@ fun WidevineCard(
                 LabelValueItem(
                     label = label,
                     value = value,
-                    allowCopy = true
+                    allowCopy = true,
+                    onCopy = onCopy
                 )
             }
         }
@@ -92,7 +98,8 @@ fun WidevineCard(
 fun MediaDrmCard(
     scheme: DrmSchemeState,
     modifier: Modifier = Modifier,
-    searchQuery: String = ""
+    searchQuery: String = "",
+    onCopy: ((label: String, value: String) -> Unit)? = null
 ) {
     val cardTitleMatches = searchQuery.isNotBlank() &&
             matchesQuery(searchQuery, scheme.name, scheme.description, scheme.id)
@@ -103,14 +110,39 @@ fun MediaDrmCard(
         iconRes = R.drawable.ic_security,
         modifier = modifier
     ) {
-        MediaDrmCardContent(scheme = scheme, searchQuery = effectiveQuery)
+        MediaDrmCardContent(scheme = scheme, searchQuery = effectiveQuery, onCopy = onCopy)
+
+        scheme.securityLevel?.let { value ->
+            val label = stringResource(id = R.string.widevine_string_property_name_securityLevel)
+            if (matchesQuery(effectiveQuery, label, value)) {
+                LabelValueItem(
+                    label = label,
+                    value = value,
+                    allowCopy = true,
+                    onCopy = onCopy
+                )
+            }
+        }
+
+        scheme.maxSessions?.let { value ->
+            val label = stringResource(id = R.string.widevine_string_property_name_maxNumberOfSessions)
+            if (matchesQuery(effectiveQuery, label, value)) {
+                LabelValueItem(
+                    label = label,
+                    value = value,
+                    allowCopy = true,
+                    onCopy = onCopy
+                )
+            }
+        }
 
         scheme.extraProperties.forEach { (label, value) ->
             if (matchesQuery(effectiveQuery, label, value)) {
                 LabelValueItem(
                     label = label,
                     value = value,
-                    allowCopy = true
+                    allowCopy = true,
+                    onCopy = onCopy
                 )
             }
         }
@@ -120,7 +152,8 @@ fun MediaDrmCard(
 @Composable
 private fun MediaDrmCardContent(
     scheme: DrmSchemeState,
-    searchQuery: String = ""
+    searchQuery: String = "",
+    onCopy: ((label: String, value: String) -> Unit)? = null
 ) {
     scheme.vendor?.let { value ->
         val label = stringResource(id = R.string.mediadrm_string_property_name_vendor)
@@ -128,7 +161,8 @@ private fun MediaDrmCardContent(
             LabelValueItem(
                 label = label,
                 value = value,
-                allowCopy = true
+                allowCopy = true,
+                onCopy = onCopy
             )
         }
     }
@@ -139,7 +173,8 @@ private fun MediaDrmCardContent(
             LabelValueItem(
                 label = label,
                 value = value,
-                allowCopy = true
+                allowCopy = true,
+                onCopy = onCopy
             )
         }
     }
@@ -151,7 +186,8 @@ private fun MediaDrmCardContent(
             LabelValueItem(
                 label = label,
                 value = value,
-                allowCopy = true
+                allowCopy = true,
+                onCopy = onCopy
             )
         }
     }
@@ -163,7 +199,8 @@ private fun MediaDrmCardContent(
             LabelValueItem(
                 label = label,
                 value = value,
-                allowCopy = true
+                allowCopy = true,
+                onCopy = onCopy
             )
         }
     }

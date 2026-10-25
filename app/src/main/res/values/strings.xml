@@ -19,6 +19,9 @@
     <string name="text_max_security_level">Max Security Level</string>
     <string name="text_hardware">Hardware</string>
     <string name="action_share">Share Report</string>
+    <string name="action_share_plain_text">Share as Plain Text</string>
+    <string name="action_share_json">Share as JSON</string>
+    <string name="action_refresh">Refresh</string>
     <string name="share_report_title">DRM Info Report</string>
     <string name="section_hardware">Hardware</string>
     <string name="section_system">System &amp; OS</string>
@@ -39,6 +42,7 @@
     <string name="text_abi">Supported ABI</string>
     <string name="text_hw_encode_type">Supported Hardware Encoder</string>
     <string name="text_hw_decode_type">Supported Hardware Decoder</string>
+    <string name="text_hw_secure_decode_type">Supported Secure Decoder</string>
     <string name="text_supported_hdr_types">Supported HDR Types</string>
     <string name="text_supported_refresh_rate">Supported Refresh Rate (Hz)</string>
     <string name="text_play_integrity">Play Integrity</string>
@@ -140,4 +144,5 @@
     <string name="faq_q_privacy">Does DRM Info collect or upload my device or DRM information?</string>
     <string name="faq_a_privacy">DRM Info inspects and generates all device specifications entirely on-device using local Android APIs. No device specifications, hardware IDs, or DRM data are collected, transmitted, or stored on external servers. (Internet access is only utilized if ads or consent forms are enabled).</string>
 
+    <string name="ad_attribution" translatable="false">Ad</string>
 </resources>

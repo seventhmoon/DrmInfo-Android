@@ -9,11 +9,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.unit.IntSize
-import com.google.android.libraries.ads.mobile.sdk.banner.BannerAd
-import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
 import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
+import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAd
+import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdLoaderCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -21,15 +19,14 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * State holder managing retry logic, loading flags, and lifecycle for banner ads.
+ * State holder managing retry logic, loading flags, and lifecycle for native ads.
  */
 @Stable
-class BannerAdState(
-    val containerSize: IntSize,
+class NativeAdState(
     private val coroutineScope: CoroutineScope,
     private val maxRetries: Int = 3
 ) {
-    var isAdLoaded by mutableStateOf(false)
+    var nativeAd by mutableStateOf<NativeAd?>(null)
         private set
 
     var isAdFailedToLoad by mutableStateOf(false)
@@ -40,24 +37,20 @@ class BannerAdState(
 
     private var retryJob: Job? = null
 
-    fun reset() {
-        retryJob?.cancel()
-        retryJob = null
-        isAdLoaded = false
+    fun setLoadedAd(ad: NativeAd) {
+        cleanUpAd()
+        nativeAd = ad
         isAdFailedToLoad = false
         retryCount = 0
     }
 
-    fun createAdCallback(effectiveAdWidthDp: Int): AdLoadCallback<BannerAd> {
-        return object : AdLoadCallback<BannerAd> {
-            override fun onAdLoaded(ad: BannerAd) {
-                isAdLoaded = true
-                isAdFailedToLoad = false
-                retryCount = 0
+    fun createLoaderCallback(): NativeAdLoaderCallback {
+        return object : NativeAdLoaderCallback {
+            override fun onNativeAdLoaded(nativeAd: NativeAd) {
+                setLoadedAd(nativeAd)
             }
 
             override fun onAdFailedToLoad(adError: LoadAdError) {
-                isAdLoaded = false
                 if (retryCount < maxRetries) {
                     retryJob?.cancel()
                     retryJob = coroutineScope.launch {
@@ -72,23 +65,33 @@ class BannerAdState(
         }
     }
 
+    fun cleanUpAd() {
+        nativeAd?.destroy()
+        nativeAd = null
+    }
+
+    fun reset() {
+        retryJob?.cancel()
+        retryJob = null
+        cleanUpAd()
+        isAdFailedToLoad = false
+        retryCount = 0
+    }
+
     fun cleanUp() {
         retryJob?.cancel()
         retryJob = null
+        cleanUpAd()
     }
 }
 
 @Composable
-fun rememberBannerAdState(
+fun rememberNativeAdState(
     isRefreshing: Boolean = false
-): BannerAdState {
-    val configuration = LocalConfiguration.current
-    val containerSize = remember(configuration.screenWidthDp, configuration.screenHeightDp) {
-        IntSize(configuration.screenWidthDp, configuration.screenHeightDp)
-    }
+): NativeAdState {
     val coroutineScope = rememberCoroutineScope()
-    val state = remember(containerSize) {
-        BannerAdState(containerSize, coroutineScope)
+    val state = remember {
+        NativeAdState(coroutineScope)
     }
 
     LaunchedEffect(isRefreshing) {

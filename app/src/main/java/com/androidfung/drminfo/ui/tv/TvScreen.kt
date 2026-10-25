@@ -1,7 +1,7 @@
 package com.androidfung.drminfo.ui.tv
 
 import android.content.Context
-import androidx.activity.compose.BackHandler
+import androidx.activity.compose.PredictiveBackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -54,11 +55,8 @@ import androidx.tv.material3.darkColorScheme
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
-import com.androidfung.drminfo.model.toHardwareProperties
-import com.androidfung.drminfo.model.toSystemProperties
 import com.androidfung.drminfo.model.toTvInfoItem
 import com.androidfung.drminfo.util.Util.toStringRes
-import kotlin.math.round
 
 data class TvInfoItem(
     val title: String,
@@ -70,14 +68,21 @@ data class TvInfoItem(
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun TvScreen(
-    state: DrmInfoUiState
+    state: DrmInfoUiState,
+    onRefresh: (() -> Unit)? = null,
+    onDisplayConfigurationChanged: ((Context) -> Unit)? = null
 ) {
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
     var selectedItemWithSubActions by remember { mutableStateOf<TvInfoItem?>(null) }
     var lastSelectedIndex by remember { mutableIntStateOf(0) }
     val mainListState = rememberLazyListState()
     val subListState = rememberLazyListState()
     val subFocusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(configuration.screenWidthDp, configuration.screenHeightDp, configuration.orientation) {
+        onDisplayConfigurationChanged?.invoke(context)
+    }
 
     val mainItems = remember(state) {
         buildTvInfoItems(
@@ -86,15 +91,21 @@ fun TvScreen(
         )
     }
 
-    BackHandler(enabled = selectedItemWithSubActions != null) {
-        selectedItemWithSubActions = null
+    PredictiveBackHandler(enabled = selectedItemWithSubActions != null) { progress ->
+        try {
+            progress.collect {}
+            selectedItemWithSubActions = null
+        } catch (_: java.util.concurrent.CancellationException) {
+            // Cancelled
+        }
     }
 
     LaunchedEffect(selectedItemWithSubActions) {
         if (selectedItemWithSubActions != null) {
             runCatching { subFocusRequester.requestFocus() }
         } else {
-            if (lastSelectedIndex in mainItems.indices) {
+            val totalListCount = mainItems.size + (if (onRefresh != null) 1 else 0)
+            if (lastSelectedIndex in 0 until totalListCount) {
                 runCatching { mainListState.scrollToItem(lastSelectedIndex) }
             }
         }
@@ -142,9 +153,10 @@ fun TvScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     val deviceSubtitle = "${state.device.manufacturer} ${state.device.model}".trim()
+                    val activeSubDescription = selectedItemWithSubActions?.description
                     Text(
-                        text = if (selectedItemWithSubActions != null) {
-                            stringResource(id = R.string.text_supported)
+                        text = if (activeSubDescription != null) {
+                            activeSubDescription
                         } else if (deviceSubtitle.isNotEmpty()) {
                             deviceSubtitle
                         } else {
@@ -182,6 +194,27 @@ fun TvScreen(
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
                                 contentPadding = PaddingValues(vertical = 12.dp)
                             ) {
+                                if (onRefresh != null) {
+                                    item(key = "tv_action_refresh") {
+                                        ListItem(
+                                            selected = false,
+                                            onClick = onRefresh,
+                                            colors = androidx.tv.material3.ListItemDefaults.colors(
+                                                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                                focusedContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                            ),
+                                            headlineContent = {
+                                                Text(
+                                                    text = stringResource(id = R.string.action_refresh),
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    color = MaterialTheme.colorScheme.primary
+                                                )
+                                            },
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                    }
+                                }
+
                                 itemsIndexed(mainItems) { index, item ->
                                     val hasSubItems = !item.subItems.isNullOrEmpty()
 
@@ -189,7 +222,7 @@ fun TvScreen(
                                         selected = false,
                                         onClick = {
                                             if (hasSubItems) {
-                                                lastSelectedIndex = index
+                                                lastSelectedIndex = if (onRefresh != null) index + 1 else index
                                                 selectedItemWithSubActions = item
                                             } else {
                                                 copyTvItemToClipboard(context, item.title, item.description)
@@ -315,12 +348,12 @@ private fun buildTvInfoItems(
     }
 
     // Add shared hardware properties
-    dev.toHardwareProperties().forEach { prop ->
+    dev.hardwareProperties.forEach { prop ->
         add(prop.toTvInfoItem(context))
     }
 
     // Add shared system properties
-    dev.toSystemProperties().forEach { prop ->
+    dev.systemProperties.forEach { prop ->
         add(prop.toTvInfoItem(context))
     }
 
@@ -340,13 +373,13 @@ private fun buildTvInfoItems(
     }
 
     if (dev.supportedRefreshRates.isNotEmpty()) {
-        val uniqueRates = dev.supportedRefreshRates.map { round(it).toInt() }.distinct()
-        add(TvInfoItem(context.getString(R.string.text_supported_refresh_rate), uniqueRates.joinToString { "$it Hz" }))
+        val rates = com.androidfung.drminfo.util.Util.formatRefreshRates(dev.supportedRefreshRates)
+        add(TvInfoItem(context.getString(R.string.text_supported_refresh_rate), rates.joinToString()))
     }
 
     if (dev.alternativeRefreshRates.isNotEmpty()) {
-        val uniqueAltRates = dev.alternativeRefreshRates.map { round(it).toInt() }.distinct()
-        add(TvInfoItem(context.getString(R.string.text_seamless_refresh_rate), uniqueAltRates.joinToString { "$it Hz" }))
+        val altRates = com.androidfung.drminfo.util.Util.formatRefreshRates(dev.alternativeRefreshRates)
+        add(TvInfoItem(context.getString(R.string.text_seamless_refresh_rate), altRates.joinToString()))
     }
 
     dev.isWideColorGamut?.let { supported ->
@@ -354,9 +387,9 @@ private fun buildTvInfoItems(
     }
 
     if (dev.supportedHdrTypes.isNotEmpty()) {
-        val hdrTypeNames = dev.supportedHdrTypes
-            .map { id -> context.getString(com.androidfung.drminfo.util.Util.convertHdrTypeToStringRes(id)) }
-            .sorted()
+        val hdrTypeNames = com.androidfung.drminfo.util.Util.formatHdrTypes(dev.supportedHdrTypes) { id ->
+            context.getString(id)
+        }
         if (hdrTypeNames.isNotEmpty()) {
             add(TvInfoItem(context.getString(R.string.text_supported_hdr_types), hdrTypeNames.joinToString()))
         }
@@ -401,6 +434,19 @@ private fun buildTvInfoItems(
         )
     }
 
+    if (dev.secureDecoders.isNotEmpty()) {
+        val secureDecoderSubItems = dev.secureDecoders.map {
+            TvInfoItem(title = it, description = context.getString(R.string.text_supported))
+        }
+        add(
+            TvInfoItem(
+                title = context.getString(R.string.text_hw_secure_decode_type),
+                description = "${dev.secureDecoders.size} supported",
+                subItems = secureDecoderSubItems
+            )
+        )
+    }
+
     // Dynamic DRM Schemes
     state.schemes.forEach { scheme ->
         val subItems = mutableListOf<TvInfoItem>()
@@ -409,11 +455,13 @@ private fun buildTvInfoItems(
         scheme.version?.let { subItems.add(TvInfoItem(context.getString(R.string.mediadrm_string_property_name_version), it)) }
         scheme.maxHdcpLevel?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_maxHdcpLevel), context.getString(it.toStringRes()))) }
         scheme.connectedHdcpLevel?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_hdcpLevel), context.getString(it.toStringRes()))) }
+        scheme.securityLevel?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_securityLevel), it)) }
 
         if (scheme is DrmSchemeState.Widevine) {
-            scheme.securityLevel?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_securityLevel), it)) }
             scheme.systemId?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_systemId), it)) }
-            scheme.maxSessions?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_maxNumberOfSessions), it)) }
+        }
+        scheme.maxSessions?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_maxNumberOfSessions), it)) }
+        if (scheme is DrmSchemeState.Widevine) {
             scheme.oemCryptoVersion?.let { subItems.add(TvInfoItem(context.getString(R.string.widevine_string_property_name_oemCryptoApiVersion), it)) }
         }
 

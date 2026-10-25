@@ -170,7 +170,8 @@ class UtilUnitTest {
                 supportedRefreshRates = listOf(60.0f, 120.0f),
                 alternativeRefreshRates = listOf(30.0f),
                 hardwareEncoders = listOf("video/avc"),
-                hardwareDecoders = listOf("video/avc", "video/hevc")
+                hardwareDecoders = listOf("video/avc", "video/hevc"),
+                secureDecoders = listOf("video/avc", "video/hevc")
             ),
             schemes = listOf(
                 DrmSchemeState.Widevine(
@@ -184,6 +185,17 @@ class UtilUnitTest {
                     systemId = "4445",
                     maxSessions = "16",
                     oemCryptoVersion = "18"
+                ),
+                DrmSchemeState.Generic(
+                    id = "playready",
+                    name = "Microsoft Playready DRM",
+                    description = "PlayReady CDM",
+                    vendor = "Microsoft",
+                    version = "4.0",
+                    maxHdcpLevel = HdcpLevel.V2_2,
+                    connectedHdcpLevel = null,
+                    securityLevel = "SL3000",
+                    maxSessions = "8"
                 )
             )
         )
@@ -200,11 +212,54 @@ class UtilUnitTest {
         assertTrue(report.contains("60 Hz, 120 Hz"))
         assertTrue(report.contains("Quarterly Release: 24Q2"))
         assertTrue(report.contains("Play Integrity: Meets Integrity (Passed)"))
+        assertTrue(report.contains("Secure Decoders: video/avc, video/hevc"))
         assertTrue(report.contains("[Google Widevine Modular DRM]"))
         assertTrue(report.contains("Widevine CDM"))
         assertTrue(report.contains("Security Level: L1"))
         assertTrue(report.contains("System ID: 4445"))
         assertTrue(report.contains("Max Sessions: 16"))
+        assertTrue(report.contains("[Microsoft Playready DRM]"))
+        assertTrue(report.contains("Security Level: SL3000"))
+        assertTrue(report.contains("Max Sessions: 8"))
+    }
+
+    @Test
+    fun testFormatJsonReportContainsValidStructureAndFields() {
+        val testState = DrmInfoUiState(
+            device = DeviceInfo(
+                manufacturer = "Google",
+                model = "Pixel 9 Pro",
+                device = "caiman",
+                sdkInt = 35,
+                secureDecoders = listOf("video/av01", "video/hevc")
+            ),
+            schemes = listOf(
+                DrmSchemeState.Widevine(
+                    name = "Google Widevine Modular DRM",
+                    description = "Widevine CDM",
+                    vendor = "Google",
+                    version = "19.0.0",
+                    maxHdcpLevel = HdcpLevel.V2_3,
+                    connectedHdcpLevel = null,
+                    securityLevel = "L1",
+                    systemId = "5555",
+                    maxSessions = "32",
+                    oemCryptoVersion = "19",
+                    extraProperties = listOf("Algorithms" to "AES/CBC/NoPadding,HmacSHA256")
+                )
+            )
+        )
+
+        val json = Util.formatJsonReport(testState) { it.toString() }
+
+        assertTrue(json.startsWith("{"))
+        assertTrue(json.endsWith("}"))
+        assertTrue(json.contains("\"manufacturer\": \"Google\""))
+        assertTrue(json.contains("\"model\": \"Pixel 9 Pro\""))
+        assertTrue(json.contains("\"secureDecoders\": [\"video/av01\", \"video/hevc\"]"))
+        assertTrue(json.contains("\"securityLevel\": \"L1\""))
+        assertTrue(json.contains("\"systemId\": \"5555\""))
+        assertTrue(json.contains("\"Algorithms\": \"AES/CBC/NoPadding,HmacSHA256\""))
     }
 
     @Test
@@ -272,5 +327,35 @@ class UtilUnitTest {
         assertEquals(3, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.DISPLAY, stateWithSpatialAudioOnly))
         assertEquals(4, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.AUDIO, stateWithSpatialAudioOnly))
         assertEquals(5, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.WIDEVINE, stateWithSpatialAudioOnly))
+
+        // When ads are initialized, compact native ad card is inserted at index 3 (after System)
+        assertEquals(1, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.HARDWARE, stateWithSpatialAudioOnly, isAdsInitialized = true))
+        assertEquals(2, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.SYSTEM, stateWithSpatialAudioOnly, isAdsInitialized = true))
+        assertEquals(4, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.DISPLAY, stateWithSpatialAudioOnly, isAdsInitialized = true))
+        assertEquals(5, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.AUDIO, stateWithSpatialAudioOnly, isAdsInitialized = true))
+        assertEquals(6, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.WIDEVINE, stateWithSpatialAudioOnly, isAdsInitialized = true))
+    }
+
+    @Test
+    fun testFormatRefreshRates() {
+        val rates = listOf(60.0001f, 120.0f, 60.0f, 90.002f, 24.0f)
+        val formatted = Util.formatRefreshRates(rates)
+        assertEquals(listOf("24 Hz", "60 Hz", "90 Hz", "120 Hz"), formatted)
+    }
+
+    @Test
+    fun testFormatHdrTypes() {
+        val types = listOf(
+            android.view.Display.HdrCapabilities.HDR_TYPE_HDR10,
+            android.view.Display.HdrCapabilities.HDR_TYPE_DOLBY_VISION
+        )
+        val formatted = Util.formatHdrTypes(types) { resId ->
+            when (resId) {
+                R.string.hdr_type_hdr10 -> "HDR10"
+                R.string.hdr_type_dolby_vision -> "Dolby Vision"
+                else -> "Unknown"
+            }
+        }
+        assertEquals(listOf("Dolby Vision", "HDR10"), formatted)
     }
 }

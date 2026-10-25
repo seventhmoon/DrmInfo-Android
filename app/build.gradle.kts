@@ -14,8 +14,8 @@ android {
         applicationId = "com.androidfung.drminfo"
         minSdk = 24
         targetSdk = 37
-        versionCode = 521
-        versionName = "1.3.0-261016"
+        versionCode = 526
+        versionName = "1.3.0-261022"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

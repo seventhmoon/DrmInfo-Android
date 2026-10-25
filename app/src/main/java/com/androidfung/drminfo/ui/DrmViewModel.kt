@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.androidfung.drminfo.R
+import com.androidfung.drminfo.ads.AdsController
 import com.androidfung.drminfo.ads.AdsManager
 import com.androidfung.drminfo.data.DrmInspector
 import com.androidfung.drminfo.data.DrmRepository
@@ -23,12 +24,14 @@ import kotlinx.coroutines.launch
 
 /**
  * Presentation ViewModel serving [DrmInfoUiState] to mobile and TV screens.
- * Delegates low-level Android hardware and DRM inspection to [DrmRepository].
+ * Delegates low-level Android hardware and DRM inspection to [DrmRepository]
+ * and ad lifecycle management to [AdsController].
  */
 @Keep
 class DrmViewModel @JvmOverloads constructor(
     application: Application,
-    private val repository: DrmRepository = DrmInspector(application.applicationContext)
+    private val repository: DrmRepository = DrmInspector(application.applicationContext),
+    private val adsController: AdsController = AdsManager
 ) : AndroidViewModel(application) {
 
     private val _state = MutableStateFlow(DrmInfoUiState())
@@ -43,19 +46,19 @@ class DrmViewModel @JvmOverloads constructor(
 
     /** Requests ad consent and initializes Google Mobile Ads SDK. */
     fun requestConsentAndInitializeAds(activity: Activity) {
-        val appId = activity.getString(R.string.ad_app_id)
-        val adUnitId = activity.getString(R.string.ad_unit_id)
-        AdsManager.requestConsentAndInitialize(activity, appId, adUnitId)
+        val appId = runCatching { activity.getString(R.string.ad_app_id) }.getOrNull().orEmpty()
+        val adUnitId = runCatching { activity.getString(R.string.ad_unit_id) }.getOrNull()
+        adsController.requestConsentAndInitialize(activity, appId, adUnitId)
     }
 
-    /** Preloads banner ad with adaptive width. */
-    fun preloadAd(context: Context, widthDp: Int? = null) {
-        val adUnitId = context.getString(R.string.ad_unit_id)
-        AdsManager.startPreload(context, adUnitId, widthDp)
+    /** Preloads native ad. */
+    fun preloadAd(context: Context) {
+        val adUnitId = runCatching { context.getString(R.string.ad_unit_id) }.getOrNull().orEmpty()
+        adsController.startPreload(adUnitId)
     }
 
     /** Checks whether ads have finished initialization. */
-    fun isAdsInitialized(): Boolean = AdsManager.isInitialized
+    fun isAdsInitialized(): Boolean = adsController.isInitialized
 
     /** Re-reads the device capabilities and all supported DRM schemes. */
     fun refresh(context: Context? = null) {
@@ -65,6 +68,13 @@ class DrmViewModel @JvmOverloads constructor(
 
             val (deviceInfo, schemes) = repository.inspectAll(context)
 
+            val shouldRecheckIntegrity = _state.value.device.playIntegrityStatus.let { status ->
+                val app = runCatching { getApplication<Application>() }.getOrNull()
+                val passedText = app?.let { runCatching { it.getString(R.string.text_play_integrity_passed) }.getOrNull() }
+                    ?: "Meets Integrity (Passed)"
+                status == null || status != passedText
+            }
+
             _state.update { current ->
                 val currentIntegrity = current.device.playIntegrityStatus
                 current.copy(
@@ -72,6 +82,10 @@ class DrmViewModel @JvmOverloads constructor(
                     schemes = schemes,
                     isRefreshing = false
                 )
+            }
+
+            if (shouldRecheckIntegrity) {
+                checkPlayIntegrity()
             }
         }
     }
@@ -81,6 +95,14 @@ class DrmViewModel @JvmOverloads constructor(
      */
     fun checkPlayIntegrity() {
         val app = runCatching { getApplication<Application>() }.getOrNull()
+        val checkingText = app?.let {
+            runCatching { it.getString(R.string.text_play_integrity_checking) }.getOrNull()
+        } ?: "Checking…"
+        if (_state.value.device.playIntegrityStatus == null) {
+            _state.update { current ->
+                current.copy(device = current.device.copy(playIntegrityStatus = checkingText))
+            }
+        }
         try {
             val appCheck = FirebaseAppCheck.getInstance()
             appCheck.getAppCheckToken(false)
@@ -98,7 +120,8 @@ class DrmViewModel @JvmOverloads constructor(
                         current.copy(device = current.device.copy(playIntegrityStatus = statusText))
                     }
                 }
-                .addOnFailureListener {
+                .addOnFailureListener { e ->
+                    android.util.Log.w("DrmViewModel", "Play Integrity App Check attestation failed: ${e.message}", e)
                     val statusText = if (app != null) {
                         try {
                             app.getString(R.string.text_play_integrity_failed)
@@ -153,11 +176,12 @@ class DrmViewModel @JvmOverloads constructor(
     companion object {
         fun provideFactory(
             application: Application,
-            repository: DrmRepository
+            repository: DrmRepository,
+            adsController: AdsController = AdsManager
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return DrmViewModel(application, repository) as T
+                return DrmViewModel(application, repository, adsController) as T
             }
         }
     }

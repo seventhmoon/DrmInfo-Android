@@ -16,20 +16,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.model.DeviceInfo
-import com.androidfung.drminfo.model.toHardwareProperties
-import com.androidfung.drminfo.model.toSystemProperties
 import com.androidfung.drminfo.ui.components.InfoCardContainer
 import com.androidfung.drminfo.ui.components.LabelValueItem
 import com.androidfung.drminfo.ui.components.TagChip
 import com.androidfung.drminfo.util.Util
-import kotlin.math.round
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HardwareCard(
     device: DeviceInfo,
     modifier: Modifier = Modifier,
-    searchQuery: String = ""
+    searchQuery: String = "",
+    onCopy: ((label: String, value: String) -> Unit)? = null,
+    onCopyText: ((text: String) -> Unit)? = null
 ) {
     val sectionTitle = stringResource(id = R.string.section_hardware)
     val effectiveQuery = if (searchQuery.isNotBlank() && matchesQuery(searchQuery, sectionTitle)) "" else searchQuery
@@ -39,14 +38,15 @@ fun HardwareCard(
         iconRes = R.drawable.ic_memory,
         modifier = modifier
     ) {
-        device.toHardwareProperties().forEach { prop ->
+        device.hardwareProperties.forEach { prop ->
             val label = stringResource(id = prop.labelRes)
             val value = prop.valueRes?.let { stringResource(id = it) } ?: prop.value
             if (matchesQuery(effectiveQuery, label, value)) {
                 LabelValueItem(
                     label = label,
                     value = value,
-                    allowCopy = prop.allowCopy
+                    allowCopy = prop.allowCopy,
+                    onCopy = onCopy
                 )
             }
         }
@@ -71,7 +71,7 @@ fun HardwareCard(
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         matchingAbis.forEach { abi ->
-                            TagChip(text = abi, allowCopy = true)
+                            TagChip(text = abi, allowCopy = true, onCopy = onCopyText)
                         }
                     }
                 }
@@ -84,7 +84,8 @@ fun HardwareCard(
 fun SystemCard(
     device: DeviceInfo,
     modifier: Modifier = Modifier,
-    searchQuery: String = ""
+    searchQuery: String = "",
+    onCopy: ((label: String, value: String) -> Unit)? = null
 ) {
     val sectionTitle = stringResource(id = R.string.section_system)
     val effectiveQuery = if (searchQuery.isNotBlank() && matchesQuery(searchQuery, sectionTitle)) "" else searchQuery
@@ -94,14 +95,15 @@ fun SystemCard(
         iconRes = R.drawable.ic_phone_android,
         modifier = modifier
     ) {
-        device.toSystemProperties().forEach { prop ->
+        device.systemProperties.forEach { prop ->
             val label = stringResource(id = prop.labelRes)
             val value = prop.valueRes?.let { stringResource(id = it) } ?: prop.value
             if (matchesQuery(effectiveQuery, label, value)) {
                 LabelValueItem(
                     label = label,
                     value = value,
-                    allowCopy = prop.allowCopy
+                    allowCopy = prop.allowCopy,
+                    onCopy = onCopy
                 )
             }
         }
@@ -113,7 +115,9 @@ fun SystemCard(
 fun MediaDisplayCard(
     device: DeviceInfo,
     modifier: Modifier = Modifier,
-    searchQuery: String = ""
+    searchQuery: String = "",
+    onCopy: ((label: String, value: String) -> Unit)? = null,
+    onCopyText: ((text: String) -> Unit)? = null
 ) {
     val sectionTitle = stringResource(id = R.string.section_media_and_display)
     val effectiveQuery = if (searchQuery.isNotBlank() && matchesQuery(searchQuery, sectionTitle)) "" else searchQuery
@@ -129,14 +133,15 @@ fun MediaDisplayCard(
                 LabelValueItem(
                     label = label,
                     value = resolutionText,
-                    allowCopy = true
+                    allowCopy = true,
+                    onCopy = onCopy
                 )
             }
         }
 
         if (device.supportedRefreshRates.isNotEmpty()) {
             val label = stringResource(id = R.string.text_supported_refresh_rate)
-            val uniqueRates = device.supportedRefreshRates.map { "${round(it).toInt()} Hz" }.distinct()
+            val uniqueRates = Util.formatRefreshRates(device.supportedRefreshRates)
             val matchingRates = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, label)) {
                 uniqueRates
             } else {
@@ -155,7 +160,7 @@ fun MediaDisplayCard(
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         matchingRates.forEach { rateText ->
-                            TagChip(text = rateText, allowCopy = true)
+                            TagChip(text = rateText, allowCopy = true, onCopy = onCopyText)
                         }
                     }
                 }
@@ -164,7 +169,7 @@ fun MediaDisplayCard(
 
         if (device.alternativeRefreshRates.isNotEmpty()) {
             val label = stringResource(id = R.string.text_seamless_refresh_rate)
-            val uniqueAltRates = device.alternativeRefreshRates.map { "${round(it).toInt()} Hz" }.distinct()
+            val uniqueAltRates = Util.formatRefreshRates(device.alternativeRefreshRates)
             val matchingAltRates = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, label)) {
                 uniqueAltRates
             } else {
@@ -183,7 +188,7 @@ fun MediaDisplayCard(
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         matchingAltRates.forEach { rateText ->
-                            TagChip(text = rateText, allowCopy = true)
+                            TagChip(text = rateText, allowCopy = true, onCopy = onCopyText)
                         }
                     }
                 }
@@ -197,7 +202,8 @@ fun MediaDisplayCard(
                 LabelValueItem(
                     label = label,
                     value = value,
-                    allowCopy = true
+                    allowCopy = true,
+                    onCopy = onCopy
                 )
             }
         }
@@ -225,7 +231,7 @@ fun MediaDisplayCard(
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         matchingHdr.forEach { name ->
-                            TagChip(text = name, allowCopy = true)
+                            TagChip(text = name, allowCopy = true, onCopy = onCopyText)
                         }
                     }
                 }
@@ -252,7 +258,34 @@ fun MediaDisplayCard(
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         matchingDecoders.forEach { codec ->
-                            TagChip(text = codec, allowCopy = true)
+                            TagChip(text = codec, allowCopy = true, onCopy = onCopyText)
+                        }
+                    }
+                }
+            }
+        }
+
+        if (device.secureDecoders.isNotEmpty()) {
+            val label = stringResource(id = R.string.text_hw_secure_decode_type)
+            val matchingSecureDecoders = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, label)) {
+                device.secureDecoders
+            } else {
+                device.secureDecoders.filter { matchesQuery(effectiveQuery, it) }
+            }
+            if (matchingSecureDecoders.isNotEmpty()) {
+                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        matchingSecureDecoders.forEach { codec ->
+                            TagChip(text = codec, allowCopy = true, onCopy = onCopyText)
                         }
                     }
                 }
@@ -279,7 +312,7 @@ fun MediaDisplayCard(
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         matchingEncoders.forEach { codec ->
-                            TagChip(text = codec, allowCopy = true)
+                            TagChip(text = codec, allowCopy = true, onCopy = onCopyText)
                         }
                     }
                 }
@@ -293,7 +326,9 @@ fun MediaDisplayCard(
 fun AudioCard(
     device: DeviceInfo,
     modifier: Modifier = Modifier,
-    searchQuery: String = ""
+    searchQuery: String = "",
+    onCopy: ((label: String, value: String) -> Unit)? = null,
+    onCopyText: ((text: String) -> Unit)? = null
 ) {
     val sectionTitle = stringResource(id = R.string.section_audio)
     val effectiveQuery = if (searchQuery.isNotBlank() && matchesQuery(searchQuery, sectionTitle)) "" else searchQuery
@@ -310,7 +345,8 @@ fun AudioCard(
                 LabelValueItem(
                     label = label,
                     value = value,
-                    allowCopy = true
+                    allowCopy = true,
+                    onCopy = onCopy
                 )
             }
         }
@@ -322,7 +358,8 @@ fun AudioCard(
                 LabelValueItem(
                     label = label,
                     value = value,
-                    allowCopy = true
+                    allowCopy = true,
+                    onCopy = onCopy
                 )
             }
         }
@@ -347,7 +384,7 @@ fun AudioCard(
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         matchingEncodings.forEach { format ->
-                            TagChip(text = format, allowCopy = true)
+                            TagChip(text = format, allowCopy = true, onCopy = onCopyText)
                         }
                     }
                 }

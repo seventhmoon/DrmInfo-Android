@@ -24,6 +24,7 @@ object Constants {
     const val PROPERTY_DESCRIPTION = "description"
     const val PROPERTY_VENDOR = "vendor"
     const val PROPERTY_VERSION = "version"
+    const val PROPERTY_ALGORITHMS = "algorithms"
     const val PROPERTY_DEVICE_UNIQUE_ID = "deviceUniqueId"
 
     // Widevine-specific Property Keys

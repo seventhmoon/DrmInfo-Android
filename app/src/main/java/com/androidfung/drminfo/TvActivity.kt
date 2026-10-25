@@ -22,7 +22,13 @@ class TvActivity : ComponentActivity() {
             val state by drmViewModel.state.collectAsStateWithLifecycle()
 
             TvScreen(
-                state = state
+                state = state,
+                onRefresh = {
+                    drmViewModel.refresh(this@TvActivity)
+                },
+                onDisplayConfigurationChanged = { activeContext ->
+                    drmViewModel.updateDisplayInfo(activeContext)
+                }
             )
         }
     }

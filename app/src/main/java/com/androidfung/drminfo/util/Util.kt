@@ -102,6 +102,25 @@ object Util {
     }
 
     @JvmStatic
+    fun formatRefreshRates(rates: List<Float>): List<String> =
+        rates.asSequence()
+            .map { round(it).toInt() }
+            .distinct()
+            .sorted()
+            .map { "$it Hz" }
+            .toList()
+
+    @JvmStatic
+    fun formatHdrTypes(
+        types: List<Int>,
+        resolver: (Int) -> String
+    ): List<String> =
+        types.asSequence()
+            .map { resolver(convertHdrTypeToStringRes(it)) }
+            .sorted()
+            .toList()
+
+    @JvmStatic
     fun formatMemorySize(bytes: Long): String {
         if (bytes <= 0L) return ""
         val actualGb = bytes.toDouble() / (1024.0 * 1024.0 * 1024.0)
@@ -178,18 +197,16 @@ object Util {
             sb.appendLine("Display Resolution: $it")
         }
         if (dev.supportedHdrTypes.isNotEmpty()) {
-            val hdrNames = dev.supportedHdrTypes
-                .map { id -> stringResolver(convertHdrTypeToStringRes(id)) }
-                .sorted()
+            val hdrNames = formatHdrTypes(dev.supportedHdrTypes, stringResolver)
             sb.appendLine("Supported HDR: ${hdrNames.joinToString()}")
         }
         if (dev.supportedRefreshRates.isNotEmpty()) {
-            val uniqueRates = dev.supportedRefreshRates.map { round(it).toInt() }.distinct()
-            sb.appendLine("Supported Refresh Rates: ${uniqueRates.joinToString { "$it Hz" }}")
+            val rates = formatRefreshRates(dev.supportedRefreshRates)
+            sb.appendLine("Supported Refresh Rates: ${rates.joinToString()}")
         }
         if (dev.alternativeRefreshRates.isNotEmpty()) {
-            val uniqueAltRates = dev.alternativeRefreshRates.map { round(it).toInt() }.distinct()
-            sb.appendLine("Alternative Refresh Rates: ${uniqueAltRates.joinToString { "$it Hz" }}")
+            val altRates = formatRefreshRates(dev.alternativeRefreshRates)
+            sb.appendLine("Alternative Refresh Rates: ${altRates.joinToString()}")
         }
         dev.isWideColorGamut?.let { supported ->
             sb.appendLine("Wide Color Gamut: ${if (supported) "Supported" else "Not Supported"}")
@@ -209,6 +226,9 @@ object Util {
         if (dev.hardwareDecoders.isNotEmpty()) {
             sb.appendLine("HW Decoders: ${dev.hardwareDecoders.joinToString()}")
         }
+        if (dev.secureDecoders.isNotEmpty()) {
+            sb.appendLine("Secure Decoders: ${dev.secureDecoders.joinToString()}")
+        }
 
         state.schemes.forEach { scheme ->
             sb.appendLine()
@@ -218,11 +238,13 @@ object Util {
             scheme.version?.let { sb.appendLine("  Version: $it") }
             scheme.maxHdcpLevel?.let { sb.appendLine("  Max HDCP Level: ${stringResolver(it.toStringRes())}") }
             scheme.connectedHdcpLevel?.let { sb.appendLine("  Connected HDCP Level: ${stringResolver(it.toStringRes())}") }
+            scheme.securityLevel?.let { sb.appendLine("  Security Level: $it") }
 
             if (scheme is DrmSchemeState.Widevine) {
-                scheme.securityLevel?.let { sb.appendLine("  Security Level: $it") }
                 scheme.systemId?.let { sb.appendLine("  System ID: $it") }
-                scheme.maxSessions?.let { sb.appendLine("  Max Sessions: $it") }
+            }
+            scheme.maxSessions?.let { sb.appendLine("  Max Sessions: $it") }
+            if (scheme is DrmSchemeState.Widevine) {
                 scheme.oemCryptoVersion?.let { sb.appendLine("  OEM Crypto API: $it") }
             }
 
@@ -232,6 +254,135 @@ object Util {
         }
         return sb.toString().trimEnd()
     }
+
+    /**
+     * Builds a formatted JSON diagnostic report from the current [DrmInfoUiState].
+     */
+    fun buildJsonReport(context: Context, state: DrmInfoUiState): String {
+        return formatJsonReport(state) { resId ->
+            runCatching { context.getString(resId) }.getOrDefault(resId.toString())
+        }
+    }
+
+    /**
+     * Pure JSON formatter for [DrmInfoUiState], decoupled from Android [Context] and stubbed `org.json` classes.
+     */
+    fun formatJsonReport(
+        state: DrmInfoUiState,
+        stringResolver: (Int) -> String = { it.toString() }
+    ): String {
+        val dev = state.device
+        val sb = StringBuilder()
+        sb.appendLine("{")
+        sb.appendLine("  \"device\": {")
+        val deviceFields = buildList {
+            add("\"manufacturer\": \"${escapeJson(dev.manufacturer)}\"")
+            add("\"model\": \"${escapeJson(dev.model)}\"")
+            add("\"device\": \"${escapeJson(dev.device)}\"")
+            add("\"brand\": \"${escapeJson(dev.brand)}\"")
+            add("\"hardware\": \"${escapeJson(dev.hardware)}\"")
+            add("\"buildDisplay\": \"${escapeJson(dev.buildDisplay)}\"")
+            add("\"buildType\": \"${escapeJson(dev.buildType)}\"")
+            add("\"fingerprint\": \"${escapeJson(dev.fingerprint)}\"")
+            add("\"sdkInt\": ${dev.sdkInt}")
+            dev.releaseChannel?.let { add("\"releaseChannel\": \"${escapeJson(stringResolver(it.toStringRes()))}\"") }
+            dev.quarterlyReleaseName?.let { add("\"quarterlyRelease\": \"${escapeJson(it)}\"") }
+            dev.sdkFull?.let { add("\"sdkFull\": \"${escapeJson(it)}\"") }
+            dev.securityPatch?.let { add("\"securityPatch\": \"${escapeJson(it)}\"") }
+            dev.playIntegrityStatus?.let { add("\"playIntegrity\": \"${escapeJson(it)}\"") }
+            dev.socManufacturer?.let { add("\"socManufacturer\": \"${escapeJson(it)}\"") }
+            dev.socModel?.let { add("\"socModel\": \"${escapeJson(it)}\"") }
+            if (dev.totalMemoryBytes > 0L) {
+                add("\"totalMemory\": \"${escapeJson(formatMemorySize(dev.totalMemoryBytes))}\"")
+            }
+            dev.mediaPerformanceClass?.let { add("\"mediaPerformanceClass\": $it") }
+            if (dev.abis.isNotEmpty()) {
+                add("\"abis\": ${formatJsonStringArray(dev.abis)}")
+            }
+            formatResolution(dev.displayWidth, dev.displayHeight)?.let {
+                add("\"displayResolution\": \"${escapeJson(it)}\"")
+            }
+            if (dev.supportedHdrTypes.isNotEmpty()) {
+                val hdrNames = formatHdrTypes(dev.supportedHdrTypes, stringResolver)
+                add("\"supportedHdrTypes\": ${formatJsonStringArray(hdrNames)}")
+            }
+            if (dev.supportedRefreshRates.isNotEmpty()) {
+                add("\"supportedRefreshRates\": ${formatJsonStringArray(formatRefreshRates(dev.supportedRefreshRates))}")
+            }
+            if (dev.alternativeRefreshRates.isNotEmpty()) {
+                add("\"alternativeRefreshRates\": ${formatJsonStringArray(formatRefreshRates(dev.alternativeRefreshRates))}")
+            }
+            dev.isWideColorGamut?.let { add("\"wideColorGamut\": $it") }
+            dev.spatialAudioSupported?.let { add("\"spatialAudio\": $it") }
+            dev.headTrackingSupported?.let { add("\"headTracking\": $it") }
+            if (dev.supportedAudioEncodings.isNotEmpty()) {
+                add("\"supportedAudioEncodings\": ${formatJsonStringArray(dev.supportedAudioEncodings)}")
+            }
+            if (dev.hardwareEncoders.isNotEmpty()) {
+                add("\"hardwareEncoders\": ${formatJsonStringArray(dev.hardwareEncoders)}")
+            }
+            if (dev.hardwareDecoders.isNotEmpty()) {
+                add("\"hardwareDecoders\": ${formatJsonStringArray(dev.hardwareDecoders)}")
+            }
+            if (dev.secureDecoders.isNotEmpty()) {
+                add("\"secureDecoders\": ${formatJsonStringArray(dev.secureDecoders)}")
+            }
+        }
+        deviceFields.forEachIndexed { index, field ->
+            val comma = if (index < deviceFields.lastIndex) "," else ""
+            sb.appendLine("    $field$comma")
+        }
+        sb.appendLine("  },")
+        sb.appendLine("  \"drmSchemes\": [")
+        state.schemes.forEachIndexed { schemeIndex, scheme ->
+            sb.appendLine("    {")
+            val schemeFields = buildList {
+                add("\"id\": \"${escapeJson(scheme.id)}\"")
+                add("\"name\": \"${escapeJson(scheme.name)}\"")
+                add("\"description\": \"${escapeJson(scheme.description)}\"")
+                scheme.vendor?.let { add("\"vendor\": \"${escapeJson(it)}\"") }
+                scheme.version?.let { add("\"version\": \"${escapeJson(it)}\"") }
+                scheme.maxHdcpLevel?.let { add("\"maxHdcpLevel\": \"${escapeJson(stringResolver(it.toStringRes()))}\"") }
+                scheme.connectedHdcpLevel?.let { add("\"connectedHdcpLevel\": \"${escapeJson(stringResolver(it.toStringRes()))}\"") }
+                scheme.securityLevel?.let { add("\"securityLevel\": \"${escapeJson(it)}\"") }
+                if (scheme is DrmSchemeState.Widevine) {
+                    scheme.systemId?.let { add("\"systemId\": \"${escapeJson(it)}\"") }
+                }
+                scheme.maxSessions?.let { add("\"maxSessions\": \"${escapeJson(it)}\"") }
+                if (scheme is DrmSchemeState.Widevine) {
+                    scheme.oemCryptoVersion?.let { add("\"oemCryptoVersion\": \"${escapeJson(it)}\"") }
+                }
+                scheme.extraProperties.forEach { (k, v) ->
+                    add("\"${escapeJson(k)}\": \"${escapeJson(v)}\"")
+                }
+            }
+            schemeFields.forEachIndexed { fIdx, field ->
+                val comma = if (fIdx < schemeFields.lastIndex) "," else ""
+                sb.appendLine("      $field$comma")
+            }
+            val schemeComma = if (schemeIndex < state.schemes.lastIndex) "," else ""
+            sb.appendLine("    }$schemeComma")
+        }
+        sb.appendLine("  ]")
+        sb.append("}")
+        return sb.toString()
+    }
+
+    private fun escapeJson(value: String): String = buildString(value.length) {
+        for (ch in value) {
+            when (ch) {
+                '\\' -> append("\\\\")
+                '"' -> append("\\\"")
+                '\n' -> append("\\n")
+                '\r' -> append("\\r")
+                '\t' -> append("\\t")
+                else -> append(ch)
+            }
+        }
+    }
+
+    private fun formatJsonStringArray(items: List<String>): String =
+        items.joinToString(prefix = "[", postfix = "]") { "\"${escapeJson(it)}\"" }
 
     /**
      * Detects the Android release channel (Canary, Beta/Preview, GA, or Custom/Engineering).

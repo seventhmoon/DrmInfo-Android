@@ -31,4 +31,4 @@ If you are located in the European Economic Area (EEA), the UK, or California, y
 
 ## 5. Contact Us
 
-If you have any questions or suggestions about this Privacy Policy, please contact us by opening an issue on the GitHub repository: [https://github.com/androidfung/DrmInfo-Android/issues](https://github.com/androidfung/DrmInfo-Android/issues).
+If you have any questions or suggestions about this Privacy Policy, please contact us by opening an issue on the GitHub repository: [https://github.com/seventhmoon/DrmInfo-Android/issues](https://github.com/seventhmoon/DrmInfo-Android/issues).

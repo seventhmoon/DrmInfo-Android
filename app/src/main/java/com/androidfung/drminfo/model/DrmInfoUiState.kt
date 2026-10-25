@@ -67,6 +67,7 @@ data class DeviceInfo(
     val abis: List<String> = emptyList(),
     val hardwareEncoders: List<String> = emptyList(),
     val hardwareDecoders: List<String> = emptyList(),
+    val secureDecoders: List<String> = emptyList(),
     val supportedHdrTypes: List<Int> = emptyList(),
     val isWideColorGamut: Boolean? = null,
     val supportedRefreshRates: List<Float> = emptyList(),
@@ -79,6 +80,9 @@ data class DeviceInfo(
     val tvDeviceType: TvDeviceType? = null,
     val playIntegrityStatus: String? = null,
 ) {
+    val hardwareProperties: List<DisplayableProperty> by lazy { toHardwareProperties() }
+    val systemProperties: List<DisplayableProperty> by lazy { toSystemProperties() }
+
     val hasPerformanceInfo: Boolean
         get() = socManufacturer != null || socModel != null || mediaPerformanceClass != null || spatialAudioSupported != null
 
@@ -90,7 +94,7 @@ data class DeviceInfo(
                 isWideColorGamut != null
 
     val hasMediaDisplayInfo: Boolean
-        get() = hasDisplayInfo || hardwareEncoders.isNotEmpty() || hardwareDecoders.isNotEmpty()
+        get() = hasDisplayInfo || hardwareEncoders.isNotEmpty() || hardwareDecoders.isNotEmpty() || secureDecoders.isNotEmpty()
 
     val hasAudioInfo: Boolean
         get() = spatialAudioSupported != null || headTrackingSupported != null || supportedAudioEncodings.isNotEmpty()
@@ -108,6 +112,8 @@ sealed interface DrmSchemeState {
     val version: String?
     val maxHdcpLevel: HdcpLevel?
     val connectedHdcpLevel: HdcpLevel?
+    val securityLevel: String?
+    val maxSessions: String?
     val extraProperties: List<Pair<String, String>>
 
     @Immutable
@@ -119,9 +125,9 @@ sealed interface DrmSchemeState {
         override val version: String?,
         override val maxHdcpLevel: HdcpLevel?,
         override val connectedHdcpLevel: HdcpLevel?,
-        val securityLevel: String?,
+        override val securityLevel: String?,
         val systemId: String?,
-        val maxSessions: String?,
+        override val maxSessions: String?,
         val oemCryptoVersion: String?,
         override val extraProperties: List<Pair<String, String>> = emptyList(),
     ) : DrmSchemeState
@@ -135,6 +141,8 @@ sealed interface DrmSchemeState {
         override val version: String?,
         override val maxHdcpLevel: HdcpLevel?,
         override val connectedHdcpLevel: HdcpLevel?,
+        override val securityLevel: String? = null,
+        override val maxSessions: String? = null,
         override val extraProperties: List<Pair<String, String>> = emptyList(),
     ) : DrmSchemeState
 }

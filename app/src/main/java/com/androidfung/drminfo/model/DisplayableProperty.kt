@@ -8,6 +8,7 @@ import com.androidfung.drminfo.util.Util.toStringRes
 /**
  * Standard displayable key-value property for sharing across Mobile, TV, and text reports.
  */
+@androidx.compose.runtime.Immutable
 data class DisplayableProperty(
     @StringRes val labelRes: Int,
     val value: String = "",

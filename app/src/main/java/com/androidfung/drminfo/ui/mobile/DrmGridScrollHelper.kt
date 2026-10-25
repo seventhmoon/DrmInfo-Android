@@ -9,18 +9,23 @@ import com.androidfung.drminfo.model.DrmSchemeState
  */
 object DrmGridScrollHelper {
 
-    fun getTargetIndex(section: CardSection, state: DrmInfoUiState): Int {
+    fun getTargetIndex(
+        section: CardSection,
+        state: DrmInfoUiState,
+        isAdsInitialized: Boolean = false
+    ): Int {
+        val baseAfterSystem = if (isAdsInitialized) 4 else 3
         return when (section) {
             CardSection.HARDWARE -> 1
             CardSection.SYSTEM -> 2
-            CardSection.DISPLAY -> if (state.device.hasMediaDisplayInfo) 3 else -1
+            CardSection.DISPLAY -> if (state.device.hasMediaDisplayInfo) baseAfterSystem else -1
             CardSection.AUDIO -> {
-                var idx = 3
+                var idx = baseAfterSystem
                 if (state.device.hasMediaDisplayInfo) idx++
                 if (state.device.hasAudioInfo) idx else -1
             }
             CardSection.WIDEVINE -> {
-                var idx = 3
+                var idx = baseAfterSystem
                 if (state.device.hasMediaDisplayInfo) idx++
                 if (state.device.hasAudioInfo) idx++
                 val widevineIdx = state.schemes.indexOfFirst { it is DrmSchemeState.Widevine }

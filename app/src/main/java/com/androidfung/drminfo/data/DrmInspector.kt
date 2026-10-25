@@ -6,6 +6,7 @@ import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioTrack
+import android.media.MediaCodecInfo
 import android.media.MediaCodecList
 import android.media.MediaDrm
 import android.os.Build
@@ -41,18 +42,108 @@ class DrmInspector(
 
     override suspend fun inspectAll(activeContext: Context?): Pair<DeviceInfo, List<DrmSchemeState>> = coroutineScope {
         val targetContext = activeContext ?: appContext
-        val deviceInfoDeferred = async(ioDispatcher) { buildDeviceInfo(targetContext) }
+
+        // Concurrently inspect display specs, hardware codecs, and audio formats in parallel
+        val displayDeferred = async(ioDispatcher) { readDisplayInfo(targetContext) }
+        val codecsDeferred = async(ioDispatcher) { queryHardwareCodecs() }
+        val audioDeferred = async(ioDispatcher) { probeAudioEncodings() }
+
         val specs = buildDrmSpecs()
         val schemesDeferred = specs.map { spec ->
             async(ioDispatcher) { readDrmScheme(spec) }
         }
-        val deviceInfo = deviceInfoDeferred.await()
+
+        val displayInfo = displayDeferred.await()
+        val (hardwareEncoders, hardwareDecoders, secureDecoders) = codecsDeferred.await()
+        val audioEncodings = audioDeferred.await()
+
+        val deviceInfo = buildDeviceInfoInternal(
+            targetContext = targetContext,
+            displayInfo = displayInfo,
+            hardwareEncoders = hardwareEncoders,
+            hardwareDecoders = hardwareDecoders,
+            secureDecoders = secureDecoders,
+            audioEncodings = audioEncodings
+        )
         val schemes = schemesDeferred.awaitAll().filterNotNull()
         deviceInfo to schemes
     }
 
     fun buildDeviceInfo(activeContext: Context? = null): DeviceInfo {
         val targetContext = activeContext ?: appContext
+        val displayInfo = readDisplayInfo(targetContext)
+        val (hardwareEncoders, hardwareDecoders, secureDecoders) = queryHardwareCodecs()
+        val audioEncodings = probeAudioEncodings()
+        return buildDeviceInfoInternal(
+            targetContext = targetContext,
+            displayInfo = displayInfo,
+            hardwareEncoders = hardwareEncoders,
+            hardwareDecoders = hardwareDecoders,
+            secureDecoders = secureDecoders,
+            audioEncodings = audioEncodings
+        )
+    }
+
+    private fun queryHardwareCodecs(): Triple<List<String>, List<String>, List<String>> {
+        if (VERSION.SDK_INT < VERSION_CODES.Q) {
+            return Triple(emptyList(), emptyList(), emptyList())
+        }
+
+        cachedHardwareEncoders?.let { encoders ->
+            cachedHardwareDecoders?.let { decoders ->
+                cachedSecureDecoders?.let { secure ->
+                    return Triple(encoders.toList(), decoders.toList(), secure.toList())
+                }
+            }
+        }
+
+        val encoders = sortedSetOf<String>()
+        val decoders = sortedSetOf<String>()
+        val secureDecoders = sortedSetOf<String>()
+        runCatching {
+            val infos = MediaCodecList(MediaCodecList.ALL_CODECS).codecInfos
+            for (info in infos) {
+                if (!info.isHardwareAccelerated) continue
+                if (info.isEncoder) {
+                    for (type in info.supportedTypes) {
+                        encoders.add(type)
+                    }
+                } else {
+                    for (type in info.supportedTypes) {
+                        val caps = runCatching { info.getCapabilitiesForType(type) }.getOrNull()
+                        val isSecureSupported = caps?.isFeatureSupported(
+                            MediaCodecInfo.CodecCapabilities.FEATURE_SecurePlayback
+                        ) == true
+                        val isSecureRequired = caps?.isFeatureRequired(
+                            MediaCodecInfo.CodecCapabilities.FEATURE_SecurePlayback
+                        ) == true
+                        if (isSecureSupported || isSecureRequired) {
+                            secureDecoders.add(type)
+                        }
+                        if (!isSecureRequired) {
+                            decoders.add(type)
+                        }
+                    }
+                }
+            }
+            cachedHardwareEncoders = encoders
+            cachedHardwareDecoders = decoders
+            cachedSecureDecoders = secureDecoders
+        }.onFailure { error ->
+            Log.w(TAG, "Failed to query MediaCodecList", error)
+        }
+
+        return Triple(encoders.toList(), decoders.toList(), secureDecoders.toList())
+    }
+
+    private fun buildDeviceInfoInternal(
+        targetContext: Context,
+        displayInfo: DisplayInfo,
+        hardwareEncoders: List<String>,
+        hardwareDecoders: List<String>,
+        secureDecoders: List<String>,
+        audioEncodings: List<String>
+    ): DeviceInfo {
         val wideColorGamut = if (VERSION.SDK_INT >= VERSION_CODES.O) {
             targetContext.resources.configuration.isScreenWideColorGamut
         } else null
@@ -93,32 +184,6 @@ class DrmInspector(
             VERSION.SDK_INT_FULL.toString()
         } else null
 
-        val displayInfo = readDisplayInfo(targetContext)
-
-        val hardwareEncoders: List<String> = if (VERSION.SDK_INT >= VERSION_CODES.Q) {
-            (cachedHardwareEncoders ?: run {
-                MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
-                    .asSequence()
-                    .filter { it.isHardwareAccelerated && it.isEncoder }
-                    .flatMap { it.supportedTypes.asSequence() }
-                    .toSortedSet()
-                    .also { cachedHardwareEncoders = it }
-            }).toList()
-        } else emptyList()
-
-        val hardwareDecoders: List<String> = if (VERSION.SDK_INT >= VERSION_CODES.Q) {
-            (cachedHardwareDecoders ?: run {
-                MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
-                    .asSequence()
-                    .filter { it.isHardwareAccelerated && !it.isEncoder }
-                    .flatMap { it.supportedTypes.asSequence() }
-                    .toSortedSet()
-                    .also { cachedHardwareDecoders = it }
-            }).toList()
-        } else emptyList()
-
-        val audioEncodings = probeAudioEncodings()
-
         return DeviceInfo(
             manufacturer = Build.MANUFACTURER.orEmpty(),
             model = Build.MODEL.orEmpty(),
@@ -143,6 +208,7 @@ class DrmInspector(
             abis = Build.SUPPORTED_ABIS.toList(),
             hardwareEncoders = hardwareEncoders,
             hardwareDecoders = hardwareDecoders,
+            secureDecoders = secureDecoders,
             supportedHdrTypes = displayInfo.supportedHdrTypes,
             isWideColorGamut = displayInfo.isWideColorGamut ?: wideColorGamut,
             supportedRefreshRates = displayInfo.supportedRefreshRates,
@@ -224,8 +290,6 @@ class DrmInspector(
     }
 
     private fun probeAudioEncodings(): List<String> {
-        cachedAudioEncodings?.let { return it }
-
         if (VERSION.SDK_INT < VERSION_CODES.Q) return emptyList()
 
         val attributes = AudioAttributes.Builder()
@@ -247,7 +311,7 @@ class DrmInspector(
             }
         }
 
-        val result = candidates.mapNotNull { (encoding, label) ->
+        return candidates.mapNotNull { (encoding, label) ->
             runCatching {
                 val format = AudioFormat.Builder()
                     .setEncoding(encoding)
@@ -266,8 +330,6 @@ class DrmInspector(
                 if (isSupported) label else null
             }.getOrNull()
         }
-        cachedAudioEncodings = result
-        return result
     }
 
     private class DrmSpec(
@@ -318,6 +380,10 @@ class DrmInspector(
                 } else null
 
                 val extraProps = mutableListOf<Pair<String, String>>()
+                val algorithms = drm.safeGetProperty(Constants.PROPERTY_ALGORITHMS).takeIf { it.isNotEmpty() }
+                if (algorithms != null) {
+                    extraProps.add(resources.getString(R.string.mediadrm_string_property_name_algorithms) to algorithms)
+                }
                 if (VERSION.SDK_INT >= VERSION_CODES.P) {
                     val openSessions = runCatching { drm.openSessionCount }.getOrDefault(0)
                     if (openSessions > 0) {
@@ -325,14 +391,14 @@ class DrmInspector(
                     }
                 }
 
+                val securityLevel = drm.safeGetProperty(Constants.PROPERTY_SECURITY_LEVEL).takeIf { it.isNotEmpty() }
+                val maxSessions = if (VERSION.SDK_INT >= VERSION_CODES.P) {
+                    runCatching { drm.maxSessionCount }.getOrNull()?.takeIf { it > 0 }?.toString()
+                } else null
+
                 if (spec.isWidevine) {
-                    val securityLevel = drm.safeGetProperty(Constants.PROPERTY_SECURITY_LEVEL).takeIf { it.isNotEmpty() }
                     val systemId = drm.safeGetProperty(Constants.PROPERTY_SYSTEM_ID).takeIf { it.isNotEmpty() }
                     val oemCrypto = drm.safeGetProperty(Constants.PROPERTY_OEM_CRYPTO_API_VERSION).takeIf { it.isNotEmpty() }
-
-                    val maxSessions = if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                        runCatching { drm.maxSessionCount }.getOrNull()?.takeIf { it > 0 }?.toString()
-                    } else null
 
                     DrmSchemeState.Widevine(
                         id = spec.id,
@@ -357,6 +423,8 @@ class DrmInspector(
                         version = version,
                         maxHdcpLevel = maxHdcp,
                         connectedHdcpLevel = connectedHdcp,
+                        securityLevel = securityLevel,
+                        maxSessions = maxSessions,
                         extraProperties = extraProps,
                     )
                 }
@@ -397,8 +465,8 @@ class DrmInspector(
 
         @Volatile
         private var cachedHardwareEncoders: SortedSet<String>? = null
-        
+
         @Volatile
-        private var cachedAudioEncodings: List<String>? = null
+        private var cachedSecureDecoders: SortedSet<String>? = null
     }
 }

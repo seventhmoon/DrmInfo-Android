@@ -41,7 +41,7 @@ fun HeroHighlightsCard(
     modifier: Modifier = Modifier,
     onPillClick: ((section: CardSection) -> Unit)? = null
 ) {
-    val widevine = state.schemes.asSequence().filterIsInstance<DrmSchemeState.Widevine>().firstOrNull()
+    val widevine = state.schemes.find { it is DrmSchemeState.Widevine } as? DrmSchemeState.Widevine
     val maxRefreshRate = state.device.supportedRefreshRates.maxOrNull()
     val hasHdr = state.device.supportedHdrTypes.isNotEmpty()
 

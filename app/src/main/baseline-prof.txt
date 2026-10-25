@@ -1,0 +1,24 @@
+# Baseline Profile for DRM Info for Android
+# Speeds up cold app startup and initial Compose LazyVerticalStaggeredGrid rendering
+
+HSPLcom/androidfung/drminfo/MyApplication;->onCreate()V
+HSPLcom/androidfung/drminfo/MobileActivity;->onCreate(Landroid/os/Bundle;)V
+HSPLcom/androidfung/drminfo/MobileActivity;->onResume()V
+HSPLcom/androidfung/drminfo/TvActivity;->onCreate(Landroid/os/Bundle;)V
+
+HSPLcom/androidfung/drminfo/ui/DrmViewModel;-><init>(Landroid/app/Application;Lcom/androidfung/drminfo/data/DrmRepository;Lcom/androidfung/drminfo/ads/AdsController;)V
+HSPLcom/androidfung/drminfo/ui/DrmViewModel;->refresh(Landroid/content/Context;)V
+HSPLcom/androidfung/drminfo/ui/DrmViewModel;->updateDisplayInfo(Landroid/content/Context;)V
+HSPLcom/androidfung/drminfo/ui/DrmViewModel;->getState()Lkotlinx/coroutines/flow/StateFlow;
+
+HSPLcom/androidfung/drminfo/data/DrmInspector;->inspectAll(Landroid/content/Context;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+HSPLcom/androidfung/drminfo/data/DrmInspector;->readDisplayInfo(Landroid/content/Context;)Lcom/androidfung/drminfo/model/DisplayInfo;
+HSPLcom/androidfung/drminfo/data/DrmInspector;->buildDeviceInfo(Landroid/content/Context;)Lcom/androidfung/drminfo/model/DeviceInfo;
+
+HSPLcom/androidfung/drminfo/ui/mobile/MobileScreenKt;->MobileScreen(Lcom/androidfung/drminfo/model/DrmInfoUiState;ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;II)V
+HSPLcom/androidfung/drminfo/ui/tv/TvScreenKt;->TvScreen(Lcom/androidfung/drminfo/model/DrmInfoUiState;Landroidx/compose/runtime/Composer;I)V
+
+HSPLcom/androidfung/drminfo/ui/theme/ThemeKt;->DrmInfoTheme(Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+HSPLcom/androidfung/drminfo/util/Util;->formatRefreshRates(Ljava/util/List;)Ljava/util/List;
+HSPLcom/androidfung/drminfo/util/Util;->formatResolution(II)Ljava/lang/String;
+HSPLcom/androidfung/drminfo/util/Util;->detectReleaseChannel(Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/androidfung/drminfo/model/ReleaseChannel;

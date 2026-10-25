@@ -39,8 +39,8 @@ import androidx.core.net.toUri
 import com.androidfung.drminfo.BuildConfig
 import com.androidfung.drminfo.R
 
-private const val GITHUB_REPO_URL = "https://github.com/androidfung/DrmInfo-Android"
-private const val PRIVACY_POLICY_URL = "https://github.com/androidfung/DrmInfo-Android/blob/master/PRIVACY_POLICY.md"
+private const val GITHUB_REPO_URL = "https://github.com/seventhmoon/DrmInfo-Android"
+private const val PRIVACY_POLICY_URL = "https://github.com/seventhmoon/DrmInfo-Android/blob/master/PRIVACY_POLICY.md"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
