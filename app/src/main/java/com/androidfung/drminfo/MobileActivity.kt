@@ -1,8 +1,11 @@
 package com.androidfung.drminfo
 
+import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.animation.DecelerateInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -13,6 +16,8 @@ import androidx.annotation.Keep
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.animation.doOnEnd
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.androidfung.drminfo.ads.AdsManager
 import com.androidfung.drminfo.ui.DrmViewModel
@@ -51,6 +56,17 @@ class MobileActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+        splashScreen.setOnExitAnimationListener { splashScreenViewProvider ->
+            val splashView = splashScreenViewProvider.view
+            val fadeOut = ObjectAnimator.ofFloat(splashView, View.ALPHA, 1f, 0f).apply {
+                interpolator = DecelerateInterpolator()
+                duration = 220L
+                doOnEnd { splashScreenViewProvider.remove() }
+            }
+            fadeOut.start()
+        }
+
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.auto(
                 Color.TRANSPARENT,

@@ -14,8 +14,8 @@ android {
         applicationId = "com.androidfung.drminfo"
         minSdk = 28
         targetSdk = 37
-        versionCode = 527
-        versionName = "1.3.0-261026"
+        versionCode = 528
+        versionName = "1.3.0-261106"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -88,6 +88,7 @@ dependencies {
     implementation(libs.androidx.tv.material)
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     implementation(libs.ads.mobile.sdk)
