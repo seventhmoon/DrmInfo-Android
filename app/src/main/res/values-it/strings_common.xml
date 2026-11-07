@@ -3,8 +3,5 @@
     <string name="app_name">DRM Info</string>
     <string name="text_not_supported">Non Supportato</string>
     <string name="text_supported">Supportato</string>
-    <string name="text_unknown">Sconosciuto</string>
-    <string name="text_yes">Sì</string>
-    <string name="text_no">No</string>
     <string name="label_copy">Copia</string>
 </resources>

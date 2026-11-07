@@ -10,7 +10,9 @@ import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
 import com.androidfung.drminfo.model.HdcpLevel
 import com.androidfung.drminfo.model.ReleaseChannel
+import java.util.Locale
 import java.util.UUID
+import kotlin.math.ceil
 import kotlin.math.round
 
 object Util {
@@ -18,7 +20,6 @@ object Util {
     /**
      * Converts a raw [MediaDrm] HDCP level integer to a domain [HdcpLevel].
      */
-    @JvmStatic
     fun convertHdcpLevel(maxHdcpLevel: Int): HdcpLevel = when (maxHdcpLevel) {
         MediaDrm.HDCP_LEVEL_UNKNOWN -> HdcpLevel.UNKNOWN
         MediaDrm.HDCP_NONE -> HdcpLevel.NONE
@@ -34,7 +35,6 @@ object Util {
     /**
      * Resolves a domain [HdcpLevel] to its localized string resource ID.
      */
-    @JvmStatic
     @StringRes
     fun HdcpLevel.toStringRes(): Int = when (this) {
         HdcpLevel.UNKNOWN -> R.string.message_hdcp_level_unknown
@@ -50,7 +50,6 @@ object Util {
     /**
      * Categorizes display physical dimensions into a common resolution standard tag.
      */
-    @JvmStatic
     fun getResolutionLabel(width: Int, height: Int): String? {
         if (width <= 0 || height <= 0) return null
         val shortDim = minOf(width, height)
@@ -67,7 +66,6 @@ object Util {
     /**
      * Formats physical display dimensions with their standard resolution label (e.g. "1440 × 3120 (QHD+)").
      */
-    @JvmStatic
     fun formatResolution(width: Int, height: Int): String? {
         if (width <= 0 || height <= 0) return null
         val label = getResolutionLabel(width, height)
@@ -77,7 +75,6 @@ object Util {
     /**
      * Resolves a domain [ReleaseChannel] to its localized string resource ID.
      */
-    @JvmStatic
     @StringRes
     fun ReleaseChannel.toStringRes(): Int = when (this) {
         ReleaseChannel.GA -> R.string.text_channel_ga
@@ -86,12 +83,10 @@ object Util {
         ReleaseChannel.CUSTOM -> R.string.text_channel_custom
     }
 
-    @JvmStatic
     @StringRes
     fun convertHdcpLevelToStringRes(maxHdcpLevel: Int): Int =
         convertHdcpLevel(maxHdcpLevel).toStringRes()
 
-    @JvmStatic
     @StringRes
     fun convertHdrTypeToStringRes(hdrType: Int) = when (hdrType) {
         HdrCapabilities.HDR_TYPE_DOLBY_VISION -> R.string.hdr_type_dolby_vision
@@ -101,7 +96,6 @@ object Util {
         else -> R.string.hdr_type_unknown
     }
 
-    @JvmStatic
     fun formatRefreshRates(rates: List<Float>): List<String> =
         rates.asSequence()
             .map { round(it).toInt() }
@@ -110,7 +104,6 @@ object Util {
             .map { "$it Hz" }
             .toList()
 
-    @JvmStatic
     fun formatHdrTypes(
         types: List<Int>,
         resolver: (Int) -> String
@@ -120,24 +113,21 @@ object Util {
             .sorted()
             .toList()
 
-    @JvmStatic
     fun formatMemorySize(bytes: Long): String {
         if (bytes <= 0L) return ""
         val actualGb = bytes.toDouble() / (1024.0 * 1024.0 * 1024.0)
         val standardTiers = listOf(1, 2, 3, 4, 6, 8, 12, 16, 18, 24, 32, 64)
-        val nominalGb = standardTiers.firstOrNull { it >= actualGb } ?: kotlin.math.ceil(actualGb).toInt()
-        val availableFormatted = String.format(java.util.Locale.US, "%.1f", actualGb)
+        val nominalGb = standardTiers.firstOrNull { it >= actualGb } ?: ceil(actualGb).toInt()
+        val availableFormatted = String.format(Locale.US, "%.1f", actualGb)
         return "$nominalGb GB ($availableFormatted GB available)"
     }
 
-    @JvmStatic
     fun format(input: Any?) = when (input) {
         is Array<*> -> input.joinToString()
         is Collection<*> -> input.joinToString()
         else -> input.toString()
     }
 
-    @JvmStatic
     @StringRes
     fun convertCryptoSchemeToStringRes(cryptoScheme: UUID) = when (cryptoScheme) {
         Constants.CLEARKEY_UUID -> R.string.text_clearkey_name

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -21,10 +22,12 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.androidfung.drminfo.R
+import com.androidfung.drminfo.ads.NativeAdRequests
 import com.google.android.libraries.ads.mobile.sdk.nativead.MediaView
 import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAd
 import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdLoadResult
@@ -45,9 +48,8 @@ fun NativeAdCard(
     isRefreshing: Boolean = false,
     onPreloadAd: () -> Unit = {}
 ) {
-    val context = LocalContext.current
     val adState = rememberNativeAdState(isRefreshing)
-    val adUnitId = context.getString(R.string.ad_unit_id)
+    val adUnitId = stringResource(R.string.ad_unit_id)
 
     LaunchedEffect(adState.retryCount, isAdsInitialized, isRefreshing) {
         if (!isAdsInitialized) return@LaunchedEffect
@@ -65,7 +67,7 @@ fun NativeAdCard(
         }
 
         // If no preloaded ad available, load on-demand
-        val adRequest = com.androidfung.drminfo.ads.NativeAdRequests.createRequest(adUnitId)
+        val adRequest = NativeAdRequests.createRequest(adUnitId)
         NativeAdLoader.load(adRequest, adState.createLoaderCallback())
     }
 
@@ -158,7 +160,7 @@ private fun bindNativeAd(nativeAdView: NativeAdView, nativeAd: NativeAd, style: 
     }
     nativeAdView.iconView = iconView
 
-    val starRatingView = nativeAdView.findViewById<android.widget.RatingBar?>(R.id.ad_stars)
+    val starRatingView = nativeAdView.findViewById<RatingBar?>(R.id.ad_stars)
     val storeView = nativeAdView.findViewById<TextView?>(R.id.ad_store)
 
     // Advertiser (if available in layout)
@@ -190,8 +192,13 @@ private fun bindNativeAd(nativeAdView: NativeAdView, nativeAd: NativeAd, style: 
         val price = nativeAd.price
         val storePriceText = listOfNotNull(store, price).joinToString(" • ")
         if (storePriceText.isNotBlank()) {
-            val prefix = if (starRatingView?.visibility == View.VISIBLE) "• " else ""
-            storeView.text = "$prefix$storePriceText"
+            val formattedStorePrice = buildString {
+                if (starRatingView?.visibility == View.VISIBLE) {
+                    append("• ")
+                }
+                append(storePriceText)
+            }
+            storeView.text = formattedStorePrice
             storeView.visibility = View.VISIBLE
             nativeAdView.storeView = storeView
         } else {
@@ -208,7 +215,7 @@ private fun bindNativeAd(nativeAdView: NativeAdView, nativeAd: NativeAd, style: 
         // Dynamically adjust MediaView aspect ratio to match creative (prevents letterboxing/stretching)
         val aspectRatio = mediaContent.aspectRatio
         if (aspectRatio > 0f) {
-            val layoutParams = mediaView.layoutParams as? androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
+            val layoutParams = mediaView.layoutParams as? ConstraintLayout.LayoutParams
             if (layoutParams != null) {
                 // Constrain ratio between 1:1 (square) and 2:1 (wide banner) to prevent extreme vertical layouts
                 val clampedRatio = aspectRatio.coerceIn(1.0f, 2.0f)

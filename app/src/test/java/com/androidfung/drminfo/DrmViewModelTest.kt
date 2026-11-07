@@ -1,8 +1,9 @@
 package com.androidfung.drminfo
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.androidfung.drminfo.ads.AdsController
 import com.androidfung.drminfo.data.DrmRepository
 import com.androidfung.drminfo.model.DeviceInfo
 import com.androidfung.drminfo.model.DisplayInfo
@@ -18,15 +19,13 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DrmViewModelTest {
-
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val testDispatcher = StandardTestDispatcher()
     private val fakeApplication = Application()
@@ -112,18 +111,18 @@ class DrmViewModelTest {
     @Test
     fun testDefaultConstructorViaReflection() {
         val constructor = DrmViewModel::class.java.getConstructor(Application::class.java)
-        org.junit.Assert.assertNotNull(constructor)
+        assertNotNull(constructor)
     }
 
     private class FakeAdsController(
         override var isInitialized: Boolean = false
-    ) : com.androidfung.drminfo.ads.AdsController {
+    ) : AdsController {
         var requestConsentCalled = false
         var preloadedAdUnitId: String? = null
         var trimmedLevel: Int? = null
 
         override fun requestConsentAndInitialize(
-            activity: android.app.Activity,
+            activity: Activity,
             appId: String,
             adUnitId: String?
         ) {
@@ -149,10 +148,10 @@ class DrmViewModelTest {
         val viewModel = DrmViewModel(fakeApplication, fakeRepo, fakeAds)
         advanceUntilIdle()
 
-        org.junit.Assert.assertTrue(viewModel.isAdsInitialized())
+        assertTrue(viewModel.isAdsInitialized())
 
         viewModel.preloadAd(fakeApplication)
-        org.junit.Assert.assertNotNull(fakeAds.preloadedAdUnitId)
+        assertNotNull(fakeAds.preloadedAdUnitId)
     }
 
     @Test
@@ -162,7 +161,7 @@ class DrmViewModelTest {
         val factory = DrmViewModel.provideFactory(fakeApplication, fakeRepo, fakeAds)
         val vm = factory.create(DrmViewModel::class.java)
 
-        org.junit.Assert.assertNotNull(vm)
-        org.junit.Assert.assertTrue(vm.isAdsInitialized())
+        assertNotNull(vm)
+        assertTrue(vm.isAdsInitialized())
     }
 }

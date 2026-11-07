@@ -1,12 +1,8 @@
-<resources>
-
-    <string name="text_supported_with_security_level">Supported (%1$s)</string>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Info -->
     <string name="text_model">Model</string>
     <string name="text_brand">Brand</string>
-    <string name="text_product">Product</string>
-    <string name="text_version">Version</string>
     <string name="text_security_patch">Security Patch</string>
     <string name="text_release_channel">Release Channel</string>
     <string name="text_quarterly_release">Quarterly Release</string>
@@ -16,7 +12,6 @@
     <string name="text_channel_custom">Custom / Engineering</string>
     <string name="text_sdk_level">SDK Level</string>
     <string name="text_sdk_level_full">SDK Level Full</string>
-    <string name="text_max_security_level">Max Security Level</string>
     <string name="text_hardware">Hardware</string>
     <string name="action_share">Share Report</string>
     <string name="action_share_plain_text">Share as Plain Text</string>
@@ -25,10 +20,7 @@
     <string name="share_report_title">DRM Info Report</string>
     <string name="section_hardware">Hardware</string>
     <string name="section_system">System &amp; OS</string>
-    <string name="section_soc">Processor &amp; Performance</string>
     <string name="section_media_and_display">Media &amp; Display</string>
-    <string name="section_display">Display</string>
-    <string name="section_codecs">Hardware Decoders</string>
     <string name="section_audio">Audio &amp; Surround Formats</string>
     <string name="text_surround_sound">Supported Surround Formats</string>
     <string name="text_seamless_refresh_rate">Seamless Refresh Rates (Hz)</string>
@@ -36,8 +28,6 @@
     <string name="text_type">Build Type</string>
     <string name="text_fingerprint">Build Fingerprint</string>
     <string name="text_display">Build</string>
-    <string name="text_hdr">High Dynamic Range (HDR)</string>
-    <string name="text_hdr_type">HDR Type</string>
     <string name="text_wide_color">Wide Color Gamut</string>
     <string name="text_abi">Supported ABI</string>
     <string name="text_hw_encode_type">Supported Hardware Encoder</string>
@@ -102,7 +92,6 @@
     <!-- Hero Highlight Labels -->
     <string name="highlight_label_build">Build</string>
     <string name="highlight_label_display">Display</string>
-    <string name="highlight_label_hdr">HDR</string>
     <string name="highlight_label_widevine">Widevine</string>
     <string name="highlight_label_soc">SoC</string>
     <string name="highlight_label_audio">Audio</string>

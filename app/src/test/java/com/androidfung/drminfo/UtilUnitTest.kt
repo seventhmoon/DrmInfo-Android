@@ -1,18 +1,21 @@
 package com.androidfung.drminfo
 
 import android.media.MediaDrm
+import android.view.Display.HdrCapabilities
+import com.androidfung.drminfo.model.CardSection
 import com.androidfung.drminfo.model.DeviceInfo
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
 import com.androidfung.drminfo.model.HdcpLevel
 import com.androidfung.drminfo.model.ReleaseChannel
+import com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper
 import com.androidfung.drminfo.util.Constants
 import com.androidfung.drminfo.util.Util
+import java.util.UUID
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.util.UUID
 
 class UtilUnitTest {
 
@@ -322,18 +325,18 @@ class UtilUnitTest {
             )
         )
 
-        assertEquals(1, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.HARDWARE, stateWithSpatialAudioOnly))
-        assertEquals(2, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.SYSTEM, stateWithSpatialAudioOnly))
-        assertEquals(3, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.DISPLAY, stateWithSpatialAudioOnly))
-        assertEquals(4, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.AUDIO, stateWithSpatialAudioOnly))
-        assertEquals(5, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.WIDEVINE, stateWithSpatialAudioOnly))
+        assertEquals(1, DrmGridScrollHelper.getTargetIndex(CardSection.HARDWARE, stateWithSpatialAudioOnly))
+        assertEquals(2, DrmGridScrollHelper.getTargetIndex(CardSection.SYSTEM, stateWithSpatialAudioOnly))
+        assertEquals(3, DrmGridScrollHelper.getTargetIndex(CardSection.DISPLAY, stateWithSpatialAudioOnly))
+        assertEquals(4, DrmGridScrollHelper.getTargetIndex(CardSection.AUDIO, stateWithSpatialAudioOnly))
+        assertEquals(5, DrmGridScrollHelper.getTargetIndex(CardSection.WIDEVINE, stateWithSpatialAudioOnly))
 
         // When ads are initialized, compact native ad card is inserted at index 3 (after System)
-        assertEquals(1, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.HARDWARE, stateWithSpatialAudioOnly, isAdsInitialized = true))
-        assertEquals(2, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.SYSTEM, stateWithSpatialAudioOnly, isAdsInitialized = true))
-        assertEquals(4, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.DISPLAY, stateWithSpatialAudioOnly, isAdsInitialized = true))
-        assertEquals(5, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.AUDIO, stateWithSpatialAudioOnly, isAdsInitialized = true))
-        assertEquals(6, com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper.getTargetIndex(com.androidfung.drminfo.model.CardSection.WIDEVINE, stateWithSpatialAudioOnly, isAdsInitialized = true))
+        assertEquals(1, DrmGridScrollHelper.getTargetIndex(CardSection.HARDWARE, stateWithSpatialAudioOnly, isAdsInitialized = true))
+        assertEquals(2, DrmGridScrollHelper.getTargetIndex(CardSection.SYSTEM, stateWithSpatialAudioOnly, isAdsInitialized = true))
+        assertEquals(4, DrmGridScrollHelper.getTargetIndex(CardSection.DISPLAY, stateWithSpatialAudioOnly, isAdsInitialized = true))
+        assertEquals(5, DrmGridScrollHelper.getTargetIndex(CardSection.AUDIO, stateWithSpatialAudioOnly, isAdsInitialized = true))
+        assertEquals(6, DrmGridScrollHelper.getTargetIndex(CardSection.WIDEVINE, stateWithSpatialAudioOnly, isAdsInitialized = true))
     }
 
     @Test
@@ -346,8 +349,8 @@ class UtilUnitTest {
     @Test
     fun testFormatHdrTypes() {
         val types = listOf(
-            android.view.Display.HdrCapabilities.HDR_TYPE_HDR10,
-            android.view.Display.HdrCapabilities.HDR_TYPE_DOLBY_VISION
+            HdrCapabilities.HDR_TYPE_HDR10,
+            HdrCapabilities.HDR_TYPE_DOLBY_VISION
         )
         val formatted = Util.formatHdrTypes(types) { resId ->
             when (resId) {

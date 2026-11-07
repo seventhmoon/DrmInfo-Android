@@ -22,13 +22,13 @@ import com.androidfung.drminfo.model.DrmSchemeState
 import com.androidfung.drminfo.model.TvDeviceType
 import com.androidfung.drminfo.util.Constants
 import com.androidfung.drminfo.util.Util
+import java.util.SortedSet
+import java.util.UUID
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import java.util.SortedSet
-import java.util.UUID
 
 /**
  * Inspects device hardware capabilities, codecs, display modes, and DRM schemes.
@@ -144,9 +144,7 @@ class DrmInspector(
         secureDecoders: List<String>,
         audioEncodings: List<String>
     ): DeviceInfo {
-        val wideColorGamut = if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            targetContext.resources.configuration.isScreenWideColorGamut
-        } else null
+        val wideColorGamut = targetContext.resources.configuration.isScreenWideColorGamut
 
         val releaseOrCodename = if (VERSION.SDK_INT >= VERSION_CODES.R) {
             VERSION.RELEASE_OR_CODENAME
@@ -161,7 +159,7 @@ class DrmInspector(
         } else null
 
         val memoryInfo = ActivityManager.MemoryInfo()
-        val activityManager = targetContext.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+        val activityManager = targetContext.getSystemService(ActivityManager::class.java)
         activityManager?.getMemoryInfo(memoryInfo)
         val totalMemoryBytes = memoryInfo.totalMem
 
@@ -223,22 +221,19 @@ class DrmInspector(
     }
 
     override fun readDisplayInfo(context: Context): DisplayInfo {
-        val targetContext = context
         var refreshRates: List<Float> = emptyList()
         var alternativeRates: List<Float> = emptyList()
         var hdrTypes: List<Int> = emptyList()
         var displayWidth = 0
         var displayHeight = 0
 
-        val wideColorGamut = if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            targetContext.resources.configuration.isScreenWideColorGamut
-        } else null
+        val wideColorGamut = context.resources.configuration.isScreenWideColorGamut
 
         val display = if (VERSION.SDK_INT >= VERSION_CODES.R) {
-            runCatching { targetContext.display }.getOrNull()
+            runCatching { context.display }.getOrNull()
         } else {
             null
-        } ?: DisplayManagerCompat.getInstance(targetContext).getDisplay(DEFAULT_DISPLAY)
+        } ?: DisplayManagerCompat.getInstance(context).getDisplay(DEFAULT_DISPLAY)
 
         display?.let { activeDisplay ->
             val nativePanelMode = activeDisplay.supportedModes.maxByOrNull {
@@ -365,36 +360,29 @@ class DrmInspector(
                 return@runCatching null
             }
 
-            try {
+            drm.use {
                 val schemeName = resources.getString(spec.nameRes)
                 val description = drm.safeGetProperty(Constants.PROPERTY_DESCRIPTION).takeIf { it.isNotEmpty() } ?: schemeName
                 val vendor = drm.safeGetProperty(Constants.PROPERTY_VENDOR).takeIf { it.isNotEmpty() }
                 val version = drm.safeGetProperty(Constants.PROPERTY_VERSION).takeIf { it.isNotEmpty() }
 
-                val maxHdcp = if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                    runCatching { Util.convertHdcpLevel(drm.maxHdcpLevel) }.getOrNull()
-                } else null
+                val maxHdcp = runCatching { Util.convertHdcpLevel(drm.maxHdcpLevel) }.getOrNull()
+                val connectedHdcp = runCatching { Util.convertHdcpLevel(drm.connectedHdcpLevel) }.getOrNull()
 
-                val connectedHdcp = if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                    runCatching { Util.convertHdcpLevel(drm.connectedHdcpLevel) }.getOrNull()
-                } else null
-
-                val extraProps = mutableListOf<Pair<String, String>>()
                 val algorithms = drm.safeGetProperty(Constants.PROPERTY_ALGORITHMS).takeIf { it.isNotEmpty() }
-                if (algorithms != null) {
-                    extraProps.add(resources.getString(R.string.mediadrm_string_property_name_algorithms) to algorithms)
-                }
-                if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                    val openSessions = runCatching { drm.openSessionCount }.getOrDefault(0)
+                val openSessions = runCatching { drm.openSessionCount }.getOrDefault(0)
+
+                val extraProps = buildList {
+                    algorithms?.let {
+                        add(resources.getString(R.string.mediadrm_string_property_name_algorithms) to it)
+                    }
                     if (openSessions > 0) {
-                        extraProps.add(resources.getString(R.string.mediadrm_key_numberOfOpenSessions) to openSessions.toString())
+                        add(resources.getString(R.string.mediadrm_key_numberOfOpenSessions) to openSessions.toString())
                     }
                 }
 
                 val securityLevel = drm.safeGetProperty(Constants.PROPERTY_SECURITY_LEVEL).takeIf { it.isNotEmpty() }
-                val maxSessions = if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                    runCatching { drm.maxSessionCount }.getOrNull()?.takeIf { it > 0 }?.toString()
-                } else null
+                val maxSessions = runCatching { drm.maxSessionCount }.getOrNull()?.takeIf { it > 0 }?.toString()
 
                 if (spec.isWidevine) {
                     val systemId = drm.safeGetProperty(Constants.PROPERTY_SYSTEM_ID).takeIf { it.isNotEmpty() }
@@ -428,8 +416,6 @@ class DrmInspector(
                         extraProperties = extraProps,
                     )
                 }
-            } finally {
-                closeMediaDrm(drm, spec.uuid)
             }
         }.onFailure { error ->
             Log.w(TAG, "Failed to read ${spec.id} properties", error)
@@ -438,19 +424,6 @@ class DrmInspector(
 
     private fun MediaDrm.safeGetProperty(key: String): String {
         return runCatching { getPropertyString(key) }.getOrNull().orEmpty()
-    }
-
-    private fun closeMediaDrm(drm: MediaDrm, uuid: UUID) {
-        runCatching {
-            if (VERSION.SDK_INT >= VERSION_CODES.P) {
-                drm.close()
-            } else {
-                @Suppress("DEPRECATION")
-                drm.release()
-            }
-        }.onFailure { error ->
-            Log.w(TAG, "Failed to release MediaDrm for $uuid", error)
-        }
     }
 
     override fun releaseAll() {

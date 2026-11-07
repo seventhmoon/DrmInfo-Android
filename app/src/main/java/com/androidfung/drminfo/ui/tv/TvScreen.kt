@@ -1,6 +1,9 @@
 package com.androidfung.drminfo.ui.tv
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
+import android.widget.Toast
 import androidx.activity.compose.PredictiveBackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -27,6 +30,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -41,6 +45,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -48,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.ListItem
+import androidx.tv.material3.ListItemDefaults
 import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
@@ -55,8 +61,11 @@ import androidx.tv.material3.darkColorScheme
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.model.DrmInfoUiState
 import com.androidfung.drminfo.model.DrmSchemeState
+import com.androidfung.drminfo.model.TvDeviceType
 import com.androidfung.drminfo.model.toTvInfoItem
+import com.androidfung.drminfo.util.Util
 import com.androidfung.drminfo.util.Util.toStringRes
+import java.util.concurrent.CancellationException
 
 data class TvInfoItem(
     val title: String,
@@ -74,13 +83,14 @@ fun TvScreen(
 ) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
+    val windowSize = LocalWindowInfo.current.containerSize
     var selectedItemWithSubActions by remember { mutableStateOf<TvInfoItem?>(null) }
     var lastSelectedIndex by remember { mutableIntStateOf(0) }
     val mainListState = rememberLazyListState()
     val subListState = rememberLazyListState()
     val subFocusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(configuration.screenWidthDp, configuration.screenHeightDp, configuration.orientation) {
+    LaunchedEffect(windowSize, configuration.orientation) {
         onDisplayConfigurationChanged?.invoke(context)
     }
 
@@ -95,7 +105,7 @@ fun TvScreen(
         try {
             progress.collect {}
             selectedItemWithSubActions = null
-        } catch (_: java.util.concurrent.CancellationException) {
+        } catch (_: CancellationException) {
             // Cancelled
         }
     }
@@ -128,7 +138,7 @@ fun TvScreen(
                         .fillMaxHeight()
                         .background(
                             color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+                            shape = RoundedCornerShape(16.dp)
                         )
                         .padding(24.dp),
                     verticalArrangement = Arrangement.Top
@@ -195,11 +205,14 @@ fun TvScreen(
                                 contentPadding = PaddingValues(vertical = 12.dp)
                             ) {
                                 if (onRefresh != null) {
-                                    item(key = "tv_action_refresh") {
+                                    item(
+                                        key = "tv_action_refresh",
+                                        contentType = "tv_action"
+                                    ) {
                                         ListItem(
                                             selected = false,
                                             onClick = onRefresh,
-                                            colors = androidx.tv.material3.ListItemDefaults.colors(
+                                            colors = ListItemDefaults.colors(
                                                 focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                                                 focusedContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                                             ),
@@ -215,7 +228,11 @@ fun TvScreen(
                                     }
                                 }
 
-                                itemsIndexed(mainItems) { index, item ->
+                                itemsIndexed(
+                                    items = mainItems,
+                                    key = { index, item -> "${index}_${item.title}" },
+                                    contentType = { _, item -> if (item.subItems.isNullOrEmpty()) "tv_item" else "tv_group" }
+                                ) { index, item ->
                                     val hasSubItems = !item.subItems.isNullOrEmpty()
 
                                     ListItem(
@@ -228,7 +245,7 @@ fun TvScreen(
                                                 copyTvItemToClipboard(context, item.title, item.description)
                                             }
                                         },
-                                        colors = androidx.tv.material3.ListItemDefaults.colors(
+                                        colors = ListItemDefaults.colors(
                                             focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                                             focusedContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                                         ),
@@ -265,7 +282,10 @@ fun TvScreen(
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
                                 contentPadding = PaddingValues(vertical = 12.dp)
                             ) {
-                                item(key = "breadcrumb_back") {
+                                item(
+                                    key = "breadcrumb_back",
+                                    contentType = "tv_breadcrumb"
+                                ) {
                                     ListItem(
                                         selected = false,
                                         onClick = { selectedItemWithSubActions = null },
@@ -290,13 +310,17 @@ fun TvScreen(
                                     )
                                 }
 
-                                items(activeSubItem.subItems ?: emptyList()) { subItem ->
+                                items(
+                                    items = activeSubItem.subItems ?: emptyList(),
+                                    key = { "${it.title}_${it.description}" },
+                                    contentType = { "tv_sub_item" }
+                                ) { subItem ->
                                     ListItem(
                                         selected = false,
                                         onClick = {
                                             copyTvItemToClipboard(context, subItem.title, subItem.description)
                                         },
-                                        colors = androidx.tv.material3.ListItemDefaults.colors(
+                                        colors = ListItemDefaults.colors(
                                             focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                                             focusedContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                                         ),
@@ -326,12 +350,12 @@ fun TvScreen(
 
 private fun copyTvItemToClipboard(context: Context, title: String, value: String) {
     runCatching {
-        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
-        clipboard?.setPrimaryClip(android.content.ClipData.newPlainText(title, value))
-        android.widget.Toast.makeText(
+        val clipboard = context.getSystemService(ClipboardManager::class.java)
+        clipboard?.setPrimaryClip(ClipData.newPlainText(title, value))
+        Toast.makeText(
             context,
             context.getString(R.string.message_copied_to_clipboard, title),
-            android.widget.Toast.LENGTH_SHORT
+            Toast.LENGTH_SHORT
         ).show()
     }
 }
@@ -342,7 +366,7 @@ private fun buildTvInfoItems(
 ): List<TvInfoItem> = buildList {
     val dev = state.device
     dev.tvDeviceType?.let { tvType ->
-        if (tvType != com.androidfung.drminfo.model.TvDeviceType.ANDROID_NON_TV) {
+        if (tvType != TvDeviceType.ANDROID_NON_TV) {
             add(TvInfoItem(context.getString(R.string.text_tv_type), context.getString(tvType.stringRes)))
         }
     }
@@ -368,17 +392,17 @@ private fun buildTvInfoItems(
         add(TvInfoItem(context.getString(R.string.text_abi), dev.abis.joinToString()))
     }
 
-    com.androidfung.drminfo.util.Util.formatResolution(dev.displayWidth, dev.displayHeight)?.let { resolutionText ->
+    Util.formatResolution(dev.displayWidth, dev.displayHeight)?.let { resolutionText ->
         add(TvInfoItem(context.getString(R.string.text_display_resolution), resolutionText))
     }
 
     if (dev.supportedRefreshRates.isNotEmpty()) {
-        val rates = com.androidfung.drminfo.util.Util.formatRefreshRates(dev.supportedRefreshRates)
+        val rates = Util.formatRefreshRates(dev.supportedRefreshRates)
         add(TvInfoItem(context.getString(R.string.text_supported_refresh_rate), rates.joinToString()))
     }
 
     if (dev.alternativeRefreshRates.isNotEmpty()) {
-        val altRates = com.androidfung.drminfo.util.Util.formatRefreshRates(dev.alternativeRefreshRates)
+        val altRates = Util.formatRefreshRates(dev.alternativeRefreshRates)
         add(TvInfoItem(context.getString(R.string.text_seamless_refresh_rate), altRates.joinToString()))
     }
 
@@ -387,7 +411,7 @@ private fun buildTvInfoItems(
     }
 
     if (dev.supportedHdrTypes.isNotEmpty()) {
-        val hdrTypeNames = com.androidfung.drminfo.util.Util.formatHdrTypes(dev.supportedHdrTypes) { id ->
+        val hdrTypeNames = Util.formatHdrTypes(dev.supportedHdrTypes) { id ->
             context.getString(id)
         }
         if (hdrTypeNames.isNotEmpty()) {

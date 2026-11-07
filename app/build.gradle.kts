@@ -12,10 +12,10 @@ android {
 
     defaultConfig {
         applicationId = "com.androidfung.drminfo"
-        minSdk = 24
+        minSdk = 28
         targetSdk = 37
-        versionCode = 526
-        versionName = "1.3.0-261022"
+        versionCode = 527
+        versionName = "1.3.0-261026"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -75,7 +75,7 @@ android {
     }
 
     lint {
-        abortOnError = false
+        abortOnError = true
         checkReleaseBuilds = true
     }
 }
@@ -91,16 +91,14 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     implementation(libs.ads.mobile.sdk)
-    implementation(libs.play.hsdp)
     implementation(libs.user.messaging.platform)
     implementation(libs.material)
-    implementation(libs.bundles.play.update)
+    implementation(libs.play.app.update)
     implementation(libs.androidx.profileinstaller)
 
     implementation(libs.bundles.firebase)
     implementation(libs.firebase.appcheck.playintegrity)
 
-    testImplementation(libs.androidx.core.testing)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
 

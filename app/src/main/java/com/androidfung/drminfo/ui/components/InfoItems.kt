@@ -13,6 +13,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,8 +42,8 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.ColumnScope
 import com.androidfung.drminfo.R
 import kotlinx.coroutines.launch
 
@@ -116,8 +117,8 @@ fun LabelValueItem(
     val clipboard = LocalClipboard.current
     val hapticFeedback = LocalHapticFeedback.current
     val snackbarHostState = LocalSnackbarHostState.current
-    val copiedMessage = androidx.compose.ui.res.stringResource(id = R.string.message_copied_to_clipboard, label)
-    val copyActionLabel = androidx.compose.ui.res.stringResource(id = R.string.label_copy)
+    val copiedMessage = stringResource(id = R.string.message_copied_to_clipboard, label)
+    val copyActionLabel = stringResource(id = R.string.label_copy)
 
     val copyModifier = if (allowCopy) {
         if (onCopy != null) {
@@ -189,8 +190,8 @@ fun TagChip(
     val clipboard = LocalClipboard.current
     val hapticFeedback = LocalHapticFeedback.current
     val snackbarHostState = LocalSnackbarHostState.current
-    val copiedMessage = androidx.compose.ui.res.stringResource(id = R.string.message_copied_to_clipboard, text)
-    val copyActionLabel = androidx.compose.ui.res.stringResource(id = R.string.label_copy)
+    val copiedMessage = stringResource(id = R.string.message_copied_to_clipboard, text)
+    val copyActionLabel = stringResource(id = R.string.label_copy)
 
     val copyModifier = if (allowCopy) {
         if (onCopy != null) {

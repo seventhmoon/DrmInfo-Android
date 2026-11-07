@@ -16,6 +16,8 @@ import com.androidfung.drminfo.ui.mobile.MediaDisplayCard
 import com.androidfung.drminfo.ui.mobile.MobileScreen
 import com.androidfung.drminfo.ui.mobile.WidevineCard
 import com.androidfung.drminfo.ui.theme.DrmInfoTheme
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -163,7 +165,7 @@ class MobileScreenUiTest {
 
         composeTestRule.onNodeWithText("120 Hz").assertIsDisplayed()
         composeTestRule.onNodeWithText("120 Hz").performClick()
-        org.junit.Assert.assertEquals("DISPLAY", clickedTarget)
+        assertEquals("DISPLAY", clickedTarget)
     }
 
     @Test
@@ -216,7 +218,7 @@ class MobileScreenUiTest {
         }
 
         val bitmap = composeTestRule.onNodeWithText("Pixel 8").captureToImage()
-        org.junit.Assert.assertTrue("Captured screenshot width should be > 0", bitmap.width > 0)
-        org.junit.Assert.assertTrue("Captured screenshot height should be > 0", bitmap.height > 0)
+        assertTrue("Captured screenshot width should be > 0", bitmap.width > 0)
+        assertTrue("Captured screenshot height should be > 0", bitmap.height > 0)
     }
 }

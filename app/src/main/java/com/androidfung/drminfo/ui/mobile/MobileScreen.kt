@@ -1,9 +1,12 @@
 package com.androidfung.drminfo.ui.mobile
 
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.PredictiveBackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -38,8 +41,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -60,9 +65,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -75,6 +85,7 @@ import com.androidfung.drminfo.ui.components.LocalSnackbarHostState
 import com.androidfung.drminfo.ui.components.SkeletonCard
 import com.androidfung.drminfo.util.Util
 import com.androidfung.drminfo.util.Util.toStringRes
+import java.util.concurrent.CancellationException
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -95,6 +106,7 @@ fun MobileScreen(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
+    val windowSize = LocalWindowInfo.current.containerSize
     var showHelpSheet by rememberSaveable { mutableStateOf(false) }
     var showShareMenu by remember { mutableStateOf(false) }
     var isSearchActive by rememberSaveable { mutableStateOf(false) }
@@ -108,7 +120,7 @@ fun MobileScreen(
             }
             isSearchActive = false
             searchQuery = ""
-        } catch (_: java.util.concurrent.CancellationException) {
+        } catch (_: CancellationException) {
             // Back gesture cancelled by user
         }
     }
@@ -126,16 +138,16 @@ fun MobileScreen(
             val result = snackbarHostState.showSnackbar(
                 message = updateDownloadedMessage,
                 actionLabel = restartAction,
-                duration = androidx.compose.material3.SnackbarDuration.Indefinite
+                duration = SnackbarDuration.Indefinite
             )
-            if (result == androidx.compose.material3.SnackbarResult.ActionPerformed) {
+            if (result == SnackbarResult.ActionPerformed) {
                 onCompleteUpdate()
             }
         }
     }
 
     // Fast update display specs and preload ads when screen/window configuration (fold/unfold/rotate/split-screen) changes
-    LaunchedEffect(configuration.screenWidthDp, configuration.screenHeightDp, configuration.orientation) {
+    LaunchedEffect(windowSize, configuration.orientation) {
         onDisplayConfigurationChanged(context)
     }
 
@@ -248,10 +260,10 @@ fun MobileScreen(
                                 )
                                 AnimatedVisibility(
                                     visible = showSubtitle,
-                                    enter = fadeIn(animationSpec = androidx.compose.animation.core.spring(dampingRatio = androidx.compose.animation.core.Spring.DampingRatioMediumBouncy, stiffness = androidx.compose.animation.core.Spring.StiffnessLow)) +
-                                            expandVertically(animationSpec = androidx.compose.animation.core.spring(dampingRatio = androidx.compose.animation.core.Spring.DampingRatioMediumBouncy, stiffness = androidx.compose.animation.core.Spring.StiffnessLow)),
-                                    exit = fadeOut(animationSpec = androidx.compose.animation.core.spring(stiffness = androidx.compose.animation.core.Spring.StiffnessMedium)) +
-                                            shrinkVertically(animationSpec = androidx.compose.animation.core.spring(stiffness = androidx.compose.animation.core.Spring.StiffnessMedium))
+                                    enter = fadeIn(animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow)) +
+                                            expandVertically(animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow)),
+                                    exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessMedium)) +
+                                            shrinkVertically(animationSpec = spring(stiffness = Spring.StiffnessMedium))
                                 ) {
                                     val subtitle = "${state.device.manufacturer} ${state.device.model}".trim()
                                     if (subtitle.isNotEmpty()) {
@@ -352,33 +364,33 @@ fun MobileScreen(
             val pullToRefreshState = rememberPullToRefreshState()
             val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
-            val clipboard = androidx.compose.ui.platform.LocalClipboard.current
-            val hapticFeedback = androidx.compose.ui.platform.LocalHapticFeedback.current
+            val clipboard = LocalClipboard.current
+            val hapticFeedback = LocalHapticFeedback.current
             val copiedTemplate = stringResource(id = R.string.message_copied_to_clipboard)
             val onCopyValue: (String, String) -> Unit = remember(clipboard, hapticFeedback, snackbarHostState, copiedTemplate) {
                 { label, value ->
-                    hapticFeedback.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                    val clipData = android.content.ClipData.newPlainText(label, value)
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    val clipData = ClipData.newPlainText(label, value)
                     coroutineScope.launch {
-                        clipboard.setClipEntry(androidx.compose.ui.platform.ClipEntry(clipData))
+                        clipboard.setClipEntry(ClipEntry(clipData))
                         snackbarHostState.currentSnackbarData?.dismiss()
                         snackbarHostState.showSnackbar(
-                            message = java.lang.String.format(copiedTemplate, label),
-                            duration = androidx.compose.material3.SnackbarDuration.Short
+                            message = copiedTemplate.format(label),
+                            duration = SnackbarDuration.Short
                         )
                     }
                 }
             }
             val onCopyTag: (String) -> Unit = remember(clipboard, hapticFeedback, snackbarHostState, copiedTemplate) {
                 { text ->
-                    hapticFeedback.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                    val clipData = android.content.ClipData.newPlainText("Capability", text)
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    val clipData = ClipData.newPlainText("Capability", text)
                     coroutineScope.launch {
-                        clipboard.setClipEntry(androidx.compose.ui.platform.ClipEntry(clipData))
+                        clipboard.setClipEntry(ClipEntry(clipData))
                         snackbarHostState.currentSnackbarData?.dismiss()
                         snackbarHostState.showSnackbar(
-                            message = java.lang.String.format(copiedTemplate, text),
-                            duration = androidx.compose.material3.SnackbarDuration.Short
+                            message = copiedTemplate.format(text),
+                            duration = SnackbarDuration.Short
                         )
                     }
                 }
@@ -414,13 +426,18 @@ fun MobileScreen(
                         val isLoading = state.device.fingerprint.isEmpty() && state.schemes.isEmpty()
 
                         if (isLoading) {
-                            items(count = 3, key = { "skeleton_$it" }) {
+                            items(
+                                count = 3,
+                                key = { "skeleton_$it" },
+                                contentType = { "skeleton" }
+                            ) {
                                 SkeletonCard(modifier = Modifier.fillMaxWidth())
                             }
                         } else {
                             if (activeQuery.isEmpty()) {
                                 item(
                                     key = "hero_highlights",
+                                    contentType = "hero",
                                     span = StaggeredGridItemSpan.FullLine
                                 ) {
                                     HeroHighlightsCard(
@@ -445,6 +462,7 @@ fun MobileScreen(
                             if (!hasAnySearchMatches && activeQuery.isNotEmpty()) {
                                 item(
                                     key = "search_empty",
+                                    contentType = "search_empty",
                                     span = StaggeredGridItemSpan.FullLine
                                 ) {
                                     OutlinedCard(modifier = Modifier.fillMaxWidth()) {
@@ -471,7 +489,10 @@ fun MobileScreen(
                             }
 
                             if (showHardwareCard) {
-                                item(key = "card_hardware") {
+                                item(
+                                    key = "card_hardware",
+                                    contentType = "hardware"
+                                ) {
                                     HardwareCard(
                                         device = state.device,
                                         modifier = Modifier.fillMaxWidth(),
@@ -483,7 +504,10 @@ fun MobileScreen(
                             }
 
                             if (showSystemCard) {
-                                item(key = "card_system") {
+                                item(
+                                    key = "card_system",
+                                    contentType = "system"
+                                ) {
                                     SystemCard(
                                         device = state.device,
                                         modifier = Modifier.fillMaxWidth(),
@@ -494,7 +518,10 @@ fun MobileScreen(
                             }
 
                             if (isAdsInitialized && activeQuery.isEmpty()) {
-                                item(key = "card_ads_compact") {
+                                item(
+                                    key = "card_ads_compact",
+                                    contentType = "ad_compact"
+                                ) {
                                     NativeAdCard(
                                         modifier = Modifier.fillMaxWidth(),
                                         style = NativeAdStyle.COMPACT,
@@ -506,7 +533,10 @@ fun MobileScreen(
                             }
 
                             if (showDisplayCard) {
-                                item(key = "card_display") {
+                                item(
+                                    key = "card_display",
+                                    contentType = "display"
+                                ) {
                                     MediaDisplayCard(
                                         device = state.device,
                                         modifier = Modifier.fillMaxWidth(),
@@ -518,7 +548,10 @@ fun MobileScreen(
                             }
 
                             if (showAudioCard) {
-                                item(key = "card_audio") {
+                                item(
+                                    key = "card_audio",
+                                    contentType = "audio"
+                                ) {
                                     AudioCard(
                                         device = state.device,
                                         modifier = Modifier.fillMaxWidth(),
@@ -531,7 +564,8 @@ fun MobileScreen(
 
                             items(
                                 items = matchingSchemes,
-                                key = { "card_${it.id}" }
+                                key = { "card_${it.id}" },
+                                contentType = { if (it is DrmSchemeState.Widevine) "drm_widevine" else "drm_generic" }
                             ) { scheme ->
                                 when (scheme) {
                                     is DrmSchemeState.Widevine -> WidevineCard(
@@ -551,7 +585,8 @@ fun MobileScreen(
 
                             if (isAdsInitialized && activeQuery.isEmpty()) {
                                 item(
-                                    key = "card_ads_full"
+                                    key = "card_ads_full",
+                                    contentType = "ad_full"
                                 ) {
                                     NativeAdCard(
                                         modifier = Modifier.fillMaxWidth(),

@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import com.google.android.libraries.ads.mobile.sdk.MobileAds
 import com.google.android.libraries.ads.mobile.sdk.common.PreloadConfiguration
 import com.google.android.libraries.ads.mobile.sdk.initialization.InitializationConfig
+import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdLoadResult
 import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdPreloader
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
@@ -140,7 +141,7 @@ object AdsManager : AdsController {
             runCatching {
                 if (NativeAdPreloader.isAdAvailable(adUnitId)) {
                     val result = NativeAdPreloader.pollAd(adUnitId)
-                    (result as? com.google.android.libraries.ads.mobile.sdk.nativead.NativeAdLoadResult.NativeAdSuccess)
+                    (result as? NativeAdLoadResult.NativeAdSuccess)
                         ?.ad?.destroy()
                 }
             }

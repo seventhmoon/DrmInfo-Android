@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.os.Build
+import com.androidfung.drminfo.ads.AdsManager
 import com.google.android.material.color.DynamicColors
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
@@ -37,7 +38,7 @@ class MyApplication : Application() {
             }
 
         // Pre-initialize GMA Next-Gen SDK and start NativeAdPreloader immediately if consent was already given
-        com.androidfung.drminfo.ads.AdsManager.initializeIfConsentGiven(
+        AdsManager.initializeIfConsentGiven(
             context = this,
             appId = getString(R.string.ad_app_id),
             adUnitId = getString(R.string.ad_unit_id)

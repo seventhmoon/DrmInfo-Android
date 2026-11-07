@@ -166,7 +166,6 @@ class MobileActivity : ComponentActivity() {
     }
 
     companion object {
-        @JvmStatic
         private val TAG = MobileActivity::class.java.simpleName
     }
 }

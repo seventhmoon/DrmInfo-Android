@@ -3,6 +3,7 @@ package com.androidfung.drminfo.ui
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.annotation.Keep
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
@@ -121,7 +122,7 @@ class DrmViewModel @JvmOverloads constructor(
                     }
                 }
                 .addOnFailureListener { e ->
-                    android.util.Log.w("DrmViewModel", "Play Integrity App Check attestation failed: ${e.message}", e)
+                    Log.w("DrmViewModel", "Play Integrity App Check attestation failed: ${e.message}", e)
                     val statusText = if (app != null) {
                         try {
                             app.getString(R.string.text_play_integrity_failed)
