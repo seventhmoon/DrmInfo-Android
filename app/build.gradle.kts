@@ -14,8 +14,8 @@ android {
         applicationId = "com.androidfung.drminfo"
         minSdk = 28
         targetSdk = 37
-        versionCode = 528
-        versionName = "1.3.0-261106"
+        versionCode = 529
+        versionName = "1.3.1-261106"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -30,7 +30,7 @@ android {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
             ndk {
                 debugSymbolLevel = "SYMBOL_TABLE"
