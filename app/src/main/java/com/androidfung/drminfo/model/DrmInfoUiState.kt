@@ -37,6 +37,9 @@ data class DisplayInfo(
     val alternativeRefreshRates: List<Float> = emptyList(),
     val supportedHdrTypes: List<Int> = emptyList(),
     val isWideColorGamut: Boolean? = null,
+    val activeMode: String? = null,
+    val supportedDisplayModes: List<String> = emptyList(),
+    val matchContentFrameRatePreference: Int? = null,
 )
 
 /**
@@ -68,13 +71,18 @@ data class DeviceInfo(
     val hardwareEncoders: List<String> = emptyList(),
     val hardwareDecoders: List<String> = emptyList(),
     val secureDecoders: List<String> = emptyList(),
+    val codecCapabilities: Map<String, String> = emptyMap(),
     val supportedHdrTypes: List<Int> = emptyList(),
     val isWideColorGamut: Boolean? = null,
     val supportedRefreshRates: List<Float> = emptyList(),
     val alternativeRefreshRates: List<Float> = emptyList(),
     val displayWidth: Int = 0,
     val displayHeight: Int = 0,
+    val activeDisplayMode: String? = null,
+    val supportedDisplayModes: List<String> = emptyList(),
+    val matchContentFrameRatePreference: Int? = null,
     val supportedAudioEncodings: List<String> = emptyList(),
+    val audioEncodingDetails: Map<String, String> = emptyMap(),
     val releaseChannel: ReleaseChannel? = null,
     val quarterlyReleaseName: String? = null,
     val tvDeviceType: TvDeviceType? = null,

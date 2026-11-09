@@ -1,6 +1,7 @@
 package com.androidfung.drminfo.util
 
 import android.content.Context
+import android.hardware.display.DisplayManager
 import android.media.MediaDrm
 import android.os.Build
 import android.view.Display.HdrCapabilities
@@ -70,6 +71,28 @@ object Util {
         if (width <= 0 || height <= 0) return null
         val label = getResolutionLabel(width, height)
         return if (label != null) "$width × $height ($label)" else "$width × $height"
+    }
+
+    /**
+     * Formats a specific display mode with resolution, refresh rate, and resolution tier label
+     * (e.g. "3840 × 2160 @ 60 Hz (4K)").
+     */
+    fun formatDisplayMode(width: Int, height: Int, refreshRate: Float): String? {
+        if (width <= 0 || height <= 0 || refreshRate <= 0f) return null
+        val hz = round(refreshRate).toInt()
+        val label = getResolutionLabel(width, height)
+        return if (label != null) "$width × $height @ $hz Hz ($label)" else "$width × $height @ $hz Hz"
+    }
+
+    /**
+     * Resolves a [DisplayManager] match-content-frame-rate preference integer to its string resource ID.
+     */
+    @StringRes
+    fun convertMatchContentFrameRateToStringRes(preference: Int): Int = when (preference) {
+        DisplayManager.MATCH_CONTENT_FRAMERATE_NEVER -> R.string.frame_rate_pref_never
+        DisplayManager.MATCH_CONTENT_FRAMERATE_SEAMLESSS_ONLY -> R.string.frame_rate_pref_seamless
+        DisplayManager.MATCH_CONTENT_FRAMERATE_ALWAYS -> R.string.frame_rate_pref_always
+        else -> R.string.frame_rate_pref_unknown
     }
 
     /**
@@ -186,6 +209,12 @@ object Util {
         formatResolution(dev.displayWidth, dev.displayHeight)?.let {
             sb.appendLine("Display Resolution: $it")
         }
+        dev.activeDisplayMode?.let {
+            sb.appendLine("Active Display Mode: $it")
+        }
+        dev.matchContentFrameRatePreference?.let { pref ->
+            sb.appendLine("Match Content Frame Rate: ${stringResolver(convertMatchContentFrameRateToStringRes(pref))}")
+        }
         if (dev.supportedHdrTypes.isNotEmpty()) {
             val hdrNames = formatHdrTypes(dev.supportedHdrTypes, stringResolver)
             sb.appendLine("Supported HDR: ${hdrNames.joinToString()}")
@@ -292,6 +321,12 @@ object Util {
             formatResolution(dev.displayWidth, dev.displayHeight)?.let {
                 add("\"displayResolution\": \"${escapeJson(it)}\"")
             }
+            dev.activeDisplayMode?.let {
+                add("\"activeDisplayMode\": \"${escapeJson(it)}\"")
+            }
+            dev.matchContentFrameRatePreference?.let { pref ->
+                add("\"matchContentFrameRate\": \"${escapeJson(stringResolver(convertMatchContentFrameRateToStringRes(pref)))}\"")
+            }
             if (dev.supportedHdrTypes.isNotEmpty()) {
                 val hdrNames = formatHdrTypes(dev.supportedHdrTypes, stringResolver)
                 add("\"supportedHdrTypes\": ${formatJsonStringArray(hdrNames)}")
@@ -356,6 +391,56 @@ object Util {
         sb.appendLine("  ]")
         sb.append("}")
         return sb.toString()
+    }
+
+    /**
+     * Builds a concise, scannable diagnostic summary suitable for QR codes on Android TV.
+     */
+    fun buildCompactSummary(context: Context, state: DrmInfoUiState): String {
+        return formatCompactSummary(state) { resId ->
+            runCatching { context.getString(resId) }.getOrDefault(resId.toString())
+        }
+    }
+
+    /**
+     * Pure formatter producing a compact (< 240 byte) diagnostic summary of key DRM, display, and SoC capabilities.
+     */
+    fun formatCompactSummary(
+        state: DrmInfoUiState,
+        stringResolver: (Int) -> String = { it.toString() }
+    ): String {
+        val dev = state.device
+        val lines = mutableListOf<String>()
+        lines.add("DRM Info Summary")
+        val modelTitle = "${dev.manufacturer} ${dev.model}".trim()
+        if (modelTitle.isNotEmpty()) {
+            lines.add("Device: $modelTitle (SDK ${dev.sdkInt})")
+        }
+        val soc = listOfNotNull(dev.socManufacturer, dev.socModel).joinToString(" ").trim()
+        if (soc.isNotEmpty()) {
+            lines.add("SoC: $soc")
+        }
+        val widevine = state.schemes.filterIsInstance<DrmSchemeState.Widevine>().firstOrNull()
+        if (widevine != null) {
+            val sysId = widevine.systemId?.let { " (ID $it)" }.orEmpty()
+            val hdcp = (widevine.connectedHdcpLevel ?: widevine.maxHdcpLevel)?.let {
+                " | ${stringResolver(it.toStringRes())}"
+            }.orEmpty()
+            lines.add("Widevine: ${widevine.securityLevel ?: "Supported"}$sysId$hdcp")
+        }
+        val playReady = state.schemes.firstOrNull { it.id == "playready" }
+        if (playReady != null) {
+            lines.add("PlayReady: ${playReady.securityLevel ?: playReady.version ?: "Supported"}")
+        }
+        val modeOrRes = dev.activeDisplayMode ?: formatResolution(dev.displayWidth, dev.displayHeight)
+        if (modeOrRes != null) {
+            lines.add("Display: $modeOrRes")
+        }
+        if (dev.supportedHdrTypes.isNotEmpty()) {
+            val hdr = formatHdrTypes(dev.supportedHdrTypes, stringResolver).joinToString(", ")
+            lines.add("HDR: $hdr")
+        }
+        return lines.joinToString("\n")
     }
 
     private fun escapeJson(value: String): String = buildString(value.length) {

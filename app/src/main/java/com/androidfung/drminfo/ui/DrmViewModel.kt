@@ -160,6 +160,9 @@ class DrmViewModel @JvmOverloads constructor(
                     device = current.device.copy(
                         displayWidth = displayInfo.width,
                         displayHeight = displayInfo.height,
+                        activeDisplayMode = displayInfo.activeMode,
+                        supportedDisplayModes = displayInfo.supportedDisplayModes,
+                        matchContentFrameRatePreference = displayInfo.matchContentFrameRatePreference,
                         supportedRefreshRates = displayInfo.supportedRefreshRates,
                         alternativeRefreshRates = displayInfo.alternativeRefreshRates,
                         supportedHdrTypes = displayInfo.supportedHdrTypes,

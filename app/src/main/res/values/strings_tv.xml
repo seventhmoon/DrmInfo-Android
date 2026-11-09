@@ -8,4 +8,27 @@
     <string name="text_fire_tv">Fire TV</string>
     <string name="text_android_unknown">Unknown</string>
     <string name="text_tv_type">TV Platform</string>
+
+    <!-- TV Navigation Categories -->
+    <string name="tv_category_drm">DRM &amp; Security</string>
+    <string name="tv_category_display">Display &amp; HDR</string>
+    <string name="tv_category_audio_codecs">Audio &amp; Codecs</string>
+    <string name="tv_category_system">System &amp; SoC</string>
+    <string name="tv_category_summary_qr">Summary &amp; QR Export</string>
+
+    <!-- TV Display &amp; Audio Diagnostics -->
+    <string name="text_active_display_mode">Active HDMI / Display Mode</string>
+    <string name="text_supported_display_modes">Supported HDMI / Display Modes</string>
+    <string name="text_match_content_frame_rate">Match Content Frame Rate</string>
+    <string name="frame_rate_pref_never">Never</string>
+    <string name="frame_rate_pref_seamless">Seamless Only (QMS)</string>
+    <string name="frame_rate_pref_always">Always (Non-Seamless Allowed)</string>
+    <string name="frame_rate_pref_unknown">Unknown</string>
+
+    <!-- TV Summary &amp; QR Export -->
+    <string name="tv_qr_title">Scan with Phone to Export Specs</string>
+    <string name="tv_qr_subtitle">Point your phone camera at the QR code to view or share this TV\'s DRM, HDCP, HDR, and codec summary.</string>
+    <string name="tv_action_copy_plain_report">Copy Full Report (Plain Text)</string>
+    <string name="tv_action_copy_json_report">Copy Full Report (JSON)</string>
+    <string name="tv_hint_dpad_inspect">Select any item to view details or copy to clipboard</string>
 </resources>

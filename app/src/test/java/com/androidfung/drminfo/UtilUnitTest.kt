@@ -1,5 +1,6 @@
 package com.androidfung.drminfo
 
+import android.hardware.display.DisplayManager
 import android.media.MediaDrm
 import android.view.Display.HdrCapabilities
 import com.androidfung.drminfo.model.CardSection
@@ -10,6 +11,7 @@ import com.androidfung.drminfo.model.HdcpLevel
 import com.androidfung.drminfo.model.ReleaseChannel
 import com.androidfung.drminfo.ui.mobile.DrmGridScrollHelper
 import com.androidfung.drminfo.util.Constants
+import com.androidfung.drminfo.util.QrCodeGenerator
 import com.androidfung.drminfo.util.Util
 import java.util.UUID
 import org.junit.Assert.assertEquals
@@ -360,5 +362,82 @@ class UtilUnitTest {
             }
         }
         assertEquals(listOf("Dolby Vision", "HDR10"), formatted)
+    }
+
+    @Test
+    fun testFormatDisplayModeAndMatchContentFrameRate() {
+        assertEquals("3840 × 2160 @ 60 Hz (4K)", Util.formatDisplayMode(3840, 2160, 59.94f))
+        assertEquals("1920 × 1080 @ 120 Hz (FHD)", Util.formatDisplayMode(1920, 1080, 120.0f))
+        assertNull(Util.formatDisplayMode(0, 2160, 60f))
+        assertNull(Util.formatDisplayMode(3840, 2160, 0f))
+
+        assertEquals(
+            R.string.frame_rate_pref_never,
+            Util.convertMatchContentFrameRateToStringRes(DisplayManager.MATCH_CONTENT_FRAMERATE_NEVER)
+        )
+        assertEquals(
+            R.string.frame_rate_pref_seamless,
+            Util.convertMatchContentFrameRateToStringRes(DisplayManager.MATCH_CONTENT_FRAMERATE_SEAMLESSS_ONLY)
+        )
+        assertEquals(
+            R.string.frame_rate_pref_always,
+            Util.convertMatchContentFrameRateToStringRes(DisplayManager.MATCH_CONTENT_FRAMERATE_ALWAYS)
+        )
+        assertEquals(
+            R.string.frame_rate_pref_unknown,
+            Util.convertMatchContentFrameRateToStringRes(-99)
+        )
+    }
+
+    @Test
+    fun testFormatCompactSummaryAndQrGenerator() {
+        val state = DrmInfoUiState(
+            device = DeviceInfo(
+                manufacturer = "Google",
+                model = "TV Streamer",
+                sdkInt = 34,
+                socManufacturer = "MediaTek",
+                socModel = "MT8696",
+                activeDisplayMode = "3840 × 2160 @ 60 Hz (4K)",
+                supportedHdrTypes = listOf(HdrCapabilities.HDR_TYPE_DOLBY_VISION, HdrCapabilities.HDR_TYPE_HDR10)
+            ),
+            schemes = listOf(
+                DrmSchemeState.Widevine(
+                    name = "Google Widevine Modular DRM",
+                    description = "Widevine CDM",
+                    vendor = "Google",
+                    version = "18.0",
+                    maxHdcpLevel = HdcpLevel.V2_3,
+                    connectedHdcpLevel = HdcpLevel.V2_3,
+                    securityLevel = "L1",
+                    systemId = "9876",
+                    maxSessions = "16",
+                    oemCryptoVersion = "18"
+                )
+            )
+        )
+
+        val summary = Util.formatCompactSummary(state) { resId ->
+            when (resId) {
+                R.string.message_hdcp_level_2_3 -> "HDCP 2.3"
+                R.string.hdr_type_dolby_vision -> "Dolby Vision"
+                R.string.hdr_type_hdr10 -> "HDR10"
+                else -> resId.toString()
+            }
+        }
+
+        assertTrue(summary.contains("Google TV Streamer (SDK 34)"))
+        assertTrue(summary.contains("SoC: MediaTek MT8696"))
+        assertTrue(summary.contains("Widevine: L1 (ID 9876) | HDCP 2.3"))
+        assertTrue(summary.contains("Display: 3840 × 2160 @ 60 Hz (4K)"))
+        assertTrue(summary.contains("HDR: Dolby Vision, HDR10"))
+
+        val matrix = QrCodeGenerator.encode(summary)
+        // Must be a valid square QR matrix with intact 7x7 finder corners
+        assertTrue(matrix.size >= 21)
+        assertEquals(matrix.size, matrix[0].size)
+        // Top-left finder pattern outer corner & center must be dark (true)
+        assertTrue(matrix[0][0])
+        assertTrue(matrix[3][3])
     }
 }

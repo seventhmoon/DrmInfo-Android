@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="80dp"
+    android:viewportWidth="200"
+    android:viewportHeight="80">
+
+    <!-- "DRM Info" clean geometric wordmark centered at (100, 40) -->
+    <!-- D (x: 49..60, y: 32..48) -->
+    <path
+        android:fillColor="@color/splash_branding_tint"
+        android:pathData="M49,32h5.2c4.6,0 7.8,3.2 7.8,8s-3.2,8 -7.8,8H49V32zM52.1,34.7v10.6h2c2.9,0 4.7,-2 4.7,-5.3s-1.8,-5.3 -4.7,-5.3H52.1z" />
+
+    <!-- R (x: 65..76, y: 32..48) -->
+    <path
+        android:fillColor="@color/splash_branding_tint"
+        android:pathData="M65,32h5.6c3.3,0 5.4,1.8 5.4,4.7c0,2.1 -1.1,3.7 -2.9,4.3l3.4,7h-3.4l-2.9,-6.4H68.1V48H65V32zM68.1,34.6v4.6h2.3c1.6,0 2.5,-0.9 2.5,-2.3s-0.9,-2.3 -2.5,-2.3H68.1z" />
+
+    <!-- M (x: 79..95, y: 32..48) -->
+    <path
+        android:fillColor="@color/splash_branding_tint"
+        android:pathData="M79.2,32h3.6l4.2,10.8L91.2,32h3.6v16h-2.9V36.7L88.1,46.5h-2.2l-3.8,-9.8V48h-2.9V32z" />
+
+    <!-- I (x: 104..107.1, y: 32..48) -->
+    <path
+        android:fillColor="@color/splash_branding_tint"
+        android:pathData="M104,32h3.1v16H104V32z" />
+
+    <!-- n (x: 111..121.5, y: 32..48) -->
+    <path
+        android:fillColor="@color/splash_branding_tint"
+        android:pathData="M111,36.2h2.8v1.7c0.8,-1.2 2.1,-2 3.8,-2c2.7,0 4.3,1.7 4.3,4.6V48h-3v-6.9c0,-1.6 -0.8,-2.5 -2.2,-2.5c-1.5,0 -2.7,1 -2.7,2.8V48h-3V36.2z" />
+
+    <!-- f (x: 124.5..132, y: 31.5..48) -->
+    <path
+        android:fillColor="@color/splash_branding_tint"
+        android:pathData="M126.2,36.2h-1.8v-2.3h1.8v-1c0,-2.5 1.5,-3.9 4.1,-3.9c0.8,0 1.5,0.1 2,0.3v2.3c-0.4,-0.1 -0.9,-0.2 -1.4,-0.2c-1.1,0 -1.7,0.6 -1.7,1.7v0.8h2.6v2.3h-2.6V48h-3V36.2z" />
+
+    <!-- o (x: 134..146, y: 35.9..48.3) -->
+    <path
+        android:fillColor="@color/splash_branding_tint"
+        android:pathData="M140,35.9c3.6,0 6.1,2.5 6.1,6.2s-2.5,6.2 -6.1,6.2s-6.1,-2.5 -6.1,-6.2S136.4,35.9 140,35.9zM140,38.4c-1.9,0 -3.1,1.4 -3.1,3.7s1.2,3.7 3.1,3.7s3.1,-1.4 3.1,-3.7S141.9,38.4 140,38.4z" />
+
+</vector>

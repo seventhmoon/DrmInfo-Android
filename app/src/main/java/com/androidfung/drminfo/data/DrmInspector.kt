@@ -2,6 +2,7 @@ package com.androidfung.drminfo.data
 
 import android.app.ActivityManager
 import android.content.Context
+import android.hardware.display.DisplayManager
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioManager
@@ -54,16 +55,18 @@ class DrmInspector(
         }
 
         val displayInfo = displayDeferred.await()
-        val (hardwareEncoders, hardwareDecoders, secureDecoders) = codecsDeferred.await()
-        val audioEncodings = audioDeferred.await()
+        val codecResult = codecsDeferred.await()
+        val (audioEncodings, audioDetails) = audioDeferred.await()
 
         val deviceInfo = buildDeviceInfoInternal(
             targetContext = targetContext,
             displayInfo = displayInfo,
-            hardwareEncoders = hardwareEncoders,
-            hardwareDecoders = hardwareDecoders,
-            secureDecoders = secureDecoders,
-            audioEncodings = audioEncodings
+            hardwareEncoders = codecResult.encoders,
+            hardwareDecoders = codecResult.decoders,
+            secureDecoders = codecResult.secureDecoders,
+            codecCapabilities = codecResult.codecCapabilities,
+            audioEncodings = audioEncodings,
+            audioEncodingDetails = audioDetails
         )
         val schemes = schemesDeferred.awaitAll().filterNotNull()
         deviceInfo to schemes
@@ -72,27 +75,43 @@ class DrmInspector(
     fun buildDeviceInfo(activeContext: Context? = null): DeviceInfo {
         val targetContext = activeContext ?: appContext
         val displayInfo = readDisplayInfo(targetContext)
-        val (hardwareEncoders, hardwareDecoders, secureDecoders) = queryHardwareCodecs()
-        val audioEncodings = probeAudioEncodings()
+        val codecResult = queryHardwareCodecs()
+        val (audioEncodings, audioDetails) = probeAudioEncodings()
         return buildDeviceInfoInternal(
             targetContext = targetContext,
             displayInfo = displayInfo,
-            hardwareEncoders = hardwareEncoders,
-            hardwareDecoders = hardwareDecoders,
-            secureDecoders = secureDecoders,
-            audioEncodings = audioEncodings
+            hardwareEncoders = codecResult.encoders,
+            hardwareDecoders = codecResult.decoders,
+            secureDecoders = codecResult.secureDecoders,
+            codecCapabilities = codecResult.codecCapabilities,
+            audioEncodings = audioEncodings,
+            audioEncodingDetails = audioDetails
         )
     }
 
-    private fun queryHardwareCodecs(): Triple<List<String>, List<String>, List<String>> {
+    private data class CodecInspectionResult(
+        val encoders: List<String>,
+        val decoders: List<String>,
+        val secureDecoders: List<String>,
+        val codecCapabilities: Map<String, String>
+    )
+
+    private fun queryHardwareCodecs(): CodecInspectionResult {
         if (VERSION.SDK_INT < VERSION_CODES.Q) {
-            return Triple(emptyList(), emptyList(), emptyList())
+            return CodecInspectionResult(emptyList(), emptyList(), emptyList(), emptyMap())
         }
 
         cachedHardwareEncoders?.let { encoders ->
             cachedHardwareDecoders?.let { decoders ->
                 cachedSecureDecoders?.let { secure ->
-                    return Triple(encoders.toList(), decoders.toList(), secure.toList())
+                    cachedCodecCapabilities?.let { capsMap ->
+                        return CodecInspectionResult(
+                            encoders.toList(),
+                            decoders.toList(),
+                            secure.toList(),
+                            capsMap
+                        )
+                    }
                 }
             }
         }
@@ -100,6 +119,7 @@ class DrmInspector(
         val encoders = sortedSetOf<String>()
         val decoders = sortedSetOf<String>()
         val secureDecoders = sortedSetOf<String>()
+        val codecCapabilities = linkedMapOf<String, String>()
         runCatching {
             val infos = MediaCodecList(MediaCodecList.ALL_CODECS).codecInfos
             for (info in infos) {
@@ -123,17 +143,52 @@ class DrmInspector(
                         if (!isSecureRequired) {
                             decoders.add(type)
                         }
+                        if (type.startsWith("video/", ignoreCase = true) && !codecCapabilities.containsKey(type)) {
+                            caps?.videoCapabilities?.let { videoCaps ->
+                                formatVideoCapabilitiesSummary(videoCaps)?.let { summary ->
+                                    codecCapabilities[type] = summary
+                                }
+                            }
+                        }
                     }
                 }
             }
             cachedHardwareEncoders = encoders
             cachedHardwareDecoders = decoders
             cachedSecureDecoders = secureDecoders
+            cachedCodecCapabilities = codecCapabilities
         }.onFailure { error ->
             Log.w(TAG, "Failed to query MediaCodecList", error)
         }
 
-        return Triple(encoders.toList(), decoders.toList(), secureDecoders.toList())
+        return CodecInspectionResult(
+            encoders.toList(),
+            decoders.toList(),
+            secureDecoders.toList(),
+            codecCapabilities
+        )
+    }
+
+    private fun formatVideoCapabilitiesSummary(videoCaps: MediaCodecInfo.VideoCapabilities): String? {
+        val tiers = listOf(
+            Triple(7680, 4320, 60.0) to "Up to 8K @ 60 fps",
+            Triple(7680, 4320, 30.0) to "Up to 8K @ 30 fps",
+            Triple(3840, 2160, 120.0) to "Up to 4K @ 120 fps",
+            Triple(3840, 2160, 60.0) to "Up to 4K @ 60 fps",
+            Triple(3840, 2160, 30.0) to "Up to 4K @ 30 fps",
+            Triple(1920, 1080, 120.0) to "Up to 1080p @ 120 fps",
+            Triple(1920, 1080, 60.0) to "Up to 1080p @ 60 fps",
+            Triple(1920, 1080, 30.0) to "Up to 1080p @ 30 fps",
+            Triple(1280, 720, 60.0) to "Up to 720p @ 60 fps"
+        )
+        for ((spec, label) in tiers) {
+            val (w, h, fps) = spec
+            val supported = runCatching { videoCaps.areSizeAndRateSupported(w, h, fps) }.getOrDefault(false)
+            if (supported) return label
+        }
+        val maxW = runCatching { videoCaps.supportedWidths.upper }.getOrNull() ?: return null
+        val maxH = runCatching { videoCaps.supportedHeights.upper }.getOrNull() ?: return null
+        return if (maxW > 0 && maxH > 0) "Up to $maxW × $maxH" else null
     }
 
     private fun buildDeviceInfoInternal(
@@ -142,7 +197,9 @@ class DrmInspector(
         hardwareEncoders: List<String>,
         hardwareDecoders: List<String>,
         secureDecoders: List<String>,
-        audioEncodings: List<String>
+        codecCapabilities: Map<String, String>,
+        audioEncodings: List<String>,
+        audioEncodingDetails: Map<String, String>
     ): DeviceInfo {
         val wideColorGamut = targetContext.resources.configuration.isScreenWideColorGamut
 
@@ -207,13 +264,18 @@ class DrmInspector(
             hardwareEncoders = hardwareEncoders,
             hardwareDecoders = hardwareDecoders,
             secureDecoders = secureDecoders,
+            codecCapabilities = codecCapabilities,
             supportedHdrTypes = displayInfo.supportedHdrTypes,
             isWideColorGamut = displayInfo.isWideColorGamut ?: wideColorGamut,
             supportedRefreshRates = displayInfo.supportedRefreshRates,
             alternativeRefreshRates = displayInfo.alternativeRefreshRates,
             displayWidth = displayInfo.width,
             displayHeight = displayInfo.height,
+            activeDisplayMode = displayInfo.activeMode,
+            supportedDisplayModes = displayInfo.supportedDisplayModes,
+            matchContentFrameRatePreference = displayInfo.matchContentFrameRatePreference,
             supportedAudioEncodings = audioEncodings,
+            audioEncodingDetails = audioEncodingDetails,
             releaseChannel = Util.detectReleaseChannel(),
             quarterlyReleaseName = Util.getQuarterlyReleaseName(),
             tvDeviceType = TvDeviceType.resolve(targetContext)
@@ -226,8 +288,17 @@ class DrmInspector(
         var hdrTypes: List<Int> = emptyList()
         var displayWidth = 0
         var displayHeight = 0
+        var activeModeString: String? = null
+        var supportedModesList: List<String> = emptyList()
+        var matchFrameRatePref: Int? = null
 
         val wideColorGamut = context.resources.configuration.isScreenWideColorGamut
+
+        if (VERSION.SDK_INT >= VERSION_CODES.S) {
+            matchFrameRatePref = runCatching {
+                context.getSystemService(DisplayManager::class.java)?.matchContentFrameRateUserPreference
+            }.getOrNull()
+        }
 
         val display = if (VERSION.SDK_INT >= VERSION_CODES.R) {
             runCatching { context.display }.getOrNull()
@@ -236,6 +307,14 @@ class DrmInspector(
         } ?: DisplayManagerCompat.getInstance(context).getDisplay(DEFAULT_DISPLAY)
 
         display?.let { activeDisplay ->
+            activeDisplay.mode?.let { currentMode ->
+                activeModeString = Util.formatDisplayMode(
+                    currentMode.physicalWidth,
+                    currentMode.physicalHeight,
+                    currentMode.refreshRate
+                )
+            }
+
             val nativePanelMode = activeDisplay.supportedModes.maxByOrNull {
                 it.physicalWidth.toLong() * it.physicalHeight.toLong()
             } ?: activeDisplay.mode
@@ -244,6 +323,19 @@ class DrmInspector(
                 displayWidth = mode.physicalWidth
                 displayHeight = mode.physicalHeight
             }
+
+            supportedModesList = activeDisplay.supportedModes
+                .asSequence()
+                .sortedWith(
+                    compareByDescending<android.view.Display.Mode> {
+                        it.physicalWidth.toLong() * it.physicalHeight.toLong()
+                    }.thenByDescending { it.refreshRate }
+                )
+                .mapNotNull { mode ->
+                    Util.formatDisplayMode(mode.physicalWidth, mode.physicalHeight, mode.refreshRate)
+                }
+                .distinct()
+                .toList()
 
             refreshRates = activeDisplay.supportedModes
                 .asSequence()
@@ -280,12 +372,15 @@ class DrmInspector(
             supportedRefreshRates = refreshRates,
             alternativeRefreshRates = alternativeRates,
             supportedHdrTypes = hdrTypes,
-            isWideColorGamut = wideColorGamut
+            isWideColorGamut = wideColorGamut,
+            activeMode = activeModeString,
+            supportedDisplayModes = supportedModesList,
+            matchContentFrameRatePreference = matchFrameRatePref
         )
     }
 
-    private fun probeAudioEncodings(): List<String> {
-        if (VERSION.SDK_INT < VERSION_CODES.Q) return emptyList()
+    private fun probeAudioEncodings(): Pair<List<String>, Map<String, String>> {
+        if (VERSION.SDK_INT < VERSION_CODES.Q) return emptyList<String>() to emptyMap()
 
         val attributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_MEDIA)
@@ -306,25 +401,41 @@ class DrmInspector(
             }
         }
 
-        return candidates.mapNotNull { (encoding, label) ->
+        val supportedLabels = mutableListOf<String>()
+        val detailsMap = linkedMapOf<String, String>()
+
+        for ((encoding, label) in candidates) {
             runCatching {
                 val format = AudioFormat.Builder()
                     .setEncoding(encoding)
                     .setSampleRate(48000)
                     .setChannelMask(AudioFormat.CHANNEL_OUT_5POINT1)
                     .build()
-                val isSupported = if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
-                    AudioManager.getDirectPlaybackSupport(
-                        format,
-                        attributes
-                    ) != AudioManager.DIRECT_PLAYBACK_NOT_SUPPORTED
+                if (VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
+                    val supportMask = AudioManager.getDirectPlaybackSupport(format, attributes)
+                    if (supportMask != AudioManager.DIRECT_PLAYBACK_NOT_SUPPORTED) {
+                        supportedLabels.add(label)
+                        val isBitstream = (supportMask and AudioManager.DIRECT_PLAYBACK_BITSTREAM_SUPPORTED) != 0
+                        val isOffload = (supportMask and AudioManager.DIRECT_PLAYBACK_OFFLOAD_SUPPORTED) != 0
+                        detailsMap[label] = when {
+                            isBitstream && isOffload -> "Bitstream (Passthrough) • Offload"
+                            isBitstream -> "Bitstream (HDMI / eARC Passthrough)"
+                            isOffload -> "Hardware Offload"
+                            else -> "Direct Playback"
+                        }
+                    }
                 } else {
                     @Suppress("DEPRECATION")
-                    AudioTrack.isDirectPlaybackSupported(format, attributes)
+                    val isSupported = AudioTrack.isDirectPlaybackSupported(format, attributes)
+                    if (isSupported) {
+                        supportedLabels.add(label)
+                        detailsMap[label] = "Direct Playback"
+                    }
                 }
-                if (isSupported) label else null
-            }.getOrNull()
+            }
         }
+
+        return supportedLabels to detailsMap
     }
 
     private class DrmSpec(
@@ -441,5 +552,8 @@ class DrmInspector(
 
         @Volatile
         private var cachedSecureDecoders: SortedSet<String>? = null
+
+        @Volatile
+        private var cachedCodecCapabilities: Map<String, String>? = null
     }
 }
