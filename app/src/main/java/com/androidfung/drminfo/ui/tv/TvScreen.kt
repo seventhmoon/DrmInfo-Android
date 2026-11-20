@@ -19,8 +19,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.FlexBox
+import androidx.compose.foundation.layout.FlexDirection
+import androidx.compose.foundation.layout.FlexWrap
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -120,7 +121,7 @@ private val TvBrandDarkColorScheme = darkColorScheme(
     onSurfaceVariant = Color(0xFFBFC8CB)
 )
 
-@OptIn(ExperimentalTvMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun TvScreen(
     state: DrmInfoUiState,
@@ -500,16 +501,20 @@ fun TvScreen(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun TvQuickStatusBadges(state: DrmInfoUiState) {
     val widevine = state.schemes.filterIsInstance<DrmSchemeState.Widevine>().firstOrNull()
     val securityLevel = widevine?.securityLevel
     val hdcp = widevine?.connectedHdcpLevel ?: widevine?.maxHdcpLevel
 
-    FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
+    FlexBox(
+        config = {
+            direction(FlexDirection.Row)
+            wrap(FlexWrap.Wrap)
+            rowGap(6.dp)
+            columnGap(8.dp)
+        }
     ) {
         state.device.tvDeviceType?.let { tvType ->
             if (tvType != TvDeviceType.ANDROID_NON_TV) {
@@ -1057,6 +1062,23 @@ internal fun buildCategorizedTvItems(
                     subItems = modeSubItems
                 )
             )
+        }
+        if (dev.displays.size > 1) {
+            dev.displays.drop(1).forEach { extraDisplay ->
+                val title = extraDisplay.name.ifBlank { context.getString(R.string.text_display_external) }
+                val res = Util.formatResolution(extraDisplay.width, extraDisplay.height)
+                val maxHz = extraDisplay.supportedRefreshRates.maxOrNull()?.let { "${Util.formatRefreshRates(listOf(it)).firstOrNull().orEmpty()}" }
+                val desc = listOfNotNull(res, maxHz).joinToString(" • ").ifEmpty {
+                    context.getString(R.string.text_display_inactive)
+                }
+                add(
+                    TvInfoItem(
+                        title = title,
+                        description = desc,
+                        badge = Util.getResolutionLabel(extraDisplay.width, extraDisplay.height)
+                    )
+                )
+            }
         }
     }
 

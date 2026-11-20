@@ -3,6 +3,9 @@ package com.androidfung.drminfo.ui.mobile
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
+import android.hardware.display.DisplayManager
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.compose.PredictiveBackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
@@ -14,7 +17,6 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -52,6 +54,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -88,7 +91,7 @@ import com.androidfung.drminfo.util.Util.toStringRes
 import java.util.concurrent.CancellationException
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MobileScreen(
     state: DrmInfoUiState,
@@ -149,6 +152,19 @@ fun MobileScreen(
     // Fast update display specs and preload ads when screen/window configuration (fold/unfold/rotate/split-screen) changes
     LaunchedEffect(windowSize, configuration.orientation) {
         onDisplayConfigurationChanged(context)
+    }
+
+    DisposableEffect(context) {
+        val displayManager = context.getSystemService(DisplayManager::class.java)
+        val listener = object : DisplayManager.DisplayListener {
+            override fun onDisplayAdded(displayId: Int) = onDisplayConfigurationChanged(context)
+            override fun onDisplayRemoved(displayId: Int) = onDisplayConfigurationChanged(context)
+            override fun onDisplayChanged(displayId: Int) = onDisplayConfigurationChanged(context)
+        }
+        displayManager?.registerDisplayListener(listener, Handler(Looper.getMainLooper()))
+        onDispose {
+            displayManager?.unregisterDisplayListener(listener)
+        }
     }
 
     var hasInitialPreloadedAd by rememberSaveable { mutableStateOf(false) }
@@ -639,6 +655,28 @@ private fun hasMatchingSystemContent(context: Context, device: DeviceInfo, query
 private fun hasMatchingDisplayContent(context: Context, device: DeviceInfo, query: String): Boolean {
     if (query.isBlank()) return true
     if (matchesQuery(query, context.getString(R.string.section_media_and_display))) return true
+    for (display in device.displays) {
+        if (display.name.isNotBlank() && matchesQuery(query, display.name)) return true
+        Util.formatResolution(display.width, display.height)?.let { resText ->
+            if (matchesQuery(query, context.getString(R.string.text_display_resolution), resText)) return true
+        }
+        if (display.supportedRefreshRates.isNotEmpty()) {
+            if (matchesQuery(query, context.getString(R.string.text_supported_refresh_rate))) return true
+            if (Util.formatRefreshRates(display.supportedRefreshRates).any { matchesQuery(query, it) }) return true
+        }
+        if (display.alternativeRefreshRates.isNotEmpty()) {
+            if (matchesQuery(query, context.getString(R.string.text_seamless_refresh_rate))) return true
+            if (Util.formatRefreshRates(display.alternativeRefreshRates).any { matchesQuery(query, it) }) return true
+        }
+        display.isWideColorGamut?.let { supported ->
+            val value = if (supported) context.getString(R.string.text_supported) else context.getString(R.string.text_not_supported)
+            if (matchesQuery(query, context.getString(R.string.text_wide_color), value)) return true
+        }
+        if (display.supportedHdrTypes.isNotEmpty()) {
+            if (matchesQuery(query, context.getString(R.string.text_supported_hdr_types))) return true
+            if (display.supportedHdrTypes.any { matchesQuery(query, context.getString(Util.convertHdrTypeToStringRes(it))) }) return true
+        }
+    }
     Util.formatResolution(device.displayWidth, device.displayHeight)?.let { resText ->
         if (matchesQuery(query, context.getString(R.string.text_display_resolution), resText)) return true
     }

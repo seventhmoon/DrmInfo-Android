@@ -8,14 +8,19 @@ plugins {
 
 android {
     namespace = "com.androidfung.drminfo"
-    compileSdk = 37
+
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 2
+        }
+    }
 
     defaultConfig {
         applicationId = "com.androidfung.drminfo"
         minSdk = 28
         targetSdk = 37
-        versionCode = 529
-        versionName = "1.3.1-261106"
+        versionCode = 530
+        versionName = "1.3.2-261108"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -90,6 +95,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.window)
 
     implementation(libs.ads.mobile.sdk)
     implementation(libs.user.messaging.platform)

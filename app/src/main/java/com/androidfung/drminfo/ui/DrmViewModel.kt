@@ -154,7 +154,8 @@ class DrmViewModel @JvmOverloads constructor(
      */
     fun updateDisplayInfo(context: Context) {
         viewModelScope.launch {
-            val displayInfo = repository.readDisplayInfo(context)
+            val allDisplays = repository.readAllDisplays(context)
+            val displayInfo = allDisplays.firstOrNull() ?: repository.readDisplayInfo(context)
             _state.update { current ->
                 current.copy(
                     device = current.device.copy(
@@ -166,7 +167,8 @@ class DrmViewModel @JvmOverloads constructor(
                         supportedRefreshRates = displayInfo.supportedRefreshRates,
                         alternativeRefreshRates = displayInfo.alternativeRefreshRates,
                         supportedHdrTypes = displayInfo.supportedHdrTypes,
-                        isWideColorGamut = displayInfo.isWideColorGamut ?: current.device.isWideColorGamut
+                        isWideColorGamut = displayInfo.isWideColorGamut ?: current.device.isWideColorGamut,
+                        displays = allDisplays
                     )
                 )
             }

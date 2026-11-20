@@ -338,6 +338,28 @@ object Util {
                 add("\"alternativeRefreshRates\": ${formatJsonStringArray(formatRefreshRates(dev.alternativeRefreshRates))}")
             }
             dev.isWideColorGamut?.let { add("\"wideColorGamut\": $it") }
+            if (dev.displays.size > 1) {
+                val displayJsonObjects = dev.displays.map { d ->
+                    val fields = buildList {
+                        add("\"id\": ${d.displayId}")
+                        if (d.name.isNotEmpty()) add("\"name\": \"${escapeJson(d.name)}\"")
+                        add("\"isDefault\": ${d.isDefault}")
+                        add("\"isActive\": ${d.isActive}")
+                        if (d.isRearDisplay) add("\"isRearDisplay\": true")
+                        formatResolution(d.width, d.height)?.let { add("\"resolution\": \"${escapeJson(it)}\"") }
+                        d.activeMode?.let { add("\"activeMode\": \"${escapeJson(it)}\"") }
+                        if (d.supportedHdrTypes.isNotEmpty()) {
+                            add("\"supportedHdrTypes\": ${formatJsonStringArray(formatHdrTypes(d.supportedHdrTypes, stringResolver))}")
+                        }
+                        if (d.supportedRefreshRates.isNotEmpty()) {
+                            add("\"supportedRefreshRates\": ${formatJsonStringArray(formatRefreshRates(d.supportedRefreshRates))}")
+                        }
+                        d.isWideColorGamut?.let { add("\"wideColorGamut\": $it") }
+                    }
+                    "{ ${fields.joinToString(", ")} }"
+                }
+                add("\"displays\": [${displayJsonObjects.joinToString(", ")}]")
+            }
             dev.spatialAudioSupported?.let { add("\"spatialAudio\": $it") }
             dev.headTrackingSupported?.let { add("\"headTracking\": $it") }
             if (dev.supportedAudioEncodings.isNotEmpty()) {
@@ -435,6 +457,15 @@ object Util {
         val modeOrRes = dev.activeDisplayMode ?: formatResolution(dev.displayWidth, dev.displayHeight)
         if (modeOrRes != null) {
             lines.add("Display: $modeOrRes")
+        }
+        if (dev.displays.size > 1) {
+            dev.displays.drop(1).forEach { extraDisplay ->
+                val extraModeOrRes = extraDisplay.activeMode ?: formatResolution(extraDisplay.width, extraDisplay.height)
+                if (extraModeOrRes != null) {
+                    val label = extraDisplay.name.ifBlank { "Secondary Display" }
+                    lines.add("$label: $extraModeOrRes")
+                }
+            }
         }
         if (dev.supportedHdrTypes.isNotEmpty()) {
             val hdr = formatHdrTypes(dev.supportedHdrTypes, stringResolver).joinToString(", ")

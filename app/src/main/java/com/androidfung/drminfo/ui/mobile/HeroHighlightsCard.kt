@@ -4,8 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.FlexBox
+import androidx.compose.foundation.layout.FlexDirection
+import androidx.compose.foundation.layout.FlexWrap
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,7 +35,6 @@ enum class HighlightLevel {
     ERROR
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HeroHighlightsCard(
     state: DrmInfoUiState,
@@ -59,10 +59,13 @@ fun HeroHighlightsCard(
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
+            FlexBox(
+                modifier = Modifier.fillMaxWidth(),
+                config = {
+                    direction(FlexDirection.Row)
+                    wrap(FlexWrap.Wrap)
+                    gap(8.dp)
+                }
             ) {
                 // 1. Build Identifier
                 val buildRaw = state.device.buildId.ifEmpty {

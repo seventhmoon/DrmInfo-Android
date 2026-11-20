@@ -81,6 +81,10 @@
     <string name="text_spatial_audio">Spatial Audio</string>
     <string name="text_head_tracking">Head Tracking</string>
     <string name="text_display_resolution">Display Resolution</string>
+    <string name="text_display_primary">Primary Display</string>
+    <string name="text_display_rear">Rear / Cover Display</string>
+    <string name="text_display_external">External Display</string>
+    <string name="text_display_inactive">Inactive</string>
     <string name="message_copied_to_clipboard">%1$s copied to clipboard</string>
 
     <!-- Search & Filter -->

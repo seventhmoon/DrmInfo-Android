@@ -16,9 +16,14 @@ interface DrmRepository {
     suspend fun inspectAll(activeContext: Context? = null): Pair<DeviceInfo, List<DrmSchemeState>>
 
     /**
-     * Reads display info (resolution, refresh rates, HDR types).
+     * Reads display info (resolution, refresh rates, HDR types) for the primary display.
      */
     fun readDisplayInfo(context: Context): DisplayInfo
+
+    /**
+     * Reads display info for all available displays (primary, external, built-in, and rear displays).
+     */
+    suspend fun readAllDisplays(context: Context): List<DisplayInfo> = listOf(readDisplayInfo(context))
 
     /**
      * Releases any held MediaDrm instances.

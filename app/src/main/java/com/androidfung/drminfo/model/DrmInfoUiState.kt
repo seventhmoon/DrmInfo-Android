@@ -31,6 +31,11 @@ enum class HdcpLevel {
  */
 @Immutable
 data class DisplayInfo(
+    val displayId: Int = 0,
+    val name: String = "",
+    val isDefault: Boolean = true,
+    val isRearDisplay: Boolean = false,
+    val isActive: Boolean = true,
     val width: Int = 0,
     val height: Int = 0,
     val supportedRefreshRates: List<Float> = emptyList(),
@@ -81,6 +86,7 @@ data class DeviceInfo(
     val activeDisplayMode: String? = null,
     val supportedDisplayModes: List<String> = emptyList(),
     val matchContentFrameRatePreference: Int? = null,
+    val displays: List<DisplayInfo> = emptyList(),
     val supportedAudioEncodings: List<String> = emptyList(),
     val audioEncodingDetails: Map<String, String> = emptyMap(),
     val releaseChannel: ReleaseChannel? = null,
@@ -95,7 +101,8 @@ data class DeviceInfo(
         get() = socManufacturer != null || socModel != null || mediaPerformanceClass != null || spatialAudioSupported != null
 
     val hasDisplayInfo: Boolean
-        get() = (displayWidth > 0 && displayHeight > 0) ||
+        get() = displays.isNotEmpty() ||
+                (displayWidth > 0 && displayHeight > 0) ||
                 supportedRefreshRates.isNotEmpty() ||
                 alternativeRefreshRates.isNotEmpty() ||
                 supportedHdrTypes.isNotEmpty() ||

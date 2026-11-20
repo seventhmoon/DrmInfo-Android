@@ -14,8 +14,14 @@ import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.util.Log
+import android.view.Display
 import android.view.Display.DEFAULT_DISPLAY
 import androidx.core.hardware.display.DisplayManagerCompat
+import androidx.core.hardware.display.ExperimentalDisplayApi
+import androidx.core.view.DisplayCompat
+import androidx.window.area.WindowAreaController
+import androidx.window.area.WindowAreaInfo
+import androidx.window.core.ExperimentalWindowApi
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.model.DeviceInfo
 import com.androidfung.drminfo.model.DisplayInfo
@@ -30,6 +36,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * Inspects device hardware capabilities, codecs, display modes, and DRM schemes.
@@ -45,7 +54,7 @@ class DrmInspector(
         val targetContext = activeContext ?: appContext
 
         // Concurrently inspect display specs, hardware codecs, and audio formats in parallel
-        val displayDeferred = async(ioDispatcher) { readDisplayInfo(targetContext) }
+        val displaysDeferred = async(ioDispatcher) { readAllDisplays(targetContext) }
         val codecsDeferred = async(ioDispatcher) { queryHardwareCodecs() }
         val audioDeferred = async(ioDispatcher) { probeAudioEncodings() }
 
@@ -54,13 +63,13 @@ class DrmInspector(
             async(ioDispatcher) { readDrmScheme(spec) }
         }
 
-        val displayInfo = displayDeferred.await()
+        val displays = displaysDeferred.await()
         val codecResult = codecsDeferred.await()
         val (audioEncodings, audioDetails) = audioDeferred.await()
 
         val deviceInfo = buildDeviceInfoInternal(
             targetContext = targetContext,
-            displayInfo = displayInfo,
+            displays = displays,
             hardwareEncoders = codecResult.encoders,
             hardwareDecoders = codecResult.decoders,
             secureDecoders = codecResult.secureDecoders,
@@ -79,7 +88,7 @@ class DrmInspector(
         val (audioEncodings, audioDetails) = probeAudioEncodings()
         return buildDeviceInfoInternal(
             targetContext = targetContext,
-            displayInfo = displayInfo,
+            displays = listOf(displayInfo),
             hardwareEncoders = codecResult.encoders,
             hardwareDecoders = codecResult.decoders,
             secureDecoders = codecResult.secureDecoders,
@@ -193,7 +202,7 @@ class DrmInspector(
 
     private fun buildDeviceInfoInternal(
         targetContext: Context,
-        displayInfo: DisplayInfo,
+        displays: List<DisplayInfo>,
         hardwareEncoders: List<String>,
         hardwareDecoders: List<String>,
         secureDecoders: List<String>,
@@ -201,6 +210,7 @@ class DrmInspector(
         audioEncodings: List<String>,
         audioEncodingDetails: Map<String, String>
     ): DeviceInfo {
+        val displayInfo = displays.firstOrNull() ?: DisplayInfo()
         val wideColorGamut = targetContext.resources.configuration.isScreenWideColorGamut
 
         val releaseOrCodename = if (VERSION.SDK_INT >= VERSION_CODES.R) {
@@ -274,6 +284,7 @@ class DrmInspector(
             activeDisplayMode = displayInfo.activeMode,
             supportedDisplayModes = displayInfo.supportedDisplayModes,
             matchContentFrameRatePreference = displayInfo.matchContentFrameRatePreference,
+            displays = displays,
             supportedAudioEncodings = audioEncodings,
             audioEncodingDetails = audioEncodingDetails,
             releaseChannel = Util.detectReleaseChannel(),
@@ -283,90 +294,217 @@ class DrmInspector(
     }
 
     override fun readDisplayInfo(context: Context): DisplayInfo {
-        var refreshRates: List<Float> = emptyList()
-        var alternativeRates: List<Float> = emptyList()
-        var hdrTypes: List<Int> = emptyList()
-        var displayWidth = 0
-        var displayHeight = 0
-        var activeModeString: String? = null
-        var supportedModesList: List<String> = emptyList()
-        var matchFrameRatePref: Int? = null
+        val matchFrameRatePref = readMatchContentFrameRatePreference(context)
+        val activeDisplay = getActiveDisplay(context)
+        return if (activeDisplay != null) {
+            inspectSingleDisplay(
+                context = context,
+                display = activeDisplay,
+                matchFrameRatePref = matchFrameRatePref,
+                isActiveContextDisplay = true
+            )
+        } else {
+            DisplayInfo(
+                isWideColorGamut = context.resources.configuration.isScreenWideColorGamut,
+                matchContentFrameRatePreference = matchFrameRatePref
+            )
+        }
+    }
 
-        val wideColorGamut = context.resources.configuration.isScreenWideColorGamut
+    @OptIn(ExperimentalDisplayApi::class, ExperimentalWindowApi::class)
+    override suspend fun readAllDisplays(context: Context): List<DisplayInfo> {
+        val matchFrameRatePref = readMatchContentFrameRatePreference(context)
+        val displayManagerCompat = DisplayManagerCompat.getInstance(context)
+        val activeDisplay = getActiveDisplay(context)
+        val activeDisplayId = activeDisplay?.displayId ?: DEFAULT_DISPLAY
 
-        if (VERSION.SDK_INT >= VERSION_CODES.S) {
-            matchFrameRatePref = runCatching {
-                context.getSystemService(DisplayManager::class.java)?.matchContentFrameRateUserPreference
-            }.getOrNull()
+        val discoveredDisplays = linkedMapOf<Int, Display>()
+        activeDisplay?.let { discoveredDisplays[it.displayId] = it }
+
+        runCatching {
+            displayManagerCompat.displays.forEach { d ->
+                discoveredDisplays.putIfAbsent(d.displayId, d)
+            }
         }
 
-        val display = if (VERSION.SDK_INT >= VERSION_CODES.R) {
+        if (VERSION.SDK_INT >= VERSION_CODES.BAKLAVA) {
+            runCatching {
+                displayManagerCompat.getDisplays(DisplayManagerCompat.DISPLAY_CATEGORY_BUILT_IN_DISPLAYS)
+                    .forEach { d -> discoveredDisplays.putIfAbsent(d.displayId, d) }
+            }
+        }
+
+        val result = discoveredDisplays.values.map { display ->
+            inspectSingleDisplay(
+                context = context,
+                display = display,
+                matchFrameRatePref = if (display.displayId == activeDisplayId) matchFrameRatePref else null,
+                isActiveContextDisplay = (display.displayId == activeDisplayId)
+            )
+        }.toMutableList()
+
+        // Supplement with Jetpack WindowManager WindowAreaController for dormant foldable/flip rear displays
+        val rearAreaDimensions = runCatching {
+            withTimeoutOrNull(250L) {
+                withContext(Dispatchers.Main.immediate) {
+                    val infos = WindowAreaController.getOrCreate().windowAreaInfos.first()
+                    infos.firstOrNull { it.type == WindowAreaInfo.Type.TYPE_REAR_FACING }?.let { rearInfo ->
+                        val bounds = rearInfo.metrics.bounds
+                        bounds.width() to bounds.height()
+                    }
+                }
+            }
+        }.getOrNull()
+
+        if (rearAreaDimensions != null) {
+            val (rearW, rearH) = rearAreaDimensions
+            if (rearW > 0 && rearH > 0) {
+                val alreadyRepresented = result.size > 1 && result.any { existing ->
+                    !existing.isDefault && (
+                        (existing.width == rearW && existing.height == rearH) ||
+                            (existing.width == rearH && existing.height == rearW)
+                        )
+                }
+                if (!alreadyRepresented) {
+                    result.add(
+                        DisplayInfo(
+                            displayId = -1,
+                            name = context.getString(R.string.text_display_rear),
+                            isDefault = false,
+                            isRearDisplay = true,
+                            isActive = false,
+                            width = rearW,
+                            height = rearH
+                        )
+                    )
+                }
+            }
+        }
+
+        return result.ifEmpty {
+            listOf(readDisplayInfo(context))
+        }
+    }
+
+    private fun readMatchContentFrameRatePreference(context: Context): Int? {
+        if (VERSION.SDK_INT < VERSION_CODES.S) return null
+        return runCatching {
+            context.getSystemService(DisplayManager::class.java)?.matchContentFrameRateUserPreference
+        }.getOrNull()
+    }
+
+    private fun getActiveDisplay(context: Context): Display? {
+        return if (VERSION.SDK_INT >= VERSION_CODES.R) {
             runCatching { context.display }.getOrNull()
         } else {
             null
         } ?: DisplayManagerCompat.getInstance(context).getDisplay(DEFAULT_DISPLAY)
+    }
 
-        display?.let { activeDisplay ->
-            activeDisplay.mode?.let { currentMode ->
-                activeModeString = Util.formatDisplayMode(
-                    currentMode.physicalWidth,
-                    currentMode.physicalHeight,
-                    currentMode.refreshRate
-                )
-            }
+    private fun inspectSingleDisplay(
+        context: Context,
+        display: Display,
+        matchFrameRatePref: Int?,
+        isActiveContextDisplay: Boolean
+    ): DisplayInfo {
+        var displayWidth = 0
+        var displayHeight = 0
+        var activeModeString: String? = null
+        var supportedModesList: List<String> = emptyList()
+        var refreshRates: List<Float> = emptyList()
+        var alternativeRates: List<Float> = emptyList()
+        var hdrTypes: List<Int> = emptyList()
 
-            val nativePanelMode = activeDisplay.supportedModes.maxByOrNull {
+        val wideColorGamut: Boolean? = if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            runCatching { display.isWideColorGamut }.getOrNull()
+        } else {
+            null
+        } ?: if (isActiveContextDisplay) context.resources.configuration.isScreenWideColorGamut else null
+
+        display.mode?.let { currentMode ->
+            activeModeString = Util.formatDisplayMode(
+                currentMode.physicalWidth,
+                currentMode.physicalHeight,
+                currentMode.refreshRate
+            )
+        }
+
+        val compatModes = runCatching { DisplayCompat.getSupportedModes(context, display) }
+            .getOrNull()
+            ?.takeIf { it.isNotEmpty() }
+
+        if (compatModes != null) {
+            val nativePanelMode = compatModes.maxByOrNull {
                 it.physicalWidth.toLong() * it.physicalHeight.toLong()
-            } ?: activeDisplay.mode
-
+            }
             nativePanelMode?.let { mode ->
                 displayWidth = mode.physicalWidth
                 displayHeight = mode.physicalHeight
             }
-
-            supportedModesList = activeDisplay.supportedModes
-                .asSequence()
-                .sortedWith(
-                    compareByDescending<android.view.Display.Mode> {
-                        it.physicalWidth.toLong() * it.physicalHeight.toLong()
-                    }.thenByDescending { it.refreshRate }
-                )
-                .mapNotNull { mode ->
-                    Util.formatDisplayMode(mode.physicalWidth, mode.physicalHeight, mode.refreshRate)
-                }
-                .distinct()
-                .toList()
-
-            refreshRates = activeDisplay.supportedModes
-                .asSequence()
-                .map { mode -> mode.refreshRate }
-                .distinct()
-                .sorted()
-                .toList()
-
-            if (VERSION.SDK_INT >= VERSION_CODES.S) {
-                alternativeRates =
-                    activeDisplay.mode.alternativeRefreshRates.asSequence()
-                        .filter { rate -> rate > 0 }
-                        .distinct()
-                        .sorted()
-                        .toList()
-            }
-
-            @Suppress("DEPRECATION")
-            val rawHdrTypes: IntArray? = if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                runCatching { activeDisplay.mode.supportedHdrTypes }
-                    .getOrElse { activeDisplay.hdrCapabilities?.supportedHdrTypes }
-            } else {
-                activeDisplay.hdrCapabilities?.supportedHdrTypes
-            }
-
-            if (rawHdrTypes != null && rawHdrTypes.isNotEmpty()) {
-                hdrTypes = rawHdrTypes.toList()
+        } else {
+            val nativePanelMode = display.supportedModes.maxByOrNull {
+                it.physicalWidth.toLong() * it.physicalHeight.toLong()
+            } ?: display.mode
+            nativePanelMode?.let { mode ->
+                displayWidth = mode.physicalWidth
+                displayHeight = mode.physicalHeight
             }
         }
 
+        supportedModesList = display.supportedModes
+            .asSequence()
+            .sortedWith(
+                compareByDescending<Display.Mode> {
+                    it.physicalWidth.toLong() * it.physicalHeight.toLong()
+                }.thenByDescending { it.refreshRate }
+            )
+            .mapNotNull { mode ->
+                Util.formatDisplayMode(mode.physicalWidth, mode.physicalHeight, mode.refreshRate)
+            }
+            .distinct()
+            .toList()
+
+        refreshRates = display.supportedModes
+            .asSequence()
+            .map { mode -> mode.refreshRate }
+            .distinct()
+            .sorted()
+            .toList()
+
+        if (VERSION.SDK_INT >= VERSION_CODES.S) {
+            alternativeRates = display.mode?.alternativeRefreshRates
+                ?.asSequence()
+                ?.filter { rate -> rate > 0 }
+                ?.distinct()
+                ?.sorted()
+                ?.toList()
+                .orEmpty()
+        }
+
+        @Suppress("DEPRECATION")
+        val rawHdrTypes: IntArray? = if (VERSION.SDK_INT >= VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            runCatching { display.mode?.supportedHdrTypes }
+                .getOrElse { display.hdrCapabilities?.supportedHdrTypes }
+        } else {
+            display.hdrCapabilities?.supportedHdrTypes
+        }
+
+        if (rawHdrTypes != null && rawHdrTypes.isNotEmpty()) {
+            hdrTypes = rawHdrTypes.toList()
+        }
+
+        val fallbackName = if (display.displayId == DEFAULT_DISPLAY) {
+            context.getString(R.string.text_display_primary)
+        } else {
+            "${context.getString(R.string.text_display_external)} #${display.displayId}"
+        }
+
         return DisplayInfo(
+            displayId = display.displayId,
+            name = display.name?.takeIf { it.isNotBlank() } ?: fallbackName,
+            isDefault = (display.displayId == DEFAULT_DISPLAY),
+            isRearDisplay = false,
+            isActive = (display.state != Display.STATE_OFF),
             width = displayWidth,
             height = displayHeight,
             supportedRefreshRates = refreshRates,

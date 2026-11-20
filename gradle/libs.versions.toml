@@ -3,27 +3,28 @@ agp = "9.5.1"
 coreKtx = "1.19.1"
 coreSplashscreen = "1.2.0"
 espressoCore = "3.7.0"
-firebaseBom = "35.1.0"
+firebaseBom = "35.2.0"
 googleFirebaseCrashlytics = "3.0.8"
 googleFirebaseFirebasePerf = "2.0.2"
-googleGmsGoogleServices = "4.5.0"
+googleGmsGoogleServices = "4.6.0"
 junit = "1.3.0"
 junitVersion = "4.13.2"
 kotlin = "2.4.21"
 kotlinxCoroutines = "1.11.0"
 leakcanaryAndroid = "2.14"
-lifecycle = "2.11.0"
+lifecycle = "2.11.1"
 material = "1.14.0"
 
-composeBom = "2026.09.00"
+composeBom = "2026.11.01"
 activityCompose = "1.13.0"
 
-adsMobileSdk = "1.6.0"
+adsMobileSdk = "1.7.0"
 playAppUpdate = "2.1.0"
 userMessagingPlatform = "4.0.0"
 
 tvMaterial = "1.1.0"
 profileinstaller = "1.4.1"
+window = "1.5.1"
 
 [libraries]
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -56,6 +57,7 @@ user-messaging-platform = { group = "com.google.android.ump", name = "user-messa
 ads-mobile-sdk = { group = "com.google.android.libraries.ads.mobile.sdk", name = "ads-mobile-sdk", version.ref = "adsMobileSdk" }
 androidx-tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tvMaterial" }
 androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profileinstaller" }
+androidx-window = { group = "androidx.window", name = "window", version.ref = "window" }
 
 [bundles]
 compose = [

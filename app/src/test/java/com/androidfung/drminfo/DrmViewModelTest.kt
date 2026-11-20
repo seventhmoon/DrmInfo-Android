@@ -55,6 +55,13 @@ class DrmViewModelTest {
             return DisplayInfo(width = 1080, height = 2400)
         }
 
+        override suspend fun readAllDisplays(context: Context): List<DisplayInfo> {
+            return listOf(
+                DisplayInfo(displayId = 0, name = "Built-in", isDefault = true, width = 1080, height = 2400),
+                DisplayInfo(displayId = 2, name = "External HDMI", isDefault = false, width = 3840, height = 2160)
+            )
+        }
+
         override fun releaseAll() {
             releaseAllCalled = true
         }
@@ -106,6 +113,8 @@ class DrmViewModelTest {
 
         assertEquals(1080, viewModel.state.value.device.displayWidth)
         assertEquals(2400, viewModel.state.value.device.displayHeight)
+        assertEquals(2, viewModel.state.value.device.displays.size)
+        assertEquals("External HDMI", viewModel.state.value.device.displays[1].name)
     }
 
     @Test

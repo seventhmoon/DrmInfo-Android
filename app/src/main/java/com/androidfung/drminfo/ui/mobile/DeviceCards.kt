@@ -1,12 +1,13 @@
 package com.androidfung.drminfo.ui.mobile
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.FlexBox
+import androidx.compose.foundation.layout.FlexDirection
+import androidx.compose.foundation.layout.FlexWrap
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,12 +17,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.androidfung.drminfo.R
 import com.androidfung.drminfo.model.DeviceInfo
+import com.androidfung.drminfo.model.DisplayInfo
 import com.androidfung.drminfo.ui.components.InfoCardContainer
 import com.androidfung.drminfo.ui.components.LabelValueItem
 import com.androidfung.drminfo.ui.components.TagChip
 import com.androidfung.drminfo.util.Util
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HardwareCard(
     device: DeviceInfo,
@@ -59,22 +60,11 @@ fun HardwareCard(
                 device.abis.filter { matchesQuery(effectiveQuery, it) }
             }
             if (matchingAbis.isNotEmpty()) {
-                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
-                    Text(
-                        text = abiLabel,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        matchingAbis.forEach { abi ->
-                            TagChip(text = abi, allowCopy = true, onCopy = onCopyText)
-                        }
-                    }
-                }
+                TagChipGroup(
+                    label = abiLabel,
+                    items = matchingAbis,
+                    onCopyText = onCopyText
+                )
             }
         }
     }
@@ -110,7 +100,6 @@ fun SystemCard(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MediaDisplayCard(
     device: DeviceInfo,
@@ -127,115 +116,39 @@ fun MediaDisplayCard(
         iconRes = R.drawable.ic_tv,
         modifier = modifier
     ) {
-        Util.formatResolution(device.displayWidth, device.displayHeight)?.let { resolutionText ->
-            val label = stringResource(id = R.string.text_display_resolution)
-            if (matchesQuery(effectiveQuery, label, resolutionText)) {
-                LabelValueItem(
-                    label = label,
-                    value = resolutionText,
-                    allowCopy = true,
-                    onCopy = onCopy
+        val displaysToShow = if (device.displays.isNotEmpty()) {
+            device.displays
+        } else {
+            listOf(
+                DisplayInfo(
+                    width = device.displayWidth,
+                    height = device.displayHeight,
+                    supportedRefreshRates = device.supportedRefreshRates,
+                    alternativeRefreshRates = device.alternativeRefreshRates,
+                    supportedHdrTypes = device.supportedHdrTypes,
+                    isWideColorGamut = device.isWideColorGamut,
+                    activeMode = device.activeDisplayMode,
+                    supportedDisplayModes = device.supportedDisplayModes,
+                    matchContentFrameRatePreference = device.matchContentFrameRatePreference
+                )
+            )
+        }
+        val showDisplayHeader = displaysToShow.size > 1
+
+        displaysToShow.forEachIndexed { index, display ->
+            if (index > 0) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.listitem_padding)),
+                    color = MaterialTheme.colorScheme.outlineVariant
                 )
             }
-        }
-
-        if (device.supportedRefreshRates.isNotEmpty()) {
-            val label = stringResource(id = R.string.text_supported_refresh_rate)
-            val uniqueRates = Util.formatRefreshRates(device.supportedRefreshRates)
-            val matchingRates = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, label)) {
-                uniqueRates
-            } else {
-                uniqueRates.filter { matchesQuery(effectiveQuery, it) }
-            }
-            if (matchingRates.isNotEmpty()) {
-                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        matchingRates.forEach { rateText ->
-                            TagChip(text = rateText, allowCopy = true, onCopy = onCopyText)
-                        }
-                    }
-                }
-            }
-        }
-
-        if (device.alternativeRefreshRates.isNotEmpty()) {
-            val label = stringResource(id = R.string.text_seamless_refresh_rate)
-            val uniqueAltRates = Util.formatRefreshRates(device.alternativeRefreshRates)
-            val matchingAltRates = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, label)) {
-                uniqueAltRates
-            } else {
-                uniqueAltRates.filter { matchesQuery(effectiveQuery, it) }
-            }
-            if (matchingAltRates.isNotEmpty()) {
-                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        matchingAltRates.forEach { rateText ->
-                            TagChip(text = rateText, allowCopy = true, onCopy = onCopyText)
-                        }
-                    }
-                }
-            }
-        }
-
-        device.isWideColorGamut?.let { supported ->
-            val label = stringResource(id = R.string.text_wide_color)
-            val value = if (supported) stringResource(id = R.string.text_supported) else stringResource(id = R.string.text_not_supported)
-            if (matchesQuery(effectiveQuery, label, value)) {
-                LabelValueItem(
-                    label = label,
-                    value = value,
-                    allowCopy = true,
-                    onCopy = onCopy
-                )
-            }
-        }
-
-        if (device.supportedHdrTypes.isNotEmpty()) {
-            val label = stringResource(id = R.string.text_supported_hdr_types)
-            val hdrTypeNames = device.supportedHdrTypes
-                .map { id -> stringResource(id = Util.convertHdrTypeToStringRes(id)) }
-                .sorted()
-            val matchingHdr = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, label)) {
-                hdrTypeNames
-            } else {
-                hdrTypeNames.filter { matchesQuery(effectiveQuery, it) }
-            }
-            if (matchingHdr.isNotEmpty()) {
-                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        matchingHdr.forEach { name ->
-                            TagChip(text = name, allowCopy = true, onCopy = onCopyText)
-                        }
-                    }
-                }
-            }
+            DisplaySectionContent(
+                display = display,
+                showHeader = showDisplayHeader,
+                effectiveQuery = effectiveQuery,
+                onCopy = onCopy,
+                onCopyText = onCopyText
+            )
         }
 
         if (device.hardwareDecoders.isNotEmpty()) {
@@ -246,22 +159,11 @@ fun MediaDisplayCard(
                 device.hardwareDecoders.filter { matchesQuery(effectiveQuery, it) }
             }
             if (matchingDecoders.isNotEmpty()) {
-                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        matchingDecoders.forEach { codec ->
-                            TagChip(text = codec, allowCopy = true, onCopy = onCopyText)
-                        }
-                    }
-                }
+                TagChipGroup(
+                    label = label,
+                    items = matchingDecoders,
+                    onCopyText = onCopyText
+                )
             }
         }
 
@@ -273,22 +175,11 @@ fun MediaDisplayCard(
                 device.secureDecoders.filter { matchesQuery(effectiveQuery, it) }
             }
             if (matchingSecureDecoders.isNotEmpty()) {
-                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        matchingSecureDecoders.forEach { codec ->
-                            TagChip(text = codec, allowCopy = true, onCopy = onCopyText)
-                        }
-                    }
-                }
+                TagChipGroup(
+                    label = label,
+                    items = matchingSecureDecoders,
+                    onCopyText = onCopyText
+                )
             }
         }
 
@@ -300,28 +191,16 @@ fun MediaDisplayCard(
                 device.hardwareEncoders.filter { matchesQuery(effectiveQuery, it) }
             }
             if (matchingEncoders.isNotEmpty()) {
-                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        matchingEncoders.forEach { codec ->
-                            TagChip(text = codec, allowCopy = true, onCopy = onCopyText)
-                        }
-                    }
-                }
+                TagChipGroup(
+                    label = label,
+                    items = matchingEncoders,
+                    onCopyText = onCopyText
+                )
             }
         }
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AudioCard(
     device: DeviceInfo,
@@ -372,22 +251,162 @@ fun AudioCard(
                 device.supportedAudioEncodings.filter { matchesQuery(effectiveQuery, it) }
             }
             if (matchingEncodings.isNotEmpty()) {
-                Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        matchingEncodings.forEach { format ->
-                            TagChip(text = format, allowCopy = true, onCopy = onCopyText)
-                        }
-                    }
-                }
+                TagChipGroup(
+                    label = label,
+                    items = matchingEncodings,
+                    onCopyText = onCopyText
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DisplaySectionContent(
+    display: DisplayInfo,
+    showHeader: Boolean,
+    effectiveQuery: String,
+    onCopy: ((label: String, value: String) -> Unit)?,
+    onCopyText: ((text: String) -> Unit)?
+) {
+    val displayTitle = if (display.name.isNotBlank()) {
+        if (!display.isActive) {
+            "${display.name} (${stringResource(id = R.string.text_display_inactive)})"
+        } else {
+            display.name
+        }
+    } else if (display.isRearDisplay) {
+        stringResource(id = R.string.text_display_rear)
+    } else if (display.isDefault) {
+        stringResource(id = R.string.text_display_primary)
+    } else {
+        stringResource(id = R.string.text_display_external)
+    }
+
+    val displayQuery = if (effectiveQuery.isNotBlank() && showHeader && matchesQuery(effectiveQuery, displayTitle)) {
+        ""
+    } else {
+        effectiveQuery
+    }
+
+    val resolutionText = Util.formatResolution(display.width, display.height)
+    val resLabel = stringResource(id = R.string.text_display_resolution)
+    val showResolution = resolutionText != null && matchesQuery(displayQuery, resLabel, resolutionText)
+
+    val ratesLabel = stringResource(id = R.string.text_supported_refresh_rate)
+    val uniqueRates = Util.formatRefreshRates(display.supportedRefreshRates)
+    val matchingRates = if (displayQuery.isBlank() || matchesQuery(displayQuery, ratesLabel)) {
+        uniqueRates
+    } else {
+        uniqueRates.filter { matchesQuery(displayQuery, it) }
+    }
+
+    val altRatesLabel = stringResource(id = R.string.text_seamless_refresh_rate)
+    val uniqueAltRates = Util.formatRefreshRates(display.alternativeRefreshRates)
+    val matchingAltRates = if (displayQuery.isBlank() || matchesQuery(displayQuery, altRatesLabel)) {
+        uniqueAltRates
+    } else {
+        uniqueAltRates.filter { matchesQuery(displayQuery, it) }
+    }
+
+    val wideColorLabel = stringResource(id = R.string.text_wide_color)
+    val wideColorValue = display.isWideColorGamut?.let { supported ->
+        if (supported) stringResource(id = R.string.text_supported) else stringResource(id = R.string.text_not_supported)
+    }
+    val showWideColor = wideColorValue != null && matchesQuery(displayQuery, wideColorLabel, wideColorValue)
+
+    val hdrLabel = stringResource(id = R.string.text_supported_hdr_types)
+    val hdrTypeNames = display.supportedHdrTypes
+        .map { id -> stringResource(id = Util.convertHdrTypeToStringRes(id)) }
+        .sorted()
+    val matchingHdr = if (displayQuery.isBlank() || matchesQuery(displayQuery, hdrLabel)) {
+        hdrTypeNames
+    } else {
+        hdrTypeNames.filter { matchesQuery(displayQuery, it) }
+    }
+
+    val hasAnyContent = showResolution ||
+        matchingRates.isNotEmpty() ||
+        matchingAltRates.isNotEmpty() ||
+        showWideColor ||
+        matchingHdr.isNotEmpty()
+
+    if (!hasAnyContent) return
+
+    if (showHeader) {
+        Text(
+            text = displayTitle,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(top = 4.dp, bottom = 2.dp)
+        )
+    }
+
+    if (showResolution) {
+        LabelValueItem(
+            label = resLabel,
+            value = resolutionText,
+            allowCopy = true,
+            onCopy = onCopy
+        )
+    }
+
+    if (matchingRates.isNotEmpty()) {
+        TagChipGroup(
+            label = ratesLabel,
+            items = matchingRates,
+            onCopyText = onCopyText
+        )
+    }
+
+    if (matchingAltRates.isNotEmpty()) {
+        TagChipGroup(
+            label = altRatesLabel,
+            items = matchingAltRates,
+            onCopyText = onCopyText
+        )
+    }
+
+    if (showWideColor) {
+        LabelValueItem(
+            label = wideColorLabel,
+            value = wideColorValue,
+            allowCopy = true,
+            onCopy = onCopy
+        )
+    }
+
+    if (matchingHdr.isNotEmpty()) {
+        TagChipGroup(
+            label = hdrLabel,
+            items = matchingHdr,
+            onCopyText = onCopyText
+        )
+    }
+}
+
+@Composable
+private fun TagChipGroup(
+    label: String,
+    items: List<String>,
+    onCopyText: ((text: String) -> Unit)? = null
+) {
+    Column(modifier = Modifier.padding(top = dimensionResource(id = R.dimen.listitem_padding))) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        FlexBox(
+            config = {
+                direction(FlexDirection.Row)
+                wrap(FlexWrap.Wrap)
+                gap(6.dp)
+            }
+        ) {
+            items.forEach { item ->
+                TagChip(text = item, allowCopy = true, onCopy = onCopyText)
             }
         }
     }
