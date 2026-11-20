@@ -148,12 +148,15 @@ class DrmViewModel @JvmOverloads constructor(
         }
     }
 
+    private var displayUpdateJob: kotlinx.coroutines.Job? = null
+
     /**
      * Fast update for dynamic display metrics (resolution, refresh rates, HDR)
      * without re-inspecting DRM or hardware decoders.
      */
     fun updateDisplayInfo(context: Context) {
-        viewModelScope.launch {
+        displayUpdateJob?.cancel()
+        displayUpdateJob = viewModelScope.launch {
             val allDisplays = repository.readAllDisplays(context)
             val displayInfo = allDisplays.firstOrNull() ?: repository.readDisplayInfo(context)
             _state.update { current ->

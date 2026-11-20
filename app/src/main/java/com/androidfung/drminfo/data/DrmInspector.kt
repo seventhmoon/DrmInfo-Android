@@ -19,6 +19,7 @@ import android.view.Display.DEFAULT_DISPLAY
 import androidx.core.hardware.display.DisplayManagerCompat
 import androidx.core.hardware.display.ExperimentalDisplayApi
 import androidx.core.view.DisplayCompat
+import androidx.window.area.WindowAreaCapability
 import androidx.window.area.WindowAreaController
 import androidx.window.area.WindowAreaInfo
 import androidx.window.core.ExperimentalWindowApi
@@ -348,7 +349,15 @@ class DrmInspector(
             withTimeoutOrNull(250L) {
                 withContext(Dispatchers.Main.immediate) {
                     val infos = WindowAreaController.getOrCreate().windowAreaInfos.first()
-                    infos.firstOrNull { it.type == WindowAreaInfo.Type.TYPE_REAR_FACING }?.let { rearInfo ->
+                    infos.firstOrNull { info ->
+                        if (info.type != WindowAreaInfo.Type.TYPE_REAR_FACING) return@firstOrNull false
+                        val transferStatus = info.getCapability(WindowAreaCapability.Operation.OPERATION_TRANSFER_ACTIVITY_TO_AREA).status
+                        val presentStatus = info.getCapability(WindowAreaCapability.Operation.OPERATION_PRESENT_ON_AREA).status
+                        transferStatus == WindowAreaCapability.Status.WINDOW_AREA_STATUS_AVAILABLE ||
+                            transferStatus == WindowAreaCapability.Status.WINDOW_AREA_STATUS_ACTIVE ||
+                            presentStatus == WindowAreaCapability.Status.WINDOW_AREA_STATUS_AVAILABLE ||
+                            presentStatus == WindowAreaCapability.Status.WINDOW_AREA_STATUS_ACTIVE
+                    }?.let { rearInfo ->
                         val bounds = rearInfo.metrics.bounds
                         bounds.width() to bounds.height()
                     }
@@ -359,11 +368,9 @@ class DrmInspector(
         if (rearAreaDimensions != null) {
             val (rearW, rearH) = rearAreaDimensions
             if (rearW > 0 && rearH > 0) {
-                val alreadyRepresented = result.size > 1 && result.any { existing ->
-                    !existing.isDefault && (
-                        (existing.width == rearW && existing.height == rearH) ||
-                            (existing.width == rearH && existing.height == rearW)
-                        )
+                val alreadyRepresented = result.any { existing ->
+                    (existing.width == rearW && existing.height == rearH) ||
+                        (existing.width == rearH && existing.height == rearW)
                 }
                 if (!alreadyRepresented) {
                     result.add(

@@ -151,52 +151,81 @@ fun MediaDisplayCard(
             )
         }
 
-        if (device.hardwareDecoders.isNotEmpty()) {
-            val label = stringResource(id = R.string.text_hw_decode_type)
-            val matchingDecoders = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, label)) {
-                device.hardwareDecoders
-            } else {
-                device.hardwareDecoders.filter { matchesQuery(effectiveQuery, it) }
-            }
-            if (matchingDecoders.isNotEmpty()) {
-                TagChipGroup(
-                    label = label,
-                    items = matchingDecoders,
-                    onCopyText = onCopyText
-                )
-            }
+        val codecsSectionTitle = stringResource(id = R.string.section_media_codecs)
+        val codecsQuery = if (effectiveQuery.isNotBlank() && showDisplayHeader && matchesQuery(effectiveQuery, codecsSectionTitle)) {
+            ""
+        } else {
+            effectiveQuery
         }
 
-        if (device.secureDecoders.isNotEmpty()) {
-            val label = stringResource(id = R.string.text_hw_secure_decode_type)
-            val matchingSecureDecoders = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, label)) {
-                device.secureDecoders
-            } else {
-                device.secureDecoders.filter { matchesQuery(effectiveQuery, it) }
-            }
-            if (matchingSecureDecoders.isNotEmpty()) {
-                TagChipGroup(
-                    label = label,
-                    items = matchingSecureDecoders,
-                    onCopyText = onCopyText
-                )
-            }
+        val decodersLabel = stringResource(id = R.string.text_hw_decode_type)
+        val matchingDecoders = if (device.hardwareDecoders.isEmpty()) {
+            emptyList()
+        } else if (codecsQuery.isBlank() || matchesQuery(codecsQuery, decodersLabel)) {
+            device.hardwareDecoders
+        } else {
+            device.hardwareDecoders.filter { matchesQuery(codecsQuery, it) }
         }
 
-        if (device.hardwareEncoders.isNotEmpty()) {
-            val label = stringResource(id = R.string.text_hw_encode_type)
-            val matchingEncoders = if (effectiveQuery.isBlank() || matchesQuery(effectiveQuery, label)) {
-                device.hardwareEncoders
-            } else {
-                device.hardwareEncoders.filter { matchesQuery(effectiveQuery, it) }
-            }
-            if (matchingEncoders.isNotEmpty()) {
-                TagChipGroup(
-                    label = label,
-                    items = matchingEncoders,
-                    onCopyText = onCopyText
+        val secureDecodersLabel = stringResource(id = R.string.text_hw_secure_decode_type)
+        val matchingSecureDecoders = if (device.secureDecoders.isEmpty()) {
+            emptyList()
+        } else if (codecsQuery.isBlank() || matchesQuery(codecsQuery, secureDecodersLabel)) {
+            device.secureDecoders
+        } else {
+            device.secureDecoders.filter { matchesQuery(codecsQuery, it) }
+        }
+
+        val encodersLabel = stringResource(id = R.string.text_hw_encode_type)
+        val matchingEncoders = if (device.hardwareEncoders.isEmpty()) {
+            emptyList()
+        } else if (codecsQuery.isBlank() || matchesQuery(codecsQuery, encodersLabel)) {
+            device.hardwareEncoders
+        } else {
+            device.hardwareEncoders.filter { matchesQuery(codecsQuery, it) }
+        }
+
+        val hasAnyCodecContent = matchingDecoders.isNotEmpty() ||
+            matchingSecureDecoders.isNotEmpty() ||
+            matchingEncoders.isNotEmpty()
+
+        if (showDisplayHeader && hasAnyCodecContent) {
+            if (displaysToShow.isNotEmpty()) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.listitem_padding)),
+                    color = MaterialTheme.colorScheme.outlineVariant
                 )
             }
+            Text(
+                text = codecsSectionTitle,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(top = 4.dp, bottom = 2.dp)
+            )
+        }
+
+        if (matchingDecoders.isNotEmpty()) {
+            TagChipGroup(
+                label = decodersLabel,
+                items = matchingDecoders,
+                onCopyText = onCopyText
+            )
+        }
+
+        if (matchingSecureDecoders.isNotEmpty()) {
+            TagChipGroup(
+                label = secureDecodersLabel,
+                items = matchingSecureDecoders,
+                onCopyText = onCopyText
+            )
+        }
+
+        if (matchingEncoders.isNotEmpty()) {
+            TagChipGroup(
+                label = encodersLabel,
+                items = matchingEncoders,
+                onCopyText = onCopyText
+            )
         }
     }
 }

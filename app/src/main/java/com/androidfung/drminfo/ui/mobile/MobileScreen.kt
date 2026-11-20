@@ -655,6 +655,7 @@ private fun hasMatchingSystemContent(context: Context, device: DeviceInfo, query
 private fun hasMatchingDisplayContent(context: Context, device: DeviceInfo, query: String): Boolean {
     if (query.isBlank()) return true
     if (matchesQuery(query, context.getString(R.string.section_media_and_display))) return true
+    if (matchesQuery(query, context.getString(R.string.section_media_codecs))) return true
     for (display in device.displays) {
         if (display.name.isNotBlank() && matchesQuery(query, display.name)) return true
         Util.formatResolution(display.width, display.height)?.let { resText ->
